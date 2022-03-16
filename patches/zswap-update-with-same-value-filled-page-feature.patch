@@ -1,0 +1,47 @@
+From: Srividya Desireddy <srividya.dr@samsung.com>
+Subject: Documentation/vm/zswap.txt: update with same-value filled page feature
+
+Update zswap document with details on same-value filled pages
+identification feature.  The usage of zswap.same_filled_pages_enabled
+module parameter is explained.
+
+Link: http://lkml.kernel.org/r/20171206114852epcms5p6973b02a9f455d5d3c765eafda0fe2631@epcms5p6
+Signed-off-by: Srividya Desireddy <srividya.dr@samsung.com>
+Acked-by: Dan Streetman <ddstreet@ieee.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/vm/zswap.txt |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff -puN Documentation/vm/zswap.txt~zswap-update-with-same-value-filled-page-feature Documentation/vm/zswap.txt
+--- a/Documentation/vm/zswap.txt~zswap-update-with-same-value-filled-page-feature
++++ a/Documentation/vm/zswap.txt
+@@ -98,5 +98,25 @@ request is made for a page in an old zpo
+ original compressor.  Once all pages are removed from an old zpool, the zpool
+ and its compressor are freed.
+ 
++Some of the pages in zswap are same-value filled pages (i.e. contents of the
++page have same value or repetitive pattern). These pages include zero-filled
++pages and they are handled differently. During store operation, a page is
++checked if it is a same-value filled page before compressing it. If true, the
++compressed length of the page is set to zero and the pattern or same-filled
++value is stored.
++
++Same-value filled pages identification feature is enabled by default and can be
++disabled at boot time by setting the "same_filled_pages_enabled" attribute to 0,
++e.g. zswap.same_filled_pages_enabled=0. It can also be enabled and disabled at
++runtime using the sysfs "same_filled_pages_enabled" attribute, e.g.
++
++echo 1 > /sys/module/zswap/parameters/same_filled_pages_enabled
++
++When zswap same-filled page identification is disabled at runtime, it will stop
++checking for the same-value filled pages during store operation. However, the
++existing pages which are marked as same-value filled pages remain stored
++unchanged in zswap until they are either loaded or invalidated.
++
+ A debugfs interface is provided for various statistic about pool size, number
+-of pages stored, and various counters for the reasons pages are rejected.
++of pages stored, same-value filled pages and various counters for the reasons
++pages are rejected.
+_

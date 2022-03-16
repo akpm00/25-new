@@ -1,0 +1,27 @@
+From: NeilBrown <neilb@suse.de>
+Subject: remove inode_congested()
+
+inode_congested() reports if the backing-device for the inode is
+congested.  No bdi reports congestion any more, so this always returns
+'false'.
+
+So remove inode_congested() and related functions, and remove the call
+sites, assuming that inode_congested() always returns 'false'.
+
+Link: https://lkml.kernel.org/r/164549983741.9187.2174285592262191311.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Paolo Valente <paolo.valente@linaro.org>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Wu Fengguang <fengguang.wu@intel.com>

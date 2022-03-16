@@ -1,0 +1,82 @@
+From: Aili Yao <yaoaili@kingsoft.com>
+Subject: mm/gup: check page posion status for coredump.
+
+When we do coredump for user process signal, this may be an SIGBUS signal
+with BUS_MCEERR_AR or BUS_MCEERR_AO code, which means this signal is
+resulted from ECC memory fail like SRAR or SRAO, we expect the memory
+recovery work is finished correctly, then the get_dump_page() will not
+return the error page as its process pte is set invalid by
+memory_failure().
+
+But memory_failure() may fail, and the process's related pte may not be
+correctly set invalid, for current code, we will return the poison page,
+get it dumped, and then lead to system panic as its in kernel code.
+
+So check the poison status in get_dump_page(), and if TRUE, return NULL.
+
+There maybe other scenario that is also better to check the posion status
+and not to panic, so make a wrapper for this check, Thanks to David's
+suggestion(<david@redhat.com>).
+
+[akpm@linux-foundation.org: s/0/false/]
+[yaoaili@kingsoft.com: is_page_poisoned() arg cannot be null, per Matthew]
+  Link: https://lkml.kernel.org/r/20210319104437.6f30e80d@alex-virtual-machine
+  Link: https://lkml.kernel.org/r/20210322115233.05e4e82a@alex-virtual-machine
+Link: https://lkml.kernel.org/r/20210319104437.6f30e80d@alex-virtual-machine
+Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Aili Yao <yaoaili@kingsoft.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/gup.c      |    4 ++++
+ mm/internal.h |   20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
+
+--- a/mm/gup.c~mm-gup-check-page-posion-status-for-coredump
++++ a/mm/gup.c
+@@ -1535,6 +1535,10 @@ struct page *get_dump_page(unsigned long
+ 				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
+ 	if (locked)
+ 		mmap_read_unlock(mm);
++
++	if (ret == 1 && is_page_poisoned(page))
++		return NULL;
++
+ 	return (ret == 1) ? page : NULL;
+ }
+ #endif /* CONFIG_ELF_CORE */
+--- a/mm/internal.h~mm-gup-check-page-posion-status-for-coredump
++++ a/mm/internal.h
+@@ -97,6 +97,26 @@ static inline void set_page_refcounted(s
+ 	set_page_count(page, 1);
+ }
+ 
++/*
++ * When kernel touch the user page, the user page may be have been marked
++ * poison but still mapped in user space, if without this page, the kernel
++ * can guarantee the data integrity and operation success, the kernel is
++ * better to check the posion status and avoid touching it, be good not to
++ * panic, coredump for process fatal signal is a sample case matching this
++ * scenario. Or if kernel can't guarantee the data integrity, it's better
++ * not to call this function, let kernel touch the poison page and get to
++ * panic.
++ */
++static inline bool is_page_poisoned(struct page *page)
++{
++	if (PageHWPoison(page))
++		return true;
++	else if (PageHuge(page) && PageHWPoison(compound_head(page)))
++		return true;
++
++	return false;
++}
++
+ extern unsigned long highest_memmap_pfn;
+ 
+ /*
+_

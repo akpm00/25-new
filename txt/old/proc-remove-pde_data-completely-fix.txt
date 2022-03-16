@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: proc-remove-pde_data-completely-fix
+
+fix naming clash in drivers/nubus/proc.c
+
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Muchun Song <songmuchun@bytedance.com>

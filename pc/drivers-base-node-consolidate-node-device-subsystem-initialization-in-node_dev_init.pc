@@ -1,0 +1,12 @@
+arch/arm64/kernel/setup.c
+arch/ia64/kernel/topology.c
+arch/mips/kernel/topology.c
+arch/powerpc/kernel/sysfs.c
+arch/riscv/kernel/setup.c
+arch/s390/kernel/numa.c
+arch/sh/kernel/topology.c
+arch/sparc/kernel/sysfs.c
+arch/x86/kernel/topology.c
+drivers/base/init.c
+drivers/base/node.c
+include/linux/node.h

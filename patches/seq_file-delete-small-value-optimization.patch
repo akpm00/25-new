@@ -1,0 +1,43 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: fs/seq_file.c: delete small-value optimization
+
+num_to_str() optimizes printing small integers [0..9], so the same check
+higher in callchain is unnecessary.
+
+Link: http://lkml.kernel.org/r/20170516204246.GA18123@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/seq_file.c |   10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff -puN fs/seq_file.c~seq_file-delete-small-value-optimization fs/seq_file.c
+--- a/fs/seq_file.c~seq_file-delete-small-value-optimization
++++ a/fs/seq_file.c
+@@ -709,11 +709,6 @@ void seq_put_decimal_ull_width(struct se
+ 	if (m->count + width >= m->size)
+ 		goto overflow;
+ 
+-	if (num < 10) {
+-		m->buf[m->count++] = num + '0';
+-		return;
+-	}
+-
+ 	len = num_to_str(m->buf + m->count, m->size - m->count, num, width);
+ 	if (!len)
+ 		goto overflow;
+@@ -800,11 +795,6 @@ void seq_put_decimal_ll(struct seq_file
+ 		num = -num;
+ 	}
+ 
+-	if (num < 10) {
+-		m->buf[m->count++] = num + '0';
+-		return;
+-	}
+-
+ 	len = num_to_str(m->buf + m->count, m->size - m->count, num, 0);
+ 	if (!len)
+ 		goto overflow;
+_

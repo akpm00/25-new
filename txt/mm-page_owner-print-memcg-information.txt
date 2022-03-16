@@ -1,0 +1,32 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm/page_owner: print memcg information
+
+It was found that a number of offline memcgs were not freed because they
+were pinned by some charged pages that were present.  Even "echo 1 >
+/proc/sys/vm/drop_caches" wasn't able to free those pages.  These offline
+but not freed memcgs tend to increase in number over time with the side
+effect that percpu memory consumption as shown in /proc/meminfo also
+increases over time.
+
+In order to find out more information about those pages that pin offline
+memcgs, the page_owner feature is extended to print memory cgroup
+information especially whether the cgroup is offline or not.  RCU read
+lock is taken when memcg is being accessed to make sure that it won't be
+freed.
+
+Link: https://lkml.kernel.org/r/20220202203036.744010-4-longman@redhat.com
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Rafael Aquini <aquini@redhat.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>

@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: list_lru-prefetch-neighboring-list-entries-before-acquiring-lock-fix
+
+include prefetch.h, remove unlocked list_empty() test, per Dave
+
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

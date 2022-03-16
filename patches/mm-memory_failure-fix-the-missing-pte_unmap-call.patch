@@ -1,0 +1,48 @@
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: mm/memory_failure: fix the missing pte_unmap() call
+
+The paired pte_unmap() call is missing before the
+dev_pagemap_mapping_shift() returns.  So fix it.
+
+Davidsaid "I guess this code never runs on 32bit / highmem, that's why we
+didn't notice so far".
+
+[akpm@linux-foundation.org: cleanup]
+Link: https://lkml.kernel.org/r/20210923122642.4999-1-zhengqi.arch@bytedance.com
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+--- a/mm/memory-failure.c~mm-memory_failure-fix-the-missing-pte_unmap-call
++++ a/mm/memory-failure.c
+@@ -306,6 +306,7 @@ static unsigned long dev_pagemap_mapping
+ 		struct vm_area_struct *vma)
+ {
+ 	unsigned long address = vma_address(page, vma);
++	unsigned long ret = 0;
+ 	pgd_t *pgd;
+ 	p4d_t *p4d;
+ 	pud_t *pud;
+@@ -329,11 +330,10 @@ static unsigned long dev_pagemap_mapping
+ 	if (pmd_devmap(*pmd))
+ 		return PMD_SHIFT;
+ 	pte = pte_offset_map(pmd, address);
+-	if (!pte_present(*pte))
+-		return 0;
+-	if (pte_devmap(*pte))
+-		return PAGE_SHIFT;
+-	return 0;
++	if (pte_present(*pte) && pte_devmap(*pte))
++		ret = PAGE_SHIFT;
++	pte_unmap(pte);
++	return ret;
+ }
+ 
+ /*
+_

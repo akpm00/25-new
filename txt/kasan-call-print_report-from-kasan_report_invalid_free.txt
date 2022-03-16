@@ -1,0 +1,20 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: call print_report from kasan_report_invalid_free
+
+Call print_report() in kasan_report_invalid_free() instead of calling
+printing functions directly.  Compared to the existing implementation of
+kasan_report_invalid_free(), print_report() makes sure that the buggy
+address has metadata before printing it.
+
+The change requires adding a report type field into kasan_access_info and
+using it accordingly.
+
+kasan_report_async() is left as is, as using print_report() will only
+complicate the code.
+
+Link: https://lkml.kernel.org/r/9ea6f0604c5d2e1fb28d93dc6c44232c1f8017fe.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

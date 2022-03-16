@@ -1,0 +1,23 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort: support for sorting by task command name
+
+When viewing page owner information, we may also need to the block to be
+sorted by task command name.  Therefore, the following adjustments are
+made:
+
+1. Add a member variable to record task command name of block.
+
+2. Add a new -n option to sort the information of blocks by task command
+   name.
+
+3. Add -n option explanation in the document.
+
+Link: https://lkml.kernel.org/r/20220306030640.43054-2-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: <zhaochongxi2019@email.szu.edu.cn<
+Cc: <hanshenghong2019@email.szu.edu.cn>
+Cc: <zhangyinan2019@email.szu.edu.cn>

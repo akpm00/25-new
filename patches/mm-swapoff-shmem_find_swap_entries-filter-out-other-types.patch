@@ -1,0 +1,69 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm: swapoff: shmem_find_swap_entries() filter out other types
+
+Swapfile "type" was passed all the way down to shmem_unuse_inode(), but
+then forgotten from shmem_find_swap_entries(): with the result that
+removing one swapfile would try to free up all the swap from shmem - no
+problem when only one swapfile anyway, but counter-productive when more,
+causing swapoff to be unnecessarily OOM-killed when it should succeed.
+
+Link: http://lkml.kernel.org/r/alpine.LSU.2.11.1904081254470.1523@eggly.anvils
+Fixes: b56a2d8af914 ("mm: rid swapoff of quadratic complexity")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Cc: Vineeth Pillai <vpillai@digitalocean.com>
+Cc: Kelley Nielsen <kelleynnn@gmail.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shmem.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+--- a/mm/shmem.c~mm-swapoff-shmem_find_swap_entries-filter-out-other-types
++++ a/mm/shmem.c
+@@ -1099,10 +1099,11 @@ extern struct swap_info_struct *swap_inf
+ static int shmem_find_swap_entries(struct address_space *mapping,
+ 				   pgoff_t start, unsigned int nr_entries,
+ 				   struct page **entries, pgoff_t *indices,
+-				   bool frontswap)
++				   unsigned int type, bool frontswap)
+ {
+ 	XA_STATE(xas, &mapping->i_pages, start);
+ 	struct page *page;
++	swp_entry_t entry;
+ 	unsigned int ret = 0;
+ 
+ 	if (!nr_entries)
+@@ -1116,13 +1117,12 @@ static int shmem_find_swap_entries(struc
+ 		if (!xa_is_value(page))
+ 			continue;
+ 
+-		if (frontswap) {
+-			swp_entry_t entry = radix_to_swp_entry(page);
+-
+-			if (!frontswap_test(swap_info[swp_type(entry)],
+-					    swp_offset(entry)))
+-				continue;
+-		}
++		entry = radix_to_swp_entry(page);
++		if (swp_type(entry) != type)
++			continue;
++		if (frontswap &&
++		    !frontswap_test(swap_info[type], swp_offset(entry)))
++			continue;
+ 
+ 		indices[ret] = xas.xa_index;
+ 		entries[ret] = page;
+@@ -1194,7 +1194,7 @@ static int shmem_unuse_inode(struct inod
+ 
+ 		pvec.nr = shmem_find_swap_entries(mapping, start, nr_entries,
+ 						  pvec.pages, indices,
+-						  frontswap);
++						  type, frontswap);
+ 		if (pvec.nr == 0) {
+ 			ret = 0;
+ 			break;
+_

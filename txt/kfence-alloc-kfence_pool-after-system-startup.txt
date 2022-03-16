@@ -1,0 +1,13 @@
+From: Tianchen Ding <dtcccc@linux.alibaba.com>
+Subject: kfence: alloc kfence_pool after system startup
+
+Allow enabling KFENCE after system startup by allocating its pool via the
+page allocator. This provides the flexibility to enable KFENCE even if it
+wasn't enabled at boot time.
+
+Link: https://lkml.kernel.org/r/20220307074516.6920-3-dtcccc@linux.alibaba.com
+Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Tested-by: Peng Liu <liupeng256@huawei.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>

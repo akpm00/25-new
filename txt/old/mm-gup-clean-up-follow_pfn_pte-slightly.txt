@@ -1,0 +1,22 @@
+From: John Hubbard <jhubbard@nvidia.com>
+Subject: mm/gup: clean up follow_pfn_pte() slightly
+
+Regardless of any FOLL_* flags, get_user_pages() and its variants should
+handle PFN-only entries by stopping early, if the caller expected **pages
+to be filled in.
+
+This makes for a more reliable API, as compared to the previous approach
+of skipping over such entries (and thus leaving them silently unwritten).
+
+Link: https://lkml.kernel.org/r/20220201101108.306062-3-jhubbard@nvidia.com
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Christoph Hellwig <hch@lst.de>

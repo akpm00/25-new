@@ -1,0 +1,25 @@
+From: Christoph Hellwig <hch@lst.de>
+Subject: mm: remove pointless includes from <linux/hmm.h>
+
+hmm.h pulls in the world for no good reason at all.  Remove the
+includes and push a few ones into the users instead.
+
+Link: https://lkml.kernel.org/r/20220210072828.2930359-4-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Tested-by: "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Christian Knig <christian.koenig@amd.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: Ralph Campbell <rcampbell@nvidia.com>

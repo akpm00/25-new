@@ -1,0 +1,12 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: move and simplify kasan_report_async
+
+Place kasan_report_async() next to the other main reporting routines. 
+Also simplify printed information.
+
+Link: https://lkml.kernel.org/r/52d942ef3ffd29bdfa225bbe8e327bc5bda7ab09.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

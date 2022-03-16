@@ -1,0 +1,7 @@
+From: Bang Li <libang.linuxer@gmail.com>
+Subject: mm/swap: fix confusing comment in folio_mark_accessed
+
+For unevictable pages, we don't need mark them.
+
+Link: https://lkml.kernel.org/r/20220311141519.59948-1-libang.linuxer@gmail.com
+Signed-off-by: Bang Li <libang.linuxer@gmail.com>

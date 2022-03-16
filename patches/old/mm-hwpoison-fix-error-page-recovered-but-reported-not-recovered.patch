@@ -1,0 +1,51 @@
+From: Youquan Song <youquan.song@intel.com>
+Subject: mm/hwpoison: fix error page recovered but reported "not recovered"
+
+When an uncorrected memory error is consumed there is a race between the
+CMCI from the memory controller reporting an uncorrected error with a UCNA
+signature, and the core reporting and SRAR signature machine check when
+the data is about to be consumed.
+
+If the CMCI wins that race, the page is marked poisoned when
+uc_decode_notifier() calls memory_failure() and the machine check
+processing code finds the page already poisoned.  It calls
+kill_accessing_process() to make sure a SIGBUS is sent.  But returns the
+wrong error code.
+
+Console log looks like this:
+
+[34775.674296] mce: Uncorrected hardware memory error in user-access at 3710b3400
+[34775.675413] Memory failure: 0x3710b3: recovery action for dirty LRU page: Recovered
+[34775.690310] Memory failure: 0x3710b3: already hardware poisoned
+[34775.696247] Memory failure: 0x3710b3: Sending SIGBUS to einj_mem_uc:361438 due to hardware memory corruption
+[34775.706072] mce: Memory error not recovered
+
+Fix kill_accessing_process() to return -EHWPOISON to avoid the noise
+message "Memory error not recovered" and skip duplicate SIGBUS.
+
+[Tony: Reworded some parts of commit message]
+
+Link: https://lkml.kernel.org/r/20220107194450.1687264-1-tony.luck@intel.com
+Fixes: a3f5d80ea401 ("mm,hwpoison: send SIGBUS with error virutal address")
+Signed-off-by: Youquan Song <youquan.song@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/mm/memory-failure.c~mm-hwpoison-fix-error-page-recovered-but-reported-not-recovered
++++ a/mm/memory-failure.c
+@@ -708,7 +708,8 @@ static int kill_accessing_process(struct
+ 	if (ret == 1 && priv.tk.addr)
+ 		kill_proc(&priv.tk, pfn, flags);
+ 	mmap_read_unlock(p->mm);
+-	return ret ? -EFAULT : -EHWPOISON;
++
++	return (ret < 0) ? -EFAULT : -EHWPOISON;
+ }
+ 
+ static const char *action_name[] = {
+_

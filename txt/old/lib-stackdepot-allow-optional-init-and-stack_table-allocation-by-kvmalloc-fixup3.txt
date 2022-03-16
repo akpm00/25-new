@@ -1,0 +1,27 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: lib/stackdepot: allow optional init and stack_table allocation by kvmalloc() - fixup3
+
+Due to cd06ab2fd48f ("drm/locking: add backtrace for locking contended
+locks without backoff") landing recently to -next adding a new stack depot
+user in drivers/gpu/drm/drm_modeset_lock.c we need to add an appropriate
+call to stack_depot_init() there as well.
+
+Link: https://lkml.kernel.org/r/2a692365-cfa1-64f2-34e0-8aa5674dce5e@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Vijayanand Jitta <vjitta@codeaurora.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Imran Khan <imran.f.khan@oracle.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

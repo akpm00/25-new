@@ -1,0 +1,10 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: selftests: kselftest framework: provide "finished" helper
+
+Instead of having each time that wants to use ksft_exit() have to figure
+out the internals of kselftest.h, add the helper ksft_finished() that
+makes sure the passes, xfails, and skips are equal to the test plan count.
+
+Link: https://lkml.kernel.org/r/20220201013717.2464392-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Shuah Khan <shuah@kernel.org>

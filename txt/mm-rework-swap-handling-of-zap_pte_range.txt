@@ -1,0 +1,24 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm: rework swap handling of zap_pte_range
+
+Clean the code up by merging the device private/exclusive swap entry
+handling with the rest, then we merge the pte clear operation too.
+
+struct* page is defined in multiple places in the function, move it upward.
+
+free_swap_and_cache() is only useful for !non_swap_entry() case, put it
+into the condition.
+
+No functional change intended.
+
+Link: https://lkml.kernel.org/r/20220216094810.60572-5-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

@@ -1,0 +1,37 @@
+From: Wei Wang <wei.w.wang@intel.com>
+Subject: include/linux/idr.h: add #include <linux/bug.h>
+
+The <linux/bug.h> was removed from radix-tree.h by f5bba9d11a2
+("include/linux/radix-tree.h: remove unneeded #include <linux/bug.h>").
+
+Since that commit, tools/testing/radix-tree/ couldn't pass compilation due
+to tools/testing/radix-tree/idr.c:17: undefined reference to WARN_ON_ONCE.
+This patch adds the bug.h header to idr.h to solve the issue.
+
+Link: http://lkml.kernel.org/r/1511963726-34070-2-git-send-email-wei.w.wang@intel.com
+Fixes: f5bba9d11a2 ("include/linux/radix-tree.h: remove unneeded #include <linux/bug.h>")
+Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+Cc: Matthew Wilcox <mawilcox@microsoft.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Eric Biggers <ebiggers@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/idr.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff -puN include/linux/idr.h~idr-add-include-linux-bugh include/linux/idr.h
+--- a/include/linux/idr.h~idr-add-include-linux-bugh
++++ a/include/linux/idr.h
+@@ -15,6 +15,7 @@
+ #include <linux/radix-tree.h>
+ #include <linux/gfp.h>
+ #include <linux/percpu.h>
++#include <linux/bug.h>
+ 
+ struct idr {
+ 	struct radix_tree_root	idr_rt;
+_

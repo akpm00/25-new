@@ -1,0 +1,14 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: tools/vm/page_owner: filter out pid and timestamp
+
+Commit 9cc7e96aa846 ("mm/page_owner: record timestamp and pid") introduces
+timestamp and pid for page owner.  However, it is hard to aggregate the
+stack since those are specific (especially timestamp).  Filter out those
+information when aggregating.
+
+Link: https://lkml.kernel.org/r/20220215134045.12004-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>

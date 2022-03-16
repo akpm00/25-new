@@ -1,0 +1,31 @@
+From: NeilBrown <neilb@suse.com>
+Subject: autofs: fix careless error in recent commit
+
+ecc0c469f277 ("autofs: don't fail mount for transient error") was meant to
+replace an 'if' with a 'switch', but instead added the 'switch' leaving
+the case in place.
+
+Link: http://lkml.kernel.org/r/87zi6wstmw.fsf@notabene.neil.brown.name
+Fixes: ecc0c469f277 ("autofs: don't fail mount for transient error")
+Reported-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: NeilBrown <neilb@suse.com>
+Cc: Ian Kent <raven@themaw.net>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/autofs4/waitq.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff -puN fs/autofs4/waitq.c~autofs-fix-careless-error-in-recent-commit fs/autofs4/waitq.c
+--- a/fs/autofs4/waitq.c~autofs-fix-careless-error-in-recent-commit
++++ a/fs/autofs4/waitq.c
+@@ -170,7 +170,6 @@ static void autofs4_notify_daemon(struct
+ 
+ 	mutex_unlock(&sbi->wq_mutex);
+ 
+-	if (autofs4_write(sbi, pipe, &pkt, pktsz))
+ 	switch (ret = autofs4_write(sbi, pipe, &pkt, pktsz)) {
+ 	case 0:
+ 		break;
+_

@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: fix wrong user reference report
+
+The dirty swapcache page is still residing in the swap cache after it's
+hwpoisoned.  So there is always one extra refcount for swap cache.
+
+Link: https://lkml.kernel.org/r/20220228140245.24552-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

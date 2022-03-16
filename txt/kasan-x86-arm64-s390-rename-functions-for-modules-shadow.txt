@@ -1,0 +1,24 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, x86, arm64, s390: rename functions for modules shadow
+
+Rename kasan_free_shadow to kasan_free_module_shadow and
+kasan_module_alloc to kasan_alloc_module_shadow.
+
+These functions are used to allocate/free shadow memory for kernel modules
+when KASAN_VMALLOC is not enabled.  The new names better reflect their
+purpose.
+
+Also reword the comment next to their declaration to improve clarity.
+
+Link: https://lkml.kernel.org/r/36db32bde765d5d0b856f77d2d806e838513fe84.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

@@ -1,0 +1,12 @@
+From: Andrew Halaney <ahalaney@redhat.com>
+Subject: init/main.c: silence some -Wunused-parameter warnings
+
+There are a bunch of callbacks with unused arguments, go ahead and silence
+those so "make KCFLAGS=-W init/main.o" is a little quieter.  Here's a
+little sample:
+
+init/main.c:182:43: warning: unused parameter 'str' [-Wunused-parameter]
+static int __init set_reset_devices(char *str)
+
+Link: https://lkml.kernel.org/r/20210519162341.1275452-1-ahalaney@redhat.com
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>

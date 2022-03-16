@@ -1,0 +1,13 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: sparc/mm: enable ARCH_HAS_VM_GET_PAGE_PROT
+
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT.  Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.  This also localizes the
+helper arch_vm_get_page_prot() as sparc_vm_get_page_prot() and moves near
+vm_get_page_prot().
+
+Link: https://lkml.kernel.org/r/1645425519-9034-7-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+Acked-by: David S. Miller <davem@davemloft.net>

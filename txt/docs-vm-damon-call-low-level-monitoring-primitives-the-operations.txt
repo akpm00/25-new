@@ -1,0 +1,23 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/vm/damon: call low level monitoring primitives the operations
+
+Patch series "Docs/damon: Update documents for better consistency".
+
+Some of DAMON document are not properly updated for latest version.  This
+patchset updates such parts.
+
+
+This patch (of 3):
+
+DAMON code calls the low level monitoring primitives implementations the
+monitoring operations.  The documentation would have no problem at still
+calling those primitives implementation because there is no real
+difference in the concepts, but making it more consistent with the code
+would make it better.  This commit therefore convert sentences in the doc
+specifically pointing the implementations of the primitives to call it
+monitoring operations.
+
+Link: https://lkml.kernel.org/r/20220222170100.17068-1-sj@kernel.org
+Link: https://lkml.kernel.org/r/20220222170100.17068-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>

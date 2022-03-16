@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: kernel/ksysfs.c: use helper macro __ATTR_RW
+
+Use helper macro __ATTR_RW to define kobj_attribute to make code more
+clear.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220222112034.48298-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>

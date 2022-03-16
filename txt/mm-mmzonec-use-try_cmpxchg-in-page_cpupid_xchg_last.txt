@@ -1,0 +1,12 @@
+From: Peter Collingbourne <pcc@google.com>
+Subject: mm/mmzone.c: use try_cmpxchg() in page_cpupid_xchg_last()
+
+This will let us avoid an additional read from page->flags when retrying
+the compare-exchange on some architectures.
+
+Link: https://lkml.kernel.org/r/20220120011200.1322836-1-pcc@google.com
+Link: https://linux-review.googlesource.com/id/I2e1f5b5b080ac9c4e0eb7f98768dba6fd7821693
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Mel Gorman <mgorman@suse.de>

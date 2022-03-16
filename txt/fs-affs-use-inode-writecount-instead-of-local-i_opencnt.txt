@@ -1,0 +1,10 @@
+From: Fabian Frederick <fabf@skynet.be>
+Subject: fs/affs: use inode writecount instead of local i_opencnt
+
+atomic_t i_opencnt was used to free allocation in case there were no more
+opens.  This patch replaces affs_file_open by generic_file_open and uses
+FMODE_WRITE/i_writecount==1 for the task like other FS.
+
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: Al Viro <viro@zeniv.linux.org.uk>

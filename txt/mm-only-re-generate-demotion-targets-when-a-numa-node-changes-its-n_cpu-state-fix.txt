@@ -1,0 +1,7 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm-only-re-generate-demotion-targets-when-a-numa-node-changes-its-n_cpu-state-fix
+
+remove CPUHP_MM_DEMOTION_DEAD and CPUHP_AP_MM_DEMOTION_ONLINE definitions, per Huang Ying
+
+Link: https://lkml.kernel.org/r/YjBPKmIpPNoJU/67@localhost.localdomain
+Cc: "Huang, Ying" <ying.huang@intel.com>

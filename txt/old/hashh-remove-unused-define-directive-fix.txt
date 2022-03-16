@@ -1,0 +1,6 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: drivers/infiniband/sw/rxe/rxe_qp.c: fix for "hash.h: remove unused define directive"
+
+hash_32_generic() becomes hash_32()
+
+Cc: Isabella Basso <isabbasso@riseup.net>

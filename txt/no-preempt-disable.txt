@@ -1,0 +1,6 @@
+Subject: There used to be a problem in spin_unlock() with preemption: it would
+caused pdflush to think it had been given some work to do.
+
+The spin_unlock() problem has been fixed, and we don't need that
+workaround any more.
+

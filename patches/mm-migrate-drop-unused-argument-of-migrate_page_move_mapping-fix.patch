@@ -1,0 +1,25 @@
+From: Jan Kara <jack@suse.cz>
+Subject: mm-migrate-drop-unused-argument-of-migrate_page_move_mapping-fix
+
+fix expected_page_refs()
+
+Link: http://lkml.kernel.org/r/20181217131710.GB8611@quack2.suse.cz
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/migrate.c~mm-migrate-drop-unused-argument-of-migrate_page_move_mapping-fix
++++ a/mm/migrate.c
+@@ -384,7 +384,7 @@ static int expected_page_refs(struct pag
+ 	 */
+ 	expected_count += is_device_private_page(page);
+ 	expected_count += is_device_public_page(page);
+-	if (page->mapping)
++	if (page_mapping(page))
+ 		expected_count += hpage_nr_pages(page) + page_has_private(page);
+ 
+ 	return expected_count;
+_

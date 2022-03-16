@@ -1,0 +1,25 @@
+From: Andrei Vagin <avagin@gmail.com>
+Subject: fs/pipe: use kvcalloc to allocate a pipe_buffer array
+
+Right now, kcalloc is used to allocate a pipe_buffer array.  The size of
+the pipe_buffer struct is 40 bytes.  kcalloc allows allocating reliably
+chunks with sizes less or equal to PAGE_ALLOC_COSTLY_ORDER (3).  It means
+that the maximum pipe size is 3.2MB in this case.
+
+In CRIU, we use pipes to dump processes memory.  CRIU freezes a target
+process, injects a parasite code into it and then this code splices memory
+into pipes.  If a maximum pipe size is small, we need to do many
+iterations or create many pipes.
+
+kvcalloc attempt to allocate physically contiguous memory, but upon
+failure, fall back to non-contiguous (vmalloc) allocation and so it isn't
+limited by PAGE_ALLOC_COSTLY_ORDER.
+
+The maximum pipe size for non-root users is limited by the
+/proc/sys/fs/pipe-max-size sysctl that is 1MB by default, so only the root
+user will be able to trigger vmalloc allocations.
+
+Link: https://lkml.kernel.org/r/20220104171058.22580-1-avagin@gmail.com
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Reviewed-by: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>

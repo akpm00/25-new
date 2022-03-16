@@ -1,0 +1,4 @@
+Documentation/synchro-test.txt
+kernel/Makefile
+kernel/synchro-test.c
+lib/Kconfig.debug

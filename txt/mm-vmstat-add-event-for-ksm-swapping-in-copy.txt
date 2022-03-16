@@ -1,0 +1,20 @@
+From: Yang Yang <yang.yang29@zte.com.cn>
+Subject: mm/vmstat: add event for ksm swapping in copy
+
+When faults in from swap what used to be a KSM page and that page had been
+swapped in before, system has to make a copy, and leaves remerging the
+pages to a later pass of ksmd.
+
+That is not good for performace, we'd better to reduce this kind of copy. 
+There are some ways to reduce it, for example lessen swappiness or
+madvise(, , MADV_MERGEABLE) range.  So add this event to support doing
+this tuning.  Just like this patch: "mm, THP, swap: add THP swapping out
+fallback counting".
+
+Link: https://lkml.kernel.org/r/20220113023839.758845-1-yang.yang29@zte.com.cn
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Saravanan D <saravanand@fb.com>

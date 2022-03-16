@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/hugetlb.c: clean up VM_WARN usage
+
+Use VM_WARN return value, remove too-obvious comment.
+
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Nic Losby <blurbdust@gmail.com>
+Cc: Yisheng Xie <xieyisheng1@huawei.com>

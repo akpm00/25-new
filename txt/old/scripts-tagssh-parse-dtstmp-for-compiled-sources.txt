@@ -1,0 +1,12 @@
+From: Jialu Xu <xujialu@vimux.org>
+Subject: scripts/tags.sh: parse *.dts.tmp for compiled sources
+
+There are files listed in *.dts.tmp, parse them as *.cmd for compiled
+sources.
+
+Link: https://lkml.kernel.org/r/20220221084614.1682022-1-xujialu@vimux.org
+Signed-off-by: Jialu Xu <xujialu@vimux.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Rustam Kovhaev <rkovhaev@gmail.com>

@@ -1,0 +1,50 @@
+From: Colin Ian King <colin.king@canonical.com>
+Subject: test_kmod: fix spelling mistake: "EMTPY" -> "EMPTY"
+
+Trivial fix to spelling mistake in snprintf text
+
+[mcgrof@kernel.org: massaged commit message]
+Link: http://lkml.kernel.org/r/20170802211450.27928-3-mcgrof@kernel.org
+Fixes: 39258f448d71 ("kmod: add test driver to stress test the module loader")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Luis R. Rodriguez <mcgrof@kernel.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Jessica Yu <jeyu@redhat.com>
+Cc: Rusty Russell <rusty@rustcorp.com.au>
+Cc: Michal Marek <mmarek@suse.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: David Binderman <dcb314@hotmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/test_kmod.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff -puN lib/test_kmod.c~test_kmod-fix-spelling-mistake-emtpy-empty lib/test_kmod.c
+--- a/lib/test_kmod.c~test_kmod-fix-spelling-mistake-emtpy-empty
++++ a/lib/test_kmod.c
+@@ -485,7 +485,7 @@ static ssize_t config_show(struct device
+ 				config->test_driver);
+ 	else
+ 		len += snprintf(buf+len, PAGE_SIZE - len,
+-				"driver:\tEMTPY\n");
++				"driver:\tEMPTY\n");
+ 
+ 	if (config->test_fs)
+ 		len += snprintf(buf+len, PAGE_SIZE - len,
+@@ -493,7 +493,7 @@ static ssize_t config_show(struct device
+ 				config->test_fs);
+ 	else
+ 		len += snprintf(buf+len, PAGE_SIZE - len,
+-				"fs:\tEMTPY\n");
++				"fs:\tEMPTY\n");
+ 
+ 	mutex_unlock(&test_dev->config_mutex);
+ 
+_

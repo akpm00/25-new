@@ -1,0 +1,142 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: memblock: replace memblock_alloc_base(ANYWHERE) with memblock_phys_alloc
+
+The calls to memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE) and
+memblock_phys_alloc(size, align) are equivalent as both try to allocate
+'size' bytes with 'align' alignment anywhere in the memory and panic if
+hte allocation fails.
+
+The conversion is done using the following semantic patch:
+
+@@
+expression size, align;
+@@
+- memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE)
++ memblock_phys_alloc(size, align)
+
+Link: http://lkml.kernel.org/r/1548057848-15136-4-git-send-email-rppt@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Guo Ren <ren_guo@c-sky.com>				[c-sky]
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Juergen Gross <jgross@suse.com>			[Xen]
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/arm/mm/init.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/arm/mm/init.c
+@@ -205,7 +205,7 @@ phys_addr_t __init arm_memblock_steal(ph
+ 
+ 	BUG_ON(!arm_memblock_steal_permitted);
+ 
+-	phys = memblock_alloc_base(size, align, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, align);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 
+--- a/arch/sh/boards/mach-ap325rxa/setup.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/sh/boards/mach-ap325rxa/setup.c
+@@ -556,7 +556,7 @@ static void __init ap325rxa_mv_mem_reser
+ 	phys_addr_t phys;
+ 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 
+--- a/arch/sh/boards/mach-ecovec24/setup.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/sh/boards/mach-ecovec24/setup.c
+@@ -1476,12 +1476,12 @@ static void __init ecovec_mv_mem_reserve
+ 	phys_addr_t phys;
+ 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 	ceu0_dma_membase = phys;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 	ceu1_dma_membase = phys;
+--- a/arch/sh/boards/mach-kfr2r09/setup.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/sh/boards/mach-kfr2r09/setup.c
+@@ -630,7 +630,7 @@ static void __init kfr2r09_mv_mem_reserv
+ 	phys_addr_t phys;
+ 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 
+--- a/arch/sh/boards/mach-migor/setup.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/sh/boards/mach-migor/setup.c
+@@ -630,7 +630,7 @@ static void __init migor_mv_mem_reserve(
+ 	phys_addr_t phys;
+ 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 
+--- a/arch/sh/boards/mach-se/7724/setup.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/sh/boards/mach-se/7724/setup.c
+@@ -963,12 +963,12 @@ static void __init ms7724se_mv_mem_reser
+ 	phys_addr_t phys;
+ 	phys_addr_t size = CEU_BUFFER_MEMORY_SIZE;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 	ceu0_dma_membase = phys;
+ 
+-	phys = memblock_alloc_base(size, PAGE_SIZE, MEMBLOCK_ALLOC_ANYWHERE);
++	phys = memblock_phys_alloc(size, PAGE_SIZE);
+ 	memblock_free(phys, size);
+ 	memblock_remove(phys, size);
+ 	ceu1_dma_membase = phys;
+--- a/arch/xtensa/mm/kasan_init.c~memblock-replace-memblock_alloc_baseanywhere-with-memblock_phys_alloc
++++ a/arch/xtensa/mm/kasan_init.c
+@@ -52,8 +52,7 @@ static void __init populate(void *start,
+ 
+ 		for (k = 0; k < PTRS_PER_PTE; ++k, ++j) {
+ 			phys_addr_t phys =
+-				memblock_alloc_base(PAGE_SIZE, PAGE_SIZE,
+-						    MEMBLOCK_ALLOC_ANYWHERE);
++				memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
+ 
+ 			set_pte(pte + j, pfn_pte(PHYS_PFN(phys), PAGE_KERNEL));
+ 		}
+_

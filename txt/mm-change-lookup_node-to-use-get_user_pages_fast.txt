@@ -1,0 +1,28 @@
+From: John Hubbard <jhubbard@nvidia.com>
+Subject: mm: change lookup_node() to use get_user_pages_fast()
+
+The purpose of calling get_user_pages_locked() from lookup_node() was to
+allow for unlocking the mmap_lock when reading a page from the disk during
+a page fault (hidden behind VM_FAULT_RETRY).  The idea was to reduce
+contention on the heavily-used mmap_lock.  (Thanks to Jan Kara for clearly
+pointing that out, and in fact I've used some of his wording here.)
+
+However, it is unlikely for lookup_node() to take a page fault.  With that
+in mind, change over to calling get_user_pages_fast().  This simplifies
+the code, runs a little faster in the expected case, and allows removing
+get_user_pages_locked() entirely, in a subsequent patch.
+
+Link: https://lkml.kernel.org/r/20220204020010.68930-5-jhubbard@nvidia.com
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Peter Xu <peterx@redhat.com>

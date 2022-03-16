@@ -1,0 +1,64 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: fix random seed generation for tag-based mode
+
+There are two issues with assigning random percpu seeds right now:
+
+1. We use for_each_possible_cpu() to iterate over cpus, but cpumask is
+   not set up yet at the moment of kasan_init(), and thus we only set
+   the seed for cpu #0.
+
+2. A call to get_random_u32() always returns the same number and produces
+   a message in dmesg, since the random subsystem is not yet initialized.
+
+Fix 1 by calling kasan_init_tags() after cpumask is set up.
+
+Fix 2 by using get_cycles() instead of get_random_u32(). This gives us
+lower quality random numbers, but it's good enough, as KASAN is meant to
+be used as a debugging tool and not a mitigation.
+
+Link: http://lkml.kernel.org/r/1f815cc914b61f3516ed4cc9bfd9eeca9bd5d9de.1550677973.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/arm64/kernel/setup.c~kasan-fix-random-seed-generation-for-tag-based-mode
++++ a/arch/arm64/kernel/setup.c
+@@ -339,6 +339,9 @@ void __init setup_arch(char **cmdline_p)
+ 	smp_init_cpus();
+ 	smp_build_mpidr_hash();
+ 
++	/* Init percpu seeds for random tags after cpus are set up. */
++	kasan_init_tags();
++
+ #ifdef CONFIG_ARM64_SW_TTBR0_PAN
+ 	/*
+ 	 * Make sure init_thread_info.ttbr0 always generates translation
+--- a/arch/arm64/mm/kasan_init.c~kasan-fix-random-seed-generation-for-tag-based-mode
++++ a/arch/arm64/mm/kasan_init.c
+@@ -252,8 +252,6 @@ void __init kasan_init(void)
+ 	memset(kasan_early_shadow_page, KASAN_SHADOW_INIT, PAGE_SIZE);
+ 	cpu_replace_ttbr1(lm_alias(swapper_pg_dir));
+ 
+-	kasan_init_tags();
+-
+ 	/* At this point kasan is fully initialized. Enable error messages */
+ 	init_task.kasan_depth = 0;
+ 	pr_info("KernelAddressSanitizer initialized\n");
+--- a/mm/kasan/tags.c~kasan-fix-random-seed-generation-for-tag-based-mode
++++ a/mm/kasan/tags.c
+@@ -46,7 +46,7 @@ void kasan_init_tags(void)
+ 	int cpu;
+ 
+ 	for_each_possible_cpu(cpu)
+-		per_cpu(prng_state, cpu) = get_random_u32();
++		per_cpu(prng_state, cpu) = (u32)get_cycles();
+ }
+ 
+ /*
+_

@@ -1,0 +1,55 @@
+From: Shakeel Butt <shakeelb@google.com>
+Subject: memcg-add-per-memcg-vmalloc-stat-v4
+
+Remove area->page[0] checks and moved to page by page accounting as
+suggested by Michal.
+
+Link: https://lkml.kernel.org/r/20220104222341.3972772-1-shakeelb@google.com
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmalloc.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+--- a/mm/vmalloc.c~memcg-add-per-memcg-vmalloc-stat-v4
++++ a/mm/vmalloc.c
+@@ -2624,15 +2624,13 @@ static void __vunmap(const void *addr, i
+ 
+ 	if (deallocate_pages) {
+ 		unsigned int page_order = vm_area_page_order(area);
+-		int i;
++		int i, step = 1U << page_order;
+ 
+-		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
+-				     -area->nr_pages);
+-
+-		for (i = 0; i < area->nr_pages; i += 1U << page_order) {
++		for (i = 0; i < area->nr_pages; i += step) {
+ 			struct page *page = area->pages[i];
+ 
+ 			BUG_ON(!page);
++			mod_memcg_page_state(page, MEMCG_VMALLOC, -step);
+ 			__free_pages(page, page_order);
+ 			cond_resched();
+ 		}
+@@ -2959,7 +2957,13 @@ static void *__vmalloc_area_node(struct
+ 		page_order, nr_small_pages, area->pages);
+ 
+ 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+-	mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC, area->nr_pages);
++	if (gfp_mask & __GFP_ACCOUNT) {
++		int i, step = 1U << page_order;
++
++		for (i = 0; i < area->nr_pages; i += step)
++			mod_memcg_page_state(area->pages[i], MEMCG_VMALLOC,
++					     step);
++	}
+ 
+ 	/*
+ 	 * If not enough pages were obtained to accomplish an
+_

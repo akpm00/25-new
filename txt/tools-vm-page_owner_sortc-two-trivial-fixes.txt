@@ -1,0 +1,8 @@
+From: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: two trivial fixes
+
+1) There is an unused variable. It's better to delete it.
+2) One case is missing in the usage().
+
+Link: https://lkml.kernel.org/r/20211213164518.2461-1-hanshenghong2019@email.szu.edu.cn
+Signed-off-by: Shenghong Han <hanshenghong2019@email.szu.edu.cn>

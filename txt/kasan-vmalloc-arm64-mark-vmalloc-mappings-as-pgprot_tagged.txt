@@ -1,0 +1,24 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, vmalloc, arm64: mark vmalloc mappings as pgprot_tagged
+
+HW_TAGS KASAN relies on ARM Memory Tagging Extension (MTE).  With MTE, a
+memory region must be mapped as MT_NORMAL_TAGGED to allow setting memory
+tags via MTE-specific instructions.
+
+Add proper protection bits to vmalloc() allocations.  These allocations
+are always backed by page_alloc pages, so the tags will actually be
+getting set on the corresponding physical memory.
+
+Link: https://lkml.kernel.org/r/983fc33542db2f6b1e77b34ca23448d4640bbb9e.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Will Deacon <will@kernel.org>

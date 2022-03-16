@@ -1,0 +1,12 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: proc-make-the-proc_create-stubs-static-inlines-fix
+
+fix CONFIG_PROC_FS=n
+
+Randy Dunlap <rdunlap@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian@brauner.io>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

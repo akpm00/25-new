@@ -1,0 +1,6 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix up for "mm: move oom_kill sysctls to their own file"
+
+Link: https://lkml.kernel.org/r/20220216193202.28838626@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: sujiaxun <sujiaxun@uniontech.com>

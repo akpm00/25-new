@@ -1,0 +1,37 @@
+From: Changwei Ge <gechangwei@live.cn>
+Subject: ocfs2: don't use iocb when EIOCBQUEUED returns
+
+When -EIOCBQUEUED returns, it means that aio_complete() will be called
+from dio_complete(), which is an asynchronous progress against write_iter.
+Generally, IO is a very slow progress than executing instruction, but we
+still can't take the risk to access a freed iocb.
+
+And we do face a BUG crash issue.  Using the crash tool, iocb is obviously
+freed already.
+
+crash> struct -x kiocb ffff881a350f5900
+struct kiocb {
+  ki_filp = 0xffff881a350f5a80,
+  ki_pos = 0x0,
+  ki_complete = 0x0,
+  private = 0x0,
+  ki_flags = 0x0
+}
+
+And the backtrace shows:
+ocfs2_file_write_iter+0xcaa/0xd00 [ocfs2]
+? ocfs2_check_range_for_refcount+0x150/0x150 [ocfs2]
+aio_run_iocb+0x229/0x2f0
+? try_to_wake_up+0x380/0x380
+do_io_submit+0x291/0x540
+? syscall_trace_leave+0xad/0x130
+SyS_io_submit+0x10/0x20
+system_call_fastpath+0x16/0x75
+
+Link: http://lkml.kernel.org/r/1523361653-14439-1-git-send-email-gechangwei@live.cn
+Signed-off-by: Changwei Ge <gechangwei@live.cn>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Joseph Qi <jiangqi903@gmail.com>

@@ -1,0 +1,36 @@
+From: Josh Hunt <johunt@akamai.com>
+Subject: block: restore /proc/partitions to not display non-partitionable removable devices
+
+We found with newer kernels we started seeing the cdrom device showing
+up in /proc/partitions, but it was not there before.
+
+Looking into this I found that commit d27769ec ("block: add
+GENHD_FL_NO_PART_SCAN") introduces this change in behavior.  It's not
+clear to me from the commit's changelog if this change was intentional or
+not.  This comment still remains: /* Don't show non-partitionable
+removeable devices or empty devices */ so I've decided to send a patch to
+restore the behavior of not printing unpartitionable removable devices.
+
+Signed-off-by: Josh Hunt <johunt@akamai.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Kay Sievers <kay.sievers@vrfy.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ block/genhd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/block/genhd.c~block-restore-proc-partitions-to-not-display-non-partitionable-removable-devices
++++ a/block/genhd.c
+@@ -1025,7 +1025,7 @@ static int show_partition(struct seq_fil
+ 	char buf[BDEVNAME_SIZE];
+ 
+ 	/* Don't show non-partitionable removeable devices or empty devices */
+-	if (!get_capacity(sgp) || (!disk_max_parts(sgp) &&
++	if (!get_capacity(sgp) || (!(disk_max_parts(sgp) > 1) &&
+ 				   (sgp->flags & GENHD_FL_REMOVABLE)))
+ 		return 0;
+ 	if (sgp->flags & GENHD_FL_SUPPRESS_PARTITION_INFO)
+_

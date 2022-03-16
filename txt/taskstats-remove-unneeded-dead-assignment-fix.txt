@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: taskstats-remove-unneeded-dead-assignment-fix
+
+reduce scope of `rc'
+
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Tom Rix <trix@redhat.com>

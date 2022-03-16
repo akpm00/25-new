@@ -1,0 +1,14 @@
+From: Andrei Vagin <avagin@gmail.com>
+Subject: fs/pipe.c: local vars have to match types of proper pipe_inode_info fields
+
+head, tail, ring_size are declared as unsigned int, so all local variables
+that operate with these fields have to be unsigned to avoid signed integer
+overflow.
+
+Right now, it isn't an issue because the maximum pipe size is limited by
+1U<<31.
+
+Link: https://lkml.kernel.org/r/20220106171946.36128-1-avagin@gmail.com
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Suggested-by: Dmitry Safonov <0x7f454c46@gmail.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>

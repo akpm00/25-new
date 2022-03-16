@@ -1,0 +1,18 @@
+From: "Dmitry V. Levin" <ldv@altlinux.org>
+Subject: uapi: fix linux/sysctl.h userspace compilation errors
+
+Include <stddef.h> (guarded by #ifndef __KERNEL__) to fix the following
+linux/sysctl.h userspace compilation errors:
+
+/usr/include/linux/sysctl.h:38:2: error: unknown type name 'size_t'
+  size_t *oldlenp;
+/usr/include/linux/sysctl.h:40:2: error: unknown type name 'size_t'
+  size_t newlen;
+
+This also fixes userspace compilation of uapi headers that include
+linux/sysctl.h, e.g. linux/netfilter.h.
+
+Link: http://lkml.kernel.org/r/20170222230652.GA14373@altlinux.org
+Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>

@@ -1,0 +1,29 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: powerpc/kasan: fix PMD access in kasan_unmap_early_shadow_vmalloc()
+
+The introduction of the generic shortcuts for PMD entry access broke PMD
+access in kasan_unmap_early_shadow_vmalloc() because the name used in
+powerpc for the same helper was different from the generic one.
+
+Link: http://lkml.kernel.org/r/20200516172304.GC1059226@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/powerpc/mm/kasan/kasan_init_32.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c~mm-pgtable-add-shortcuts-for-accessing-kernel-pmd-and-pte-fix-2
++++ a/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -121,7 +121,7 @@ static void __init kasan_unmap_early_sha
+ 	phys_addr_t pa = __pa(kasan_early_shadow_page);
+ 
+ 	for (k_cur = k_start & PAGE_MASK; k_cur < k_end; k_cur += PAGE_SIZE) {
+-		pmd_t *pmd = pmd_ptr_k(k_cur);
++		pmd_t *pmd = pmd_off_k(k_cur);
+ 		pte_t *ptep = pte_offset_kernel(pmd, k_cur);
+ 
+ 		if ((pte_val(*ptep) & PTE_RPN_MASK) != pa)
+_

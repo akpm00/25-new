@@ -1,0 +1,21 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: delete smp_mb() from __pagevec_lru_add_fn()
+
+My reading of comment on smp_mb__after_atomic() in __pagevec_lru_add_fn()
+says that it can now be deleted; and that remains so when the next patch
+is added.
+
+Link: https://lkml.kernel.org/r/28a7c6ff-6270-9060-8df0-862bdcaac366@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

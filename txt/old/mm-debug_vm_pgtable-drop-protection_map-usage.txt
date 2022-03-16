@@ -1,0 +1,84 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/debug_vm_pgtable: drop protection_map[] usage
+
+Patch series "mm/mmap: Drop protection_map[] and platform's __SXXX/__PXXX requirements", v2.
+
+protection_map[] is an array based construct that translates given
+vm_flags combination.  This array contains page protection map, which is
+populated by the platform via [__S000 ..  __S111] and [__P000 ..  __P111]
+exported macros.  Primary usage for protection_map[] is for
+vm_get_page_prot(), which is used to determine page protection value for a
+given vm_flags.  vm_get_page_prot() implementation, could again call
+platform overrides arch_vm_get_page_prot() and arch_filter_pgprot().  Some
+platforms override protection_map[] that was originally built with
+__SXXX/__PXXX with different runtime values.
+
+Currently there are multiple layers of abstraction i.e __SXXX/__PXXX
+macros , protection_map[], arch_vm_get_page_prot() and
+arch_filter_pgprot() built between the platform and generic MM, finally
+defining vm_get_page_prot().
+
+Hence this series proposes to drop all these abstraction levels and
+instead just move the responsibility of defining vm_get_page_prot() to the
+platform itself making it clean and simple.
+
+This first introduces ARCH_HAS_VM_GET_PAGE_PROT which enables the
+platforms to define custom vm_get_page_prot().  This starts converting
+platforms that either change protection_map[] or define the overrides
+arch_filter_pgprot() or arch_vm_get_page_prot() which enables for those
+constructs to be dropped off completely.  This series then converts
+remaining platforms which enables for __SXXX/__PXXX constructs to be
+dropped off completely.  Finally it drops the generic vm_get_page_prot()
+and then ARCH_HAS_VM_GET_PAGE_PROT as every platform now defines their own
+vm_get_page_prot().
+
+The series has been inspired from an earlier discuss with Christoph
+Hellwig
+
+https://lore.kernel.org/all/1632712920-8171-1-git-send-email-anshuman.khandual@arm.com/
+
+This series has been cross built for multiple platforms.
+
+
+This patch (of 30):
+
+Although protection_map[] contains the platform defined page protection
+map for a given vm_flags combination, vm_get_page_prot() is the right
+interface to use.  This will also reduce dependency on protection_map[]
+which is going to be dropped off completely later on.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-1-git-send-email-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/1645425519-9034-2-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>

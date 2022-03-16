@@ -1,0 +1,25 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmallocc-fix-a-comment-fix
+
+a/want/wants/, per Randy
+
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmalloc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/vmalloc.c~mm-vmallocc-fix-a-comment-fix
++++ a/mm/vmalloc.c
+@@ -2886,7 +2886,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 			/* memory allocation should consider mempolicy, we can't
+ 			 * wrongly use nearest node when nid == NUMA_NO_NODE,
+ 			 * otherwise memory may be allocated in only one node,
+-			 * but mempolicy want to alloc memory by interleaving.
++			 * but mempolicy wants to alloc memory by interleaving.
+ 			 */
+ 			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
+ 				nr = alloc_pages_bulk_array_mempolicy(bulk_gfp,
+_

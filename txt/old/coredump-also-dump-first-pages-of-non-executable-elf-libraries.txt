@@ -1,0 +1,24 @@
+From: Jann Horn <jannh@google.com>
+Subject: coredump: also dump first pages of non-executable ELF libraries
+
+When I rewrote the VMA dumping logic for coredumps, I changed it to
+recognize ELF library mappings based on the file being executable instead
+of the mapping having an ELF header.  But turns out, distros ship many ELF
+libraries as non-executable, so the heuristic goes wrong...
+
+Restore the old behavior where FILTER(ELF_HEADERS) dumps the first page of
+any offset-0 readable mapping that starts with the ELF magic.
+
+This fix is technically layer-breaking a bit, because it checks for
+something ELF-specific in fs/coredump.c; but since we probably want to
+share this between standard ELF and FDPIC ELF anyway, I guess it's fine? 
+And this also keeps the change small for backporting.
+
+Link: https://lkml.kernel.org/r/20220126025739.2014888-1-jannh@google.com
+Fixes: 429a22e776a2 ("coredump: rework elf/elf_fdpic vma_dump_size() into common helper")
+Signed-off-by: Jann Horn <jannh@google.com>
+Reported-by: Bill Messmer <wmessmer@microsoft.com>
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: <stable@vger.kernel.org>

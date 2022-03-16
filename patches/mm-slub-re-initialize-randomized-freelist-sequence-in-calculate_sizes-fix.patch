@@ -1,0 +1,26 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-slub-re-initialize-randomized-freelist-sequence-in-calculate_sizes-fix
+
+simplification, per Thomas
+
+Cc: Sahara <keun-o.park@digital14.com>
+Cc: Thomas Garnier <thgarnie@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/slub.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/mm/slub.c~mm-slub-re-initialize-randomized-freelist-sequence-in-calculate_sizes-fix
++++ a/mm/slub.c
+@@ -3785,8 +3785,7 @@ static int calculate_sizes(struct kmem_c
+ 	 * free and re-initialize it with re-calculated value.
+ 	 */
+ 	if (slab_state >= UP) {
+-		if (s->random_seq)
+-			cache_random_seq_destroy(s);
++		cache_random_seq_destroy(s);
+ 		if (init_cache_random_seq(s))
+ 			return 0;
+ 	}
+_

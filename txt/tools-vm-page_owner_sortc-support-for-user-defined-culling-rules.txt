@@ -1,0 +1,92 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support for user-defined culling rules
+
+When viewing page owner information, we may want to cull blocks of
+information with our own rules.  So it is important to enhance culling
+function to provide the support for customizing culling rules.  Therefore,
+following adjustments are made:
+
+1. Add --cull option to support the culling of blocks of information
+with user-defined culling rules.
+
+	./page_owner_sort <input> <output> --cull=<rules>
+	./page_owner_sort <input> <output> --cull <rules>
+
+<rules> is a single argument in the form of a comma-separated list to
+specify individual culling rules, by the sequence of keys k1,k2, .... 
+Mixed use of abbreviated and complete-form of keys is allowed.
+
+For reference, please see the document(Documentation/vm/page_owner.rst).
+
+Now, assuming two blocks in the input file are as follows:
+
+	Page allocated via order 0, mask xxxx, pid 1, tgid 1 (task_name_demo)
+	PFN xxxx
+	 prep_new_page+0xd0/0xf8
+	 get_page_from_freelist+0x4a0/0x1290
+	 __alloc_pages+0x168/0x340
+	 alloc_pages+0xb0/0x158
+
+	Page allocated via order 0, mask xxxx, pid 32, tgid 32 (task_name_demo)
+	PFN xxxx
+	 prep_new_page+0xd0/0xf8
+	 get_page_from_freelist+0x4a0/0x1290
+	 __alloc_pages+0x168/0x340
+	 alloc_pages+0xb0/0x158
+
+If we want to cull the blocks by stacktrace and task command name, we can
+use this command:
+
+	./page_owner_sort <input> <output> --cull=stacktrace,name
+
+The output would be like:
+
+	2 times, 2 pages, task_comm_name: task_name_demo
+	 prep_new_page+0xd0/0xf8
+	 get_page_from_freelist+0x4a0/0x1290
+	 __alloc_pages+0x168/0x340
+	 alloc_pages+0xb0/0x158
+
+As we can see, these two blocks are culled successfully, for they share
+the same pid and task command name.
+
+However, if we want to cull the blocks by pid, stacktrace and task command
+name, we can this command:
+
+	./page_owner_sort <input> <output> --cull=stacktrace,name,pid
+
+The output would be like:
+
+	1 times, 1 pages, PID 1, task_comm_name: task_name_demo
+	 prep_new_page+0xd0/0xf8
+	 get_page_from_freelist+0x4a0/0x1290
+	 __alloc_pages+0x168/0x340
+	 alloc_pages+0xb0/0x158
+
+	1 times, 1 pages, PID 32, task_comm_name: task_name_demo
+	 prep_new_page+0xd0/0xf8
+	 get_page_from_freelist+0x4a0/0x1290
+	 __alloc_pages+0x168/0x340
+	 alloc_pages+0xb0/0x158
+
+As we can see, these two blocks are failed to cull, for their PIDs are
+different.
+
+2. Add explanations of --cull options to the document.
+
+This work is coauthored by
+	Yixuan Cao
+	Shenghong Han
+	Yinan Zhang
+	Chongxi Zhao
+	Yuhong Feng
+
+Link: https://lkml.kernel.org/r/20220312145834.624-1-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Sean Anderson <seanga2@gmail.com>			

@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/dbgfs: use damon_select_ops() instead of damon_{v,p}a_set_operations()
+
+This commit makes DAMON debugfs interface to select the registered
+monitoring operations for the physical address space or virtual address
+spaces depending on user requests instead of setting it on its own.  Note
+that DAMON debugfs interface is still dependent to DAMON_VADDR with this
+change, because it is also using its symbol, 'damon_va_target_valid'.
+
+Link: https://lkml.kernel.org/r/20220215184603.1479-6-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Xin Hao <xhao@linux.alibaba.com>

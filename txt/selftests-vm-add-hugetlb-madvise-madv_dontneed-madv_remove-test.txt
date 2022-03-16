@@ -1,0 +1,18 @@
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Subject: selftests/vm: add hugetlb madvise MADV_DONTNEED MADV_REMOVE test
+
+Now that MADV_DONTNEED support for hugetlb is enabled, add corresponding
+tests.  MADV_REMOVE has been enabled for some time, but no tests exist so
+add them as well.
+
+Link: https://lkml.kernel.org/r/20220215002348.128823-3-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc: Peter Xu <peterx@redhat.com>

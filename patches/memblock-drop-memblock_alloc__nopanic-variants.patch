@@ -1,0 +1,386 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: memblock: drop memblock_alloc_*_nopanic() variants
+
+As all the memblock allocation functions return NULL in case of error
+rather than panic(), the duplicates with _nopanic suffix can be removed.
+
+Link: http://lkml.kernel.org/r/1548057848-15136-22-git-send-email-rppt@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Petr Mladek <pmladek@suse.com>		[printk]
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Guo Ren <ren_guo@c-sky.com>				[c-sky]
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Juergen Gross <jgross@suse.com>			[Xen]
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/arc/kernel/unwind.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/arch/arc/kernel/unwind.c
+@@ -181,8 +181,7 @@ static void init_unwind_hdr(struct unwin
+  */
+ static void *__init unw_hdr_alloc_early(unsigned long sz)
+ {
+-	return memblock_alloc_from_nopanic(sz, sizeof(unsigned int),
+-					   MAX_DMA_ADDRESS);
++	return memblock_alloc_from(sz, sizeof(unsigned int), MAX_DMA_ADDRESS);
+ }
+ 
+ static void *unw_hdr_alloc(unsigned long sz)
+--- a/arch/sh/mm/init.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/arch/sh/mm/init.c
+@@ -202,7 +202,7 @@ void __init allocate_pgdat(unsigned int
+ 	get_pfn_range_for_nid(nid, &start_pfn, &end_pfn);
+ 
+ #ifdef CONFIG_NEED_MULTIPLE_NODES
+-	NODE_DATA(nid) = memblock_alloc_try_nid_nopanic(
++	NODE_DATA(nid) = memblock_alloc_try_nid(
+ 				sizeof(struct pglist_data),
+ 				SMP_CACHE_BYTES, MEMBLOCK_LOW_LIMIT,
+ 				MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+--- a/arch/x86/kernel/setup_percpu.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/arch/x86/kernel/setup_percpu.c
+@@ -106,22 +106,22 @@ static void * __init pcpu_alloc_bootmem(
+ 	void *ptr;
+ 
+ 	if (!node_online(node) || !NODE_DATA(node)) {
+-		ptr = memblock_alloc_from_nopanic(size, align, goal);
++		ptr = memblock_alloc_from(size, align, goal);
+ 		pr_info("cpu %d has no node %d or node-local memory\n",
+ 			cpu, node);
+ 		pr_debug("per cpu data for cpu%d %lu bytes at %016lx\n",
+ 			 cpu, size, __pa(ptr));
+ 	} else {
+-		ptr = memblock_alloc_try_nid_nopanic(size, align, goal,
+-						     MEMBLOCK_ALLOC_ACCESSIBLE,
+-						     node);
++		ptr = memblock_alloc_try_nid(size, align, goal,
++					     MEMBLOCK_ALLOC_ACCESSIBLE,
++					     node);
+ 
+ 		pr_debug("per cpu data for cpu%d %lu bytes on node%d at %016lx\n",
+ 			 cpu, size, node, __pa(ptr));
+ 	}
+ 	return ptr;
+ #else
+-	return memblock_alloc_from_nopanic(size, align, goal);
++	return memblock_alloc_from(size, align, goal);
+ #endif
+ }
+ 
+--- a/arch/x86/mm/kasan_init_64.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/arch/x86/mm/kasan_init_64.c
+@@ -24,14 +24,16 @@ extern struct range pfn_mapped[E820_MAX_
+ 
+ static p4d_t tmp_p4d_table[MAX_PTRS_PER_P4D] __initdata __aligned(PAGE_SIZE);
+ 
+-static __init void *early_alloc(size_t size, int nid, bool panic)
++static __init void *early_alloc(size_t size, int nid, bool should_panic)
+ {
+-	if (panic)
+-		return memblock_alloc_try_nid(size, size,
+-			__pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+-	else
+-		return memblock_alloc_try_nid_nopanic(size, size,
++	void *ptr = memblock_alloc_try_nid(size, size,
+ 			__pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, nid);
++
++	if (!ptr && should_panic)
++		panic("%pS: Failed to allocate page, nid=%d from=%lx\n",
++		      (void *)_RET_IP_, nid, __pa(MAX_DMA_ADDRESS));
++
++	return ptr;
+ }
+ 
+ static void __init kasan_populate_pmd(pmd_t *pmd, unsigned long addr,
+--- a/drivers/firmware/memmap.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/drivers/firmware/memmap.c
+@@ -333,7 +333,7 @@ int __init firmware_map_add_early(u64 st
+ {
+ 	struct firmware_map_entry *entry;
+ 
+-	entry = memblock_alloc_nopanic(sizeof(struct firmware_map_entry),
++	entry = memblock_alloc(sizeof(struct firmware_map_entry),
+ 			       SMP_CACHE_BYTES);
+ 	if (WARN_ON(!entry))
+ 		return -ENOMEM;
+--- a/drivers/usb/early/xhci-dbc.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/drivers/usb/early/xhci-dbc.c
+@@ -94,7 +94,7 @@ static void * __init xdbc_get_page(dma_a
+ {
+ 	void *virt;
+ 
+-	virt = memblock_alloc_nopanic(PAGE_SIZE, PAGE_SIZE);
++	virt = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+ 	if (!virt)
+ 		return NULL;
+ 
+--- a/include/linux/memblock.h~memblock-drop-memblock_alloc__nopanic-variants
++++ a/include/linux/memblock.h
+@@ -335,9 +335,6 @@ static inline phys_addr_t memblock_phys_
+ void *memblock_alloc_try_nid_raw(phys_addr_t size, phys_addr_t align,
+ 				 phys_addr_t min_addr, phys_addr_t max_addr,
+ 				 int nid);
+-void *memblock_alloc_try_nid_nopanic(phys_addr_t size, phys_addr_t align,
+-				     phys_addr_t min_addr, phys_addr_t max_addr,
+-				     int nid);
+ void *memblock_alloc_try_nid(phys_addr_t size, phys_addr_t align,
+ 			     phys_addr_t min_addr, phys_addr_t max_addr,
+ 			     int nid);
+@@ -364,36 +361,12 @@ static inline void * __init memblock_all
+ 				      MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_NODE);
+ }
+ 
+-static inline void * __init memblock_alloc_nopanic(phys_addr_t size,
+-						   phys_addr_t align)
+-{
+-	return memblock_alloc_try_nid_nopanic(size, align, MEMBLOCK_LOW_LIMIT,
+-					      MEMBLOCK_ALLOC_ACCESSIBLE,
+-					      NUMA_NO_NODE);
+-}
+-
+ static inline void * __init memblock_alloc_low(phys_addr_t size,
+ 					       phys_addr_t align)
+ {
+ 	return memblock_alloc_try_nid(size, align, MEMBLOCK_LOW_LIMIT,
+ 				      ARCH_LOW_ADDRESS_LIMIT, NUMA_NO_NODE);
+ }
+-static inline void * __init memblock_alloc_low_nopanic(phys_addr_t size,
+-						       phys_addr_t align)
+-{
+-	return memblock_alloc_try_nid_nopanic(size, align, MEMBLOCK_LOW_LIMIT,
+-					      ARCH_LOW_ADDRESS_LIMIT,
+-					      NUMA_NO_NODE);
+-}
+-
+-static inline void * __init memblock_alloc_from_nopanic(phys_addr_t size,
+-							phys_addr_t align,
+-							phys_addr_t min_addr)
+-{
+-	return memblock_alloc_try_nid_nopanic(size, align, min_addr,
+-					      MEMBLOCK_ALLOC_ACCESSIBLE,
+-					      NUMA_NO_NODE);
+-}
+ 
+ static inline void * __init memblock_alloc_node(phys_addr_t size,
+ 						phys_addr_t align, int nid)
+@@ -402,14 +375,6 @@ static inline void * __init memblock_all
+ 				      MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+ }
+ 
+-static inline void * __init memblock_alloc_node_nopanic(phys_addr_t size,
+-							int nid)
+-{
+-	return memblock_alloc_try_nid_nopanic(size, SMP_CACHE_BYTES,
+-					      MEMBLOCK_LOW_LIMIT,
+-					      MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+-}
+-
+ static inline void __init memblock_free_early(phys_addr_t base,
+ 					      phys_addr_t size)
+ {
+--- a/kernel/dma/swiotlb.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/kernel/dma/swiotlb.c
+@@ -256,7 +256,7 @@ swiotlb_init(int verbose)
+ 	bytes = io_tlb_nslabs << IO_TLB_SHIFT;
+ 
+ 	/* Get IO TLB memory from the low pages */
+-	vstart = memblock_alloc_low_nopanic(PAGE_ALIGN(bytes), PAGE_SIZE);
++	vstart = memblock_alloc_low(PAGE_ALIGN(bytes), PAGE_SIZE);
+ 	if (vstart && !swiotlb_init_with_tbl(vstart, io_tlb_nslabs, verbose))
+ 		return;
+ 
+--- a/kernel/printk/printk.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/kernel/printk/printk.c
+@@ -1143,14 +1143,7 @@ void __init setup_log_buf(int early)
+ 	if (!new_log_buf_len)
+ 		return;
+ 
+-	if (early) {
+-		new_log_buf =
+-			memblock_alloc(new_log_buf_len, LOG_ALIGN);
+-	} else {
+-		new_log_buf = memblock_alloc_nopanic(new_log_buf_len,
+-							  LOG_ALIGN);
+-	}
+-
++	new_log_buf = memblock_alloc(new_log_buf_len, LOG_ALIGN);
+ 	if (unlikely(!new_log_buf)) {
+ 		pr_err("log_buf_len: %lu bytes not available\n",
+ 			new_log_buf_len);
+--- a/mm/memblock.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/mm/memblock.c
+@@ -1434,41 +1434,6 @@ void * __init memblock_alloc_try_nid_raw
+ }
+ 
+ /**
+- * memblock_alloc_try_nid_nopanic - allocate boot memory block
+- * @size: size of memory block to be allocated in bytes
+- * @align: alignment of the region and block's size
+- * @min_addr: the lower bound of the memory region from where the allocation
+- *	  is preferred (phys address)
+- * @max_addr: the upper bound of the memory region from where the allocation
+- *	      is preferred (phys address), or %MEMBLOCK_ALLOC_ACCESSIBLE to
+- *	      allocate only from memory limited by memblock.current_limit value
+- * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
+- *
+- * Public function, provides additional debug information (including caller
+- * info), if enabled. This function zeroes the allocated memory.
+- *
+- * Return:
+- * Virtual address of allocated memory block on success, NULL on failure.
+- */
+-void * __init memblock_alloc_try_nid_nopanic(
+-				phys_addr_t size, phys_addr_t align,
+-				phys_addr_t min_addr, phys_addr_t max_addr,
+-				int nid)
+-{
+-	void *ptr;
+-
+-	memblock_dbg("%s: %llu bytes align=0x%llx nid=%d from=%pa max_addr=%pa %pF\n",
+-		     __func__, (u64)size, (u64)align, nid, &min_addr,
+-		     &max_addr, (void *)_RET_IP_);
+-
+-	ptr = memblock_alloc_internal(size, align,
+-					   min_addr, max_addr, nid);
+-	if (ptr)
+-		memset(ptr, 0, size);
+-	return ptr;
+-}
+-
+-/**
+  * memblock_alloc_try_nid - allocate boot memory block
+  * @size: size of memory block to be allocated in bytes
+  * @align: alignment of the region and block's size
+--- a/mm/page_alloc.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/mm/page_alloc.c
+@@ -6445,8 +6445,8 @@ static void __ref setup_usemap(struct pg
+ 	zone->pageblock_flags = NULL;
+ 	if (usemapsize) {
+ 		zone->pageblock_flags =
+-			memblock_alloc_node_nopanic(usemapsize,
+-							 pgdat->node_id);
++			memblock_alloc_node(usemapsize, SMP_CACHE_BYTES,
++					    pgdat->node_id);
+ 		if (!zone->pageblock_flags)
+ 			panic("Failed to allocate %ld bytes for zone %s pageblock flags on node %d\n",
+ 			      usemapsize, zone->name, pgdat->node_id);
+@@ -6679,7 +6679,8 @@ static void __ref alloc_node_mem_map(str
+ 		end = pgdat_end_pfn(pgdat);
+ 		end = ALIGN(end, MAX_ORDER_NR_PAGES);
+ 		size =  (end - start) * sizeof(struct page);
+-		map = memblock_alloc_node_nopanic(size, pgdat->node_id);
++		map = memblock_alloc_node(size, SMP_CACHE_BYTES,
++					  pgdat->node_id);
+ 		if (!map)
+ 			panic("Failed to allocate %ld bytes for node %d memory map\n",
+ 			      size, pgdat->node_id);
+@@ -7959,8 +7960,7 @@ void *__init alloc_large_system_hash(con
+ 		size = bucketsize << log2qty;
+ 		if (flags & HASH_EARLY) {
+ 			if (flags & HASH_ZERO)
+-				table = memblock_alloc_nopanic(size,
+-							       SMP_CACHE_BYTES);
++				table = memblock_alloc(size, SMP_CACHE_BYTES);
+ 			else
+ 				table = memblock_alloc_raw(size,
+ 							   SMP_CACHE_BYTES);
+--- a/mm/page_ext.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/mm/page_ext.c
+@@ -161,7 +161,7 @@ static int __init alloc_node_page_ext(in
+ 
+ 	table_size = get_entry_size() * nr_pages;
+ 
+-	base = memblock_alloc_try_nid_nopanic(
++	base = memblock_alloc_try_nid(
+ 			table_size, PAGE_SIZE, __pa(MAX_DMA_ADDRESS),
+ 			MEMBLOCK_ALLOC_ACCESSIBLE, nid);
+ 	if (!base)
+--- a/mm/percpu.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/mm/percpu.c
+@@ -1905,7 +1905,7 @@ struct pcpu_alloc_info * __init pcpu_all
+ 			  __alignof__(ai->groups[0].cpu_map[0]));
+ 	ai_size = base_size + nr_units * sizeof(ai->groups[0].cpu_map[0]);
+ 
+-	ptr = memblock_alloc_nopanic(PFN_ALIGN(ai_size), PAGE_SIZE);
++	ptr = memblock_alloc(PFN_ALIGN(ai_size), PAGE_SIZE);
+ 	if (!ptr)
+ 		return NULL;
+ 	ai = ptr;
+@@ -2496,7 +2496,7 @@ int __init pcpu_embed_first_chunk(size_t
+ 	size_sum = ai->static_size + ai->reserved_size + ai->dyn_size;
+ 	areas_size = PFN_ALIGN(ai->nr_groups * sizeof(void *));
+ 
+-	areas = memblock_alloc_nopanic(areas_size, SMP_CACHE_BYTES);
++	areas = memblock_alloc(areas_size, SMP_CACHE_BYTES);
+ 	if (!areas) {
+ 		rc = -ENOMEM;
+ 		goto out_free;
+@@ -2729,8 +2729,7 @@ EXPORT_SYMBOL(__per_cpu_offset);
+ static void * __init pcpu_dfl_fc_alloc(unsigned int cpu, size_t size,
+ 				       size_t align)
+ {
+-	return  memblock_alloc_from_nopanic(
+-			size, align, __pa(MAX_DMA_ADDRESS));
++	return  memblock_alloc_from(size, align, __pa(MAX_DMA_ADDRESS));
+ }
+ 
+ static void __init pcpu_dfl_fc_free(void *ptr, size_t size)
+@@ -2778,9 +2777,7 @@ void __init setup_per_cpu_areas(void)
+ 	void *fc;
+ 
+ 	ai = pcpu_alloc_alloc_info(1, 1);
+-	fc = memblock_alloc_from_nopanic(unit_size,
+-					      PAGE_SIZE,
+-					      __pa(MAX_DMA_ADDRESS));
++	fc = memblock_alloc_from(unit_size, PAGE_SIZE, __pa(MAX_DMA_ADDRESS));
+ 	if (!ai || !fc)
+ 		panic("Failed to allocate memory for percpu areas.");
+ 	/* kmemleak tracks the percpu allocations separately */
+--- a/mm/sparse.c~memblock-drop-memblock_alloc__nopanic-variants
++++ a/mm/sparse.c
+@@ -330,9 +330,7 @@ sparse_early_usemaps_alloc_pgdat_section
+ 	limit = goal + (1UL << PA_SECTION_SHIFT);
+ 	nid = early_pfn_to_nid(goal >> PAGE_SHIFT);
+ again:
+-	p = memblock_alloc_try_nid_nopanic(size,
+-						SMP_CACHE_BYTES, goal, limit,
+-						nid);
++	p = memblock_alloc_try_nid(size, SMP_CACHE_BYTES, goal, limit, nid);
+ 	if (!p && limit) {
+ 		limit = 0;
+ 		goto again;
+@@ -386,7 +384,7 @@ static unsigned long * __init
+ sparse_early_usemaps_alloc_pgdat_section(struct pglist_data *pgdat,
+ 					 unsigned long size)
+ {
+-	return memblock_alloc_node_nopanic(size, pgdat->node_id);
++	return memblock_alloc_node(size, SMP_CACHE_BYTES, pgdat->node_id);
+ }
+ 
+ static void __init check_usemap_section_nr(int nid, unsigned long *usemap)
+_

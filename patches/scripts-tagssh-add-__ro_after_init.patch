@@ -1,0 +1,29 @@
+From: Constantine Shulyupin <const@MakeLinux.com>
+Subject: scripts/tags.sh: add __ro_after_init
+
+Link: http://lkml.kernel.org/r/20180711183646.4022-1-const@MakeLinux.com
+Signed-off-by: Constantine Shulyupin <const@MakeLinux.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Joey Pabalinas <joeypabalinas@gmail.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ scripts/tags.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN scripts/tags.sh~scripts-tagssh-add-__ro_after_init scripts/tags.sh
+--- a/scripts/tags.sh~scripts-tagssh-add-__ro_after_init
++++ a/scripts/tags.sh
+@@ -245,7 +245,7 @@ exuberant()
+ {
+ 	setup_regex exuberant asm c
+ 	all_target_sources | xargs $1 -a                        \
+-	-I __initdata,__exitdata,__initconst,			\
++	-I __initdata,__exitdata,__initconst,__ro_after_init	\
+ 	-I __initdata_memblock					\
+ 	-I __refdata,__attribute,__maybe_unused,__always_unused \
+ 	-I __acquires,__releases,__deprecated			\
+_

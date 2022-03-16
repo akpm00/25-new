@@ -1,0 +1,8 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: add -mmN to EXTRAVERSION
+
+- add -mmN to EXTRAVERSION
+
+- Add a marker to make the v4l build environment happier
+
+Signed-off-by: Michael Krufky <mkrufky@m1k.net>

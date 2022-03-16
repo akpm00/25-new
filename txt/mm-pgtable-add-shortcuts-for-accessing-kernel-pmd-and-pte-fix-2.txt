@@ -1,0 +1,11 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: powerpc/kasan: fix PMD access in kasan_unmap_early_shadow_vmalloc()
+
+The introduction of the generic shortcuts for PMD entry access broke PMD
+access in kasan_unmap_early_shadow_vmalloc() because the name used in
+powerpc for the same helper was different from the generic one.
+
+Link: http://lkml.kernel.org/r/20200516172304.GC1059226@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

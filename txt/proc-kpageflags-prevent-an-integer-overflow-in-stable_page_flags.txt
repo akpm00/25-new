@@ -1,0 +1,18 @@
+From: Toshiki Fukasawa <t-fukasawa@vx.jp.nec.com>
+Subject: /proc/kpageflags: prevent an integer overflow in stable_page_flags()
+
+stable_page_flags() returns kpageflags info in u64, but it uses "1 <<
+KPF_*" internally which is considered as int.  This type mismatch causes
+no visible problem now, but it will if you set bit 32 or more as done in a
+subsequent patch.  So use BIT_ULL in order to avoid future overflow
+issues.
+
+Link: http://lkml.kernel.org/r/20190725023100.31141-2-t-fukasawa@vx.jp.nec.com
+Signed-off-by: Toshiki Fukasawa <t-fukasawa@vx.jp.nec.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Junichi Nomura <j-nomura@ce.jp.nec.com>
+Cc: <stable@vger.kernel.org>

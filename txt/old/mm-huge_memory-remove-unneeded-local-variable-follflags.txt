@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/huge_memory: remove unneeded local variable follflags
+
+We can pass FOLL_GET | FOLL_DUMP to follow_page directly to simplify
+the code a bit.
+
+Link: https://lkml.kernel.org/r/20220310131253.30970-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

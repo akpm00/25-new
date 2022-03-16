@@ -1,0 +1,7 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: remove Alexey from MAINTAINERS
+
+People Cc me and I don't have time.
+
+Link: https://lkml.kernel.org/r/YKarMxHJBIhMHQIh@localhost.localdomain
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>

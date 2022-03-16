@@ -1,0 +1,33 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: list_lru: replace linear array with xarray
+
+If we run 10k containers in the system, the size of the
+list_lru_memcg->lrus can be ~96KB per list_lru.  When we decrease the
+number containers, the size of the array will not be shrinked.  It is not
+scalable.  The xarray is a good choice for this case.  We can save a lot
+of memory when there are tens of thousands continers in the system.  If we
+use xarray, we also can remove the logic code of resizing array, which can
+simplify the code.
+
+Link: https://lkml.kernel.org/r/20220228122126.37293-13-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kari Argillander <kari.argillander@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Yang Shi <shy828301@gmail.com>

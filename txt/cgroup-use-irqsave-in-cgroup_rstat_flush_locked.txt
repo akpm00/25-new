@@ -1,0 +1,22 @@
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: cgroup: use irqsave in cgroup_rstat_flush_locked().
+
+All callers of cgroup_rstat_flush_locked() acquire cgroup_rstat_lock
+either with spin_lock_irq() or spin_lock_irqsave(). 
+cgroup_rstat_flush_locked() itself acquires cgroup_rstat_cpu_lock which is
+a raw_spin_lock.  This lock is also acquired in cgroup_rstat_updated() in
+IRQ context and therefore requires _irqsave() locking suffix in
+cgroup_rstat_flush_locked().
+
+Since there is no difference between spin_lock_t and raw_spin_lock_t on
+!RT lockdep does not complain here.  On RT lockdep complains because the
+interrupts were not disabled here and a deadlock is possible.
+
+Acquire the raw_spin_lock_t with disabled interrupts.
+
+Link: https://lkml.kernel.org/r/20220301122143.1521823-2-bigeasy@linutronix.de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Zefan Li <lizefan.x@bytedance.com>

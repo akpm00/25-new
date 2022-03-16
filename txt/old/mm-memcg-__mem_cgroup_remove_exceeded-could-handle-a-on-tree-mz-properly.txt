@@ -1,0 +1,13 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: __mem_cgroup_remove_exceeded could handle a !on-tree mz properly
+
+There is no tree operation if mz is not on-tree.
+
+Let's remove the extra check.
+
+Link: https://lkml.kernel.org/r/20220312071623.19050-2-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>

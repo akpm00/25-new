@@ -1,0 +1,8 @@
+From: Akira Kawata <akirakawata1@gmail.com>
+Subject: fs-binfmt_elf-fix-at_phdr-for-unusual-elf-files-v5
+
+add comment per Kees
+
+Link: https://lkml.kernel.org/r/20220127124014.338760-2-akirakawata1@gmail.com
+Signed-off-by: Akira Kawata <akirakawata1@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>

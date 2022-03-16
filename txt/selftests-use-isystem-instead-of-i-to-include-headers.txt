@@ -1,0 +1,14 @@
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: selftests: use -isystem instead of -I to include headers
+
+Selftests need kernel headers and glibc for compilation.  In compilation
+of selftests, uapi headers from kernel source are used instead of default
+ones while glibc has already been compiled with different header files
+installed in the operating system.  So there can be redefinition warnings
+from compiler.  These warnings can be suppressed by using -isystem to
+include the uapi headers.
+
+Link: https://lkml.kernel.org/r/20220214160756.3543590-1-usama.anjum@collabora.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>

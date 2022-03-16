@@ -1,0 +1,21 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: panic: unset panic_on_warn inside panic()
+
+In the current code, the following three places need to unset
+panic_on_warn before calling panic() to avoid recursive panics:
+
+kernel/kcsan/report.c: print_report()
+kernel/sched/core.c: __schedule_bug()
+mm/kfence/report.c: kfence_report_error()
+
+In order to avoid copy-pasting "panic_on_warn = 0" all over the places, it
+is better to move it inside panic() and then remove it from the other
+places.
+
+Link: https://lkml.kernel.org/r/1644324666-15947-4-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Xuefeng Li <lixuefeng@loongson.cn>

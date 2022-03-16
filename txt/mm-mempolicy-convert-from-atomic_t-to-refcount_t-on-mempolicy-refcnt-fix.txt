@@ -1,0 +1,16 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix
+
+fix warnings
+
+mm/mempolicy.c:125:42: warning: missing braces around initializer [-Wmissing-braces]
+  125 | static struct mempolicy default_policy = {
+      |                                          ^
+mm/mempolicy.c:125:42: warning: missing braces around initializer [-Wmissing-braces]
+mm/mempolicy.c: In function 'numa_policy_init':
+mm/mempolicy.c:2815:32: warning: missing braces around initializer [-Wmissing-braces]
+ 2815 |   preferred_node_policy[nid] = (struct mempolicy) {
+      |                                ^
+mm/mempolicy.c:2815:32: warning: missing braces around initializer [-Wmissing-braces]
+
+Cc: Xiyu Yang <xiyuyang19@fudan.edu.cn>

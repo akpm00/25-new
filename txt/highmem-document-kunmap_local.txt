@@ -1,0 +1,18 @@
+From: Ira Weiny <ira.weiny@intel.com>
+Subject: highmem: document kunmap_local()
+
+Some users of kmap() add an offset to the kmap() address to be used
+during the mapping.
+
+When converting to kmap_local_page() the base address does not
+need to be stored because any address within the page can be used in
+kunmap_local().  However, this was not clear from the documentation and
+cause some questions.[1]
+
+Document that any address in the page can be used in kunmap_local() to
+clarify this for future users.
+
+[1] https://lore.kernel.org/lkml/20211213154543.GM3538886@iweiny-DESK2.sc.intel.com/
+
+Link: https://lkml.kernel.org/r/20220124013045.806718-1-ira.weiny@intel.com
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>

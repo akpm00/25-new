@@ -1,0 +1,23 @@
+From: Uladzislau Rezki <uladzislau.rezki@sony.com>
+Subject: mm/vmalloc: add adjust_search_size parameter
+
+Extend the find_vmap_lowest_match() function with one more parameter.  It
+is "adjust_search_size" boolean variable, so it is possible to control an
+accuracy of search block if a specific alignment is required.
+
+With this patch, a search size is always adjusted, to serve a request as
+fast as possible because of performance reason.
+
+But there is one exception though, it is short ranges where requested size
+corresponds to passed vstart/vend restriction together with a specific
+alignment request.  In such scenario an adjustment wold not lead to
+success allocation.
+
+Link: https://lkml.kernel.org/r/20220119143540.601149-2-urezki@gmail.com
+Signed-off-by: Uladzislau Rezki <uladzislau.rezki@sony.com>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>

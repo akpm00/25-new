@@ -1,0 +1,12 @@
+From: tangmeng <tangmeng@uniontech.com>
+Subject: mm/damon: remove unnecessary CONFIG_DAMON option
+
+In mm/Makefile has:
+obj-$(CONFIG_DAMON) += damon/
+
+So that we don't need 'obj-$(CONFIG_DAMON) :=' in mm/damon/Makefile,
+delete it from mm/damon/Makefile.
+
+Link: https://lkml.kernel.org/r/20220221065255.19991-1-tangmeng@uniontech.com
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
+Cc: SeongJae Park <sj@kernel.org>

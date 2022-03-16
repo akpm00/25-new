@@ -1,0 +1,4 @@
+From: Andi Kleen <andi@firstfloor.org>
+Subject: gcc-3.5 fixes
+
+Trivial gcc-3.5 build fixes.

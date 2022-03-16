@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: fix race with changing page more robustly
+
+We're only intended to deal with the non-Compound page after we split thp
+in memory_failure.  However, the page could have changed compound pages
+due to race window.  If this happens, we could retry once to hopefully
+handle the page next round.  Also remove unneeded orig_head.  It's always
+equal to the hpage.  So we can use hpage directly and remove this
+redundant one.
+
+Link: https://lkml.kernel.org/r/20220218090118.1105-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

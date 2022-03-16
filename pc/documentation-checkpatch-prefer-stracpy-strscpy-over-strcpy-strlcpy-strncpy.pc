@@ -1,0 +1,2 @@
+Documentation/process/deprecated.rst
+scripts/checkpatch.pl

@@ -1,0 +1,48 @@
+From: Yury Norov <yury.norov@gmail.com>
+Subject: h8300: rearrange headers inclusion order in asm/bitops
+
+The commit a5145bdad3ff ("arch: rearrange headers inclusion order in
+asm/bitops for m68k and sh") on next-20210401 fixed header ordering issue.
+h8300 has similar problem, which was overlooked by me.
+
+h8300 includes bitmap/{find,le}.h prior to ffs/fls headers. New fast-path
+implementation in find.h requires ffs/fls. Reordering the headers inclusion
+sequence helps to prevent compile-time implicit function declaration error.
+
+v2: change wording in the comment.
+
+Link: https://lkml.kernel.org/r/20210406183625.794227-1-yury.norov@gmail.com
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/h8300/include/asm/bitops.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/arch/h8300/include/asm/bitops.h~lib-add-fast-path-for-find_first__bit-and-find_last_bit-fix
++++ a/arch/h8300/include/asm/bitops.h
+@@ -9,6 +9,10 @@
+ 
+ #include <linux/compiler.h>
+ 
++#include <asm-generic/bitops/fls.h>
++#include <asm-generic/bitops/__fls.h>
++#include <asm-generic/bitops/fls64.h>
++
+ #ifdef __KERNEL__
+ 
+ #ifndef _LINUX_BITOPS_H
+@@ -173,8 +177,4 @@ static inline unsigned long __ffs(unsign
+ 
+ #endif /* __KERNEL__ */
+ 
+-#include <asm-generic/bitops/fls.h>
+-#include <asm-generic/bitops/__fls.h>
+-#include <asm-generic/bitops/fls64.h>
+-
+ #endif /* _H8300_BITOPS_H */
+_

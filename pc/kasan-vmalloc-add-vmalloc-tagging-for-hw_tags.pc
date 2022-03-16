@@ -1,0 +1,5 @@
+include/linux/kasan.h
+kernel/scs.c
+mm/kasan/hw_tags.c
+mm/kasan/shadow.c
+mm/vmalloc.c

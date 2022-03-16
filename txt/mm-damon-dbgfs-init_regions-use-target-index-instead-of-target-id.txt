@@ -1,0 +1,39 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/dbgfs/init_regions: use target index instead of target id
+
+Patch series "Remove the type-unclear target id concept".
+
+DAMON asks each monitoring target ('struct damon_target') to have one
+'unsigned long' integer called 'id', which should be unique among the
+targets of same monitoring context.  Meaning of it is, however, totally up
+to the monitoring primitives that registered to the monitoring context. 
+For example, the virtual address spaces monitoring primitives treats the
+id as a 'struct pid' pointer.
+
+This makes the code flexible but ugly, not well-documented, and
+type-unsafe[1].  Also, identification of each target can be done via its
+index.  For the reason, this patchset removes the concept and uses clear
+type definition.
+
+[1] https://lore.kernel.org/linux-mm/20211013154535.4aaeaaf9d0182922e405dd1e@linux-foundation.org/
+
+
+This patch (of 4):
+
+Target id is a 'unsigned long' data, which can be interpreted differently
+by each monitoring primitives.  For example, it means 'struct pid *' for
+the virtual address spaces monitoring, while it means nothing but an
+integer to be displayed to debugfs interface users for the physical
+address space monitoring.  It's flexible but makes code ugly and
+type-unsafe[1].
+
+To be prepared for eventual removal of the concept, this commit removes a
+use case of the concept in 'init_regions' debugfs file handling.  In
+detail, this commit replaces use of the id with the index of each target
+in the context's targets list.
+
+[1] https://lore.kernel.org/linux-mm/20211013154535.4aaeaaf9d0182922e405dd1e@linux-foundation.org/
+
+Link: https://lkml.kernel.org/r/20211230100723.2238-1-sj@kernel.org
+Link: https://lkml.kernel.org/r/20211230100723.2238-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

@@ -1,0 +1,16 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: selftests/exec: test for empty string on NULL argv
+
+Test for the NULL argv argument producing a single empty string on exec.
+
+Link: https://lkml.kernel.org/r/20220201011637.2457646-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Yang Yingliang <yangyingliang@huawei.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Ariadne Conill <ariadne@dereferenced.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+Cc: Rich Felker <dalias@libc.org>

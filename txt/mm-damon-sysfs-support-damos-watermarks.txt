@@ -1,0 +1,45 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: support DAMOS watermarks
+
+This commit makes DAMON sysfs interface supports the DAMOS watermarks
+feature.  Specifically, this commit adds 'watermarks' directory under each
+scheme directory and makes kdamond 'state' file writing respects the
+contents in the directory.
+
+As a result, the files hierarchy becomes as below:
+
+    /sys/kernel/mm/damon/admin
+    │ kdamonds/nr_kdamonds
+    │ │ 0/state,pid
+    │ │ │ contexts/nr_contexts
+    │ │ │ │ 0/operations
+    │ │ │ │ │ monitoring_attrs/intervals/sample_us,aggr_us,update_us
+    │ │ │ │ │ │ nr_regions/min,max
+    │ │ │ │ │ targets/nr_targets
+    │ │ │ │ │ │ 0/pid_target
+    │ │ │ │ │ │ │ regions/nr_regions
+    │ │ │ │ │ │ │ │ 0/start,end
+    │ │ │ │ │ │ │ │ ...
+    │ │ │ │ │ │ ...
+    │ │ │ │ │ schemes/nr_schemes
+    │ │ │ │ │ │ 0/action
+    │ │ │ │ │ │ │ access_pattern/
+    │ │ │ │ │ │ │ │ sz/min,max
+    │ │ │ │ │ │ │ │ nr_accesses/min,max
+    │ │ │ │ │ │ │ │ age/min,max
+    │ │ │ │ │ │ │ quotas/ms,sz,reset_interval_ms
+    │ │ │ │ │ │ │ │ weights/sz_permil,nr_accesses_permil,age_permil
+    │ │ │ │ │ │ │ watermarks/    <- NEW DIRECTORY
+    │ │ │ │ │ │ │ │ metric,interval_us,high,mid,lo
+    │ │ │ │ │ │ ...
+    │ │ │ │ ...
+    │ │ ...
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-10-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>
+Cc: Colin Ian King <colin.i.king@gmail.com>

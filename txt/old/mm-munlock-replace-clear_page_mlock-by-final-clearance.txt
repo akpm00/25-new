@@ -1,0 +1,45 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: replace clear_page_mlock() by final clearance
+
+Placing munlock_vma_page() at the end of page_remove_rmap() shifts most of
+the munlocking to clear_page_mlock(), since PageMlocked is typically still
+set when mapcount has fallen to 0.  That is not what we want: we want
+/proc/vmstat's unevictable_pgs_cleared to remain as a useful check on the
+integrity of of the mlock/munlock protocol - small numbers are not
+surprising, but big numbers mean the protocol is not working.
+
+That could be easily fixed by placing munlock_vma_page() at the start of
+page_remove_rmap(); but later in the series we shall want to batch the
+munlocking, and that too would tend to leave PageMlocked still set at the
+point when it is checked.
+
+So delete clear_page_mlock() now: leave it instead to release_pages() (and
+__page_cache_release()) to do this backstop clearing of Mlocked, when page
+refcount has fallen to 0.  If a pinned page occasionally gets counted as
+Mlocked and Unevictable until it is unpinned, that's okay.
+
+A slightly regrettable side-effect of this change is that, since
+release_pages() and __page_cache_release() may be called at interrupt
+time, those places which update NR_MLOCK with interrupts enabled had
+better use mod_zone_page_state() than __mod_zone_page_state() (but holding
+the lruvec lock always has interrupts disabled).
+
+This change, forcing Mlocked off when refcount 0 instead of earlier when
+mapcount 0, is not fundamental: it can be reversed if performance or
+something else is found to suffer; but this is the easiest way to separate
+the stats - let's not complicate that without good reason.
+
+Link: https://lkml.kernel.org/r/ba15e6e-bdd5-7712-76b9-6278209e827a@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

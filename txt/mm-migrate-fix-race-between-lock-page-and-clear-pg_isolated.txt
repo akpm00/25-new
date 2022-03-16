@@ -1,0 +1,32 @@
+From: "andrew.yang" <andrew.yang@mediatek.com>
+Subject: mm/migrate: fix race between lock page and clear PG_Isolated
+
+When memory is tight, system may start to compact memory for large
+continuous memory demands.  If one process tries to lock a memory page
+that is being locked and isolated for compaction, it may wait a long time
+or even forever.  This is because compaction will perform non-atomic
+PG_Isolated clear while holding page lock, this may overwrite PG_waiters
+set by the process that can't obtain the page lock and add itself to the
+waiting queue to wait for the lock to be unlocked.
+
+CPU1                            CPU2
+lock_page(page); (successful)
+                                lock_page(); (failed)
+__ClearPageIsolated(page);      SetPageWaiters(page) (may be overwritten)
+unlock_page(page);
+
+The solution is to not perform non-atomic operation on page flags while
+holding page lock.
+
+Link: https://lkml.kernel.org/r/20220315030515.20263-1-andrew.yang@mediatek.com
+Signed-off-by: andrew.yang <andrew.yang@mediatek.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: "Vlastimil Babka" <vbabka@suse.cz>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "William Kucharski" <william.kucharski@oracle.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Nicholas Tang <nicholas.tang@mediatek.com>
+Cc: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>

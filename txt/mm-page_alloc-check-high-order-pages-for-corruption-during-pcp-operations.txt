@@ -1,0 +1,21 @@
+From: Mel Gorman <mgorman@techsingularity.net>
+Subject: mm/page_alloc: check high-order pages for corruption during PCP operations
+
+Eric Dumazet pointed out that commit 44042b449872 ("mm/page_alloc: allow
+high-order pages to be stored on the per-cpu lists") only checks the head
+page during PCP refill and allocation operations.  This was an oversight
+and all pages should be checked.  This will incur a small performance
+penalty but it's necessary for correctness.
+
+Link: https://lkml.kernel.org/r/20220310092456.GJ15701@techsingularity.net
+Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored on the per-cpu lists")
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Reported-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: David Rientjes <rientjes@google.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Hugh Dickins <hughd@google.com>

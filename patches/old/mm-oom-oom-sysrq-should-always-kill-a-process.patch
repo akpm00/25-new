@@ -1,0 +1,33 @@
+From: Jann Horn <jannh@google.com>
+Subject: mm, oom: OOM sysrq should always kill a process
+
+The OOM kill sysrq (alt+sysrq+F) should allow the user to kill the process
+with the highest OOM badness with a single execution.
+
+However, at the moment, the OOM kill can bail out if an OOM notifier (e.g.
+the i915 one) says that it reclaimed a tiny amount of memory from
+somewhere.  That's probably not what the user wants, so skip the bailout
+if the OOM was triggered via sysrq.
+
+Link: https://lkml.kernel.org/r/20220106102605.635656-1-jannh@google.com
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/oom_kill.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/oom_kill.c~mm-oom-oom-sysrq-should-always-kill-a-process
++++ a/mm/oom_kill.c
+@@ -1058,7 +1058,7 @@ bool out_of_memory(struct oom_control *o
+ 
+ 	if (!is_memcg_oom(oc)) {
+ 		blocking_notifier_call_chain(&oom_notify_list, 0, &freed);
+-		if (freed > 0)
++		if (freed > 0 && !is_sysrq_oom(oc))
+ 			/* Got some memory back in the last second. */
+ 			return true;
+ 	}
+_

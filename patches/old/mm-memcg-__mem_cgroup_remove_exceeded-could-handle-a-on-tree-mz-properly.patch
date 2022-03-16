@@ -1,0 +1,37 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: __mem_cgroup_remove_exceeded could handle a !on-tree mz properly
+
+There is no tree operation if mz is not on-tree.
+
+Let's remove the extra check.
+
+Link: https://lkml.kernel.org/r/20220312071623.19050-2-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/mm/memcontrol.c~mm-memcg-__mem_cgroup_remove_exceeded-could-handle-a-on-tree-mz-properly
++++ a/mm/memcontrol.c
+@@ -503,9 +503,11 @@ static void mem_cgroup_update_tree(struc
+ 			unsigned long flags;
+ 
+ 			spin_lock_irqsave(&mctz->lock, flags);
+-			/* if on-tree, remove it */
+-			if (mz->on_tree)
+-				__mem_cgroup_remove_exceeded(mz, mctz);
++			/*
++			 * remove it first
++			 * If not on-tree, no tree ops.
++			 */
++			__mem_cgroup_remove_exceeded(mz, mctz);
+ 			/*
+ 			 * Insert again. mz->usage_in_excess will be updated.
+ 			 * If excess is 0, no tree ops.
+_

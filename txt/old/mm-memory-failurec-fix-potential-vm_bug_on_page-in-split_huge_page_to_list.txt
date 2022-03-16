@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: fix potential VM_BUG_ON_PAGE in split_huge_page_to_list
+
+The huge zero page could reach here and if we ever try to split it, the
+VM_BUG_ON_PAGE will be triggered in split_huge_page_to_list().  Also the
+non-lru compound movable pages could be taken for transhuge pages.  Skip
+these pages by checking PageLRU because huge zero page isn't lru page as
+non-lru compound movable pages.
+
+Link: https://lkml.kernel.org/r/20220228140245.24552-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

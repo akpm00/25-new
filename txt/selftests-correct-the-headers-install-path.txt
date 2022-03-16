@@ -1,0 +1,26 @@
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: selftests: correct the headers install path
+
+uapi headers should be installed at the top of the object tree,
+"<obj_tree>/usr/include".  There is no need for kernel headers to be
+present at kselftest build directory, "<obj_tree>/kselftest/usr/ include"
+as well.  This duplication can be avoided by correctly specifying the
+INSTALL_HDR_PATH.
+
+Link: https://lkml.kernel.org/r/20220119101531.2850400-4-usama.anjum@collabora.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andr Almeida <andrealmeid@collabora.com>
+Cc: Darren Hart <dvhart@infradead.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Cc: Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc: Mickal Salan <mic@digikod.net>
+Cc: Minghao Chi <chi.minghao@zte.com.cn>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>

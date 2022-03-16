@@ -1,0 +1,63 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/gfp: add kernel-doc for gfp_t
+
+The generated html will link to the definition of the gfp_t automatically
+once we define it.  Move the one-paragraph overview of GFP flags from the
+documentation directory into gfp.h and pull gfp.h into the documentation.
+
+This generates warnings with clang
+(https://lkml.kernel.org/r/20210219195509.GA59987@24bbad8f3778), so
+use a #if 0 to hide it from the compiler for now.
+
+Link: https://lkml.kernel.org/r/20210215204909.3824509-1-willy@infradead.org
+Link: https://lkml.kernel.org/r/20210220003049.GZ2858050@casper.infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/core-api/mm-api.rst |    7 ++-----
+ include/linux/gfp.h               |   14 ++++++++++++++
+ 2 files changed, 16 insertions(+), 5 deletions(-)
+
+--- a/Documentation/core-api/mm-api.rst~mm-gfp-add-kernel-doc-for-gfp_tpatch-removed-from-mm-tree
++++ a/Documentation/core-api/mm-api.rst
+@@ -19,11 +19,8 @@ User Space Memory Access
+ Memory Allocation Controls
+ ==========================
+ 
+-Functions which need to allocate memory often use GFP flags to express
+-how that memory should be allocated. The GFP acronym stands for "get
+-free pages", the underlying memory allocation function. Not every GFP
+-flag is allowed to every function which may allocate memory. Most
+-users will want to use a plain ``GFP_KERNEL``.
++.. kernel-doc:: include/linux/gfp.h
++   :internal:
+ 
+ .. kernel-doc:: include/linux/gfp.h
+    :doc: Page mobility and placement hints
+--- a/include/linux/gfp.h~mm-gfp-add-kernel-doc-for-gfp_tpatch-removed-from-mm-tree
++++ a/include/linux/gfp.h
+@@ -8,6 +8,20 @@
+ #include <linux/linkage.h>
+ #include <linux/topology.h>
+ 
++/* The typedef is in types.h but we want the documentation here */
++#if 0
++/**
++ * typedef gfp_t - Memory allocation flags.
++ *
++ * GFP flags are commonly used throughout Linux to indicate how memory
++ * should be allocated.  The GFP acronym stands for get_free_pages(),
++ * the underlying memory allocation function.  Not every GFP flag is
++ * supported by every function which may allocate memory.  Most users
++ * will want to use a plain ``GFP_KERNEL``.
++ */
++typedef unsigned int __bitwise gfp_t;
++#endif
++
+ struct vm_area_struct;
+ 
+ /*
+_

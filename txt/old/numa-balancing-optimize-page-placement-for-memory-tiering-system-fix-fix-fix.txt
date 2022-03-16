@@ -1,0 +1,9 @@
+From: Huang Ying <ying.huang@intel.com>
+Subject: numa-balancing-optimize-page-placement-for-memory-tiering-system-fix-fix-fix
+
+fix the following warnings of `make htmldocs`,
+
+Documentation/admin-guide/sysctl/kernel.rst:603: WARNING: Inconsistent literal block quoting.
+
+Link: https://lkml.kernel.org/r/87r18cjwbe.fsf@yhuang6-desk2.ccr.corp.intel.com
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>

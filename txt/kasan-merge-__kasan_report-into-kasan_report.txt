@@ -1,0 +1,12 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: merge __kasan_report into kasan_report
+
+Merge __kasan_report() into kasan_report().  The code is simple enough to
+be readable without the __kasan_report() helper.
+
+Link: https://lkml.kernel.org/r/c8a125497ef82f7042b3795918dffb81a85a878e.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

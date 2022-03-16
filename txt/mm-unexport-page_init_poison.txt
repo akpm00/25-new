@@ -1,0 +1,8 @@
+From: Christoph Hellwig <hch@lst.de>
+Subject: mm: unexport page_init_poison
+
+page_init_poison is only used in core MM code, so unexport it.
+
+Link: https://lkml.kernel.org/r/20220207063446.1833404-1-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>

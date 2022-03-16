@@ -1,0 +1,73 @@
+From: David Howells <dhowells@redhat.com>
+Subject: mutex subsystem, synchro-test module
+
+The attached patch adds a module for testing and benchmarking mutexes,
+semaphores and R/W semaphores.
+
+Using it is simple:
+
+	insmod synchro-test.ko <args>
+
+It will exit with error ENOANO after running the tests and printing the
+results to the kernel console log.
+
+The available arguments are:
+
+ (*) mx=N
+
+	Start up to N mutex thrashing threads, where N is at most 20. All will
+	try and thrash the same mutex.
+
+ (*) sm=N
+
+	Start up to N counting semaphore thrashing threads, where N is at most
+	20. All will try and thrash the same semaphore.
+
+ (*) ism=M
+
+	Initialise the counting semaphore with M, where M is any positive
+	integer greater than zero. The default is 4.
+
+ (*) rd=N
+ (*) wr=O
+ (*) dg=P
+
+	Start up to N reader thrashing threads, O writer thrashing threads and
+	P downgrader thrashing threads, where N, O and P are at most 20
+	apiece. All will try and thrash the same read/write semaphore.
+
+ (*) elapse=N
+
+	Run the tests for N seconds. The default is 5.
+
+ (*) load=N
+
+	Each thread delays for N uS whilst holding the lock. The dfault is 0.
+
+ (*) interval=N
+
+	Each thread delays for N uS whilst not holding the lock. The default
+	is 0.
+
+ (*) do_sched=1
+
+	Each thread will call schedule if required after each iteration.
+
+ (*) v=1
+
+	Print more verbose information, including a thread iteration
+	distribution list.
+
+The module should be enabled by turning on CONFIG_DEBUG_SYNCHRO_TEST to "m".
+
+[randy.dunlap@oracle.com: fix build errors, add <sched.h> header file]
+[akpm@linux-foundation.org: remove smp_lock.h inclusion]
+[viro@ZenIV.linux.org.uk: kill daemonize() calls]
+[rdunlap@xenotime.net: fix printk format warrnings]
+[walken@google.com: add spinlock test]
+[walken@google.com: document default load and interval values]
+Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@elte.hu>
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+Signed-off-by: Michel Lespinasse <walken@google.com>

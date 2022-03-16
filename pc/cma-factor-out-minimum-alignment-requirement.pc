@@ -1,0 +1,6 @@
+arch/powerpc/include/asm/fadump-internal.h
+arch/powerpc/kernel/fadump.c
+drivers/of/of_reserved_mem.c
+include/linux/cma.h
+kernel/dma/contiguous.c
+mm/cma.c

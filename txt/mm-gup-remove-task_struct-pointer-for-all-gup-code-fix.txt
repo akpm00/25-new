@@ -1,0 +1,9 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm-gup-remove-task_struct-pointer-for-all-gup-code-fix
+
+fix arch/arm64/kernel/mte.c
+
+Link: http://lkml.kernel.org/r/20200710122457.GK199122@xz-x1
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

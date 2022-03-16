@@ -1,0 +1,20 @@
+From: Marco Elver <elver@google.com>
+Subject: Revert "ubsan, kcsan: Don't combine sanitizer with kcov on clang"
+
+This reverts commit ea91a1d45d19469001a4955583187b0d75915759.
+
+Since df05c0e9496c ("Documentation: Raise the minimum supported version
+of LLVM to 11.0.0") the minimum Clang version is now 11.0, which fixed
+the UBSAN/KCSAN vs. KCOV incompatibilities.
+
+Link: https://bugs.llvm.org/show_bug.cgi?id=45831
+Link: https://lkml.kernel.org/r/YaodyZzu0MTCJcvO@elver.google.com
+Link: https://lkml.kernel.org/r/20220128105631.509772-1-elver@google.com
+Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>

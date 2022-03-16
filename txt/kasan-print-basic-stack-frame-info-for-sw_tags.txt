@@ -1,0 +1,12 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: print basic stack frame info for SW_TAGS
+
+Software Tag-Based mode tags stack allocations when CONFIG_KASAN_STACK
+is enabled. Print task name and id in reports for stack-related bugs.
+
+Link: https://lkml.kernel.org/r/029aaa87ceadde0702f3312a34697c9139c9fb53.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

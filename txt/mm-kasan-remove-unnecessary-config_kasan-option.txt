@@ -1,0 +1,16 @@
+From: tangmeng <tangmeng@uniontech.com>
+Subject: mm/kasan: remove unnecessary CONFIG_KASAN option
+
+In mm/Makefile has:
+obj-$(CONFIG_KASAN)     += kasan/
+
+So that we don't need 'obj-$(CONFIG_KASAN) :=' in mm/kasan/Makefile,
+delete it from mm/kasan/Makefile.
+
+Link: https://lkml.kernel.org/r/20220221065421.20689-1-tangmeng@uniontech.com
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Dmitriy Vyukov <dvyukov@google.com>

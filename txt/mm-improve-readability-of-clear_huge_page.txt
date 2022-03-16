@@ -1,0 +1,9 @@
+From: Huang Ying <ying.huang@intel.com>
+Subject: mm/memory.c: improve readability of clear_huge_page
+
+The optimized clear_huge_page() isn't easy to read and understand.  This
+is suggested by Michael Hocko to improve it.
+
+Link: http://lkml.kernel.org/r/20170830051842.1397-1-ying.huang@intel.com
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Suggested-by: Michal Hocko <mhocko@suse.com>

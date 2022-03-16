@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmallocc-fix-a-comment-fix
+
+a/want/wants/, per Randy
+
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>

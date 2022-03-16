@@ -1,0 +1,109 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: arch: don't memset(0) memory returned by memblock_alloc()
+
+memblock_alloc() already clears the allocated memory, no point in doing it
+twice.
+
+Link: http://lkml.kernel.org/r/1548057848-15136-14-git-send-email-rppt@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>	[m68k]
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Guo Ren <ren_guo@c-sky.com>				[c-sky]
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Juergen Gross <jgross@suse.com>			[Xen]
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/c6x/mm/init.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/c6x/mm/init.c
+@@ -40,7 +40,6 @@ void __init paging_init(void)
+ 
+ 	empty_zero_page      = (unsigned long) memblock_alloc(PAGE_SIZE,
+ 							      PAGE_SIZE);
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	/*
+ 	 * Set up user data space
+--- a/arch/h8300/mm/init.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/h8300/mm/init.c
+@@ -68,7 +68,6 @@ void __init paging_init(void)
+ 	 * to a couple of allocated pages.
+ 	 */
+ 	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	/*
+ 	 * Set up SFC/DFC registers (user data space).
+--- a/arch/ia64/kernel/mca.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/ia64/kernel/mca.c
+@@ -400,8 +400,6 @@ ia64_log_init(int sal_info_type)
+ 
+ 	// set up OS data structures to hold error info
+ 	IA64_LOG_ALLOCATE(sal_info_type, max_size);
+-	memset(IA64_LOG_CURR_BUFFER(sal_info_type), 0, max_size);
+-	memset(IA64_LOG_NEXT_BUFFER(sal_info_type), 0, max_size);
+ }
+ 
+ /*
+--- a/arch/m68k/mm/mcfmmu.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/m68k/mm/mcfmmu.c
+@@ -44,7 +44,6 @@ void __init paging_init(void)
+ 	int i;
+ 
+ 	empty_zero_page = (void *) memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+-	memset((void *) empty_zero_page, 0, PAGE_SIZE);
+ 
+ 	pg_dir = swapper_pg_dir;
+ 	memset(swapper_pg_dir, 0, sizeof(swapper_pg_dir));
+--- a/arch/microblaze/mm/init.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/microblaze/mm/init.c
+@@ -376,10 +376,8 @@ void * __ref zalloc_maybe_bootmem(size_t
+ 
+ 	if (mem_init_done)
+ 		p = kzalloc(size, mask);
+-	else {
++	else
+ 		p = memblock_alloc(size, SMP_CACHE_BYTES);
+-		if (p)
+-			memset(p, 0, size);
+-	}
++
+ 	return p;
+ }
+--- a/arch/sparc/kernel/prom_32.c~arch-dont-memset0-memory-returned-by-memblock_alloc
++++ a/arch/sparc/kernel/prom_32.c
+@@ -33,8 +33,6 @@ void * __init prom_early_alloc(unsigned
+ 	void *ret;
+ 
+ 	ret = memblock_alloc(size, SMP_CACHE_BYTES);
+-	if (ret != NULL)
+-		memset(ret, 0, size);
+ 
+ 	prom_early_allocated += size;
+ 
+_

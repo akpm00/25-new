@@ -1,0 +1,9 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/usage: update for changed initail_regions file input
+
+A previous commit made init_regions debugfs file to use target index
+instead of target id for specifying the target of the init regions.  This
+commit updates the usage document to reflect the change.
+
+Link: https://lkml.kernel.org/r/20211230100723.2238-3-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

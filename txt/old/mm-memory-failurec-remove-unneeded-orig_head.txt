@@ -1,0 +1,10 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: remove unneeded orig_head
+
+orig_head is used to check whether the page have changed compound pages
+during the locking.  But it's always equal to hpage.  So we can use hpage
+directly and remove this redundant one.
+
+Link: https://lkml.kernel.org/r/20220210141733.1908-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>

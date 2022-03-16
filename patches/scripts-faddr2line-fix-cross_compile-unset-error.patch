@@ -1,0 +1,40 @@
+From: "Liu, Changcheng" <changcheng.liu@intel.com>
+Subject: scripts/faddr2line: fix CROSS_COMPILE unset error
+
+faddr2line hit var unbound error when CROSS_COMPILE isn't set since
+nounset option is set in bash script.
+
+Link: http://lkml.kernel.org/r/20171206013022.GA83929@sofia
+Fixes: 95a879825419 ("scripts/faddr2line: extend usage on generic arch")
+Signed-off-by: Liu Changcheng <changcheng.liu@intel.com>
+Reported-by: Richard Weinberger <richard.weinberger@gmail.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Philippe Ombredanne <pombredanne@nexb.com>
+Cc: NeilBrown <neilb@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ scripts/faddr2line |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff -puN scripts/faddr2line~scripts-faddr2line-fix-cross_compile-unset-error scripts/faddr2line
+--- a/scripts/faddr2line~scripts-faddr2line-fix-cross_compile-unset-error
++++ a/scripts/faddr2line
+@@ -44,10 +44,10 @@
+ set -o errexit
+ set -o nounset
+ 
+-READELF="${CROSS_COMPILE}readelf"
+-ADDR2LINE="${CROSS_COMPILE}addr2line"
+-SIZE="${CROSS_COMPILE}size"
+-NM="${CROSS_COMPILE}nm"
++READELF="${CROSS_COMPILE:-}readelf"
++ADDR2LINE="${CROSS_COMPILE:-}addr2line"
++SIZE="${CROSS_COMPILE:-}size"
++NM="${CROSS_COMPILE:-}nm"
+ 
+ command -v awk >/dev/null 2>&1 || die "awk isn't installed"
+ command -v ${READELF} >/dev/null 2>&1 || die "readelf isn't installed"
+_

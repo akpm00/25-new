@@ -1,0 +1,100 @@
+From: Gang He <ghe@suse.com>
+Subject: ocfs2: reflink deadlock when clone file to the same directory simultaneously
+
+Running reflink from multiple nodes simultaneously to clone a file to the
+same directory probably triggers a deadlock issue.  For example, there is
+a three node ocfs2 cluster, each node mounts the ocfs2 file system to
+/mnt/shared, and run the reflink command from each node repeatedly, like
+
+  reflink "/mnt/shared/test" \
+  "/mnt/shared/.snapshots/test.`date +%m%d%H%M%S`.`hostname`"
+then, reflink command process will be hung on each node, and you
+can't list this file system directory.
+The problematic reflink command process is blocked at one node,
+task:reflink         state:D stack:    0 pid: 1283 ppid:  4154
+Call Trace:
+  __schedule+0x2fd/0x750
+  schedule+0x2f/0xa0
+  schedule_timeout+0x1cc/0x310
+  ? ocfs2_control_cfu+0x50/0x50 [ocfs2_stack_user]
+  ? 0xffffffffc0e3e000
+  wait_for_completion+0xba/0x140
+  ? wake_up_q+0xa0/0xa0
+  __ocfs2_cluster_lock.isra.41+0x3b5/0x820 [ocfs2]
+  ? ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+  ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+  ocfs2_init_security_and_acl+0xbe/0x1d0 [ocfs2]
+  ocfs2_reflink+0x436/0x4c0 [ocfs2]
+  ? ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+  ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+  ocfs2_ioctl+0x25e/0x670 [ocfs2]
+  do_vfs_ioctl+0xa0/0x680
+  ksys_ioctl+0x70/0x80
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x5b/0x1e0
+The other reflink command processes are blocked at other nodes,
+task:reflink         state:D stack:    0 pid:29759 ppid:  4088
+Call Trace:
+  __schedule+0x2fd/0x750
+  schedule+0x2f/0xa0
+  schedule_timeout+0x1cc/0x310
+  ? ocfs2_control_cfu+0x50/0x50 [ocfs2_stack_user]
+  ? 0xffffffffc0b19000
+  wait_for_completion+0xba/0x140
+  ? wake_up_q+0xa0/0xa0
+  __ocfs2_cluster_lock.isra.41+0x3b5/0x820 [ocfs2]
+  ? ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+  ocfs2_inode_lock_full_nested+0x1fc/0x960 [ocfs2]
+  ocfs2_mv_orphaned_inode_to_new+0x87/0x7e0 [ocfs2]
+  ocfs2_reflink+0x335/0x4c0 [ocfs2]
+  ? ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+  ocfs2_reflink_ioctl+0x2ca/0x360 [ocfs2]
+  ocfs2_ioctl+0x25e/0x670 [ocfs2]
+  do_vfs_ioctl+0xa0/0x680
+  ksys_ioctl+0x70/0x80
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x5b/0x1e0
+or
+task:reflink         state:D stack:    0 pid:18465 ppid:  4156
+Call Trace:
+  __schedule+0x302/0x940
+  ? usleep_range+0x80/0x80
+  schedule+0x46/0xb0
+  schedule_timeout+0xff/0x140
+  ? ocfs2_control_cfu+0x50/0x50 [ocfs2_stack_user]
+  ? 0xffffffffc0c3b000
+  __wait_for_common+0xb9/0x170
+  __ocfs2_cluster_lock.constprop.0+0x1d6/0x860 [ocfs2]
+  ? ocfs2_wait_for_recovery+0x49/0xd0 [ocfs2]
+  ? ocfs2_inode_lock_full_nested+0x30f/0xa50 [ocfs2]
+  ocfs2_inode_lock_full_nested+0x30f/0xa50 [ocfs2]
+  ocfs2_inode_lock_tracker+0xf2/0x2b0 [ocfs2]
+  ? dput+0x32/0x2f0
+  ocfs2_permission+0x45/0xe0 [ocfs2]
+  inode_permission+0xcc/0x170
+  link_path_walk.part.0.constprop.0+0x2a2/0x380
+  ? path_init+0x2c1/0x3f0
+  path_parentat+0x3c/0x90
+  filename_parentat+0xc1/0x1d0
+  ? filename_lookup+0x138/0x1c0
+  filename_create+0x43/0x160
+  ocfs2_reflink_ioctl+0xe6/0x380 [ocfs2]
+  ocfs2_ioctl+0x1ea/0x2c0 [ocfs2]
+  ? do_sys_openat2+0x81/0x150
+  __x64_sys_ioctl+0x82/0xb0
+  do_syscall_64+0x61/0xb0
+
+The deadlock is caused by multiple acquiring the destination directory
+inode dlm lock in ocfs2_reflink function, we should acquire this directory
+inode dlm lock at the beginning, and hold this dlm lock until end of the
+function.
+
+Link: https://lkml.kernel.org/r/20210729110230.18983-1-ghe@suse.com
+Signed-off-by: Gang He <ghe@suse.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Joseph Qi <jiangqi903@gmail.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>

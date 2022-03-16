@@ -1,0 +1,13 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-bdi-initialize-bdi_min_ratio-when-bdi-unregister-fix
+
+Cc: Changheun Lee <nanich.lee@samsung.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: <jisoo2146.oh@samsung.com>
+Cc: <junho89.kim@samsung.com>
+Cc: Manjong Lee <mj0123.lee@samsung.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: <seunghwan.hyun@samsung.com>
+Cc: <sookwan7.kim@samsung.com>
+Cc: <yt0928.kim@samsung.com>

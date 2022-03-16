@@ -1,0 +1,32 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: ipc-utilc-sysvipc_find_ipc-incorrectly-updates-position-index-fix
+
+fix conflict resolution fix
+
+Cc: Andreas Schwab <schwab@suse.de>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: NeilBrown <neilb@suse.com>
+Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: Waiman Long <longman@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ ipc/util.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/ipc/util.c~ipc-utilc-sysvipc_find_ipc-incorrectly-updates-position-index-fix
++++ a/ipc/util.c
+@@ -777,7 +777,7 @@ static struct kern_ipc_perm *sysvipc_fin
+ 		}
+ 	}
+ out:
+-	*new_pos = pos + 1;
++	*new_pos = index + 1;
+ 	return ipc;
+ }
+ 
+_

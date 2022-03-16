@@ -1,0 +1,67 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, slub: fix conflicts with CONFIG_SLAB_FREELIST_HARDENED
+
+CONFIG_SLAB_FREELIST_HARDENED hashes freelist pointer with the address of
+the object where the pointer gets stored.  With tag based KASAN we don't
+account for that when building freelist, as we call set_freepointer() with
+the first argument untagged.  This patch changes the code to properly
+propagate tags throughout the loop.
+
+Link: http://lkml.kernel.org/r/3df171559c52201376f246bf7ce3184fe21c1dc7.1549921721.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: Qian Cai <cai@lca.pw>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Kostya Serebryany <kcc@google.com>
+Cc: Evgeniy Stepanov <eugenis@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/slub.c~kasan-slub-fix-conflicts-with-config_slab_freelist_hardened
++++ a/mm/slub.c
+@@ -303,11 +303,6 @@ static inline void set_freepointer(struc
+ 		__p < (__addr) + (__objects) * (__s)->size; \
+ 		__p += (__s)->size)
+ 
+-#define for_each_object_idx(__p, __idx, __s, __addr, __objects) \
+-	for (__p = fixup_red_left(__s, __addr), __idx = 1; \
+-		__idx <= __objects; \
+-		__p += (__s)->size, __idx++)
+-
+ /* Determine object index from a given position */
+ static inline unsigned int slab_index(void *p, struct kmem_cache *s, void *addr)
+ {
+@@ -1664,17 +1659,16 @@ static struct page *allocate_slab(struct
+ 	shuffle = shuffle_freelist(s, page);
+ 
+ 	if (!shuffle) {
+-		for_each_object_idx(p, idx, s, start, page->objects) {
+-			if (likely(idx < page->objects)) {
+-				next = p + s->size;
+-				next = setup_object(s, page, next);
+-				set_freepointer(s, p, next);
+-			} else
+-				set_freepointer(s, p, NULL);
+-		}
+ 		start = fixup_red_left(s, start);
+ 		start = setup_object(s, page, start);
+ 		page->freelist = start;
++		for (idx = 0, p = start; idx < page->objects - 1; idx++) {
++			next = p + s->size;
++			next = setup_object(s, page, next);
++			set_freepointer(s, p, next);
++			p = next;
++		}
++		set_freepointer(s, p, NULL);
+ 	}
+ 
+ 	page->inuse = page->objects;
+_

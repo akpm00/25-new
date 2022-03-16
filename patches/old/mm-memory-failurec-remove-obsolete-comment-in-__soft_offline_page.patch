@@ -1,0 +1,30 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: remove obsolete comment in __soft_offline_page
+
+Since commit add05cecef80 ("mm: soft-offline: don't free target page in
+successful page migration"), set_migratetype_isolate logic is removed. 
+Remove this obsolete comment.
+
+Link: https://lkml.kernel.org/r/20220216091431.39406-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |    4 ----
+ 1 file changed, 4 deletions(-)
+
+--- a/mm/memory-failure.c~mm-memory-failurec-remove-obsolete-comment-in-__soft_offline_page
++++ a/mm/memory-failure.c
+@@ -2161,10 +2161,6 @@ static int __soft_offline_page(struct pa
+ 		ret = invalidate_inode_page(page);
+ 	unlock_page(page);
+ 
+-	/*
+-	 * RED-PEN would be better to keep it isolated here, but we
+-	 * would need to fix isolation locking first.
+-	 */
+ 	if (ret) {
+ 		pr_info("soft_offline: %#lx: invalidated\n", pfn);
+ 		page_handle_poison(page, false, true);
+_

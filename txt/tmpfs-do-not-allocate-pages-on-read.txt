@@ -1,0 +1,48 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: tmpfs: do not allocate pages on read
+
+Mikulas asked in
+https://lore.kernel.org/linux-mm/alpine.LRH.2.02.2007210510230.6959@file01.intranet.prod.int.rdu2.redhat.com/
+Do we still need a0ee5ec520ed ("tmpfs: allocate on read when stacked")?
+
+Lukas noticed this unusual behavior of loop device backed by tmpfs in
+https://lore.kernel.org/linux-mm/20211126075100.gd64odg2bcptiqeb@work/
+
+Normally, shmem_file_read_iter() copies the ZERO_PAGE when reading holes;
+but if it looks like it might be a read for "a stacking filesystem", it
+allocates actual pages to the page cache, and even marks them as dirty. 
+And reads from the loop device do satisfy the test that is used.
+
+This oddity was added for an old version of unionfs, to help to limit its
+usage to the limited size of the tmpfs mount involved; but about the same
+time as the tmpfs mod went in (2.6.25), unionfs was reworked to proceed
+differently; and the mod kept just in case others needed it.
+
+Do we still need it?  I cannot answer with more certainty than "Probably
+not".  It's nasty enough that we really should try to delete it; but if a
+regression is reported somewhere, then we might have to revert later.
+
+It's not quite as simple as just removing the test (as Mikulas did):
+xfstests generic/013 hung because splice from tmpfs failed on page not
+up-to-date and page mapping unset.  That can be fixed just by marking the
+ZERO_PAGE as Uptodate, which of course it is: do so in pagecache_init() -
+it might be useful to others than tmpfs.
+
+My intention, though, was to stop using the ZERO_PAGE here altogether:
+surely iov_iter_zero() is better for this case?  Sadly not: it relies on
+clear_user(), and the x86 clear_user() is slower than its copy_user():
+https://lore.kernel.org/lkml/2f5ca5e4-e250-a41c-11fb-a7f4ebc7e1c9@google.com/
+
+But while we are still using the ZERO_PAGE, let's stop dirtying its struct
+page cacheline with unnecessary get_page() and put_page().
+
+Link: https://lkml.kernel.org/r/90bc5e69-9984-b5fa-a685-be55f2b64b@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Lukas Czerner <lczerner@redhat.com>
+Acked-by: Darrick J. Wong <djwong@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Zdenek Kabelac <zkabelac@redhat.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Borislav Petkov <bp@suse.de>

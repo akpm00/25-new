@@ -1,0 +1,17 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: Kconfig.debug: make DEBUG_INFO always default=n
+
+While trying to make sure CONFIG_DEBUG_INFO wasn't set for COMPILE_TEST, I
+ordered the choices incorrectly to retain the prior default=n state.  Move
+DEBUG_INFO_NONE to the top so that the default choice is disabled, and
+remove the "if COMPILE_TEST" as it is now redundant.
+
+Link: https://lkml.kernel.org/r/20220128214131.580131-1-keescook@chromium.org
+Link: https://lore.kernel.org/lkml/YfRY6+CaQxX7O8vF@dev-arch.archlinux-ax161
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>

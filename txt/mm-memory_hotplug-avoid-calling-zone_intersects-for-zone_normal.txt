@@ -1,0 +1,11 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory_hotplug: avoid calling zone_intersects() for ZONE_NORMAL
+
+If zid reaches ZONE_NORMAL, the caller will always get the NORMAL zone no
+matter what zone_intersects() returns.  So we can save some possible cpu
+cycles by avoid calling zone_intersects() for ZONE_NORMAL.
+
+Link: https://lkml.kernel.org/r/20220207133643.23427-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>

@@ -1,0 +1,27 @@
+From: "Liu, Changcheng" <changcheng.liu@intel.com>
+Subject: tools/slabinfo-gnuplot: force to use bash shell
+
+On some linux distributions, the default link of sh
+is dash which deoesn't support split array like
+${var//,/ }
+It's better to force to use bash shell directly.
+
+Link: http://lkml.kernel.org/r/20171208093751.GA175471@sofia
+Signed-off-by: Liu Changcheng <changcheng.liu@intel.com>
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/vm/slabinfo-gnuplot.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN tools/vm/slabinfo-gnuplot.sh~tools-slabinfo-gnuplot-force-to-use-bash-shell tools/vm/slabinfo-gnuplot.sh
+--- a/tools/vm/slabinfo-gnuplot.sh~tools-slabinfo-gnuplot-force-to-use-bash-shell
++++ a/tools/vm/slabinfo-gnuplot.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ 
+ # Sergey Senozhatsky, 2015
+ # sergey.senozhatsky.work@gmail.com
+_

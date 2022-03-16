@@ -1,0 +1,41 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: support schemes prioritization
+
+This commit makes DAMON sysfs interface supports the DAMOS' regions
+prioritization weights feature under quotas limitation.  Specifically,
+this commit adds 'weights' directory under each scheme directory and makes
+kdamond 'state' file writing respects the contents in the directory.
+
+    /sys/kernel/mm/damon/admin
+    │ kdamonds/nr
+    │ │ 0/state,pid
+    │ │ │ contexts/nr
+    │ │ │ │ 0/operations
+    │ │ │ │ │ monitoring_attrs/intervals/sample_us,aggr_us,update_us
+    │ │ │ │ │ │ nr_regions/min,max
+    │ │ │ │ │ targets/nr
+    │ │ │ │ │ │ 0/pid
+    │ │ │ │ │ │ │ regions/nr
+    │ │ │ │ │ │ │ │ 0/start,end
+    │ │ │ │ │ │ │ │ ...
+    │ │ │ │ │ │ ...
+    │ │ │ │ │ schemes/nr
+    │ │ │ │ │ │ 0/action
+    │ │ │ │ │ │ │ access_pattern/
+    │ │ │ │ │ │ │ │ sz/min,max
+    │ │ │ │ │ │ │ │ nr_accesses/min,max
+    │ │ │ │ │ │ │ │ age/min,max
+    │ │ │ │ │ │ │ quotas/ms,bytes,reset_interval_ms
+    │ │ │ │ │ │ │ │ weights/    <- NEW DIRECTORY
+    │ │ │ │ │ │ │ │ │ weights/sz_permil,nr_accesses_permil,age_permil
+    │ │ │ │ │ │ ...
+    │ │ │ │ ...
+    │ │ ...
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-9-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>

@@ -1,0 +1,22 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: thp: don't have to lock page anymore when splitting PMD
+
+commit c444eb564fb1 ("mm: thp: make the THP mapcount atomic against
+__split_huge_pmd_locked()") locked the page for PMD split to make mapcount
+stable for reuse_swap_page(), then commit 1c2f67308af4 ("mm: thp: fix
+MADV_REMOVE deadlock on shmem THP") reduce the scope to anonymous page
+only.
+
+However COW has not used mapcount to determine if the page is shared or
+not anymore due to the COW fixes [1] from David Hildenbrand and the
+reuse_swap_page() was removed as well.  So PMD split doesn't have to lock
+the page anymore.  This patch basically reverted the above two commits.
+
+[1] https://lore.kernel.org/linux-mm/20220131162940.210846-1-david@redhat.com/
+
+Link: https://lkml.kernel.org/r/20220303222014.517033-1-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>

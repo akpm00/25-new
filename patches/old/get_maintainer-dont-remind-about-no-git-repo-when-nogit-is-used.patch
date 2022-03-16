@@ -1,0 +1,35 @@
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: get_maintainer: don't remind about no git repo when --nogit is used
+
+When --nogit is used with scripts/get_maintainer.pl, the script spews 4
+lines of unnecessary information (noise).  Do not print those lines when
+--nogit is specified.
+
+This change removes the printing of these 4 lines:
+
+  ./scripts/get_maintainer.pl: No supported VCS found.  Add --nogit to options?
+  Using a git repository produces better results.
+  Try Linus Torvalds' latest git repository using:
+  git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+
+Link: https://lkml.kernel.org/r/20220102031424.3328-1-rdunlap@infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ scripts/get_maintainer.pl |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/scripts/get_maintainer.pl~get_maintainer-dont-remind-about-no-git-repo-when-nogit-is-used
++++ a/scripts/get_maintainer.pl
+@@ -1718,7 +1718,7 @@ sub vcs_exists {
+     %VCS_cmds = %VCS_cmds_hg;
+     return 2 if eval $VCS_cmds{"available"};
+     %VCS_cmds = ();
+-    if (!$printed_novcs) {
++    if (!$printed_novcs && $email_git) {
+ 	warn("$P: No supported VCS found.  Add --nogit to options?\n");
+ 	warn("Using a git repository produces better results.\n");
+ 	warn("Try Linus Torvalds' latest git repository using:\n");
+_

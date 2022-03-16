@@ -1,0 +1,6 @@
+arch/arm64/mm/hugetlbpage.c
+arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
+arch/sparc/mm/hugetlbpage.c
+include/linux/hugetlb.h
+mm/hugetlb.c
+mm/vmalloc.c

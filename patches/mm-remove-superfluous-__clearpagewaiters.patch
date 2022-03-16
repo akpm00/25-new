@@ -1,0 +1,85 @@
+From: Yu Zhao <yuzhao@google.com>
+Subject: mm: remove superfluous __ClearPageWaiters()
+
+Presumably __ClearPageWaiters() was added to follow the previously removed
+__ClearPageActive() pattern.
+
+Only flags that are in PAGE_FLAGS_CHECK_AT_FREE needs to be properly
+cleared because otherwise we think there may be some kind of leak. 
+PG_waiters is not one of those flags and leaving the clearing to
+PAGE_FLAGS_CHECK_AT_PREP is more appropriate.
+
+Link: http://lkml.kernel.org/r/20200818184704.3625199-3-yuzhao@google.com
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/page-flags.h |    2 +-
+ mm/filemap.c               |    2 ++
+ mm/memremap.c              |    2 --
+ mm/swap.c                  |    3 ---
+ 4 files changed, 3 insertions(+), 6 deletions(-)
+
+--- a/include/linux/page-flags.h~mm-remove-superfluous-__clearpagewaiters
++++ a/include/linux/page-flags.h
+@@ -318,7 +318,7 @@ static inline int TestClearPage##uname(s
+ 	TESTSETFLAG_FALSE(uname) TESTCLEARFLAG_FALSE(uname)
+ 
+ __PAGEFLAG(Locked, locked, PF_NO_TAIL)
+-PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD) __CLEARPAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
++PAGEFLAG(Waiters, waiters, PF_ONLY_HEAD)
+ PAGEFLAG(Error, error, PF_NO_TAIL) TESTCLEARFLAG(Error, error, PF_NO_TAIL)
+ PAGEFLAG(Referenced, referenced, PF_HEAD)
+ 	TESTCLEARFLAG(Referenced, referenced, PF_HEAD)
+--- a/mm/filemap.c~mm-remove-superfluous-__clearpagewaiters
++++ a/mm/filemap.c
+@@ -1079,6 +1079,8 @@ static void wake_up_page_bit(struct page
+ 		 * other pages on it.
+ 		 *
+ 		 * That's okay, it's a rare case. The next waker will clear it.
++		 * Otherwise the bit will be cleared by PAGE_FLAGS_CHECK_AT_PREP
++		 * when the page is being freed.
+ 		 */
+ 	}
+ 	spin_unlock_irqrestore(&q->lock, flags);
+--- a/mm/memremap.c~mm-remove-superfluous-__clearpagewaiters
++++ a/mm/memremap.c
+@@ -471,8 +471,6 @@ void free_devmap_managed_page(struct pag
+ 		return;
+ 	}
+ 
+-	__ClearPageWaiters(page);
+-
+ 	mem_cgroup_uncharge(page);
+ 
+ 	/*
+--- a/mm/swap.c~mm-remove-superfluous-__clearpagewaiters
++++ a/mm/swap.c
+@@ -90,7 +90,6 @@ static void __page_cache_release(struct
+ 		del_page_from_lru_list(page, lruvec, page_off_lru(page));
+ 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+ 	}
+-	__ClearPageWaiters(page);
+ }
+ 
+ static void __put_single_page(struct page *page)
+@@ -900,8 +899,6 @@ void release_pages(struct page **pages,
+ 			del_page_from_lru_list(page, lruvec, page_off_lru(page));
+ 		}
+ 
+-		__ClearPageWaiters(page);
+-
+ 		list_add(&page->lru, &pages_to_free);
+ 	}
+ 	if (locked_pgdat)
+_

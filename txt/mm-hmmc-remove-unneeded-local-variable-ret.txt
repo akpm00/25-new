@@ -1,0 +1,8 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/hmm.c: remove unneeded local variable ret
+
+The local variable ret is always 0. Remove it to make code more tight.
+
+Link: https://lkml.kernel.org/r/20220125124833.39718-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>

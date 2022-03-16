@@ -1,0 +1,8 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: binfmt: move more stuff undef CONFIG_COREDUMP
+
+struct linux_binfmt::core_dump and struct min_coredump::min_coredump are
+used under CONFIG_COREDUMP only.  Shrink those embedded configs a bit.
+
+Link: https://lkml.kernel.org/r/YglbIFyN+OtwVyjW@localhost.localdomain
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>

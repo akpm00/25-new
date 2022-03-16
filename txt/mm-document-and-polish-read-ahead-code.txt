@@ -1,0 +1,38 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: document and polish read-ahead code
+
+Add some "big-picture" documentation for read-ahead and polish the code to
+make it fit this documentation.
+
+The meaning of ->async_size is clarified to match its name.  i.e.  Any
+request to ->readahead() has a sync part and an async part.  The caller
+will wait for the sync pages to complete, but will not wait for the async
+pages.  The first async page is still marked PG_readahead
+
+Note that the current function names page_cache_sync_ra() and
+page_cache_async_ra() are misleading.  All ra request are partly sync and
+partly async, so either part can be empty.  A page_cache_sync_ra() request
+will usually set ->async_size non-zero, implying it is not all
+synchronous.
+
+When a non-zero req_count is passed to page_cache_async_ra(), the
+implication is that some prefix of the request is synchronous, though the
+calculation made there is incorrect - I haven't tried to fix it.
+
+Link: https://lkml.kernel.org/r/164549983734.9187.11586890887006601405.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Paolo Valente <paolo.valente@linaro.org>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Wu Fengguang <fengguang.wu@intel.com>

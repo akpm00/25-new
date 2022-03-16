@@ -1,0 +1,23 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: mm, slub: optionally save/restore irqs in slab_[un]lock()/
+
+For PREEMPT_RT we will need to disable irqs for this bit spinlock.  As a
+preparation, add a flags parameter, and an internal version that takes
+additional bool parameter to control irq saving/restoring (the flags
+parameter is compile-time unused if the bool is a constant false).
+
+Convert ___cmpxchg_double_slab(), which also comes with the same bool
+parameter, to use the internal version.
+
+Link: https://lkml.kernel.org/r/20210805152000.12817-32-vbabka@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Galbraith <efault@gmx.de>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>

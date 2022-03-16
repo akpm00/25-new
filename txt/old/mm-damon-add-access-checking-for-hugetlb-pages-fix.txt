@@ -1,0 +1,14 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm-damon-add-access-checking-for-hugetlb-pages-fix
+
+> On i386:
+>
+> ../mm/damon/vaddr.c: In function `damon_hugetlb_mkold':
+> ../mm/damon/vaddr.c:402:17: warning: unused variable `h' [-Wunused-variable]
+>    struct hstate *h = hstate_vma(vma);
+
+Link: https://lkml.kernel.org/r/1aaf9c11-0d8e-b92d-5c92-46e50a6e8d4e@linux.alibaba.com
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: SeongJae Park <sj@kernel.org>

@@ -1,0 +1,42 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: mlock_pte_range() when mlocking or munlocking
+
+Fill in missing pieces: reimplementation of munlock_vma_pages_range(),
+required to lower the mlock_counts when munlocking without munmapping; and
+its complement, implementation of mlock_vma_pages_range(), required to
+raise the mlock_counts on pages already there when a range is mlocked.
+
+Combine them into just the one function mlock_vma_pages_range(), using
+walk_page_range() to run mlock_pte_range().  This approach fixes the "Very
+slow unlockall()" of unpopulated PROT_NONE areas, reported in
+https://lore.kernel.org/linux-mm/70885d37-62b7-748b-29df-9e94f3291736@gmail.com/
+
+Munlock clears VM_LOCKED at the start, under exclusive mmap_lock; but if a
+racing truncate or holepunch (depending on i_mmap_rwsem) gets to the pte
+first, it will not try to munlock the page: leaving release_pages() to
+correct it when the last reference to the page is gone - that's okay, a
+page is not evictable anyway while it is held by an extra reference.
+
+Mlock sets VM_LOCKED at the start, under exclusive mmap_lock; but if a
+racing remove_migration_pte() or try_to_unmap_one() (depending on
+i_mmap_rwsem) gets to the pte first, it will try to mlock the page, then
+mlock_pte_range() mlock it a second time.  This is harder to reproduce,
+but a more serious race because it could leave the page unevictable
+indefinitely though the area is munlocked afterwards.  Guard against it by
+setting the (inappropriate) VM_IO flag, and modifying mlock_vma_page() to
+decline such vmas.
+
+Link: https://lkml.kernel.org/r/d39f6e4d-aa4f-731a-68ee-e77cdbf1d7bb@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

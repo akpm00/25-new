@@ -1,0 +1,35 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, vmalloc: add vmalloc tagging for SW_TAGS
+
+Add vmalloc tagging support to SW_TAGS KASAN.
+
+- __kasan_unpoison_vmalloc() now assigns a random pointer tag, poisons
+  the virtual mapping accordingly, and embeds the tag into the returned
+  pointer.
+
+- __get_vm_area_node() (used by vmalloc() and vmap()) and
+  pcpu_get_vm_areas() save the tagged pointer into vm_struct->addr
+  (note: not into vmap_area->addr). This requires putting
+  kasan_unpoison_vmalloc() after setup_vmalloc_vm[_locked]();
+  otherwise the latter will overwrite the tagged pointer.
+  The tagged pointer then is naturally propagateed to vmalloc()
+  and vmap().
+
+- vm_map_ram() returns the tagged pointer directly.
+
+As a result of this change, vm_struct->addr is now tagged.
+
+Enabling KASAN_VMALLOC with SW_TAGS is not yet allowed.
+
+Link: https://lkml.kernel.org/r/4a78f3c064ce905e9070c29733aca1dd254a74f1.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

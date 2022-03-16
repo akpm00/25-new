@@ -1,0 +1,60 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: use .%02u format
+
+Both /proc/loadavg and /proc/uptime use the following format string:
+
+	%lu.%02lu
+
+Fractional part definitely doesn't need "unsigned long" as it is
+by definition in [0, 99] range which fits into "unsigned int".
+
+Link: http://lkml.kernel.org/r/20180627200932.GD18434@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/loadavg.c |    4 ++--
+ fs/proc/uptime.c  |    6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff -puN fs/proc/loadavg.c~proc-use-%02u-format fs/proc/loadavg.c
+--- a/fs/proc/loadavg.c~proc-use-%02u-format
++++ a/fs/proc/loadavg.c
+@@ -11,7 +11,7 @@
+ #include <linux/time.h>
+ 
+ #define LOAD_INT(x) ((x) >> FSHIFT)
+-#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
++#define LOAD_FRAC(x) LOAD_INT(((unsigned int)(x) & (FIXED_1 - 1)) * 100)
+ 
+ static int loadavg_proc_show(struct seq_file *m, void *v)
+ {
+@@ -19,7 +19,7 @@ static int loadavg_proc_show(struct seq_
+ 
+ 	get_avenrun(avnrun, FIXED_1/200, 0);
+ 
+-	seq_printf(m, "%lu.%02lu %lu.%02lu %lu.%02lu %ld/%d %d\n",
++	seq_printf(m, "%lu.%02u %lu.%02u %lu.%02u %ld/%d %d\n",
+ 		LOAD_INT(avnrun[0]), LOAD_FRAC(avnrun[0]),
+ 		LOAD_INT(avnrun[1]), LOAD_FRAC(avnrun[1]),
+ 		LOAD_INT(avnrun[2]), LOAD_FRAC(avnrun[2]),
+diff -puN fs/proc/uptime.c~proc-use-%02u-format fs/proc/uptime.c
+--- a/fs/proc/uptime.c~proc-use-%02u-format
++++ a/fs/proc/uptime.c
+@@ -22,11 +22,11 @@ static int uptime_proc_show(struct seq_f
+ 	ktime_get_boottime_ts64(&uptime);
+ 	idle.tv_sec = div_u64_rem(nsec, NSEC_PER_SEC, &rem);
+ 	idle.tv_nsec = rem;
+-	seq_printf(m, "%lu.%02lu %lu.%02lu\n",
++	seq_printf(m, "%lu.%02u %lu.%02u\n",
+ 			(unsigned long) uptime.tv_sec,
+-			(uptime.tv_nsec / (NSEC_PER_SEC / 100)),
++			(unsigned int)(uptime.tv_nsec / (NSEC_PER_SEC / 100)),
+ 			(unsigned long) idle.tv_sec,
+-			(idle.tv_nsec / (NSEC_PER_SEC / 100)));
++			(unsigned int)(idle.tv_nsec / (NSEC_PER_SEC / 100)));
+ 	return 0;
+ }
+ 
+_

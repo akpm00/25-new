@@ -1,0 +1,33 @@
+From: NeilBrown <neilb@suse.de>
+Subject: doc: convert 'subsection' to 'section' in gfp.h
+
+Patch series "Remove remaining parts of congestion tracking code", v2.
+
+
+This patch (of 11):
+
+Various DOC: sections in gfp.h have subsection headers (~~~) but the place
+where they are included in mm-api.rst does not have section, only
+chapters.
+
+So convert to section headers (---) to avoid confusion.  Specifically if
+sections are added later in mm-api.rst, an error results.
+
+Link: https://lkml.kernel.org/r/164549971112.9187.16871723439770288255.stgit@noble.brown
+Link: https://lkml.kernel.org/r/164549983733.9187.17894407453436115822.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Wu Fengguang <fengguang.wu@intel.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Philipp Reisner <philipp.reisner@linbit.com>
+Cc: Lars Ellenberg <lars.ellenberg@linbit.com>
+Cc: Paolo Valente <paolo.valente@linaro.org>
+Cc: Jens Axboe <axboe@kernel.dk>

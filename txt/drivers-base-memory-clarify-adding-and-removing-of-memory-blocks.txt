@@ -1,0 +1,23 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: drivers/base/memory: clarify adding and removing of memory blocks
+
+Let's make it clearer at which places we actually add and remove memory
+blocks -- streamlining the terminology -- and highlight which memory block
+start out online and which start out as offline.
+
+* rename add_memory_block -> add_boot_memory_block
+* rename init_memory_block -> add_memory_block
+* rename unregister_memory -> remove_memory_block
+* rename register_memory -> __add_memory_block
+* add add_hotplug_memory_block
+* mark add_boot_memory_block with __init (suggested by Oscar)
+
+__add_memory_block() is  a pure helper for add_memory_block(), remove
+the somewhat obvious comment.
+
+Link: https://lkml.kernel.org/r/20220221154531.11382-1-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Michal Hocko <mhocko@suse.com>

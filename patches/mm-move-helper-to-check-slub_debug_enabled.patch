@@ -1,0 +1,89 @@
+From: Marco Elver <elver@google.com>
+Subject: mm: move helper to check slub_debug_enabled
+
+Move the helper to check slub_debug_enabled, so that we can confine the
+use of #ifdef outside slub.c as well.
+
+Link: https://lkml.kernel.org/r/20210705103229.8505-2-yee.lee@mediatek.com
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Yee Lee <yee.lee@mediatek.com>
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Chinwen Chang <chinwen.chang@mediatek.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Cc: Nicholas Tang <nicholas.tang@mediatek.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/slab.h |   15 +++++++++++----
+ mm/slub.c |   14 --------------
+ 2 files changed, 11 insertions(+), 18 deletions(-)
+
+--- a/mm/slab.h~mm-move-helper-to-check-slub_debug_enabled
++++ a/mm/slab.h
+@@ -216,10 +216,18 @@ DECLARE_STATIC_KEY_FALSE(slub_debug_enab
+ #endif
+ extern void print_tracking(struct kmem_cache *s, void *object);
+ long validate_slab_cache(struct kmem_cache *s);
++static inline bool __slub_debug_enabled(void)
++{
++	return static_branch_unlikely(&slub_debug_enabled);
++}
+ #else
+ static inline void print_tracking(struct kmem_cache *s, void *object)
+ {
+ }
++static inline bool __slub_debug_enabled(void)
++{
++	return false;
++}
+ #endif
+ 
+ /*
+@@ -229,11 +237,10 @@ static inline void print_tracking(struct
+  */
+ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t flags)
+ {
+-#ifdef CONFIG_SLUB_DEBUG
+-	VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
+-	if (static_branch_unlikely(&slub_debug_enabled))
++	if (IS_ENABLED(CONFIG_SLUB_DEBUG))
++		VM_WARN_ON_ONCE(!(flags & SLAB_DEBUG_FLAGS));
++	if (__slub_debug_enabled())
+ 		return s->flags & flags;
+-#endif
+ 	return false;
+ }
+ 
+--- a/mm/slub.c~mm-move-helper-to-check-slub_debug_enabled
++++ a/mm/slub.c
+@@ -120,25 +120,11 @@
+  */
+ 
+ #ifdef CONFIG_SLUB_DEBUG
+-
+ #ifdef CONFIG_SLUB_DEBUG_ON
+ DEFINE_STATIC_KEY_TRUE(slub_debug_enabled);
+ #else
+ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
+ #endif
+-
+-static inline bool __slub_debug_enabled(void)
+-{
+-	return static_branch_unlikely(&slub_debug_enabled);
+-}
+-
+-#else		/* CONFIG_SLUB_DEBUG */
+-
+-static inline bool __slub_debug_enabled(void)
+-{
+-	return false;
+-}
+-
+ #endif		/* CONFIG_SLUB_DEBUG */
+ 
+ static inline bool kmem_cache_debug(struct kmem_cache *s)
+_

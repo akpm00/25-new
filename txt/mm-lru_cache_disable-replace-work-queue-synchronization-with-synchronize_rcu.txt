@@ -1,0 +1,36 @@
+From: Marcelo Tosatti <mtosatti@redhat.com>
+Subject: mm: lru_cache_disable: replace work queue synchronization with synchronize_rcu
+
+On systems that run FIFO:1 applications that busy loop, any SCHED_OTHER
+task that attempts to execute on such a CPU (such as work threads) will
+not be scheduled, which leads to system hangs.
+
+Commit d479960e44f27e0e5 ("mm: disable LRU pagevec during the migration
+temporarily") relies on queueing work items on all online CPUs to ensure
+visibility of lru_disable_count.
+
+To fix this, replace the usage of work items with synchronize_rcu,
+which provides the same guarantees.
+
+Readers of lru_disable_count are protected by either disabling
+preemption or rcu_read_lock:
+
+preempt_disable, local_irq_disable  [bh_lru_lock()]
+rcu_read_lock                       [rt_spin_lock CONFIG_PREEMPT_RT]
+preempt_disable                     [local_lock !CONFIG_PREEMPT_RT]
+
+Since v5.1 kernel, synchronize_rcu() is guaranteed to wait on
+preempt_disable() regions of code.  So any CPU which sees
+lru_disable_count = 0 will have exited the critical section when
+synchronize_rcu() returns.
+
+Link: https://lkml.kernel.org/r/Yin7hDxdt0s/x+fp@fuller.cnet
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+Reviewed-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Paul E. McKenney <paulmck@kernel.org>

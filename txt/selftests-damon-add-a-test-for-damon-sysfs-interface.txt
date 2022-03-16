@@ -1,0 +1,14 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: selftests/damon: add a test for DAMON sysfs interface
+
+This commit adds a selftest for DAMON sysfs interface.  It tests the
+functionality of 'nr' files and existence of files in each directory of
+the hierarchy.
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-12-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>

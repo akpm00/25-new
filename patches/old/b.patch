@@ -1,0 +1,17 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: b
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/open.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/fs/open.c~b
++++ a/fs/open.c
+@@ -1562,3 +1562,4 @@ int stream_open(struct inode *inode, str
+ }
+ 
+ EXPORT_SYMBOL(stream_open);
++Thu Mar  3 02:22:31 PM PST 2022
+_

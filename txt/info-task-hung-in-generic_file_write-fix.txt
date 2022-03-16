@@ -1,0 +1,9 @@
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: fs/buffer.c: dump more info for __getblk_gfp() stall problem
+
+We need to dump more variables on top of
+"fs/buffer.c: add debug print for __getblk_gfp() stall problem".
+
+Link: http://lkml.kernel.org/r/12239545-7d8a-820f-48ba-952e2e98a05c@i-love.sakura.ne.jp
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Jan Kara <jack@suse.cz>

@@ -1,0 +1,22 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm/list_lru.c: prefetch neighboring list entries before acquiring lock
+
+list_lru_del() removes the given item from the LRU list.  The operation
+looks simple, but it involves writing into the cachelines of the two
+neighboring list entries in order to get the deletion done.  That can take
+a while if the cachelines aren't there yet, thus prolonging the lock hold
+time.
+
+To reduce the lock hold time, the cachelines of the two neighboring list
+entries are now prefetched before acquiring the list_lru_node's lock.
+
+Using a multi-threaded test program that created a large number of
+dentries and then killed them, the execution time was reduced from 38.5s
+to 36.6s after applying the patch on a 2-socket 36-core 72-thread x86-64
+system.
+
+Link: http://lkml.kernel.org/r/1511965054-6328-1-git-send-email-longman@redhat.com
+Signed-off-by: Waiman Long <longman@redhat.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dave Chinner <david@fromorbit.com>

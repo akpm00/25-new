@@ -1,0 +1,16 @@
+From: Hao Lee <haolee.swjtu@gmail.com>
+Subject: proc: alloc PATH_MAX bytes for /proc/${pid}/fd/ symlinks
+
+It's not a standard approach that use __get_free_page() to alloc path
+buffer directly.  We'd better use kmalloc and PATH_MAX.
+
+	PAGE_SIZE is different on different archs. An unlinked file
+	with very long canonical pathname will readlink differently
+	because "(deleted)" eats into a buffer.	--adobriyan
+
+Link: https://lkml.kernel.org/r/Ye1fCxyZZ0I5lgOL@localhost.localdomain
+Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: James Morris <jamorris@linux.microsoft.com>

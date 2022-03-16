@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: proc-make-the-proc_create-stubs-static-inlines-fix2-fix
+
+fix build
+
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: kernel test robot <lkp@intel.com>

@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: remove unnecessary PageTransTail check
+
+When we reach here, we're guaranteed to have non-compound page as thp is
+already splited.  Remove this unnecessary PageTransTail check.
+
+Link: https://lkml.kernel.org/r/20220218090118.1105-9-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

@@ -1,0 +1,16 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: mm/early_ioremap: declare early_memremap_pgprot_adjust()
+
+The mm/ directory can almost fully be built with W=1, which would help in
+local development.  One remaining issue is missing prototype for
+early_memremap_pgprot_adjust().
+
+Thus add a declaration for this function.  Use mm/internal.h instead of
+asm/early_ioremap.h to avoid missing type definitions and unnecessary
+exposure.
+
+Link: https://lkml.kernel.org/r/20220314165724.16071-2-vbabka@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>

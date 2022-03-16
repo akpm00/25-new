@@ -1,0 +1,24 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: linux/kthread.h: remove unused macros
+
+Ever since these macros were introduced in commit b56c0d8937e6 ("kthread:
+implement kthread_worker"), there has been precisely one user (commit
+4d115420707a, "NVMe: Async IO queue deletion"), and that user went away in
+2016 with db3cbfff5bcc ("NVMe: IO queue deletion re-write").
+
+Apart from being unused, these macros are also awkward to use (which may
+contribute to them not being used): Having a way to statically (or
+on-stack) allocating the storage for the struct kthread_worker itself
+doesn't help much, since obviously one needs to have some code for
+actually _spawning_ the worker thread, which must have error checking. 
+And these days we have the kthread_create_worker() interface which both
+allocates the struct kthread_worker and spawns the kthread.
+
+Link: https://lkml.kernel.org/r/20220314145343.494694-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Acked-by: Tejun Heo <tj@kernel.org>
+Acked-by: Petr Mladek <pmladek@suse.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>
+Cc: Cai Huoqing <caihuoqing@baidu.com>

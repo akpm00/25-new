@@ -1,0 +1,19 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm-damon-remove-some-no-need-func-definitions-in-damonh-file-fix
+
+mm-damon-remove-some-no-need-func-definitions-in-damonh-file.patch[1],
+which is merged in -mm but mainline yet, is making unnecessary function
+prototype position changes in the damon.h.  This could make later
+'git-blame' a little bit complex.  It also violates the 80 columns limit,
+which is not madated but preferred and all other code of DAMON is
+following.
+
+This commit fixes those.  This should be folded into the patch before it
+is sent to Linus.
+
+[1] https://lore.kernel.org/mm-commits/20211115174837.wvyS8FbLx%25akpm@linux-foundation.org/
+
+Link: https://lkml.kernel.org/r/20211118114827.20052-1-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Xin Hao <xhao@linux.alibaba.com>

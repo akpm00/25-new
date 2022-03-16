@@ -1,0 +1,82 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: add missing functions declarations to kasan.h
+
+KASAN is currently missing declarations for __asan_report* and __hwasan*
+functions.  This can lead to compiler warnings.
+
+Link: http://lkml.kernel.org/r/45b445a76a79208918f0cc44bfabebaea909b54d.1589297433.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: Leon Romanovsky <leon@kernel.org>
+Tested-by: Leon Romanovsky <leon@kernel.org>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kasan/kasan.h |   34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
+
+--- a/mm/kasan/kasan.h~kasan-add-missing-functions-declarations-to-kasanh
++++ a/mm/kasan/kasan.h
+@@ -212,8 +212,6 @@ static inline const void *arch_kasan_set
+ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark);
+ void __asan_register_globals(struct kasan_global *globals, size_t size);
+ void __asan_unregister_globals(struct kasan_global *globals, size_t size);
+-void __asan_loadN(unsigned long addr, size_t size);
+-void __asan_storeN(unsigned long addr, size_t size);
+ void __asan_handle_no_return(void);
+ void __asan_alloca_poison(unsigned long addr, size_t size);
+ void __asan_allocas_unpoison(const void *stack_top, const void *stack_bottom);
+@@ -228,6 +226,8 @@ void __asan_load8(unsigned long addr);
+ void __asan_store8(unsigned long addr);
+ void __asan_load16(unsigned long addr);
+ void __asan_store16(unsigned long addr);
++void __asan_loadN(unsigned long addr, size_t size);
++void __asan_storeN(unsigned long addr, size_t size);
+ 
+ void __asan_load1_noabort(unsigned long addr);
+ void __asan_store1_noabort(unsigned long addr);
+@@ -239,6 +239,21 @@ void __asan_load8_noabort(unsigned long
+ void __asan_store8_noabort(unsigned long addr);
+ void __asan_load16_noabort(unsigned long addr);
+ void __asan_store16_noabort(unsigned long addr);
++void __asan_loadN_noabort(unsigned long addr, size_t size);
++void __asan_storeN_noabort(unsigned long addr, size_t size);
++
++void __asan_report_load1_noabort(unsigned long addr);
++void __asan_report_store1_noabort(unsigned long addr);
++void __asan_report_load2_noabort(unsigned long addr);
++void __asan_report_store2_noabort(unsigned long addr);
++void __asan_report_load4_noabort(unsigned long addr);
++void __asan_report_store4_noabort(unsigned long addr);
++void __asan_report_load8_noabort(unsigned long addr);
++void __asan_report_store8_noabort(unsigned long addr);
++void __asan_report_load16_noabort(unsigned long addr);
++void __asan_report_store16_noabort(unsigned long addr);
++void __asan_report_load_n_noabort(unsigned long addr, size_t size);
++void __asan_report_store_n_noabort(unsigned long addr, size_t size);
+ 
+ void __asan_set_shadow_00(const void *addr, size_t size);
+ void __asan_set_shadow_f1(const void *addr, size_t size);
+@@ -247,4 +262,19 @@ void __asan_set_shadow_f3(const void *ad
+ void __asan_set_shadow_f5(const void *addr, size_t size);
+ void __asan_set_shadow_f8(const void *addr, size_t size);
+ 
++void __hwasan_load1_noabort(unsigned long addr);
++void __hwasan_store1_noabort(unsigned long addr);
++void __hwasan_load2_noabort(unsigned long addr);
++void __hwasan_store2_noabort(unsigned long addr);
++void __hwasan_load4_noabort(unsigned long addr);
++void __hwasan_store4_noabort(unsigned long addr);
++void __hwasan_load8_noabort(unsigned long addr);
++void __hwasan_store8_noabort(unsigned long addr);
++void __hwasan_load16_noabort(unsigned long addr);
++void __hwasan_store16_noabort(unsigned long addr);
++void __hwasan_loadN_noabort(unsigned long addr, size_t size);
++void __hwasan_storeN_noabort(unsigned long addr, size_t size);
++
++void __hwasan_tag_memory(unsigned long addr, u8 tag, unsigned long size);
++
+ #endif
+_

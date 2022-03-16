@@ -1,0 +1,22 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: drivers/gpu/drm/vmwgfx/vmwgfx_gem.c: printk fix
+
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/gpu/drm/vmwgfx/vmwgfx_gem.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_gem.c~drivers-gpu-drm-vmwgfx-vmwgfx_gemc-printk-fix
++++ a/drivers/gpu/drm/vmwgfx/vmwgfx_gem.c
+@@ -227,7 +227,7 @@ static void vmw_bo_print_info(int id, st
+ 		break;
+ 	}
+ 
+-	seq_printf(m, "\t\t0x%08x: %12ld bytes %s, type = %s",
++	seq_printf(m, "\t\t0x%08x: %12zd bytes %s, type = %s",
+ 		   id, bo->base.base.size, placement, type);
+ 	seq_printf(m, ", priority = %u, pin_count = %u, GEM refs = %d, TTM refs = %d",
+ 		   bo->base.priority,
+_

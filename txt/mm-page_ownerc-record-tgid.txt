@@ -1,0 +1,21 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: mm/page_owner.c: record tgid
+
+In a single-threaded process, the pid in kernel task_struct is the same as
+the tgid, which can mark the process of page allocation.  But in a
+multithreaded process, only the task_struct of the thread leader has the
+same pid as tgid, and the pids of other threads are different from tgid. 
+Therefore, tgid is recorded to provide effective information for debugging
+and data statistics of multithreaded programs.
+
+This can also be achieved by observing the task name (executable file
+name) for a specific process.  However, when the same program is started
+multiple times, the task name is the same and the tgid is different. 
+Therefore, in the debugging of multi-threaded programs, combined with the
+task name and tgid, more accurate runtime information of a certain run of
+the program can be obtained.
+
+Link: https://lkml.kernel.org/r/20220219180450.2399-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Rafael Aquini <aquini@redhat.com>

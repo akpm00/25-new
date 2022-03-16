@@ -1,0 +1,4 @@
+arch/alpha/include/uapi/asm/mman.h
+arch/mips/include/uapi/asm/mman.h
+arch/parisc/include/uapi/asm/mman.h
+arch/xtensa/include/uapi/asm/mman.h

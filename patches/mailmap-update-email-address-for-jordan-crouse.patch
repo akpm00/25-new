@@ -1,0 +1,30 @@
+From: Jordan Crouse <jordan@cosmicpenguin.net>
+Subject: mailmap: update email address for Jordan Crouse
+
+jcrouse at codeaurora.org has started bouncing.  Redirect to a more
+permanent address.
+
+Link: https://lkml.kernel.org/r/20210325143700.1490518-1-jordan@cosmicpenguin.net
+Signed-off-by: Jordan Crouse <jordan@cosmicpenguin.net>
+Cc: Alexander Lobakin <alobakin@pm.me>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ .mailmap |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/.mailmap~mailmap-update-email-address-for-jordan-crouse
++++ a/.mailmap
+@@ -168,6 +168,7 @@ Johan Hovold <johan@kernel.org> <jhovold
+ Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+ John Stultz <johnstul@us.ibm.com>
++Jordan Crouse <jordan@cosmicpenguin.net> <jcrouse@codeaurora.org>
+ <josh@joshtriplett.org> <josh@freedesktop.org>
+ <josh@joshtriplett.org> <josh@kernel.org>
+ <josh@joshtriplett.org> <josht@linux.vnet.ibm.com>
+_

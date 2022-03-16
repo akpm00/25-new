@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-list_lru-replace-linear-array-with-xarray-fix
+
+remove unused local
+
+mm/list_lru.c: In function 'memcg_list_lru_alloc':
+mm/list_lru.c:477:32: error: unused variable 'mlrus' [-Werror=unused-variable]
+  477 |         struct list_lru_memcg *mlrus;
+      |                                ^~~~~
+
+Cc: Muchun Song <songmuchun@bytedance.com>

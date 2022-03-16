@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-rmap-fix-potential-batched-tlb-flush-race-fix
+
+tweak comments
+
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>

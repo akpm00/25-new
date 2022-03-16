@@ -1,0 +1,28 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: fixup proc-pid-vm test
+
+Silly sizeof(pointer) vs sizeof(uint8_t[]) bug.
+
+Link: http://lkml.kernel.org/r/20190414123009.GA12971@avx2
+Fixes: e483b0208784 ("proc: test /proc/*/maps, smaps, smaps_rollup, statm")
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/proc/proc-pid-vm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/tools/testing/selftests/proc/proc-pid-vm.c~proc-fixup-proc-pid-vm-test
++++ a/tools/testing/selftests/proc/proc-pid-vm.c
+@@ -187,8 +187,8 @@ static int make_exe(const uint8_t *paylo
+ 	ph.p_offset = 0;
+ 	ph.p_vaddr = VADDR;
+ 	ph.p_paddr = 0;
+-	ph.p_filesz = sizeof(struct elf64_hdr) + sizeof(struct elf64_phdr) + sizeof(payload);
+-	ph.p_memsz = sizeof(struct elf64_hdr) + sizeof(struct elf64_phdr) + sizeof(payload);
++	ph.p_filesz = sizeof(struct elf64_hdr) + sizeof(struct elf64_phdr) + len;
++	ph.p_memsz = sizeof(struct elf64_hdr) + sizeof(struct elf64_phdr) + len;
+ 	ph.p_align = 4096;
+ 
+ 	fd = openat(AT_FDCWD, "/tmp", O_WRONLY|O_EXCL|O_TMPFILE, 0700);
+_

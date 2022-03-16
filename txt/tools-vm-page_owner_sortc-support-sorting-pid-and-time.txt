@@ -1,0 +1,29 @@
+From: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support sorting pid and time
+
+When viewing the page owner information, we expect that the information
+can be sorted by PID, so that we can quickly combine PID with the program
+to check the information together.
+
+We also expect that the information can be sorted by time.  Time sorting
+helps to view the running status of the program according to the time
+interval when the program hangs up.
+
+Finally, we hope to pass the page_ owner_ Sort.  C can reduce part of the
+output and only output the plate information whose memory has not been
+released, which can make us locate the problem of the program faster. 
+Therefore, the following adjustments have been made:
+
+1. Add the static functions search_pattern and check_regcomp to
+   improve the cleanliness.
+
+2. Add member attributes and their corresponding sorting methods.  In
+   terms of comparison time, int will overflow because the data of ull is
+   too large, so the ternary operator is used
+
+3. Add the -f parameter to filter out the information of blocks whose
+   memory has not been released
+
+Link: https://lkml.kernel.org/r/20211206165653.5093-1-zhaochongxi2019@email.szu.edu.cn
+Signed-off-by: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Reviewed-by: Sean Anderson <seanga2@gmail.com>

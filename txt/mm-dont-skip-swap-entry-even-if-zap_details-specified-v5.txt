@@ -1,0 +1,9 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm-dont-skip-swap-entry-even-if-zap_details-specified-v5
+
+comment tweaks
+
+Link: https://lkml.kernel.org/r/20220217060746.71256-2-peterx@redhat.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>

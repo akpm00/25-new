@@ -1,0 +1,16 @@
+From: Takashi Iwai <tiwai@suse.de>
+Subject: lis3: add axes module parameter for custom axis-mapping
+
+The axis-mapping of lis3dev device on many (rather most) HP machines
+doesn't follow the standard.  When each new model appears, users need to
+adjust again.  Testing this requires the rebuild of kernel, thus it's not
+trivial for end-users.
+
+This patch adds a module parameter "axes" to allow a custom axis-mapping
+without patching and recompiling the kernel driver.  User can pass the
+parameter such as axes=3,2,1.  Also it can be changed via sysfs.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Eric Piel <eric.piel@tremplin-utc.net>
+Cc: Jean Delvare <khali@linux-fr.org>
+Cc: Guenter Roeck <guenter.roeck@ericsson.com>

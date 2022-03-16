@@ -1,0 +1,20 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/migration: add trace events for base page and HugeTLB migrations
+
+This adds two trace events for base page and HugeTLB page migrations. 
+These events, closely follow the implementation details like setting and
+removing of PTE migration entries, which are essential operations for
+migration.  The new CREATE_TRACE_POINTS in <mm/rmap.c> covers both
+<events/migration.h> and <events/tlb.h> based trace events.  Hence drop
+redundant CREATE_TRACE_POINTS from other places which could have otherwise
+conflicted during build.
+
+Link: https://lkml.kernel.org/r/1643368182-9588-3-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>

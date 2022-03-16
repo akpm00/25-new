@@ -1,0 +1,34 @@
+From: Joel Savitz <jsavitz@redhat.com>
+Subject: mm/oom_kill: wake futex waiters before annihilating victim shared mutex
+
+In the case that two or more processes share a futex located within a
+shared mmaped region, such as a process that shares a lock between itself
+and a number of child processes, we have observed that when a process
+holding the lock is oom killed, at least one waiter is never alerted to
+this new development and simply continues to wait.
+
+This is visible via pthreads by checking the __owner field of the
+pthread_mutex_t structure within a waiting process, perhaps with gdb.
+
+We identify reproduction of this issue by checking a waiting process of a
+test program and viewing the contents of the pthread_mutex_t, taking note
+of the value in the owner field, and then checking dmesg to see if the
+owner has already been killed.
+
+This issue can be tricky to reproduce, but with the modifications of this
+small patch, I have found it to be impossible to reproduce.  There may be
+additional considerations that I have not taken into account in this patch
+and I welcome any comments and criticism.
+
+Link: https://lkml.kernel.org/r/20211208181714.880312-1-jsavitz@redhat.com
+Co-developed-by: Nico Pache <npache@redhat.com>
+Signed-off-by: Nico Pache <npache@redhat.com>
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Darren Hart <dvhart@infradead.org>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Andr Almeida <andrealmeid@collabora.com>
+Cc: Michal Hocko <mhocko@suse.com>

@@ -1,0 +1,39 @@
+From: Jann Horn <jannh@google.com>
+Subject: mm: fix vm_fault_t cast in VM_FAULT_GET_HINDEX()
+
+Symmetrically to VM_FAULT_SET_HINDEX(), we need a force-cast in
+VM_FAULT_GET_HINDEX() to tell sparse that this is intentional.
+
+Sparse complains about the current code when building a kernel with
+CONFIG_MEMORY_FAILURE:
+
+arch/x86/mm/fault.c:1058:53: warning: restricted vm_fault_t degrades to
+integer
+
+Link: http://lkml.kernel.org/r/20190327204117.35215-1-jannh@google.com
+Fixes: 3d3539018d2c ("mm: create the new vm_fault_t type")
+Signed-off-by: Jann Horn <jannh@google.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Rik van Riel <riel@surriel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm_types.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/linux/mm_types.h~mm-fix-vm_fault_t-cast-in-vm_fault_get_hindex
++++ a/include/linux/mm_types.h
+@@ -671,7 +671,7 @@ enum vm_fault_reason {
+ 
+ /* Encode hstate index for a hwpoisoned large page */
+ #define VM_FAULT_SET_HINDEX(x) ((__force vm_fault_t)((x) << 16))
+-#define VM_FAULT_GET_HINDEX(x) (((x) >> 16) & 0xf)
++#define VM_FAULT_GET_HINDEX(x) (((__force unsigned int)(x) >> 16) & 0xf)
+ 
+ #define VM_FAULT_ERROR (VM_FAULT_OOM | VM_FAULT_SIGBUS |	\
+ 			VM_FAULT_SIGSEGV | VM_FAULT_HWPOISON |	\
+_

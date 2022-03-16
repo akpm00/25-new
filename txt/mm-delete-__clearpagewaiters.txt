@@ -1,0 +1,22 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm: delete __ClearPageWaiters()
+
+The PG_waiters bit is not included in PAGE_FLAGS_CHECK_AT_FREE, and
+vmscan.c's free_unref_page_list() callers rely on that not to generate
+bad_page() alerts.  So __page_cache_release(), put_pages_list() and
+release_pages() (and presumably copy-and-pasted free_zone_device_page())
+are redundant and misleading to make a special point of clearing it (as
+the "__" implies, it could only safely be used on the freeing path).
+
+Delete __ClearPageWaiters().  Remark on this in one of the "possible"
+comments in folio_wake_bit(), and delete the superfluous comments.
+
+Link: https://lkml.kernel.org/r/3eafa969-5b1a-accf-88fe-318784c791a@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Tested-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Michal Hocko <mhocko@suse.com>

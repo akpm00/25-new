@@ -1,0 +1,20 @@
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Subject: userfaultfd/selftests: enable hugetlb remap and remove event testing
+
+With MADV_DONTNEED support added to hugetlb mappings, mremap testing can
+also be enabled for hugetlb.
+
+Modify the tests to use madvise MADV_DONTNEED and MADV_REMOVE instead of
+fallocate hole puch for releasing hugetlb pages.
+
+Link: https://lkml.kernel.org/r/20220215002348.128823-4-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>

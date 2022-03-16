@@ -1,0 +1,49 @@
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: m68k/bitops: always include <asm-generic/bitops/find.h>
+
+Currently <asm/bitops.h> only includes <asm-generic/bitops/find.h> if
+CONFIG_CPU_HAS_NO_BITFIELDS=y.  This used to be fine, as the code for
+CONFIG_CPU_HAS_NO_BITFIELDS=n implemented everything provided by
+<asm-generic/bitops/find.h>.
+
+However, e49c614e6b37254b ("lib: optimize cpumask_next_and()") added
+find_next_and_bit(), which is now not available if
+CONFIG_CPU_HAS_NO_BITFIELDS=y:
+
+    lib/find_bit_benchmark.c: In function `test_find_next_and_bit':
+    lib/find_bit_benchmark.c:115: error: implicit declaration of function `find_next_and_bit'
+
+Move the inclusion of <asm-generic/bitops/find.h> outside the #ifdef to
+fix this.
+
+Link: http://lkml.kernel.org/r/1512556816-28627-1-git-send-email-geert@linux-m68k.org
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Cc: Clement Courbet <courbet@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/m68k/include/asm/bitops.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff -puN arch/m68k/include/asm/bitops.h~m68k-bitops-always-include-asm-generic-bitops-findh arch/m68k/include/asm/bitops.h
+--- a/arch/m68k/include/asm/bitops.h~m68k-bitops-always-include-asm-generic-bitops-findh
++++ a/arch/m68k/include/asm/bitops.h
+@@ -311,7 +311,6 @@ static inline int bfchg_mem_test_and_cha
+  *	functions.
+  */
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+-#include <asm-generic/bitops/find.h>
+ #include <asm-generic/bitops/ffz.h>
+ #else
+ 
+@@ -441,6 +440,8 @@ static inline unsigned long ffz(unsigned
+ 
+ #endif
+ 
++#include <asm-generic/bitops/find.h>
++
+ #ifdef __KERNEL__
+ 
+ #if defined(CONFIG_CPU_HAS_NO_BITFIELDS)
+_

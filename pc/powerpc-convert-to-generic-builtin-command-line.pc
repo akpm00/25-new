@@ -1,0 +1,3 @@
+arch/powerpc/Kconfig
+arch/powerpc/kernel/prom_init.c
+arch/powerpc/kernel/prom_init_check.sh

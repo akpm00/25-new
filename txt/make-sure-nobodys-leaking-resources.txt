@@ -1,0 +1,14 @@
+From: Matthew Wilcox <matthew@wil.cx>
+Subject: Make sure nobody's leaking resources
+
+Currently, releasing a resource also releases all of its children.  That
+made sense when request_resource was the main method of dividing up the
+memory map.  With the increased use of insert_resource, it seems to me that
+we should instead reparent the newly orphaned resources.  Before we do
+that, let's make sure that nobody's actually relying on the current
+semantics.
+
+Signed-off-by: Matthew Wilcox <matthew@wil.cx>
+Cc: Greg KH <greg@kroah.com>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>

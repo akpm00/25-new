@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kasan-improve-vmalloc-tests-fix-3-fix
+
+fix build
+
+lib/test_kasan.c: In function 'vmalloc_helpers_tags':
+lib/test_kasan.c:1073:13: error: unused variable 'rv' [-Werror=unused-variable]
+ 1073 |         int rv;
+      |             ^~
+cc1: all warnings being treated as errors
+
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: kernel test robot <lkp@intel.com>
+Cc: Marco Elver <elver@google.com>

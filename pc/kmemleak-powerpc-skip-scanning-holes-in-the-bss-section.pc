@@ -1,0 +1,2 @@
+arch/powerpc/kernel/kvm.c
+mm/kmemleak.c

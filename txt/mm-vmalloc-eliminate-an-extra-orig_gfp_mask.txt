@@ -1,0 +1,19 @@
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Subject: mm/vmalloc: eliminate an extra orig_gfp_mask
+
+That extra variable has been introduced just for keeping an original
+passed gfp_mask because it is updated with __GFP_NOWARN on entry, thus
+error handling messages were broken.
+
+Instead we can keep an original gfp_mask without modifying it and add an
+extra __GFP_NOWARN flag together with gfp_mask as a parameter to the
+vm_area_alloc_pages() function.  It will make it less confused.
+
+Link: https://lkml.kernel.org/r/20220119143540.601149-3-urezki@gmail.com
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>

@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: panic-use-error_report_end-tracepoint-on-warnings-fix
+
+add comma to enum list, per Andy.
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Marco Elver <elver@google.com>

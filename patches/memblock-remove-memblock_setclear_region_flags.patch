@@ -1,0 +1,60 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: memblock: remove memblock_{set,clear}_region_flags
+
+The memblock API provides dedicated helpers to set or clear a flag on a
+memory region, e.g.  memblock_{mark,clear}_hotplug().
+
+The memblock_{set,clear}_region_flags() functions are used only by the
+memblock internal function that adjusts the region flags.  Drop these
+functions and use open-coded implementation instead.
+
+Link: http://lkml.kernel.org/r/1549455025-17706-2-git-send-email-rppt@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/include/linux/memblock.h~memblock-remove-memblock_setclear_region_flags
++++ a/include/linux/memblock.h
+@@ -273,18 +273,6 @@ void __next_mem_pfn_range(int *idx, int
+ 	for_each_mem_range_rev(i, &memblock.memory, &memblock.reserved,	\
+ 			       nid, flags, p_start, p_end, p_nid)
+ 
+-static inline void memblock_set_region_flags(struct memblock_region *r,
+-					     enum memblock_flags flags)
+-{
+-	r->flags |= flags;
+-}
+-
+-static inline void memblock_clear_region_flags(struct memblock_region *r,
+-					       enum memblock_flags flags)
+-{
+-	r->flags &= ~flags;
+-}
+-
+ #ifdef CONFIG_HAVE_MEMBLOCK_NODE_MAP
+ int memblock_set_node(phys_addr_t base, phys_addr_t size,
+ 		      struct memblock_type *type, int nid);
+--- a/mm/memblock.c~memblock-remove-memblock_setclear_region_flags
++++ a/mm/memblock.c
+@@ -858,11 +858,14 @@ static int __init_memblock memblock_setc
+ 	if (ret)
+ 		return ret;
+ 
+-	for (i = start_rgn; i < end_rgn; i++)
++	for (i = start_rgn; i < end_rgn; i++) {
++		struct memblock_region *r = &type->regions[i];
++
+ 		if (set)
+-			memblock_set_region_flags(&type->regions[i], flag);
++			r->flags |= flag;
+ 		else
+-			memblock_clear_region_flags(&type->regions[i], flag);
++			r->flags &= ~flag;
++	}
+ 
+ 	memblock_merge_regions(type);
+ 	return 0;
+_

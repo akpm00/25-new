@@ -1,0 +1,33 @@
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: lib: bitmap: fix many kernel-doc warnings
+
+Fix kernel-doc warings in lib/bitmap.c:
+
+../lib/bitmap.c:498: warning: Function parameter or member 'buf' not described in 'bitmap_print_to_buf'
+../lib/bitmap.c:498: warning: Function parameter or member 'maskp' not described in 'bitmap_print_to_buf'
+../lib/bitmap.c:498: warning: Function parameter or member 'nmaskbits' not described in 'bitmap_print_to_buf'
+../lib/bitmap.c:498: warning: Function parameter or member 'off' not described in 'bitmap_print_to_buf'
+../lib/bitmap.c:498: warning: Function parameter or member 'count' not described in 'bitmap_print_to_buf'
+../lib/bitmap.c:561: warning: contents before sections
+../lib/bitmap.c:606: warning: Function parameter or member 'buf' not described in 'bitmap_print_list_to_buf'
+../lib/bitmap.c:606: warning: Function parameter or member 'maskp' not described in 'bitmap_print_list_to_buf'
+../lib/bitmap.c:606: warning: Function parameter or member 'nmaskbits' not described in 'bitmap_print_list_to_buf'
+../lib/bitmap.c:606: warning: Function parameter or member 'off' not described in 'bitmap_print_list_to_buf'
+../lib/bitmap.c:606: warning: Function parameter or member 'count' not described in 'bitmap_print_list_to_buf'
+../lib/bitmap.c:819: warning: missing initial short description on line:
+ * bitmap_parselist_user()
+
+This still leaves 15 warnings for function return values not described,
+similar to this one:
+bitmap.c:890: warning: No description found for return value of 'bitmap_parse'
+
+Link: https://lkml.kernel.org/r/20220306065823.5153-1-rdunlap@infradead.org
+Fixes: 1fae562983ca ("cpumask: introduce cpumap_print_list/bitmask_to_buf to support large bitmask and list")
+Fixes: 4b060420a596 ("bitmap, irq: add smp_affinity_list interface to /proc/irq")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Tian Tao <tiantao6@hisilicon.com>
+Cc: Mike Travis <mike.travis@hpe.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>

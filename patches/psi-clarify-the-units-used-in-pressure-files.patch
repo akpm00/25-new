@@ -1,0 +1,43 @@
+From: Waiman Long <longman@redhat.com>
+Subject: psi: clarify the units used in pressure files
+
+The output of the PSI files show a bunch of numbers with no unit.  The
+psi.txt documentation file also does not indicate what units are used. 
+One can only find out by looking at the source code.  The units are
+percentage for the averages and useconds for the total.  Make the
+information easier to find by documenting the units in psi.txt.
+
+Link: http://lkml.kernel.org/r/20190402193810.3450-1-longman@redhat.com
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/accounting/psi.txt |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+--- a/Documentation/accounting/psi.txt~psi-clarify-the-units-used-in-pressure-files
++++ a/Documentation/accounting/psi.txt
+@@ -56,12 +56,12 @@ situation from a state where some tasks
+ still doing productive work. As such, time spent in this subset of the
+ stall state is tracked separately and exported in the "full" averages.
+ 
+-The ratios are tracked as recent trends over ten, sixty, and three
+-hundred second windows, which gives insight into short term events as
+-well as medium and long term trends. The total absolute stall time is
+-tracked and exported as well, to allow detection of latency spikes
+-which wouldn't necessarily make a dent in the time averages, or to
+-average trends over custom time frames.
++The ratios (in %) are tracked as recent trends over ten, sixty, and
++three hundred second windows, which gives insight into short term events
++as well as medium and long term trends. The total absolute stall time
++(in us) is tracked and exported as well, to allow detection of latency
++spikes which wouldn't necessarily make a dent in the time averages,
++or to average trends over custom time frames.
+ 
+ Cgroup2 interface
+ =================
+_

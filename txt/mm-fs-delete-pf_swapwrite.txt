@@ -1,0 +1,19 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/fs: delete PF_SWAPWRITE
+
+PF_SWAPWRITE has been redundant since v3.2 commit ee72886d8ed5 ("mm:
+vmscan: do not writeback filesystem pages in direct reclaim").
+
+Coincidentally, NeilBrown's current patch "remove inode_congested()"
+deletes may_write_to_inode(), which appeared to be the one function which
+took notice of PF_SWAPWRITE.  But if you study the old logic, and the
+conditions under which may_write_to_inode() was called, you discover that
+flag and function have been pointless for a decade.
+
+Link: https://lkml.kernel.org/r/75e80e7-742d-e3bd-531-614db8961e4@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Jan Kara <jack@suse.de>
+Cc: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Matthew Wilcox <willy@infradead.org>

@@ -1,0 +1,8 @@
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: mm-defer-kmemleak-object-creation-of-module_alloc-v4
+
+fix build
+
+Link: https://lkml.kernel.org/r/20211125080307.27225-1-wangkefeng.wang@huawei.com
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

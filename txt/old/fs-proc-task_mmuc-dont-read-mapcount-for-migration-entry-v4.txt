@@ -1,0 +1,18 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: fs-proc-task_mmuc-dont-read-mapcount-for-migration-entry-v4
+
+v4: * s/Treated/Treat per David
+    * Collected acked-by tag from David
+v3: * Fixed the fix tag, the one used by v2 was not accurate
+    * Added comment about the risk calling page_mapcount() per David
+    * Fix pagemap
+
+Link: https://lkml.kernel.org/r/20220203182641.824731-1-shy828301@gmail.com
+Fixes: e9b61f19858a ("thp: reintroduce split_huge_page()")
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Reported-by: syzbot+1f52b3a18d5633fa7f82@syzkaller.appspotmail.com
+Acked-by: David Hildenbrand <david@redhat.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: <stable@vger.kernel.org>

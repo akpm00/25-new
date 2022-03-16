@@ -1,0 +1,14 @@
+From: Shakeel Butt <shakeelb@google.com>
+Subject: memcg: replace in_interrupt() with !in_task()
+
+Replace the deprecated in_interrupt() with !in_task() because
+in_interrupt() returns true for BH disabled even if the call happens in
+the task context.  in_task() is the right interface to differentiate task
+context from NMI, hard IRQ and softirq contexts.
+
+Link: https://lkml.kernel.org/r/20220127162636.3461256-1-shakeelb@google.com
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Vasily Averin <vvs@virtuozzo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>

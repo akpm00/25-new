@@ -1,0 +1,17 @@
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: pci: test for unexpectedly disabled bridges
+
+The all-ones value is not just a "device didn't exist" case, it's also
+potentially a quite valid value, so not restoring it would be wrong.
+
+What *would* be interesting is to hear where the bad values came from in
+the first place.  It sounds like the device state is saved after the PCI
+bus controller in front of the device has been crapped on, resulting in the
+PCI config cycles never reaching the device at all.
+
+Something along this patch (together with suspend/resume debugging output)
+migth help pinpoint it.  But it really sounds like something totally
+brokenly turned off the PCI bridge (some ACPI shutdown crud?  I wouldn't be
+entirely surprised)
+
+Cc: Greg KH <greg@kroah.com>

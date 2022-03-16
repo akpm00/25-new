@@ -1,0 +1,65 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, slab: make freelist stored without tags
+
+Similarly to 680c37ae ("kasan, slub: move kasan_poison_slab hook before
+page_address"), move kasan_poison_slab() before alloc_slabmgmt(), which
+calls page_address(), to make page_address() return value to be
+non-tagged.  This, combined with calling kasan_reset_tag() for off-slab
+slab management object, leads to freelist being stored non-tagged.
+
+Link: http://lkml.kernel.org/r/dfb53b44a4d00de3879a05a9f04c1f55e584f7a1.1550602886.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Tested-by: Qian Cai <cai@lca.pw>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgeniy Stepanov <eugenis@google.com>
+Cc: Kostya Serebryany <kcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/slab.c~kasan-slab-make-freelist-stored-without-tags
++++ a/mm/slab.c
+@@ -2359,7 +2359,7 @@ static void *alloc_slabmgmt(struct kmem_
+ 	void *freelist;
+ 	void *addr = page_address(page);
+ 
+-	page->s_mem = kasan_reset_tag(addr) + colour_off;
++	page->s_mem = addr + colour_off;
+ 	page->active = 0;
+ 
+ 	if (OBJFREELIST_SLAB(cachep))
+@@ -2368,6 +2368,7 @@ static void *alloc_slabmgmt(struct kmem_
+ 		/* Slab management obj is off-slab. */
+ 		freelist = kmem_cache_alloc_node(cachep->freelist_cache,
+ 					      local_flags, nodeid);
++		freelist = kasan_reset_tag(freelist);
+ 		if (!freelist)
+ 			return NULL;
+ 	} else {
+@@ -2681,6 +2682,13 @@ static struct page *cache_grow_begin(str
+ 
+ 	offset *= cachep->colour_off;
+ 
++	/*
++	 * Call kasan_poison_slab() before calling alloc_slabmgmt(), so
++	 * page_address() in the latter returns a non-tagged pointer,
++	 * as it should be for slab pages.
++	 */
++	kasan_poison_slab(page);
++
+ 	/* Get slab management. */
+ 	freelist = alloc_slabmgmt(cachep, page, offset,
+ 			local_flags & ~GFP_CONSTRAINT_MASK, page_node);
+@@ -2689,7 +2697,6 @@ static struct page *cache_grow_begin(str
+ 
+ 	slab_map_pages(cachep, page, freelist);
+ 
+-	kasan_poison_slab(page);
+ 	cache_init_objs(cachep, page);
+ 
+ 	if (gfpflags_allow_blocking(local_flags))
+_

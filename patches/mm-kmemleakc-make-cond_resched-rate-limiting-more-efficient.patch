@@ -1,0 +1,32 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/kmemleak.c: make cond_resched() rate-limiting more efficient
+
+bde5f6bc68db5 ("kmemleak: add scheduling point to kmemleak_scan()") tries
+to rate-limit the frequency of cond_resched() calls, but does it in a way
+which might incur an expensive division operation in the inner loop. 
+Simplify this.
+
+Fixes: bde5f6bc68db5 ("kmemleak: add scheduling point to kmemleak_scan()")
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Yisheng Xie <xieyisheng1@huawei.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kmemleak.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN mm/kmemleak.c~mm-kmemleakc-make-cond_resched-rate-limiting-more-efficient mm/kmemleak.c
+--- a/mm/kmemleak.c~mm-kmemleakc-make-cond_resched-rate-limiting-more-efficient
++++ a/mm/kmemleak.c
+@@ -1523,7 +1523,7 @@ static void kmemleak_scan(void)
+ 			if (page_count(page) == 0)
+ 				continue;
+ 			scan_block(page, page + 1, NULL);
+-			if (!(pfn % (MAX_SCAN_SIZE / sizeof(*page))))
++			if (!(pfn & 63))
+ 				cond_resched();
+ 		}
+ 	}
+_

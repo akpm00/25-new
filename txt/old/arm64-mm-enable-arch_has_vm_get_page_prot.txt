@@ -1,0 +1,14 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: arm64/mm: enable ARCH_HAS_VM_GET_PAGE_PROT
+
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT.  Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.  This also localizes
+both arch_filter_pgprot and arch_vm_get_page_prot() helpers, unsubscribing
+from ARCH_HAS_FILTER_PGPROT as well.  Moved both these localized functions
+near vm_get_page_prot().
+
+Link: https://lkml.kernel.org/r/1645425519-9034-6-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>

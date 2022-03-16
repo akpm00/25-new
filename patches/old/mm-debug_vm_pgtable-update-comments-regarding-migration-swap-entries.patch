@@ -1,0 +1,53 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/debug_vm_pgtable: update comments regarding migration swap entries
+
+The commit 4dd845b5a3e5 ("mm/swapops: rework swap entry manipulation code")
+had changed migtation entry related helpers. Just update debug_vm_pgatble()
+synced documentation to reflect those changes.
+
+Link: https://lkml.kernel.org/r/1641880417-24848-1-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/vm/arch_pgtable_helpers.rst |   14 +++++++-------
+ mm/debug_vm_pgtable.c                     |    4 ++--
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+--- a/Documentation/vm/arch_pgtable_helpers.rst~mm-debug_vm_pgtable-update-comments-regarding-migration-swap-entries
++++ a/Documentation/vm/arch_pgtable_helpers.rst
+@@ -247,12 +247,12 @@ SWAP Page Table Helpers
+ | __swp_to_pmd_entry        | Creates a mapped PMD from a swapped entry (arch) |
+ +---------------------------+--------------------------------------------------+
+ | is_migration_entry        | Tests a migration (read or write) swapped entry  |
+-+---------------------------+--------------------------------------------------+
+-| is_write_migration_entry  | Tests a write migration swapped entry            |
+-+---------------------------+--------------------------------------------------+
+-| make_migration_entry_read | Converts into read migration swapped entry       |
+-+---------------------------+--------------------------------------------------+
+-| make_migration_entry      | Creates a migration swapped entry (read or write)|
+-+---------------------------+--------------------------------------------------+
+++-------------------------------+----------------------------------------------+
++| is_writable_migration_entry   | Tests a write migration swapped entry        |
+++-------------------------------+----------------------------------------------+
++| make_readable_migration_entry | Creates a read migration swapped entry       |
+++-------------------------------+----------------------------------------------+
++| make_writable_migration_entry | Creates a write migration swapped entry      |
+++-------------------------------+----------------------------------------------+
+ 
+ [1] https://lore.kernel.org/linux-mm/20181017020930.GN30832@redhat.com/
+--- a/mm/debug_vm_pgtable.c~mm-debug_vm_pgtable-update-comments-regarding-migration-swap-entries
++++ a/mm/debug_vm_pgtable.c
+@@ -888,8 +888,8 @@ static void __init swap_migration_tests(
+ 	pr_debug("Validating swap migration\n");
+ 
+ 	/*
+-	 * make_migration_entry() expects given page to be
+-	 * locked, otherwise it stumbles upon a BUG_ON().
++	 * make_[readable|writable]_migration_entry() expects given page to
++	 * be locked, otherwise it stumbles upon a BUG_ON().
+ 	 */
+ 	__SetPageLocked(page);
+ 	swp = make_writable_migration_entry(page_to_pfn(page));
+_

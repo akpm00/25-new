@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: arch/x86/include/asm/pgtable.h needs spinlock.h
+
+In file included from ./include/linux/pgtable.h:6,
+                 from ./include/linux/kasan.h:30,
+                 from mm/kasan/common.c:14:
+./arch/x86/include/asm/pgtable.h:56:8: error: unknown type name 'spinlock_t'
+   56 | extern spinlock_t pgd_lock;
+      |        ^~~~~~~~~~
+

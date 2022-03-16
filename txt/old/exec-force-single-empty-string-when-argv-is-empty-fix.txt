@@ -1,0 +1,18 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: exec: Fix min/max typo in stack space calculation
+
+When handling the argc == 0 case, the stack space calculation should be
+using max() not min().
+
+Link: https://lkml.kernel.org/r/20220201190700.3147041-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+Cc: Ariadne Conill <ariadne@dereferenced.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Yang Yingliang <yangyingliang@huawei.com>

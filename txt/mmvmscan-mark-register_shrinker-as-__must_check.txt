@@ -1,0 +1,16 @@
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: mm,vmscan: mark register_shrinker() as __must_check
+
+There are users not checking for register_shrinker() failure.  Continuing
+with ignoring failure can lead to later oops at unregister_shrinker().
+
+Link: http://lkml.kernel.org/r/1511265757-15563-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Shaohua Li <shli@fb.com>
+Cc: Mike Snitzer <snitzer@redhat.com>

@@ -1,0 +1,7 @@
+From: Jan Kara <jack@suse.cz>
+Subject: mm-migrate-drop-unused-argument-of-migrate_page_move_mapping-fix
+
+fix expected_page_refs()
+
+Link: http://lkml.kernel.org/r/20181217131710.GB8611@quack2.suse.cz
+Cc: Mel Gorman <mgorman@techsingularity.net>

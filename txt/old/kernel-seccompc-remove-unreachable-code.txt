@@ -1,0 +1,13 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernel/seccomp.c: remove unreachable code
+
+kernel/seccomp.c:1321 __secure_computing() warn: ignoring unreachable code.
+
+do_exit() is __noreturn.  And if it does return, we fall into the BUG(),
+which seems very appropriate.
+
+Link: https://lkml.kernel.org/r/622aa69f.XI8McBWG4GX/YDab%25lkp@intel.com
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Will Drewry <wad@chromium.org>
+Cc: Andy Lutomirski <luto@amacapital.net>

@@ -1,0 +1,13 @@
+From: Joe Perches <joe@perches.com>
+Subject: kernel/resource.c: convert printks to pr_<level>
+
+Use pr_<level> to get the output prefixed by the existing #define pr_fmt
+
+Miscellanea:
+
+o Convert bare printk to pr_info
+o Reduce printk(KERN_WARNING to pr_info as the log level seems better
+
+Link: http://lkml.kernel.org/r/2a72a19c81b7e57c044c583452127b453a1a455c.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>

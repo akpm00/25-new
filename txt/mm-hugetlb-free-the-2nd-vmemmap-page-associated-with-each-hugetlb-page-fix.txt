@@ -1,0 +1,8 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm-hugetlb-free-the-2nd-vmemmap-page-associated-with-each-hugetlb-page-fix
+
+restore lost comment changes
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Joao Martins <joao.m.martins@oracle.com>

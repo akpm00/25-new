@@ -1,0 +1,36 @@
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: lib/test_debug_virtual.c: fix build failure
+
+On several arches, virt_to_phys() is in io.h
+
+Build fails without it:
+
+  CC      lib/test_debug_virtual.o
+lib/test_debug_virtual.c: In function 'test_debug_virtual_init':
+lib/test_debug_virtual.c:26:7: error: implicit declaration of function 'virt_to_phys' [-Werror=implicit-function-declaration]
+  pa = virt_to_phys(va);
+       ^
+
+Link: http://lkml.kernel.org/r/40d63adb6058b1fbb4082ca6f15225cb6e76bd62.1544429175.git.christophe.leroy@c-s.fr
+Fixes: e4dace361552 ("lib: add test module for CONFIG_DEBUG_VIRTUAL")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Colin King <colin.king@canonical.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/test_debug_virtual.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/lib/test_debug_virtual.c~lib-fix-build-failure-in-config_debug_virtual-test
++++ a/lib/test_debug_virtual.c
+@@ -5,6 +5,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/slab.h>
+ #include <linux/sizes.h>
++#include <linux/io.h>
+ 
+ #include <asm/page.h>
+ #ifdef CONFIG_MIPS
+_

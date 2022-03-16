@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: linux-typesh-remove-unnecessary-__bitwise__-fix
+
+change the tools/include/linux/types.h definition also
+
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>

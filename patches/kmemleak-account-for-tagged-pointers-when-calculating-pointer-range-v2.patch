@@ -1,0 +1,100 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kmemleak: account for tagged pointers when calculating pointer range
+
+kmemleak keeps two global variables, min_addr and max_addr, which store
+the range of valid (encountered by kmemleak) pointer values, which it
+later uses to speed up pointer lookup when scanning blocks.
+
+With tagged pointers this range will get bigger than it needs to be.  This
+patch makes kmemleak untag pointers before saving them to min_addr and
+max_addr and when performing a lookup.
+
+Link: http://lkml.kernel.org/r/16e887d442986ab87fe87a755815ad92fa431a5f.1550066133.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Tested-by: Qian Cai <cai@lca.pw>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgeniy Stepanov <eugenis@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Kostya Serebryany <kcc@google.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/kmemleak.c~kmemleak-account-for-tagged-pointers-when-calculating-pointer-range-v2
++++ a/mm/kmemleak.c
+@@ -574,6 +574,7 @@ static struct kmemleak_object *create_ob
+ 	unsigned long flags;
+ 	struct kmemleak_object *object, *parent;
+ 	struct rb_node **link, *rb_parent;
++	unsigned long untagged_ptr;
+ 
+ 	object = kmem_cache_alloc(object_cache, gfp_kmemleak_mask(gfp));
+ 	if (!object) {
+@@ -619,8 +620,9 @@ static struct kmemleak_object *create_ob
+ 
+ 	write_lock_irqsave(&kmemleak_lock, flags);
+ 
+-	min_addr = min(min_addr, ptr);
+-	max_addr = max(max_addr, ptr + size);
++	untagged_ptr = (unsigned long)kasan_reset_tag((void *)ptr);
++	min_addr = min(min_addr, untagged_ptr);
++	max_addr = max(max_addr, untagged_ptr + size);
+ 	link = &object_tree_root.rb_node;
+ 	rb_parent = NULL;
+ 	while (*link) {
+@@ -1333,6 +1335,7 @@ static void scan_block(void *_start, voi
+ 	unsigned long *start = PTR_ALIGN(_start, BYTES_PER_POINTER);
+ 	unsigned long *end = _end - (BYTES_PER_POINTER - 1);
+ 	unsigned long flags;
++	unsigned long untagged_ptr;
+ 
+ 	read_lock_irqsave(&kmemleak_lock, flags);
+ 	for (ptr = start; ptr < end; ptr++) {
+@@ -1347,7 +1350,8 @@ static void scan_block(void *_start, voi
+ 		pointer = *ptr;
+ 		kasan_enable_current();
+ 
+-		if (pointer < min_addr || pointer >= max_addr)
++		untagged_ptr = (unsigned long)kasan_reset_tag((void *)pointer);
++		if (untagged_ptr < min_addr || untagged_ptr >= max_addr)
+ 			continue;
+ 
+ 		/*
+--- a/mm/slab_common.c~kmemleak-account-for-tagged-pointers-when-calculating-pointer-range-v2
++++ a/mm/slab_common.c
+@@ -1229,6 +1229,7 @@ void *kmalloc_order(size_t size, gfp_t f
+ 	page = alloc_pages(flags, order);
+ 	ret = page ? page_address(page) : NULL;
+ 	ret = kasan_kmalloc_large(ret, size, flags);
++	/* As ret might get tagged, call kmemleak hook after KASAN. */
+ 	kmemleak_alloc(ret, size, 1, flags);
+ 	return ret;
+ }
+--- a/mm/slab.h~kmemleak-account-for-tagged-pointers-when-calculating-pointer-range-v2
++++ a/mm/slab.h
+@@ -438,6 +438,7 @@ static inline void slab_post_alloc_hook(
+ 	flags &= gfp_allowed_mask;
+ 	for (i = 0; i < size; i++) {
+ 		p[i] = kasan_slab_alloc(s, p[i], flags);
++		/* As p[i] might get tagged, call kmemleak hook after KASAN. */
+ 		kmemleak_alloc_recursive(p[i], s->object_size, 1,
+ 					 s->flags, flags);
+ 	}
+--- a/mm/slub.c~kmemleak-account-for-tagged-pointers-when-calculating-pointer-range-v2
++++ a/mm/slub.c
+@@ -1375,6 +1375,7 @@ static inline void dec_slabs_node(struct
+ static inline void *kmalloc_large_node_hook(void *ptr, size_t size, gfp_t flags)
+ {
+ 	ptr = kasan_kmalloc_large(ptr, size, flags);
++	/* As ptr might get tagged, call kmemleak hook after KASAN. */
+ 	kmemleak_alloc(ptr, size, 1, flags);
+ 	return ptr;
+ }
+_

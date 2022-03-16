@@ -1,0 +1,10 @@
+From: Constantine Shulyupin <const@MakeLinux.com>
+Subject: scripts/tags.sh: add __ro_after_init
+
+Link: http://lkml.kernel.org/r/20180711183646.4022-1-const@MakeLinux.com
+Signed-off-by: Constantine Shulyupin <const@MakeLinux.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Joey Pabalinas <joeypabalinas@gmail.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>

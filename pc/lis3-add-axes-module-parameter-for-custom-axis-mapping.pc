@@ -1,0 +1,5 @@
+drivers/hwmon/hp_accel.c
+drivers/hwmon/lis3lv02d.c
+drivers/hwmon/lis3lv02d.h
+drivers/hwmon/lis3lv02d_i2c.c
+drivers/hwmon/lis3lv02d_spi.c

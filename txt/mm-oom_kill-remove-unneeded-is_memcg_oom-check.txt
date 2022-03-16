@@ -1,0 +1,10 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/oom_kill: remove unneeded is_memcg_oom check
+
+oom_cpuset_eligible() is always called when !is_memcg_oom().  Remove this
+unnecessary check.
+
+Link: https://lkml.kernel.org/r/20220224115933.20154-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>

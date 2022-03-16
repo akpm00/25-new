@@ -1,0 +1,27 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/util.c: fix strndup_user() comment
+
+The kerneldoc misdescribes strndup_user()'s return value.
+
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Timur Tabi <timur@freescale.com>
+Cc: Mihai Caraman <mihai.caraman@freescale.com>
+Cc: Kumar Gala <galak@kernel.crashing.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/util.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/util.c~mm-utilc-fix-strndup_user-comment
++++ a/mm/util.c
+@@ -204,7 +204,7 @@ EXPORT_SYMBOL(vmemdup_user);
+  * @s: The string to duplicate
+  * @n: Maximum number of bytes to copy, including the trailing NUL.
+  *
+- * Return: newly allocated copy of @s or %NULL in case of error
++ * Return: newly allocated copy of @s or an ERR_PTR() in case of error
+  */
+ char *strndup_user(const char __user *s, long n)
+ {
+_

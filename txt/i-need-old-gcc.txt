@@ -1,0 +1,4 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: I need old gcc
+
+Old, unsupported cross-compiler :(

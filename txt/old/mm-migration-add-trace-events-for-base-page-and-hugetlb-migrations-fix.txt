@@ -1,0 +1,7 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm-migration-add-trace-events-for-base-page-and-hugetlb-migrations-fix
+
+fix build
+
+Link: https://lkml.kernel.org/r/53c3d1bb-7085-4947-772c-a3cbf94f02c8@arm.com
+Reported-by: kernel test robot <lkp@intel.com>

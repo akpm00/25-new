@@ -1,0 +1,24 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm-migration-add-trace-events-for-base-page-and-hugetlb-migrations-fix
+
+fix build
+
+Link: https://lkml.kernel.org/r/53c3d1bb-7085-4947-772c-a3cbf94f02c8@arm.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/rmap.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/mm/rmap.c~mm-migration-add-trace-events-for-base-page-and-hugetlb-migrations-fix
++++ a/mm/rmap.c
+@@ -76,6 +76,7 @@
+ 
+ #include <asm/tlbflush.h>
+ 
++#define CREATE_TRACE_POINTS
+ #include <trace/events/tlb.h>
+ #include <trace/events/migrate.h>
+ 
+_

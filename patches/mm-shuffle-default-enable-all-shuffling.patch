@@ -1,0 +1,70 @@
+From: Dan Williams <dan.j.williams@intel.com>
+Subject: mm/shuffle: default enable all shuffling
+
+Per Andrew's request arrange for all memory allocation shuffling code to
+be enabled by default.
+
+The page_alloc.shuffle command line parameter can still be used to disable
+shuffling at boot, but the kernel will default enable the shuffling if the
+command line option is not specified.
+
+Link: http://lkml.kernel.org/r/154943713572.3858443.11206307988382889377.stgit@dwillia2-desk3.amr.corp.intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Keith Busch <keith.busch@intel.com>
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ init/Kconfig |    4 ++--
+ mm/shuffle.c |    4 ++--
+ mm/shuffle.h |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+--- a/init/Kconfig~mm-shuffle-default-enable-all-shuffling
++++ a/init/Kconfig
+@@ -1709,7 +1709,7 @@ config SLAB_MERGE_DEFAULT
+ 	  command line.
+ 
+ config SLAB_FREELIST_RANDOM
+-	default n
++	default y
+ 	depends on SLAB || SLUB
+ 	bool "SLAB freelist randomization"
+ 	help
+@@ -1728,7 +1728,7 @@ config SLAB_FREELIST_HARDENED
+ 
+ config SHUFFLE_PAGE_ALLOCATOR
+ 	bool "Page allocator randomization"
+-	default SLAB_FREELIST_RANDOM && ACPI_NUMA
++	default y
+ 	help
+ 	  Randomization of the page allocator improves the average
+ 	  utilization of a direct-mapped memory-side-cache. See section
+--- a/mm/shuffle.c~mm-shuffle-default-enable-all-shuffling
++++ a/mm/shuffle.c
+@@ -9,8 +9,8 @@
+ #include "internal.h"
+ #include "shuffle.h"
+ 
+-DEFINE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
+-static unsigned long shuffle_state __ro_after_init;
++DEFINE_STATIC_KEY_TRUE(page_alloc_shuffle_key);
++static unsigned long shuffle_state __ro_after_init = 1 << SHUFFLE_ENABLE;
+ 
+ /*
+  * Depending on the architecture, module parameter parsing may run
+--- a/mm/shuffle.h~mm-shuffle-default-enable-all-shuffling
++++ a/mm/shuffle.h
+@@ -19,7 +19,7 @@ enum mm_shuffle_ctl {
+ #define SHUFFLE_ORDER (MAX_ORDER-1)
+ 
+ #ifdef CONFIG_SHUFFLE_PAGE_ALLOCATOR
+-DECLARE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
++DECLARE_STATIC_KEY_TRUE(page_alloc_shuffle_key);
+ extern void page_alloc_shuffle(enum mm_shuffle_ctl ctl);
+ extern void __shuffle_free_memory(pg_data_t *pgdat);
+ static inline void shuffle_free_memory(pg_data_t *pgdat)
+_

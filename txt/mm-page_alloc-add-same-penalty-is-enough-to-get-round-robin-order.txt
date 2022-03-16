@@ -1,0 +1,22 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/page_alloc: adding same penalty is enough to get round-robin order
+
+To make node order in round-robin in the same distance group, we add a
+penalty to the first node we got in each round.
+
+To get a round-robin order in the same distance group, we don't need to
+decrease the penalty since:
+
+  * find_next_best_node() always iterates node in the same order
+  * distance matters more then penalty in find_next_best_node()
+  * in nodes with the same distance, the first one would be picked up
+
+So it is fine to increase same penalty when we get the first node in the
+same distance group.
+
+Link: https://lkml.kernel.org/r/20220123013537.20491-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: Krupa Ramakrishnan <krupa.ramakrishnan@amd.com>
+Cc: Michal Hocko <mhocko@suse.com>

@@ -1,0 +1,24 @@
+From: Christoph Hellwig <hch@lst.de>
+Subject: mm: move the migrate_vma_* device migration code into its own file
+
+Split the code used to migrate to and from ZONE_DEVICE memory from
+migrate.c into a new file.
+
+Link: https://lkml.kernel.org/r/20220210072828.2930359-14-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Tested-by: "Sierra Guiza, Alejandro (Alex)" <alex.sierra@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Chaitanya Kulkarni <kch@nvidia.com>
+Cc: Christian Knig <christian.koenig@amd.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Karol Herbst <kherbst@redhat.com>
+Cc: Logan Gunthorpe <logang@deltatee.com>
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+Cc: Ralph Campbell <rcampbell@nvidia.com>

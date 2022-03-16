@@ -1,0 +1,92 @@
+From: Nitin Gote <nitin.r.gote@intel.com>
+Subject: Documentation/checkpatch: prefer stracpy/strscpy over strcpy/strlcpy/strncpy.
+
+Add check in checkpatch.pl to deprecate strcpy(), strlcpy() and strncpy()
+in favor of stracpy() or strscpy().
+
+Update Documentation/process/deprecated.rst for stracpy() and strscpy().
+
+Link: http://lkml.kernel.org/r/20190728160608.3119-1-nitin.r.gote@intel.com
+Signed-off-by: Nitin Gote <nitin.r.gote@intel.com>
+Cc: Joe Perches <joe@perches.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/process/deprecated.rst |   10 +++++-----
+ scripts/checkpatch.pl                |   24 ++++++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 5 deletions(-)
+
+--- a/Documentation/process/deprecated.rst~documentation-checkpatch-prefer-stracpy-strscpy-over-strcpy-strlcpy-strncpy
++++ a/Documentation/process/deprecated.rst
+@@ -84,7 +84,7 @@ buffer. This could result in linear over
+ end of the buffer, leading to all kinds of misbehaviors. While
+ `CONFIG_FORTIFY_SOURCE=y` and various compiler flags help reduce the
+ risk of using this function, there is no good reason to add new uses of
+-this function. The safe replacement is :c:func:`strscpy`.
++this function. The safe replacement is stracpy() or strscpy().
+ 
+ strncpy() on NUL-terminated strings
+ -----------------------------------
+@@ -93,9 +93,9 @@ will be NUL terminated. This can lead to
+ and other misbehavior due to the missing termination. It also NUL-pads the
+ destination buffer if the source contents are shorter than the destination
+ buffer size, which may be a needless performance penalty for callers using
+-only NUL-terminated strings. The safe replacement is :c:func:`strscpy`.
+-(Users of :c:func:`strscpy` still needing NUL-padding will need an
+-explicit :c:func:`memset` added.)
++only NUL-terminated strings. In this case, the safe replacement is
++stracpy() or strscpy(). If, however, the destination buffer still needs
++NUL-padding, the safe replacement is stracpy_pad().
+ 
+ If a caller is using non-NUL-terminated strings, :c:func:`strncpy()` can
+ still be used, but destinations should be marked with the `__nonstring
+@@ -107,7 +107,7 @@ strlcpy()
+ :c:func:`strlcpy` reads the entire source buffer first, possibly exceeding
+ the given limit of bytes to copy. This is inefficient and can lead to
+ linear read overflows if a source string is not NUL-terminated. The
+-safe replacement is :c:func:`strscpy`.
++safe replacement is stracpy() or strscpy().
+ 
+ Variable Length Arrays (VLAs)
+ -----------------------------
+--- a/scripts/checkpatch.pl~documentation-checkpatch-prefer-stracpy-strscpy-over-strcpy-strlcpy-strncpy
++++ a/scripts/checkpatch.pl
+@@ -607,6 +607,20 @@ foreach my $entry (keys %deprecated_apis
+ }
+ $deprecated_apis_search = "(?:${deprecated_apis_search})";
+ 
++our %deprecated_string_apis = (
++	"strcpy"		=> "stracpy or strscpy",
++	"strlcpy"		=> "stracpy or strscpy",
++	"strncpy"		=> "stracpy or strscpy - for non-NUL-terminated uses, strncpy dest should be __nonstring",
++);
++
++#Create a search pattern for all these strings apis to speed up a loop below
++our $deprecated_string_apis_search = "";
++foreach my $entry (keys %deprecated_string_apis) {
++        $deprecated_string_apis_search .= '|' if ($deprecated_string_apis_search ne "");
++        $deprecated_string_apis_search .= $entry;
++}
++$deprecated_string_apis_search = "(?:${deprecated_string_apis_search})";
++
+ our $mode_perms_world_writable = qr{
+ 	S_IWUGO		|
+ 	S_IWOTH		|
+@@ -6480,6 +6494,16 @@ sub process {
+ 			     "Deprecated use of '$deprecated_api', prefer '$new_api' instead\n" . $herecurr);
+ 		}
+ 
++# check for string deprecated apis
++		if ($line =~ /\b($deprecated_string_apis_search)\b\s*\(/) {
++			my $deprecated_string_api = $1;
++			my $new_api = $deprecated_string_apis{$deprecated_string_api};
++			my $msg_level = \&WARN;
++			$msg_level = \&CHK if ($file);
++			&{$msg_level}("DEPRECATED_API",
++				      "Deprecated use of '$deprecated_string_api', prefer '$new_api' instead\n" . $herecurr);
++		}
++
+ # check for various structs that are normally const (ops, kgdb, device_tree)
+ # and avoid what seem like struct definitions 'struct foo {'
+ 		if ($line !~ /\bconst\b/ &&
+_

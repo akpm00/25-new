@@ -1,0 +1,15 @@
+From: Akira Kawata <akirakawata1@gmail.com>
+Subject: fs/binfmt_elf: refactor load_elf_binary function
+
+I delete load_addr because it is not used anymore.  And I rename
+load_addr_set to first_pt_load because it is used only to capture the
+first iteration of the loop.
+
+Link: https://lkml.kernel.org/r/20211212232414.1402199-3-akirakawata1@gmail.com
+Signed-off-by: Akira Kawata <akirakawata1@gmail.com>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: kernel test robot <lkp@intel.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>

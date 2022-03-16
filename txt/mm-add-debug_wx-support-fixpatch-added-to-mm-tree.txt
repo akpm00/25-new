@@ -1,0 +1,8 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-add-debug_wx-support-fix
+
+reword text, per Will Deacon & Zong Li
+
+Link: http://lkml.kernel.org/r/20200427194245.oxRJKj3fn%25akpm@linux-foundation.org
+Cc: Will Deacon <will@kernel.org>
+Cc: Zong Li <zong.li@sifive.com>

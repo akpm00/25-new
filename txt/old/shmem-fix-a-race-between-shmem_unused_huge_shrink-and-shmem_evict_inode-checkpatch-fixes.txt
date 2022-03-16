@@ -1,0 +1,24 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: shmem-fix-a-race-between-shmem_unused_huge_shrink-and-shmem_evict_inode-checkpatch-fixes
+
+WARNING: Block comments should align the * on each line
+#143: FILE: mm/shmem.c:643:
++		/*
++		* Make sure the inode is either on the global list or deleted from
+
+total: 0 errors, 1 warnings, 91 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./patches/shmem-fix-a-race-between-shmem_unused_huge_shrink-and-shmem_evict_inode.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Please run checkpatch prior to sending patches
+
+Cc: Gang Li <ligang.bdlg@bytedance.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Muchun Song <songmuchun@bytedance.com>

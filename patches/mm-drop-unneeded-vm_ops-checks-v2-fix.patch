@@ -1,0 +1,26 @@
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: mm-drop-unneeded-vm_ops-checks-v2-fix
+
+fix splat reported by Marcel
+
+Link: http://lkml.kernel.org/r/20180716142049.ioa2irsd2d7sphn4@black.fi.intel.com
+Reported-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm/kernel/process.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff -puN arch/arm/kernel/process.c~mm-drop-unneeded-vm_ops-checks-v2-fix arch/arm/kernel/process.c
+--- a/arch/arm/kernel/process.c~mm-drop-unneeded-vm_ops-checks-v2-fix
++++ a/arch/arm/kernel/process.c
+@@ -334,6 +334,7 @@ static struct vm_area_struct gate_vma =
+ 	.vm_start	= 0xffff0000,
+ 	.vm_end		= 0xffff0000 + PAGE_SIZE,
+ 	.vm_flags	= VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYEXEC,
++	.vm_ops		= &dummy_vm_ops,
+ };
+ 
+ static int __init gate_vma_init(void)
+_

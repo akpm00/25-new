@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mmzone.h: remove unused macros
+
+Remove pgdat_page_nr, nid_page_nr and NODE_MEM_MAP. They are unused now.
+
+Link: https://lkml.kernel.org/r/20220127093210.62293-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>

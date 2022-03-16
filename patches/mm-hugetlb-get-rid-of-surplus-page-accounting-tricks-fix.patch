@@ -1,0 +1,29 @@
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: mm, hugetlb: fix a double unlock bug in alloc_surplus_huge_page()
+
+We aren't holding the hugetlb_lock so there is no need to unlock.
+
+Link: http://lkml.kernel.org/r/20180109200559.g3iz5kvbdrz7yydp@mwanda
+Fixes: b27f11e5e675 ("mm, hugetlb: get rid of surplus page accounting tricks")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hugetlb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff -puN mm/hugetlb.c~mm-hugetlb-get-rid-of-surplus-page-accounting-tricks-fix mm/hugetlb.c
+--- a/mm/hugetlb.c~mm-hugetlb-get-rid-of-surplus-page-accounting-tricks-fix
++++ a/mm/hugetlb.c
+@@ -1552,7 +1552,7 @@ static struct page *__alloc_surplus_huge
+ 
+ 	page = __hugetlb_alloc_buddy_huge_page(h, gfp_mask, nid, nmask);
+ 	if (!page)
+-		goto out_unlock;
++		return NULL;
+ 
+ 	spin_lock(&hugetlb_lock);
+ 	/*
+_

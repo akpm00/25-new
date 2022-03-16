@@ -1,0 +1,11 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: locking/rwlocks: fix write_lock_nested for RT
+
+Fix build break of write_lock_nested for RT.
+
+Link: https://lkml.kernel.org/r/YZfrMTAXV56HFWJY@google.com
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

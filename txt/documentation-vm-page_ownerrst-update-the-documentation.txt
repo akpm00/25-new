@@ -1,0 +1,15 @@
+From: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Subject: Documentation/vm/page_owner.rst: update the documentation
+
+Update the documentation of ``page_owner``.
+
+Link: https://lkml.kernel.org/r/20211214134736.2569-1-hanshenghong2019@email.szu.edu.cn
+Signed-off-by: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>

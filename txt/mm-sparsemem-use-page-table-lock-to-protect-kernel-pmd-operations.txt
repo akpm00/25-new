@@ -1,0 +1,37 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: sparsemem: use page table lock to protect kernel pmd operations
+
+The init_mm.page_table_lock is used to protect kernel page tables, we can
+use it to serialize splitting vmemmap PMD mappings instead of mmap write
+lock, which can increase the concurrency of vmemmap_remap_free().
+
+Actually, It increase the concurrency between allocations of HugeTLB
+pages.  But it is not the only benefit.  There are a lot of users of mmap
+read lock of init_mm.  The mmap write lock is holding through
+vmemmap_remap_free(), removing mmap write lock usage to make it does not
+affect other users of mmap read lock.  It is not making anything worse and
+always a win to move.
+
+Now the kernel page table walker does not hold the page_table_lock when
+walking pmd entries.  There may be consistency issue of a pmd entry,
+because pmd entry might change from a huge pmd entry to a PTE page table. 
+There is only one user of kernel page table walker, namely ptdump.  The
+ptdump already considers the consistency, which use a local variable to
+cache the value of pmd entry.  But we also need to update ->action to
+ACTION_CONTINUE to make sure the walker does not walk every pte entry
+again when concurrent thread has split the huge pmd.
+
+Link: https://lkml.kernel.org/r/20211101031651.75851-4-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Chen Huang <chenhuang5@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

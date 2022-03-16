@@ -1,0 +1,33 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/hugetlb.c: clean up VM_WARN usage
+
+Use VM_WARN return value, remove too-obvious comment.
+
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Nic Losby <blurbdust@gmail.com>
+Cc: Yisheng Xie <xieyisheng1@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hugetlb.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff -puN mm/hugetlb.c~mm-hugetlbc-clean-up-vm_warn-usage mm/hugetlb.c
+--- a/mm/hugetlb.c~mm-hugetlbc-clean-up-vm_warn-usage
++++ a/mm/hugetlb.c
+@@ -4376,11 +4376,8 @@ int hugetlb_reserve_pages(struct inode *
+ 	struct resv_map *resv_map;
+ 	long gbl_reserve;
+ 
+-	/* This should never happen */
+-	if (from > to) {
+-		VM_WARN(1, "%s called with a negative range\n", __func__);
++	if (VM_WARN(from > to, "%s called with a negative range\n", __func__))
+ 		return -EINVAL;
+-	}
+ 
+ 	/*
+ 	 * Only apply hugepage reservation if asked. At fault time, an
+_

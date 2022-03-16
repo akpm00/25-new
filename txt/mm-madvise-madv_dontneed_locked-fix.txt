@@ -1,0 +1,12 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm-madvise-madv_dontneed_locked-fix
+
+On MiPS:
+mm/madvise.c:55:7: error: 'MADV_DONTNEED_LOCKED' undeclared (first use in this function); did you mean 'MADV_DONTNEED'?
+
+Define MADV_DONTNEED_LOCKED on archs that don't use the common mman.h
+
+Link: https://lkml.kernel.org/r/YiY2KYyjsCaANwo0@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>

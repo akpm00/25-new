@@ -1,0 +1,81 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm/hwpoison: set PageHWPoison after taking page lock in memory_failure_hugetlb()
+
+There is a race condition between memory_failure_hugetlb() and hugetlb
+free/demotion, which causes setting PageHWPoison flag on the wrong page
+(which was a hugetlb when memory_failrue() was called, but was removed or
+demoted when memory_failure_hugetlb() is called).  This results in killing
+wrong processes.  So set PageHWPoison flag with holding page lock,
+
+Link: https://lkml.kernel.org/r/20220309091449.2753904-1-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |   27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
+
+--- a/mm/memory-failure.c~mm-hwpoison-set-pagehwpoison-after-taking-page-lock-in-memory_failure_hugetlb
++++ a/mm/memory-failure.c
+@@ -1496,24 +1496,11 @@ static int memory_failure_hugetlb(unsign
+ 	int res;
+ 	unsigned long page_flags;
+ 
+-	if (TestSetPageHWPoison(head)) {
+-		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+-		       pfn);
+-		res = -EHWPOISON;
+-		if (flags & MF_ACTION_REQUIRED)
+-			res = kill_accessing_process(current, page_to_pfn(head), flags);
+-		return res;
+-	}
+-
+-	num_poisoned_pages_inc();
+-
+ 	if (!(flags & MF_COUNT_INCREASED)) {
+ 		res = get_hwpoison_page(p, flags);
+ 		if (!res) {
+ 			lock_page(head);
+ 			if (hwpoison_filter(p)) {
+-				if (TestClearPageHWPoison(head))
+-					num_poisoned_pages_dec();
+ 				unlock_page(head);
+ 				return -EOPNOTSUPP;
+ 			}
+@@ -1535,13 +1522,16 @@ static int memory_failure_hugetlb(unsign
+ 	page_flags = head->flags;
+ 
+ 	if (hwpoison_filter(p)) {
+-		if (TestClearPageHWPoison(head))
+-			num_poisoned_pages_dec();
+ 		put_page(p);
+ 		res = -EOPNOTSUPP;
+ 		goto out;
+ 	}
+ 
++	if (TestSetPageHWPoison(head))
++		goto already_hwpoisoned;
++
++	num_poisoned_pages_inc();
++
+ 	/*
+ 	 * TODO: hwpoison for pud-sized hugetlb doesn't work right now, so
+ 	 * simply disable it. In order to make it work properly, we need
+@@ -1567,6 +1557,13 @@ static int memory_failure_hugetlb(unsign
+ out:
+ 	unlock_page(head);
+ 	return res;
++already_hwpoisoned:
++	unlock_page(head);
++	pr_err("Memory failure: %#lx: already hardware poisoned\n", pfn);
++	res = -EHWPOISON;
++	if (flags & MF_ACTION_REQUIRED)
++		res = kill_accessing_process(current, page_to_pfn(head), flags);
++	return res;
+ }
+ 
+ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+_

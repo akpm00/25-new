@@ -1,0 +1,10 @@
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: kernel/irq/: fix language typos
+
+Fix some language typos and misspellings in comments.  No functional
+changes.
+
+Link: https://lkml.kernel.org/r/20210316100205.23492-1-krzysztof.kozlowski@canonical.com
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Randy Dunlap <rdunlap@infradead.org>

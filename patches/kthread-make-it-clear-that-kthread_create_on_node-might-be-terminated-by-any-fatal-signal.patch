@@ -1,0 +1,112 @@
+From: Petr Mladek <pmladek@suse.com>
+Subject: kthread: make it clear that kthread_create_on_node() might be terminated by any fatal signal
+
+The comments in kernel/kthread.c create a feeling that only SIGKILL is
+able to terminate the creation of kernel kthreads by
+kthread_create()/_on_node()/_on_cpu() APIs.
+
+In reality, wait_for_completion_killable() might be killed by any fatal
+signal that does not have a custom handler:
+
+	(!siginmask(signr, SIG_KERNEL_IGNORE_MASK|SIG_KERNEL_STOP_MASK) && \
+	 (t)->sighand->action[(signr)-1].sa.sa_handler == SIG_DFL)
+
+static inline void signal_wake_up(struct task_struct *t, bool resume)
+{
+	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
+}
+
+static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+{
+[...]
+	/*
+	 * Found a killable thread.  If the signal will be fatal,
+	 * then start taking the whole group down immediately.
+	 */
+	if (sig_fatal(p, sig) ...) {
+		if (!sig_kernel_coredump(sig)) {
+		[...]
+			do {
+				task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+				sigaddset(&t->pending.signal, SIGKILL);
+				signal_wake_up(t, 1);
+			} while_each_thread(p, t);
+			return;
+		}
+	}
+}
+
+Update the comments in kernel/kthread.c to make this more obvious.
+
+The motivation for this change was debugging why a module initialization
+failed.  The module was being loaded from initrd.  It "magically" failed
+when systemd was switching to the real root.  The clean up operations sent
+SIGTERM to various pending processed that were started from initrd.
+
+Link: https://lkml.kernel.org/r/20220315102444.2380-1-pmladek@suse.com
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/kthread.c |   14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+--- a/kernel/kthread.c~kthread-make-it-clear-that-kthread_create_on_node-might-be-terminated-by-any-fatal-signal
++++ a/kernel/kthread.c
+@@ -341,7 +341,7 @@ static int kthread(void *_create)
+ 
+ 	self = to_kthread(current);
+ 
+-	/* If user was SIGKILLed, I release the structure. */
++	/* Release the structure when caller killed by a fatal signal. */
+ 	done = xchg(&create->done, NULL);
+ 	if (!done) {
+ 		kfree(create);
+@@ -399,7 +399,7 @@ static void create_kthread(struct kthrea
+ 	/* We want our own signal handler (we take no signals by default). */
+ 	pid = kernel_thread(kthread, create, CLONE_FS | CLONE_FILES | SIGCHLD);
+ 	if (pid < 0) {
+-		/* If user was SIGKILLed, I release the structure. */
++		/* Release the structure when caller killed by a fatal signal. */
+ 		struct completion *done = xchg(&create->done, NULL);
+ 
+ 		if (!done) {
+@@ -441,9 +441,9 @@ struct task_struct *__kthread_create_on_
+ 	 */
+ 	if (unlikely(wait_for_completion_killable(&done))) {
+ 		/*
+-		 * If I was SIGKILLed before kthreadd (or new kernel thread)
+-		 * calls complete(), leave the cleanup of this structure to
+-		 * that thread.
++		 * If I was killed by a fatal signal before kthreadd (or new
++		 * kernel thread) calls complete(), leave the cleanup of this
++		 * structure to that thread.
+ 		 */
+ 		if (xchg(&create->done, NULL))
+ 			return ERR_PTR(-EINTR);
+@@ -877,7 +877,7 @@ fail_task:
+  *
+  * Returns a pointer to the allocated worker on success, ERR_PTR(-ENOMEM)
+  * when the needed structures could not get allocated, and ERR_PTR(-EINTR)
+- * when the worker was SIGKILLed.
++ * when the caller was killed by a fatal signal.
+  */
+ struct kthread_worker *
+ kthread_create_worker(unsigned int flags, const char namefmt[], ...)
+@@ -926,7 +926,7 @@ EXPORT_SYMBOL(kthread_create_worker);
+  * Return:
+  * The pointer to the allocated worker on success, ERR_PTR(-ENOMEM)
+  * when the needed structures could not get allocated, and ERR_PTR(-EINTR)
+- * when the worker was SIGKILLed.
++ * when the caller was killed by a fatal signal.
+  */
+ struct kthread_worker *
+ kthread_create_worker_on_cpu(int cpu, unsigned int flags,
+_

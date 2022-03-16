@@ -1,0 +1,14 @@
+From: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: drivers/dax/kmem.c: fix mismatches of request_mem_region()
+
+For neatness's sake, The resources allocated by request_mem_region()
+should be freed with release_mem_region().  These two functions are
+paired.
+
+Link: http://lkml.kernel.org/r/20200817065926.2239-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>

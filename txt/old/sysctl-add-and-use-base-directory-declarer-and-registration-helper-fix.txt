@@ -1,0 +1,7 @@
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: sysctl-add-and-use-base-directory-declarer-and-registration-helper-fix
+
+null-terminate the ctl_table arrays
+
+Link: https://lkml.kernel.org/r/YafJY3rXDYnjK/gs@bombadil.infradead.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

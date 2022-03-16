@@ -1,0 +1,16 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: include/linux/mmdebug.h: fix VM_WARN[_*]() with CONFIG_DEBUG_VM=n
+
+These macros cause the build to break when someone uses their return value
+with CONFIG_DEBUG_VM=n:
+
+	if (VM_WARN(from > to, "%s called with a negative range\n", __func__))
+ 		return -EINVAL;
+
+mm/hugetlb.c: In function 'hugetlb_reserve_pages':
+mm/hugetlb.c:4378: error: void value not ignored as it ought to be
+
+Fix this up.
+
+Reported-by: Michal Hocko <mhocko@kernel.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>

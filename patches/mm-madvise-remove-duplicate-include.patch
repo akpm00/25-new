@@ -1,0 +1,24 @@
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: mm/madvise: remove duplicate include
+
+Remove duplicate header which is included twice.
+
+Link: https://lkml.kernel.org/r/20200915121550.30584-1-yuehaibing@huawei.com
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/madvise.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/madvise.c~mm-madvise-remove-duplicate-include
++++ a/mm/madvise.c
+@@ -30,7 +30,6 @@
+ #include <linux/swapops.h>
+ #include <linux/shmem_fs.h>
+ #include <linux/mmu_notifier.h>
+-#include <linux/sched/mm.h>
+ 
+ #include <asm/tlb.h>
+ 
+_

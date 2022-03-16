@@ -1,0 +1,57 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: consistently disable debugging features
+
+KASAN is incompatible with some kernel debugging/tracing features. 
+There's been multiple patches that disable those feature for some of KASAN
+files one by one.  Instead of prolonging that, disable these features for
+all KASAN files at once.
+
+Link: http://lkml.kernel.org/r/29bd753d5ff5596425905b0b07f51153e2345cc1.1589297433.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kasan/Makefile |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+--- a/mm/kasan/Makefile~kasan-consistently-disable-debugging-features
++++ a/mm/kasan/Makefile
+@@ -1,23 +1,28 @@
+ # SPDX-License-Identifier: GPL-2.0
+ KASAN_SANITIZE := n
+-UBSAN_SANITIZE_common.o := n
+-UBSAN_SANITIZE_generic.o := n
+-UBSAN_SANITIZE_generic_report.o := n
+-UBSAN_SANITIZE_tags.o := n
++UBSAN_SANITIZE := n
+ KCOV_INSTRUMENT := n
+ 
++# Disable ftrace to avoid recursion.
+ CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_generic.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_generic_report.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_quarantine.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_report.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_tags.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_tags_report.o = $(CC_FLAGS_FTRACE)
+ 
+ # Function splitter causes unnecessary splits in __asan_load1/__asan_store1
+ # see: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63533
+-
+ CFLAGS_common.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_generic.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_generic_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_init.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_quarantine.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ CFLAGS_tags.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
++CFLAGS_tags_report.o := $(call cc-option, -fno-conserve-stack -fno-stack-protector)
+ 
+ obj-$(CONFIG_KASAN) := common.o init.o report.o
+ obj-$(CONFIG_KASAN_GENERIC) += generic.o generic_report.o quarantine.o
+_

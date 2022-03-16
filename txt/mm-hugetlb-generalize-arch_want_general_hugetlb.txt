@@ -1,0 +1,15 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/hugetlb: generalize ARCH_WANT_GENERAL_HUGETLB
+
+ARCH_WANT_GENERAL_HUGETLB config has duplicate definitions on platforms
+that subscribe it.  Instead make it a generic config option which can be
+selected on applicable platforms when required.
+
+Link: https://lkml.kernel.org/r/1643718465-4324-1-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

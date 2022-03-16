@@ -1,0 +1,8 @@
+From: Joe Perches <joe@perches.com>
+Subject: checkpatch: don't interpret stack dumps as commit IDs
+
+For testing purposes.
+
+changelog goes here
+
+Link: http://lkml.kernel.org/r/ff00208289224f0ca4eaf4ff7c9c6e087dad0a63.camel@perches.com

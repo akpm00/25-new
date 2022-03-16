@@ -1,0 +1,28 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: lib/test_kasan_module.c: suppress unused var warning
+
+Local `unused' is intentionally unused - it is there to suppress
+__must_check warnings.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lkml.kernel.org/r/202104050216.HflRxfJm-lkp@intel.com
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/test_kasan_module.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/test_kasan_module.c~lib-test_kasan_modulec-suppress-unused-var-warning
++++ a/lib/test_kasan_module.c
+@@ -22,7 +22,7 @@ static noinline void __init copy_user_te
+ 	char *kmem;
+ 	char __user *usermem;
+ 	size_t size = 10;
+-	int unused;
++	int __maybe_unused unused;
+ 
+ 	kmem = kmalloc(size, GFP_KERNEL);
+ 	if (!kmem)
+_

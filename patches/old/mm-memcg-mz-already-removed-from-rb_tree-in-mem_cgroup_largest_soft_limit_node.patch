@@ -1,0 +1,31 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: mz already removed from rb_tree in mem_cgroup_largest_soft_limit_node()
+
+When mz is not NULL, mem_cgroup_largest_soft_limit_node() has removed it
+from rb_tree.
+
+Not necessary to call __mem_cgroup_remove_exceeded() again.
+
+Link: https://lkml.kernel.org/r/20220312071623.19050-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/memcontrol.c~mm-memcg-mz-already-removed-from-rb_tree-in-mem_cgroup_largest_soft_limit_node
++++ a/mm/memcontrol.c
+@@ -3418,7 +3418,6 @@ unsigned long mem_cgroup_soft_limit_recl
+ 		nr_reclaimed += reclaimed;
+ 		*total_scanned += nr_scanned;
+ 		spin_lock_irq(&mctz->lock);
+-		__mem_cgroup_remove_exceeded(mz, mctz);
+ 
+ 		/*
+ 		 * If we failed to reclaim anything from this memory cgroup
+_

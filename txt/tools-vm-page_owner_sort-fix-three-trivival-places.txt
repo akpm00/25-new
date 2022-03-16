@@ -1,0 +1,24 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort: fix three trivival places
+
+The following adjustments are made:
+
+1. Instead of using another array to cull the blocks after sorting,
+   reuse the old array.  So there is no need to malloc a new array.
+
+2. When enabling '-f' option to filter out the blocks which have been
+   released, only add those have not been released in the list, rather
+   than add all of blocks in the list and then do the filtering when
+   printing the result.
+
+3. When enabling '-c' option to cull the blocks by comparing
+   stacktrace, print the stacetrace rather than the total block.
+
+Link: https://lkml.kernel.org/r/20220306030640.43054-1-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: <hanshenghong2019@email.szu.edu.cn>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: <zhangyinan2019@email.szu.edu.cn>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

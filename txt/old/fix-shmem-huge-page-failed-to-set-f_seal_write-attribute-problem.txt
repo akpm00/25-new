@@ -1,0 +1,31 @@
+From: wangyong <wang.yong12@zte.com.cn>
+Subject: memfd: fix shmem huge page failed to set F_SEAL_WRITE attribute problem
+
+After enabling tmpfs filesystem to support transparent hugepage with the
+following command:
+
+ echo always > /sys/kernel/mm/transparent_hugepage/shmem_enabled
+
+The docker program adds F_SEAL_WRITE through the following command which
+will prompt EBUSY.
+
+ fcntl(5, F_ADD_SEALS, F_SEAL_WRITE)=-1.
+
+It is found that in memfd_wait_for_pins function, the page_count of
+hugepage is 512 and page_mapcount is 0, which does not meet the
+conditions:
+
+ page_count(page) - page_mapcount(page) != 1.
+
+But the page is not busy at this time, therefore, the page_order of
+hugepage should be taken into account in the calculation.
+
+Link: https://lkml.kernel.org/r/20220215073743.1769979-1-cgel.zte@gmail.com
+Signed-off-by: wangyong <wang.yong12@zte.com.cn>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: <stable@vger.kernel.org>

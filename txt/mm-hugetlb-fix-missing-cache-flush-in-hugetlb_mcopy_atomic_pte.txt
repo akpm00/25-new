@@ -1,0 +1,27 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb: fix missing cache flush in hugetlb_mcopy_atomic_pte()
+
+folio_copy() will copy the data from one page to the target page, then the
+target page will be mapped to the user space address, which might have an
+alias issue with the kernel address used to copy the data from the page
+to.  There are 2 ways to fix this issue.
+
+ 1) insert flush_dcache_page() after folio_copy().
+ 2) replace folio_copy() with copy_user_huge_page() which already
+    considers the cache maintenance.
+
+We chose 2) way to fix the issue since architectures can optimize this
+situation.  It is also make backports easier.
+
+Link: https://lkml.kernel.org/r/20220210123058.79206-5-songmuchun@bytedance.com
+Fixes: 8cc5fcbb5be8 ("mm, hugetlb: fix racy resv_huge_pages underflow on UFFDIO_COPY")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Lars Persson <lars.persson@axis.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Zi Yan <ziy@nvidia.com>

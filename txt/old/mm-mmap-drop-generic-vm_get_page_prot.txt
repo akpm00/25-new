@@ -1,0 +1,9 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: drop generic vm_get_page_prot()
+
+All available platforms export their own vm_get_page_prot() implementation
+via ARCH_HAS_VM_GET_PAGE_PROT. Hence a generic implementation is no longer
+needed.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-30-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>

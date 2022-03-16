@@ -1,0 +1,12 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: add comment about UACCESS regions to kasan_report
+
+Add a comment explaining why kasan_report() is the only reporting function
+that uses user_access_save/restore().
+
+Link: https://lkml.kernel.org/r/1201ca3c2be42c7bd077c53d2e46f4a51dd1476a.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

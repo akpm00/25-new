@@ -1,0 +1,9 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/dbgfs: support all DAMOS stats
+
+Currently, DAMON debugfs interface is not supporting DAMON-based Operation
+Schemes (DAMOS) stats for schemes successfully applied regions and
+time/space quota limit exceeds.  This commit adds the support.
+
+Link: https://lkml.kernel.org/r/20211210150016.35349-6-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

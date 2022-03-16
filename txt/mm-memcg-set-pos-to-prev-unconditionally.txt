@@ -1,0 +1,17 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: set pos to prev unconditionally
+
+Current code sets pos to prev based on condition (prev && !reclaim), while
+we can do this unconditionally.
+
+Since:
+
+  * If !reclaim, pos is the same as prev no matter it is NULL or not.
+  * If reclaim, pos would be set properly from iter->position.
+
+Link: https://lkml.kernel.org/r/20220225003437.12620-3-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>

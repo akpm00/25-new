@@ -1,0 +1,13 @@
+From: Nadav Amit <namit@vmware.com>
+Subject: userfaultfd: provide unmasked address on page-fault
+
+initialize real_address on all code paths, per Jan
+
+Link: https://lkml.kernel.org/r/20220226022655.350562-1-namit@vmware.com
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Acked-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

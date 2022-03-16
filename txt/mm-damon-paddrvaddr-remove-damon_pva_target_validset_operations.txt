@@ -1,0 +1,12 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/paddr,vaddr: remove damon_{p,v}a_{target_valid,set_operations}()
+
+Because DAMON debugfs interface and DAMON-based proactive reclaim are now
+using monitoring operations via registration mechanism,
+damon_{p,v}a_{target_valid,set_operations}() functions have no user.  This
+commit clean them up.
+
+Link: https://lkml.kernel.org/r/20220215184603.1479-9-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Xin Hao <xhao@linux.alibaba.com>

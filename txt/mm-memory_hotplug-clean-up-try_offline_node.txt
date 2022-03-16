@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory_hotplug: clean up try_offline_node
+
+We can use helper macro node_spanned_pages to check whether node spans
+pages.  And we can change the parameter of check_cpu_on_node to nid as
+that's what it really cares.  Thus we can further get rid of the local
+variable pgdat and improve the readability a bit.
+
+Link: https://lkml.kernel.org/r/20220207133643.23427-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>

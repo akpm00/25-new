@@ -1,0 +1,20 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: mm, slab: make flush_slab() possible to call with irqs enabled
+
+Currently flush_slab() is always called with disabled IRQs if it's needed,
+but the following patches will change that, so add a parameter to control
+IRQ disabling within the function, which only protects the kmem_cache_cpu
+manipulation and not the call to deactivate_slab() which doesn't need it.
+
+Link: https://lkml.kernel.org/r/20210805152000.12817-29-vbabka@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Galbraith <efault@gmx.de>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>

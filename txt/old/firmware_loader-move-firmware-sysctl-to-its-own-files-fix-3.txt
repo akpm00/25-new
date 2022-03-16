@@ -1,0 +1,8 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: firmware_loader-move-firmware-sysctl-to-its-own-files-fix-3
+
+akpm sucks
+
+Link: https://lkml.kernel.org/r/20211201160626.401d828d@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Luis Chamberlain <mcgrof@kernel.org>

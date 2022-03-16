@@ -1,0 +1,9 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm-migrate-correct-the-hugetlb-migration-stats-fix
+
+fix docs, per Mike
+
+Link: https://lkml.kernel.org/r/141bdfc6-f898-3cc3-f692-726c5f6cb74d@linux.alibaba.com
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Yang Shi <shy828301@gmail.com>

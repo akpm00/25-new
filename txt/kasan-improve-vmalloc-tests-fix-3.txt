@@ -1,0 +1,13 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: another fix for "kasan: improve vmalloc tests"
+
+set_memory_rw/ro() are not exported to be used in modules and thus
+cannot be used in KUnit-compatible KASAN tests.
+
+Do the checks that rely on these functions only when the tests are
+built-in.
+
+Link: https://lkml.kernel.org/r/019ac41602e0c4a7dfe96dc8158a95097c2b2ebd.1645554036.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Marco Elver <elver@google.com>

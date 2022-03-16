@@ -1,0 +1,8 @@
+From: Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: MAINTAINERS: remove Vladimir from memcg maintainers
+
+Link: https://lkml.kernel.org/r/4ad1f8da49d7b71c84a0c15bd5347f5ce704e730.1645608825.git.vdavydov.dev@gmail.com
+Signed-off-by: Vladimir Davydov <vdavydov.dev@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>

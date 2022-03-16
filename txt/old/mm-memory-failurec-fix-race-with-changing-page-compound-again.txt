@@ -1,0 +1,20 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: fix race with changing page compound again
+
+Patch series "A few fixup patches for memory failure".
+
+This series contains a few patches to fix the race with changing page
+compound page, fix potential VM_BUG_ON_PAGE and so on.  More details can
+be found in the respective changelogs.
+
+
+This patch (of 4):
+
+There is a race window where we got the compound_head, the hugetlb page
+could be freed to buddy, or even changed to another compound page just
+before we try to get hwpoison page.  If this happens, just bail out.
+
+Link: https://lkml.kernel.org/r/20220228140245.24552-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220228140245.24552-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

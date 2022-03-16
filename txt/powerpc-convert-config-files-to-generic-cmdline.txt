@@ -1,0 +1,20 @@
+From: Daniel Walker <danielwa@cisco.com>
+Subject: powerpc: convert config files to generic cmdline
+
+This is a mass convert of the config files to use the new
+generic cmdline.
+
+The command used to convert is as follows,
+
+sed -i 's/CONFIG_CMDLINE=/CONFIG_CMDLINE_PREPEND=/g' <config>
+
+Link: http://lkml.kernel.org/r/20190319232448.45964-5-danielwa@cisco.com
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+Cc: Daniel Walker <dwalker@fifo99.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Maksym Kokhan <maksym.kokhan@globallogic.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Rob Herring <robh+dt@kernel.org>

@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-defer-kmemleak-object-creation-of-module_alloc-v4-fix
+
+simplify ifdefs, per Andrey
+
+Link: https://lkml.kernel.org/r/CA+fCnZcnwJHUQq34VuRxpdoY6_XbJCDJ-jopksS5Eia4PijPzw@mail.gmail.com
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

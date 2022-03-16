@@ -1,0 +1,21 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: split out print_report from __kasan_report
+
+Split out the part of __kasan_report() that prints things into
+print_report().  One of the subsequent patches makes another error handler
+use print_report() as well.
+
+Includes lower-level changes:
+
+- Allow addr_has_metadata() accepting a tagged address.
+- Drop the const qualifier from the fields of kasan_access_info to avoid
+  excessive type casts.
+- Change the type of the address argument of __kasan_report() and
+  end_report() to void * to reduce the number of type casts.
+
+Link: https://lkml.kernel.org/r/9be3ed99dd24b9c4e1c4a848b69a0c6ecefd845e.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

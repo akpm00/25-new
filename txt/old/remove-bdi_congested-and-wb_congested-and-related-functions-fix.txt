@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: remove-bdi_congested-and-wb_congested-and-related-functions-fix
+
+fix build
+
+fs/nilfs2/segbuf.c: In function 'nilfs_segbuf_submit_bio':
+fs/nilfs2/segbuf.c:358:2: error: label 'failed' defined but not used [-Werror=unused-label]
+
+Cc: NeilBrown <neilb@suse.de>

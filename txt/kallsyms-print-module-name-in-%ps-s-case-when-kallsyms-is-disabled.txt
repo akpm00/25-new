@@ -1,0 +1,48 @@
+From: Maninder Singh <maninder1.s@samsung.com>
+Subject: kallsyms: print module name in %ps/S case when KALLSYMS is disabled
+
+original:
+With KALLSYMS
+                   %pS                               %ps
+[16.4200]  hello_init+0x0/0x24 [crash]        hello_init [crash]
+
+Without KALLSYMS:
+[16.2200]      0xbe200040                         0xbe200040
+
+With Patch (Without KALLSYMS:) load address + current offset [Module Name]
+
+[13.5993]  0xbe200000+0x40 [crash]           0xbe200000+0x40 [crash]
+
+It will help in better debugging and checking when KALLSYMS is disabled,
+user will get information about module name and load address of module.
+
+verified for arm64:
+/ # insmod /crash.ko
+
+[   19.263556] 0xffff800000ec0000+0x38 [crash]
+
+..
+
+[   19.276023] Call trace:
+[   19.276277]  0xffff800000ec0000+0x28 [crash]
+[   19.276567]  0xffff800000ec0000+0x58 [crash]
+[   19.276727]  0xffff800000ec0000+0x74 [crash]
+[   19.276866]  0xffff8000080127d0
+[   19.276978]  0xffff80000812d95c
+[   19.277085]  0xffff80000812f554
+
+Link: https://lkml.kernel.org/r/20220201040044.1528568-1-maninder1.s@samsung.com
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Miroslav Benes <mbenes@suse.cz>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>

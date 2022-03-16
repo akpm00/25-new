@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: rework the try_to_unmap logic in hwpoison_user_mappings()
+
+Only for hugetlb pages in shared mappings, try_to_unmap should take
+semaphore in write mode here.  Rework the code to make it clear.
+
+Link: https://lkml.kernel.org/r/20220216091431.39406-7-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

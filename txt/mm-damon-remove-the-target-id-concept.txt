@@ -1,0 +1,23 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon: remove the target id concept
+
+DAMON asks each monitoring target ('struct damon_target') to have one
+'unsigned long' integer called 'id', which should be unique among the
+targets of same monitoring context.  Meaning of it is, however, totally up
+to the monitoring primitives that registered to the monitoring context. 
+For example, the virtual address spaces monitoring primitives treats the
+id as a 'struct pid' pointer.
+
+This makes the code flexible, but ugly, not well-documented, and
+type-unsafe[1].  Also, identification of each target can be done via its
+index.  For the reason, this commit removes the concept and uses clear
+type definition.  For now, only 'struct pid' pointer is used for the
+virtual address spaces monitoring.  If DAMON is extended in future so that
+we need to put another identifier field in the struct, we will use a union
+for such primitives-dependent fields and document which primitives are
+using which type.
+
+[1] https://lore.kernel.org/linux-mm/20211013154535.4aaeaaf9d0182922e405dd1e@linux-foundation.org/
+
+Link: https://lkml.kernel.org/r/20211230100723.2238-5-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

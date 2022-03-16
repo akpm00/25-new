@@ -1,0 +1,38 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm-damon-add-access-checking-for-hugetlb-pages-fix
+
+> On i386:
+>
+> ../mm/damon/vaddr.c: In function `damon_hugetlb_mkold':
+> ../mm/damon/vaddr.c:402:17: warning: unused variable `h' [-Wunused-variable]
+>    struct hstate *h = hstate_vma(vma);
+
+Link: https://lkml.kernel.org/r/1aaf9c11-0d8e-b92d-5c92-46e50a6e8d4e@linux.alibaba.com
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/damon/vaddr.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/mm/damon/vaddr.c~mm-damon-add-access-checking-for-hugetlb-pages-fix
++++ a/mm/damon/vaddr.c
+@@ -393,7 +393,6 @@ static void damon_hugetlb_mkold(pte_t *p
+ 				struct vm_area_struct *vma, unsigned long addr)
+ {
+ 	bool referenced = false;
+-	struct hstate *h = hstate_vma(vma);
+ 	pte_t entry = huge_ptep_get(pte);
+ 	struct page *page = pte_page(entry);
+ 
+@@ -410,7 +409,7 @@ static void damon_hugetlb_mkold(pte_t *p
+ 	}
+ 
+ #ifdef CONFIG_MMU_NOTIFIER
+-	if (mmu_notifier_clear_young(mm, addr, addr + huge_page_size(h)))
++	if (mmu_notifier_clear_young(mm, addr, addr + huge_page_size(hstate_vma(vma))))
+ 		referenced = true;
+ #endif /* CONFIG_MMU_NOTIFIER */
+ 
+_

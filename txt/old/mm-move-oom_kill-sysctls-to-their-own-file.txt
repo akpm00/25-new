@@ -1,0 +1,21 @@
+From: sujiaxun <sujiaxun@uniontech.com>
+Subject: mm: move oom_kill sysctls to their own file
+
+kernel/sysctl.c is a kitchen sink where everyone leaves their dirty
+dishes, this makes it very difficult to maintain.
+
+To help with this maintenance let's start by moving sysctls to places
+where they actually belong.  The proc sysctl maintainers do not want to
+know what sysctl knobs you wish to add for your own piece of code, we just
+care about the core logic.
+
+So move the oom_kill sysctls to their own file, mm/oom_kill.c
+
+[sfr@canb.auug.org.au: null-terminate the array]
+  Link: https://lkml.kernel.org/r/20220216193202.28838626@canb.auug.org.au
+Link: https://lkml.kernel.org/r/20220215093203.31032-1-sujiaxun@uniontech.com
+Signed-off-by: sujiaxun <sujiaxun@uniontech.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Michal Hocko <mhocko@suse.com>

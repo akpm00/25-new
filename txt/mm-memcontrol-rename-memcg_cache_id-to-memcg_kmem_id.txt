@@ -1,0 +1,34 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: memcontrol: rename memcg_cache_id to memcg_kmem_id
+
+The memcg_cache_id() introduced by commit 2633d7a02823 ("slab/slub:
+consider a memcg parameter in kmem_create_cache") is used to index in the
+kmem_cache->memcg_params->memcg_caches array.  Since
+kmem_cache->memcg_params.memcg_caches has been removed by commit
+9855609bde03 ("mm: memcg/slab: use a single set of kmem_caches for all
+accounted allocations").  So the name does not need to reflect cache
+related.  Just rename it to memcg_kmem_id.  And it can reflect kmem
+related.
+
+Link: https://lkml.kernel.org/r/20220228122126.37293-17-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kari Argillander <kari.argillander@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Yang Shi <shy828301@gmail.com>

@@ -1,0 +1,10 @@
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: mm, hugetlb: fix a double unlock bug in alloc_surplus_huge_page()
+
+We aren't holding the hugetlb_lock so there is no need to unlock.
+
+Link: http://lkml.kernel.org/r/20180109200559.g3iz5kvbdrz7yydp@mwanda
+Fixes: b27f11e5e675 ("mm, hugetlb: get rid of surplus page accounting tricks")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

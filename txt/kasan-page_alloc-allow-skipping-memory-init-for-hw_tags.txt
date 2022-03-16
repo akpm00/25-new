@@ -1,0 +1,28 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, page_alloc: allow skipping memory init for HW_TAGS
+
+Add a new GFP flag __GFP_SKIP_ZERO that allows to skip memory
+initialization.  The flag is only effective with HW_TAGS KASAN.
+
+This flag will be used by vmalloc code for page_alloc allocations backing
+vmalloc() mappings in a following patch.  The reason to skip memory
+initialization for these pages in page_alloc is because vmalloc code will
+be initializing them instead.
+
+With the current implementation, when __GFP_SKIP_ZERO is provided,
+__GFP_ZEROTAGS is ignored.  This doesn't matter, as these two flags are
+never provided at the same time.  However, if this is changed in the
+future, this particular implementation detail can be changed as well.
+
+Link: https://lkml.kernel.org/r/0d53efeff345de7d708e0baa0d8829167772521e.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

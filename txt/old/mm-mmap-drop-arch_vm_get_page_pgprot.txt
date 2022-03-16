@@ -1,0 +1,8 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: drop arch_vm_get_page_pgprot()
+
+There are no platforms left which use arch_vm_get_page_prot().  Just drop
+arch_vm_get_page_prot() construct and simplify remaining code.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-14-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>

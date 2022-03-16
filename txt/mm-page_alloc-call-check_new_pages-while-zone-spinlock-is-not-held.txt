@@ -1,0 +1,23 @@
+From: Eric Dumazet <edumazet@google.com>
+Subject: mm/page_alloc: call check_new_pages() while zone spinlock is not held
+
+For high order pages not using pcp, rmqueue() is currently calling the
+costly check_new_pages() while zone spinlock is held, and hard irqs
+masked.
+
+This is not needed, we can release the spinlock sooner to reduce zone
+spinlock contention.
+
+Note that after this patch, we call __mod_zone_freepage_state() before
+deciding to leak the page because it is in bad state.
+
+Link: https://lkml.kernel.org/r/20220304170215.1868106-1-eric.dumazet@gmail.com
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Hugh Dickins <hughd@google.com>

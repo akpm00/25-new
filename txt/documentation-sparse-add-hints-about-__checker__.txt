@@ -1,0 +1,14 @@
+From: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Documentation/sparse: add hints about __CHECKER__
+
+Several attributes depend on __CHECKER__, but previously there was no clue
+in the tree about when __CHECKER__ might be defined.  Add hints at the
+most common places (__kernel, __user, __iomem, __bitwise) and in the
+sparse documentation.
+
+Link: https://lkml.kernel.org/r/20220310220927.245704-3-helgaas@kernel.org
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: "Michael S . Tsirkin" <mst@redhat.com>

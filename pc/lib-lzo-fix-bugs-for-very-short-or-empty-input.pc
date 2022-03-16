@@ -1,0 +1,3 @@
+Documentation/lzo.txt
+lib/lzo/lzo1x_compress.c
+lib/lzo/lzo1x_decompress_safe.c

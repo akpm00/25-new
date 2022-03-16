@@ -1,0 +1,18 @@
+From: Alistair Popple <apopple@nvidia.com>
+Subject: mm/migrate.c: Rework migration_entry_wait() to not take a pageref
+
+ - Documentation/comment fixes from David H
+ - Added David's Acked-by
+ - Changed functions to take swap entries instead of struct pages as
+   suggested by Matthew W
+
+Link: https://lkml.kernel.org/r/20211213033848.1973946-1-apopple@nvidia.com
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ralph Campbell <rcampbell@nvidia.com>

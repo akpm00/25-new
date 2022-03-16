@@ -1,0 +1,19 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: simplify async check in end_report()
+
+Currently, end_report() does not call trace_error_report_end() for bugs
+detected in either async or asymm mode (when kasan_async_fault_possible()
+returns true), as the address of the bad access might be unknown.
+
+However, for asymm mode, the address is known for faults triggered by read
+operations.
+
+Instead of using kasan_async_fault_possible(), simply check that the addr
+is not NULL when calling trace_error_report_end().
+
+Link: https://lkml.kernel.org/r/1c8ce43f97300300e62c941181afa2eb738965c5.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

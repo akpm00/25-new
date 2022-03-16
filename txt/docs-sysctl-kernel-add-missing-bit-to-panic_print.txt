@@ -1,0 +1,30 @@
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: docs: sysctl/kernel: add missing bit to panic_print
+
+Patch series "Some improvements on panic_print".
+
+This is a mix of a documentation fix with some additions to the
+"panic_print" syscall / parameter.  The goal here is being able to collect
+all CPUs backtraces during a panic event and also to enable "panic_print"
+in a kdump event - details of the reasoning and design choices in the
+patches.
+
+
+This patch (of 3):
+
+Commit de6da1e8bcf0 ("panic: add an option to replay all the printk
+message in buffer") added a new bit to the sysctl/kernel parameter
+"panic_print", but the documentation was added only in
+kernel-parameters.txt, not in the sysctl guide.
+
+Fix it here by adding bit 5 to sysctl admin-guide documentation.
+
+Link: https://lkml.kernel.org/r/20211109202848.610874-1-gpiccoli@igalia.com
+Link: https://lkml.kernel.org/r/20211109202848.610874-2-gpiccoli@igalia.com
+Fixes: de6da1e8bcf0 ("panic: add an option to replay all the printk message in buffer")
+Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+Reviewed-by: Feng Tang <feng.tang@intel.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Samuel Iglesias Gonsalvez <siglesias@igalia.com>

@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-export-pageheadhuge-fix
+
+s/EXPORT_SYMBOL/EXPORT_SYMBOL_GPL/, per Christoph
+
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

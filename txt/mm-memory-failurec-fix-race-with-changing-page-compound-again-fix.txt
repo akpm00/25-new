@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-memory-failurec-fix-race-with-changing-page-compound-again-fix
+
+s@/**@/*@, per Naoya Horiguchi
+
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Yang Shi <shy828301@gmail.com>

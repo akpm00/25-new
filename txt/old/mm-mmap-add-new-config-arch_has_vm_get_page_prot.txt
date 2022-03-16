@@ -1,0 +1,10 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: add new config ARCH_HAS_VM_GET_PAGE_PROT
+
+Add a new config ARCH_HAS_VM_GET_PAGE_PROT, which when subscribed enables
+a given platform to define its own vm_get_page_prot().  This framework
+will help remove protection_map[] dependency going forward.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-4-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Suggested-by: Christoph Hellwig <hch@infradead.org>

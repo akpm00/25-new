@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-memory_hotplug-remove-obsolete-comment-of-__add_pages-fix
+
+remove the comment altogether, per David
+
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>

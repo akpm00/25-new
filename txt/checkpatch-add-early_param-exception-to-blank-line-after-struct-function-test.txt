@@ -1,0 +1,10 @@
+From: Joe Perches <joe@perches.com>
+Subject: checkpatch: add early_param exception to blank line after struct/function test
+
+Add early_param as another exception to the blank line preferred after
+function/struct/union declaration or definition test.
+
+Link: https://lkml.kernel.org/r/3bd6ada59f411a7685d7e64eeb670540d4bfdcde.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>

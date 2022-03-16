@@ -1,0 +1,15 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: tmpfs: three tweaks to creation time patch
+
+Thank you to Xavier Roche for his tmpfs file creation time patch.  Please
+apply these 3 tweaks on top (and fold in when sending to Linus):
+
+1. Move vfs_inode back to being last element of shmem_inode_info.
+2. Remove unnecessary parentheses from condition in shmem_getattr().
+3. Using shmem_getattr() on other file types than regular requires that
+   shmem_is_huge() check type, to stop incorrect HPAGE_PMD_SIZE blksize.
+
+Link: https://lkml.kernel.org/r/b954973a-b8d1-cab8-63bd-6ea8063de3@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: Xavier Roche <xavier.roche@algolia.com>
+Cc: Jean Delvare <jdelvare@suse.de>

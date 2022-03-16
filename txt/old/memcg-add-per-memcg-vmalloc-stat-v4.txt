@@ -1,0 +1,12 @@
+From: Shakeel Butt <shakeelb@google.com>
+Subject: memcg-add-per-memcg-vmalloc-stat-v4
+
+Remove area->page[0] checks and moved to page by page accounting as
+suggested by Michal.
+
+Link: https://lkml.kernel.org/r/20220104222341.3972772-1-shakeelb@google.com
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>

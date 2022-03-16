@@ -1,0 +1,13 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: delete invalid duplicate code
+
+I noticed that there is two invalid lines of duplicate code.  It's better
+to delete it.
+
+Link: https://lkml.kernel.org/r/20211213095743.3630-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>

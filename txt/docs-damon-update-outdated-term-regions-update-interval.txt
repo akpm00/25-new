@@ -1,0 +1,12 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/damon: update outdated term 'regions update interval'
+
+Before DAMON is merged in the mainline, the concept of 'regions update
+interval' has generalized to be used as the time interval for update of
+any monitoring operations related data structure, but the document has not
+updated properly.  This commit updates the document for better
+consistency.
+
+Link: https://lkml.kernel.org/r/20220222170100.17068-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>

@@ -1,0 +1,371 @@
+Return-Path: <bigeasy@linutronix.de>
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on hp2
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.5 tests=BAYES_00 autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from hp2 (localhost [127.0.0.1])
+	by hp2 (8.17.1/8.17.1) with ESMTP id 21QKg2Wb1065370
+	for <akpm@localhost>; Sat, 26 Feb 2022 12:42:04 -0800
+Received: from imap.fastmail.com [66.111.4.135]
+	by hp2 with IMAP (fetchmail-6.4.26)
+	for <akpm@localhost> (single-drop); Sat, 26 Feb 2022 12:42:04 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	 by sloti43n14 (Cyrus 3.5.0-alpha0-4778-g14fba9972e-fm-20220217.001-g14fba997) with LMTPA;
+	 Sat, 26 Feb 2022 15:41:57 -0500
+X-Cyrus-Session-Id: sloti43n14-1645908117-2835772-2-16031499721375712189
+X-Sieve: CMU Sieve 3.0
+X-Resolved-to: akpm@mbx.kernel.org
+X-Delivered-to: akpm@mbx.kernel.org
+X-Original-Delivered-to: akpm@linux-foundation.org
+X-Mail-from: bigeasy@linutronix.de
+Received: from mx5 ([10.202.2.204])
+  by compute2.internal (LMTPProxy); Sat, 26 Feb 2022 15:41:57 -0500
+Received: from mx5.messagingengine.com (localhost [127.0.0.1])
+	by mailmx.nyi.internal (Postfix) with ESMTP id 184CF2140137
+	for <akpm@mbx.kernel.org>; Sat, 26 Feb 2022 15:41:57 -0500 (EST)
+Received: from mx5.messagingengine.com (localhost [127.0.0.1])
+    by mx5.messagingengine.com (Authentication Milter) with ESMTP
+    id DF6A62DDBA7;
+    Sat, 26 Feb 2022 15:41:57 -0500
+ARC-Seal: i=2; a=rsa-sha256; cv=pass; d=messagingengine.com; s=fm2; t=
+    1645908117; b=crCVroJTsTcJ/B2eOCD4VSeQq/Wh6fAqwYvwaNdEsq0DYNa+n1
+    T6yw8OcF+MsoKvgfDyrlswUZBQ8YKJa52Rc4W+P2C7C+xGXX9UfDLJ7iWbEBbRKp
+    TkmYJCGmTAxwYIsmNXk0osPa1bAwWmZSESJEKPNwq1T0s9lskvAKT+mKmNwxnUQj
+    b9ITGCeFSFyPToNFmXPrjukryZ+Ez7x2qep4YReTDSC+Yt9fIg4R58FonO1329Ok
+    76G3MycleZ67ytdWb2op0v9OTRU9lOoSR+Aw7A1rCGoRBe2xI/GE6+4pv3qtqubo
+    1l1LpAIXsaxejsspHWtBqC5ksLdTEAzDj3OQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=
+    messagingengine.com; h=from:to:cc:subject:date:message-id
+    :in-reply-to:references:mime-version:content-transfer-encoding;
+    s=fm2; t=1645908117; bh=vzffaKtY2TPuSciDyqAdDELxkAsc6OFdR8wdvbR
+    fvC8=; b=TohZtYRy8yYmdtH7LGIEQ1BIBCzCqOw8nyeJ4ESTWVY4KdmQ09gkz7h
+    cVt8seT2lYbp79HLo1WHx5SuJDRmJ4ZhNQcNC2RLEEmfq+TyeJHyRgjNKMWtqP1m
+    jao05HJi2nbdc8BWiFkx7dFKqeanpmitZQM9SJQ+fg3Hf8tp4QxTjpUo/oo4RruN
+    Ej3Ic7CEeYhyBON4UwFpx55CHd3j7A/Qvz4cErD+SzlKdL2XGY/2gRt1wSxtoLkz
+    3thBLdvzp+/AQUrmMTYRC8ygC1Mqdu/ekEUX3tWUfgSPLb+19adJYrdm38pxfh5+
+    tw05YY6mZmGz/ZqzhmHssFh6V3SrqFg==
+ARC-Authentication-Results: i=2; mx5.messagingengine.com;
+    x-csa=none;
+    x-me-sender=none;
+    x-ptr=pass smtp.helo=mail-pg1-f198.google.com
+    policy.ptr=mail-pg1-f198.google.com;
+    bimi=skipped (DMARC Policy is not at enforcement);
+    arc=pass (as.1.google.com=pass, ams.1.google.com=pass)
+    smtp.remote-ip=209.85.215.198;
+    x-arc-spf=pass
+    (google.com: domain of bigeasy@linutronix.de designates 193.142.43.55 as permitted sender)
+    smtp.mailfrom=bigeasy@linutronix.de x-arc-instance=1
+    x-arc-domain=google.com (Trusted from aar.1.google.com);
+    dkim=invalid (unsupported algorithm ed25519-sha256, 0-bit  key)
+    header.d=linutronix.de header.i=@linutronix.de header.b=XeDtsWWb
+    header.a=- header.s=2020e x-bits=0;
+    dkim=pass (2048-bit rsa key sha256) header.d=linutronix.de
+    header.i=@linutronix.de header.b=HfojqYzQ header.a=rsa-sha256
+    header.s=2020 x-bits=2048;
+    dmarc=pass policy.published-domain-policy=none
+    policy.published-subdomain-policy=quarantine
+    policy.applied-disposition=none policy.evaluated-disposition=none
+    (p=none,sp=quarantine,d=none,d.eval=none) policy.policy-from=p
+    header.from=linutronix.de;
+    iprev=pass smtp.remote-ip=209.85.215.198 (mail-pg1-f198.google.com);
+    spf=fail smtp.mailfrom=bigeasy@linutronix.de
+    smtp.helo=mail-pg1-f198.google.com
+X-ME-Authentication-Results: mx5.messagingengine.com;
+    x-aligned-from=pass (Address match);
+    x-google-dkim=fail (message has been altered, 2048-bit rsa key)
+      header.d=1e100.net header.i=@1e100.net header.b=iIVv5K4d;
+    x-return-mx=pass header.domain=linutronix.de policy.is_org=yes
+      (MX Records found: mail.linutronix.de);
+    x-return-mx=pass smtp.domain=linutronix.de policy.is_org=yes
+      (MX Records found: mail.linutronix.de);
+    x-tls=pass smtp.version=TLSv1.3 smtp.cipher=TLS_AES_256_GCM_SHA384
+      smtp.bits=256/256;
+    x-vs=clean score=-100 state=0
+Authentication-Results: mx5.messagingengine.com;
+    x-csa=none;
+    x-me-sender=none;
+    x-ptr=pass smtp.helo=mail-pg1-f198.google.com
+      policy.ptr=mail-pg1-f198.google.com
+Authentication-Results: mx5.messagingengine.com;
+    bimi=skipped (DMARC Policy is not at enforcement)
+Authentication-Results: mx5.messagingengine.com;
+    arc=pass (as.1.google.com=pass, ams.1.google.com=pass)
+      smtp.remote-ip=209.85.215.198;
+    x-arc-spf=pass
+      (google.com: domain of bigeasy@linutronix.de designates 193.142.43.55 as permitted sender)
+      smtp.mailfrom=bigeasy@linutronix.de x-arc-instance=1
+      x-arc-domain=google.com (Trusted from aar.1.google.com)
+Authentication-Results: mx5.messagingengine.com;
+    dkim=invalid (unsupported algorithm ed25519-sha256, 0-bit  key)
+      header.d=linutronix.de header.i=@linutronix.de header.b=XeDtsWWb
+      header.a=- header.s=2020e x-bits=0;
+    dkim=pass (2048-bit rsa key sha256) header.d=linutronix.de
+      header.i=@linutronix.de header.b=HfojqYzQ header.a=rsa-sha256
+      header.s=2020 x-bits=2048;
+    dmarc=pass policy.published-domain-policy=none
+      policy.published-subdomain-policy=quarantine
+      policy.applied-disposition=none policy.evaluated-disposition=none
+      (p=none,sp=quarantine,d=none,d.eval=none) policy.policy-from=p
+      header.from=linutronix.de;
+    iprev=pass smtp.remote-ip=209.85.215.198 (mail-pg1-f198.google.com);
+    spf=fail smtp.mailfrom=bigeasy@linutronix.de
+      smtp.helo=mail-pg1-f198.google.com
+X-ME-VSCause: gggruggvucftvghtrhhoucdtuddrgedvvddrleeigddufeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhephffvufffkfgjfhgggfestdhqredttddttdenucfh
+    rhhomhepufgvsggrshhtihgrnhcutehnughriigvjhcuufhivgifihhorhcuoegsihhgvg
+    grshihsehlihhnuhhtrhhonhhigidruggvqeenucggtffrrghtthgvrhhnpefhffeikeeh
+    ffeuffejfefhveefudfhleefffeflefffeeigedtledvuedvffefgfenucfkphepvddtle
+    drkeehrddvudehrdduleekpdduleefrddugedvrdegfedrheehnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehinhgvthepvddtledrkeehrddvudehrdduleekpdhhvg
+    hlohepmhgrihhlqdhpghduqdhfudelkedrghhoohhglhgvrdgtohhmpdhmrghilhhfrhho
+    mhepoegsihhgvggrshihsehlihhnuhhtrhhonhhigidruggvqe
+X-ME-VSScore: -100
+X-ME-VSCategory: clean
+X-ME-CSA: none
+Received-SPF: fail
+    (linutronix.de: Sender is not authorized by default to use 'bigeasy@linutronix.de' in 'mfrom' identity (mechanism '-all' matched))
+    receiver=mx5.messagingengine.com;
+    identity=mailfrom;
+    envelope-from="bigeasy@linutronix.de";
+    helo=mail-pg1-f198.google.com;
+    client-ip=209.85.215.198
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx5.messagingengine.com (Postfix) with ESMTPS
+	for <akpm@mbx.kernel.org>; Sat, 26 Feb 2022 15:41:56 -0500 (EST)
+Received: by mail-pg1-f198.google.com with SMTP id r8-20020a638f48000000b0036c6a881088so4944678pgn.2
+        for <akpm@mbx.kernel.org>; Sat, 26 Feb 2022 12:41:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:dkim-signature:dkim-signature:to:cc:subject
+         :date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=vzffaKtY2TPuSciDyqAdDELxkAsc6OFdR8wdvbRfvC8=;
+        b=iIVv5K4dr5GV0FcG0oMu0ZskkT0xtOZhVsxCyios5B7UpeRhTdxWi5IN+BkHLWx5qv
+         8OFVZhfi+q5jw5NvCuPwx87p4FSBNAEMwb0EwUC7vzyRi7CD6sVaE/d0VORtdvEBrXfM
+         YaO2S6pE8Zo4ZpjFuECYwnUG1a/UkN1JT61HkwbJtM7ahascJiAI16cSztcRO/r5hK8I
+         y0J5Sg0nCcfF9hVckDpkkTXefpxxg0SjYPD6l4bqEBKccvQt7ll3jTF7PGockKHHcMHm
+         W1NXGHThzpxDJvCYB3Wb6ckuJtYdwwwXKACyaF/CnIACfojHMf1tifPJR8xoA/IYFmon
+         Ulvw==
+X-Gm-Message-State: AOAM530VgUj0mzYSnnbNeyJ8XW3JVWlRzscLU0ZMqdq8KkPzPIQlWNAQ
+	vETfoG4Q00rBu83kKs4ISeUvOreewVLbaYrihhc6IbDcW1LotpxuoNncIrL4TtRss7q2pMX5DYX
+	mojVVMq2LX9mA/wBN+XaOdAw7VUjqfh7NqdhzVQtXEw+n5czrihP1+gM=
+X-Received: by 2002:a63:e59:0:b0:374:a169:d558 with SMTP id 25-20020a630e59000000b00374a169d558mr11307019pgo.304.1645908115232;
+        Sat, 26 Feb 2022 12:41:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzU3HAipNexDrDAusEVfvUKkioA974c8bdvoyEpkevbbsBpELRBJQYdPuZJYVJHRQWXWSnN
+X-Received: by 2002:a63:e59:0:b0:374:a169:d558 with SMTP id 25-20020a630e59000000b00374a169d558mr11306989pgo.304.1645908114346;
+        Sat, 26 Feb 2022 12:41:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1645908114; cv=none;
+        d=google.com; s=arc-20160816;
+        b=OQlg9JZ1li8WRCej2vmbkTJIfo4lr30NZlTI75wvTCuoXA5ed1A14LjR6y7dbcaouW
+         aiX49IFQqWttxGohSeMjUAaCTWs343dRNLrn3Sm9PnT5N0NYQaRLuZ3fWaok/wZNhPKR
+         pNdl+aMGdZ2bTIRZxI/lI4PqPO3NOB9hWGAvB29lHHCb1q31nebsLY1SolTSKWqhjJ+X
+         ClnopgsBzr/dmTb4Rr2VrnLytdlNg34FNCpUFX9x6CVLX8xXXUbSUDe8rj0d6KaWzqr/
+         R5m8cS2ylgb6fyTzmkEAmP2iV4JwZy0NvcWEimoAKLL1VfnHgkiX3OFx6V934SJNVzj2
+         6YPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:dkim-signature:dkim-signature:from;
+        bh=vzffaKtY2TPuSciDyqAdDELxkAsc6OFdR8wdvbRfvC8=;
+        b=mxf8tUoK9hS6lfQrvc4FxjKIAbIG7c+I7xKLkf2WdgvArBXrdjdTXe/e9RI0JgiRvb
+         xcI83ggrALGgOn/DNtQempRJ1uRB6H6APFlLdVLIAMaSEIE/bAdqu2kL2LB81pxaWUQ/
+         UNZegRnFBCG5WUTva2YEztsVEnh0LIBNeVAyWDsd4NlBeOIv3Oh8jTUtlCX30oXGLxni
+         zxypwLwY0JD/qyxTEJ5ZOeihDBMT0mjpCkKQb/hAOAhbNJaUkcOXdAB8lLY/6+MNyRfH
+         9JCvDVv4AnR8JOjluDJYo/CH7Nui/Z+h709fiFmUEe3HyCIqGHr/j+6zATXVHH0HfG5p
+         /iuQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@linutronix.de header.s=2020 header.b=HfojqYzQ;
+       dkim=neutral (no key) header.i=@linutronix.de header.s=2020e header.b=XeDtsWWb;
+       spf=pass (google.com: domain of bigeasy@linutronix.de designates 193.142.43.55 as permitted sender) smtp.mailfrom=bigeasy@linutronix.de;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=linutronix.de
+Received: from galois.linutronix.de (Galois.linutronix.de. [193.142.43.55])
+        by mx.google.com with ESMTPS id a28-20020a634d1c000000b003743ee6c636si4944320pgb.175.2022.02.26.12.41.53
+        for <akpm@linux-foundation.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Feb 2022 12:41:54 -0800 (PST)
+Received-SPF: pass (google.com: domain of bigeasy@linutronix.de designates 193.142.43.55 as permitted sender) client-ip=193.142.43.55;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@linutronix.de header.s=2020 header.b=HfojqYzQ;
+       dkim=neutral (no key) header.i=@linutronix.de header.s=2020e header.b=XeDtsWWb;
+       spf=pass (google.com: domain of bigeasy@linutronix.de designates 193.142.43.55 as permitted sender) smtp.mailfrom=bigeasy@linutronix.de;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1645908111;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzffaKtY2TPuSciDyqAdDELxkAsc6OFdR8wdvbRfvC8=;
+	b=HfojqYzQ6+JkjfDeLFJcwECUNDYhedrn0fTUATceUUdx+2MnqdFSyJz9x1RXUzuAa567xe
+	yl3CMMtLaCjUaHBL7+vqJBe6aKXv0b6TslTod4pLAmrLfbapb2/iNfFcMmdvhHwg1xdDyg
+	RxsMIz57z2RoGNK0biAieGMonD2qdvpA6XVbBexJcE3x4H4tU6TY302Yr+dQyDKi9WZgqy
+	uOcDZfuSXf5MCihdLx61r8uxKEt1yi8tzqE1D/tScrseZ3QDdtTu2IYvL/M9Pz0Ktg2JIF
+	uv3RaHsJlodo6H70lTr4OJE16oQUmJPHYvo4Sset1N1xmjGvIQQ9CMrX72W6EQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1645908111;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzffaKtY2TPuSciDyqAdDELxkAsc6OFdR8wdvbRfvC8=;
+	b=XeDtsWWbNTY8NrX/xGqu21GrQtVyptp5oaHZP4roJVmI7X1TwzvM2EwJQWs2pvFq6LD3yy
+	XeweT9UkNlYxraCA==
+To: cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Roman Gushchin <guro@fb.com>
+Subject: mm/memcg: Protect per-CPU counter by disabling preemption on PREEMPT_RT where needed.
+Date: Sat, 26 Feb 2022 21:41:41 +0100
+Message-Id: <20220226204144.1008339-4-bigeasy@linutronix.de>
+In-Reply-To: <20220226204144.1008339-1-bigeasy@linutronix.de>
+References: <20220226204144.1008339-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Gm-Original-To: akpm@linux-foundation.org
+
+The per-CPU counter are modified with the non-atomic modifier. The
+consistency is ensured by disabling interrupts for the update.
+On non PREEMPT_RT configuration this works because acquiring a
+spinlock_t typed lock with the _irq() suffix disables interrupts. On
+PREEMPT_RT configurations the RMW operation can be interrupted.
+
+Another problem is that mem_cgroup_swapout() expects to be invoked with
+disabled interrupts because the caller has to acquire a spinlock_t which
+is acquired with disabled interrupts. Since spinlock_t never disables
+interrupts on PREEMPT_RT the interrupts are never disabled at this
+point.
+
+The code is never called from in_irq() context on PREEMPT_RT therefore
+disabling preemption during the update is sufficient on PREEMPT_RT.
+The sections which explicitly disable interrupts can remain on
+PREEMPT_RT because the sections remain short and they don't involve
+sleeping locks (memcg_check_events() is doing nothing on PREEMPT_RT).
+
+Disable preemption during update of the per-CPU variables which do not
+explicitly disable interrupts.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com
+---
+ mm/memcontrol.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0b5117ed2ae08..238ea77aade5d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -630,6 +630,35 @@ static DEFINE_SPINLOCK(stats_flush_lock);
+ static DEFINE_PER_CPU(unsigned int, stats_updates);
+ static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
+=20
++/*
++ * Accessors to ensure that preemption is disabled on PREEMPT_RT because i=
+t can
++ * not rely on this as part of an acquired spinlock_t lock. These function=
+s are
++ * never used in hardirq context on PREEMPT_RT and therefore disabling pre=
+emtion
++ * is sufficient.
++ */
++static void memcg_stats_lock(void)
++{
++#ifdef CONFIG_PREEMPT_RT
++      preempt_disable();
++#else
++      VM_BUG_ON(!irqs_disabled());
++#endif
++}
++
++static void __memcg_stats_lock(void)
++{
++#ifdef CONFIG_PREEMPT_RT
++      preempt_disable();
++#endif
++}
++
++static void memcg_stats_unlock(void)
++{
++#ifdef CONFIG_PREEMPT_RT
++      preempt_enable();
++#endif
++}
++
+ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+ {
+ 	unsigned int x;
+@@ -706,6 +735,27 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, e=
+num node_stat_item idx,
+ 	pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	memcg =3D pn->memcg;
+=20
++	/*
++	 * The caller from rmap relay on disabled preemption becase they never
++	 * update their counter from in-interrupt context. For these two
++	 * counters we check that the update is never performed from an
++	 * interrupt context while other caller need to have disabled interrupt.
++	 */
++	__memcg_stats_lock();
++	if (IS_ENABLED(CONFIG_DEBUG_VM) && !IS_ENABLED(CONFIG_PREEMPT_RT)) {
++		switch (idx) {
++		case NR_ANON_MAPPED:
++		case NR_FILE_MAPPED:
++		case NR_ANON_THPS:
++		case NR_SHMEM_PMDMAPPED:
++		case NR_FILE_PMDMAPPED:
++			WARN_ON_ONCE(!in_task());
++			break;
++		default:
++			WARN_ON_ONCE(!irqs_disabled());
++		}
++	}
++
+ 	/* Update memcg */
+ 	__this_cpu_add(memcg->vmstats_percpu->state[idx], val);
+=20
+@@ -713,6 +763,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, en=
+um node_stat_item idx,
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[idx], val);
+=20
+ 	memcg_rstat_updated(memcg, val);
++	memcg_stats_unlock();
+ }
+=20
+ /**
+@@ -795,8 +846,10 @@ void __count_memcg_events(struct mem_cgroup *memcg, en=
+um vm_event_item idx,
+ 	if (mem_cgroup_disabled())
+ 		return;
+=20
++	memcg_stats_lock();
+ 	__this_cpu_add(memcg->vmstats_percpu->events[idx], count);
+ 	memcg_rstat_updated(memcg, count);
++	memcg_stats_unlock();
+ }
+=20
+ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+@@ -7140,8 +7193,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_=
+t entry)
+ 	 * important here to have the interrupts disabled because it is the
+ 	 * only synchronisation we have for updating the per-CPU variables.
+ 	 */
+-	VM_BUG_ON(!irqs_disabled());
++	memcg_stats_lock();
+ 	mem_cgroup_charge_statistics(memcg, -nr_entries);
++	memcg_stats_unlock();
+ 	memcg_check_events(memcg, page_to_nid(page));
+=20
+ 	css_put(&memcg->css);
+--=20
+2.35.1

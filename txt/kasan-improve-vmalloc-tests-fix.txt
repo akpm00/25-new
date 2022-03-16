@@ -1,0 +1,6 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: similar to "kasan: test: fix compatibility with FORTIFY_SOURCE"
+
+Link: https://lkml.kernel.org/r/20220128144801.73f5ced0@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>

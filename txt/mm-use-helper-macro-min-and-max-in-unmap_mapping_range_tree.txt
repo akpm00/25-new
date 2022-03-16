@@ -1,0 +1,8 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory.c: use helper macro min and max in unmap_mapping_range_tree()
+
+Use helper macro min and max to help simplify the code logic.  Minor
+readability improvement.
+
+Link: https://lkml.kernel.org/r/20220224121134.35068-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

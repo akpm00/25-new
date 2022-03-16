@@ -1,0 +1,8 @@
+Documentation/admin-guide/sysctl/kernel.rst
+include/linux/mmzone.h
+include/linux/sched/sysctl.h
+kernel/sched/core.c
+kernel/sysctl.c
+mm/migrate.c
+mm/page_alloc.c
+mm/vmscan.c

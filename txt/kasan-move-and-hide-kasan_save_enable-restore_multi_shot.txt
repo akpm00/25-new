@@ -1,0 +1,17 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: move and hide kasan_save_enable/restore_multi_shot
+
+- Move kasan_save_enable/restore_multi_shot() declarations to
+  mm/kasan/kasan.h, as there is no need for them to be visible outside
+  of KASAN implementation.
+
+- Only define and export these functions when KASAN tests are enabled.
+
+- Move their definitions closer to other test-related code in report.c.
+
+Link: https://lkml.kernel.org/r/6ba637333b78447f027d775f2d55ab1a40f63c99.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

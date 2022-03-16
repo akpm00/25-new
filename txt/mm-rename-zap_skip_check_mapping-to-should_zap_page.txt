@@ -1,0 +1,18 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm: rename zap_skip_check_mapping() to should_zap_page()
+
+The previous name is against the natural way people think.  Invert the
+meaning and also the return value.  No functional change intended.
+
+Link: https://lkml.kernel.org/r/20220216094810.60572-3-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Suggested-by: David Hildenbrand <david@redhat.com>
+Suggested-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Yang Shi <shy828301@gmail.com>

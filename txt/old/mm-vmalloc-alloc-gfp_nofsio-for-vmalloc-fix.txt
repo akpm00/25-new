@@ -1,0 +1,6 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: mm/vmalloc: alloc GFP_NO{FS,IO} for vmalloc fix
+
+Link: https://lkml.kernel.org/r/20211217232641.0148710c@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Michal Hocko <mhocko@suse.com>

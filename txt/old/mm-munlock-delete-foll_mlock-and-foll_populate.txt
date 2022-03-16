@@ -1,0 +1,39 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: delete FOLL_MLOCK and FOLL_POPULATE
+
+If counting page mlocks, we must not double-count: follow_page_pte() can
+tell if a page has already been Mlocked or not, but cannot tell if a pte
+has already been counted or not: that will have to be done when the pte is
+mapped in (which lru_cache_add_inactive_or_unevictable() already tracks
+for new anon pages, but there's no such tracking yet for others).
+
+Delete all the FOLL_MLOCK code - faulting in the missing pages will do all
+that is necessary, without special mlock_vma_page() calls from here.
+
+But then FOLL_POPULATE turns out to serve no purpose - it was there so
+that its absence would tell faultin_page() not to faultin page when
+setting up VM_LOCKONFAULT areas; but if there's no special work needed
+here for mlock, then there's no work at all here for VM_LOCKONFAULT.
+
+Have I got that right?  I've not looked into the history, but see that
+FOLL_POPULATE goes back before VM_LOCKONFAULT: did it serve a different
+purpose before?  Ah, yes, it was used to skip the old stack guard page.
+
+And is it intentional that COW is not broken on existing pages when
+setting up a VM_LOCKONFAULT area?  I can see that being argued either way,
+and have no reason to disagree with current behaviour.
+
+Link: https://lkml.kernel.org/r/cbed9c9f-1747-f06a-15ad-b2d9fb6025eb@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

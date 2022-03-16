@@ -1,0 +1,24 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: remove Alexey from MAINTAINERS
+
+People Cc me and I don't have time.
+
+Link: https://lkml.kernel.org/r/YKarMxHJBIhMHQIh@localhost.localdomain
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/MAINTAINERS~proc-remove-myself-from-maintainers
++++ a/MAINTAINERS
+@@ -14735,7 +14735,6 @@ W:	https://wireless.wiki.kernel.org/en/u
+ F:	drivers/net/wireless/intersil/prism54/
+ 
+ PROC FILESYSTEM
+-R:	Alexey Dobriyan <adobriyan@gmail.com>
+ L:	linux-kernel@vger.kernel.org
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
+_

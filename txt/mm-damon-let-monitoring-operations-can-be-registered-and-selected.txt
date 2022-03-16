@@ -1,0 +1,18 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon: let monitoring operations can be registered and selected
+
+In-kernel DAMON user code like DAMON debugfs interface should set 'struct
+damon_operations' of its 'struct damon_ctx' on its own.  Therefore, the
+client code should depend on all supporting monitoring operations
+implementations that it could use.  For example, DAMON debugfs interface
+depends on both vaddr and paddr, while some of the users are not always
+interested in both.
+
+To minimize such unnecessary dependencies, this commit makes the
+monitoring operations can be registered by implementing code and then
+dynamically selected by the user code without build-time dependency.
+
+Link: https://lkml.kernel.org/r/20220215184603.1479-3-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Xin Hao <xhao@linux.alibaba.com>

@@ -1,0 +1,7 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/reclaim: document statistics parameters
+
+This commit adds descriptions for the DAMON_RECLAIM statistics parameters.
+
+Link: https://lkml.kernel.org/r/20211210150016.35349-5-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-hwpoison-inject-support-injecting-hwpoison-to-free-page-fix
+
+export is_free_buddy_page() to modules
+
+ERROR: modpost: "is_free_buddy_page" [mm/hwpoison-inject.ko] undefined!
+
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

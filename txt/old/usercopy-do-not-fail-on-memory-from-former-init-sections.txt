@@ -1,0 +1,18 @@
+From: Helge Deller <deller@gmx.de>
+Subject: usercopy: do not fail on memory from former init sections
+
+On some platforms the memory area between the _stext and the _etext
+symbols includes the init sections (parisc and csky).  If the init
+sections are freed after bootup, the kernel may reuse this memory.
+
+In one test the usercopy checks if the given address is inside the .text
+section (from _stext to _etext), and it wrongly fails on the mentioned
+platforms if the memory is from the former init section.
+
+Fix this failure by first checking against the init sections before
+checking against the _stext/_etext section.
+
+Link: https://lkml.kernel.org/r/YdeHDDAP+TY5wNeT@ls3530
+Fixes: 98400ad75e95 ("parisc: Fix backtrace to always include init funtion names")
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org>

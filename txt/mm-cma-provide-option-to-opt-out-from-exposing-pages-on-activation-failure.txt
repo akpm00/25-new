@@ -1,0 +1,20 @@
+From: Hari Bathini <hbathini@linux.ibm.com>
+Subject: mm/cma: provide option to opt out from exposing pages on activation failure
+
+Patch series "powerpc/fadump: handle CMA activation failure appropriately", v3.
+
+Commit 072355c1cf2d ("mm/cma: expose all pages to the buddy if activation
+of an area fails") started exposing all pages to buddy allocator on CMA
+activation failure.  But there can be CMA users that want to handle the
+reserved memory differently on CMA allocation failure.  Provide an option
+to opt out from exposing pages to buddy for such cases.
+
+Link: https://lkml.kernel.org/r/20220117075246.36072-1-hbathini@linux.ibm.com
+Link: https://lkml.kernel.org/r/20220117075246.36072-2-hbathini@linux.ibm.com
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Cc: Sourabh Jain <sourabhjain@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>

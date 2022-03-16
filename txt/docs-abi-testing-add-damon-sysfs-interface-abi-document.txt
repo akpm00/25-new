@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/ABI/testing: add DAMON sysfs interface ABI document
+
+This commit adds DAMON sysfs interface ABI document under
+Documentation/ABI/testing.
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-14-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>

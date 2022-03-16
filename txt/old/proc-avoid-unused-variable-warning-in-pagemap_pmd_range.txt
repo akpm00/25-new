@@ -1,0 +1,17 @@
+From: Nathan Chancellor <nathan@kernel.org>
+Subject: proc: avoid unused variable warning in pagemap_pmd_range()
+
+When building with CONFIG_TRANSPARENT_HUGEPAGE=n, there is a warning about
+migration being unused:
+
+  fs/proc/task_mmu.c:1444:7: warning: unused variable 'migration' [-Wunused-variable]
+          bool migration = false;
+               ^
+  1 warning generated.
+
+Move the ifdef preprocessor directive up to include migration so it is
+only included in the file when it is used.
+
+Link: https://lkml.kernel.org/r/20220207171049.1102239-1-nathan@kernel.org
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>

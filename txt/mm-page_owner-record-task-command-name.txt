@@ -1,0 +1,27 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm/page_owner: record task command name
+
+The page_owner information currently includes the pid of the calling task.
+That is useful as long as the task is still running.  Otherwise, the
+number is meaningless.  To have more information about the allocating
+tasks that had exited by the time the page_owner information is retrieved,
+we need to store the command name of the task.
+
+Add a new comm field into page_owner structure to store the command name
+and display it when the page_owner information is retrieved.
+
+Link: https://lkml.kernel.org/r/20220202203036.744010-5-longman@redhat.com
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: Rafael Aquini <aquini@redhat.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>

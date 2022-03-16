@@ -1,0 +1,30 @@
+From: John Hubbard <jhubbard@nvidia.com>
+Subject: mm/gup: follow_pfn_pte(): -EEXIST cleanup
+
+Remove a quirky special case from follow_pfn_pte(), and adjust its callers
+to match.  Caller changes include:
+
+__get_user_pages(): Regardless of any FOLL_* flags, get_user_pages() and
+its variants should handle PFN-only entries by stopping early, if the
+caller expected **pages to be filled in.  This makes for a more reliable
+API, as compared to the previous approach of skipping over such entries
+(and thus leaving them silently unwritten).
+
+move_pages(): squash the -EEXIST error return from follow_page() into
+-EFAULT, because -EFAULT is listed in the man page, whereas -EEXIST is
+not.
+
+Link: https://lkml.kernel.org/r/20220204020010.68930-3-jhubbard@nvidia.com
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>

@@ -1,0 +1,8 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/ksm: use helper macro __ATTR_RW
+
+Use helper macro __ATTR_RW to define KSM_ATTR to make code more clear. 
+Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220221115809.26381-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

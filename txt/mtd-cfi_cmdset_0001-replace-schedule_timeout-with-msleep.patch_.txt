@@ -1,0 +1,5 @@
+From: <janitor@sternwelten.at>
+Subject: mtd/cfi_cmdset_0001: replace schedule_timeout() with msleep()
+
+Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+Signed-off-by: Maximilian Attems <janitor@sternwelten.at>

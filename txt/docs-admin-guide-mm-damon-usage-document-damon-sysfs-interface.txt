@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/usage: document DAMON sysfs interface
+
+This commit adds detailed usage of DAMON sysfs interface in the
+admin-guide document for DAMON.
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-13-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>

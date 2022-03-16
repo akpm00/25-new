@@ -1,0 +1,14 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/vm/damon/design: update DAMON-Idle Page Tracking interference handling
+
+In DAMON's early development stage before it be merged in the mainline, it
+was first designed to work exclusively with Idle page tracking to avoid
+any interference between each other.  Later, but still before be merged in
+the mainline, because Idle page tracking is fully under the control of
+sysadmins, we made the resolving of conflict as the responsibility of
+sysadmins.  The document is not updated for the change, though.  This
+commit updates the document for that.
+
+Link: https://lkml.kernel.org/r/20220222170100.17068-3-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>

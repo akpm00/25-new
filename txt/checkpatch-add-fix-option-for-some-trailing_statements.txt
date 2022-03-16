@@ -1,0 +1,20 @@
+From: Joe Perches <joe@perches.com>
+Subject: checkpatch: add --fix option for some TRAILING_STATEMENTS
+
+Single line code like:
+
+	if (foo) bar;
+
+should generally be written:
+
+	if (foo)
+		bar;
+
+Add a --fix test to do so.
+
+This fix is not done when an ASSIGN_IN_IF in the same line exists.
+
+Link: https://lkml.kernel.org/r/20220128185924.80137-2-joe@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>

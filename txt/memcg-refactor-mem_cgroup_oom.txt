@@ -1,0 +1,32 @@
+From: Shakeel Butt <shakeelb@google.com>
+Subject: memcg: refactor mem_cgroup_oom
+
+Patch series "memcg: robust enforcement of memory.high", v2.
+
+Due to the semantics of memory.high enforcement i.e.  throttle the
+workload without oom-kill, we are trying to use it for right sizing the
+workloads in our production environment.  However we observed the
+mechanism fails for some specific applications which does big chunck of
+allocations in a single syscall.  The reason behind this failure is due to
+the limitation of the memory.high enforcement's current implementation.
+
+This patch series solves this issue by enforcing the memory.high
+synchronously if the current process has accumulated a large amount of
+high overcharge.
+
+
+This patch (of 4):
+
+The function mem_cgroup_oom returns enum which has four possible values
+but the caller does not care about such values and only cares if the
+return value is OOM_SUCCESS or not.  So, remove the enum altogether and
+make mem_cgroup_oom returns a simple bool.
+
+Link: https://lkml.kernel.org/r/20220211064917.2028469-1-shakeelb@google.com
+Link: https://lkml.kernel.org/r/20220211064917.2028469-2-shakeelb@google.com
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Chris Down <chris@chrisdown.name>

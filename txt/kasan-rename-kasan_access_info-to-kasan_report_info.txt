@@ -1,0 +1,12 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: rename kasan_access_info to kasan_report_info
+
+Rename kasan_access_info to kasan_report_info, as the latter name better
+reflects the struct's purpose.
+
+Link: https://lkml.kernel.org/r/158a4219a5d356901d017352558c989533a0782c.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

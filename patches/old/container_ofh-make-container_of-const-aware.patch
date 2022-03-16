@@ -1,0 +1,43 @@
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: container_of.h: make container_of const-aware
+
+container_of() macro has one major drawback.  It does not check whether
+the passed ptr has a const pointer, the result will always be a non-const
+pointer.  Use a _Generic() construct (supported since gcc 4.9 and Clang
+3.0) to teach container_of that if converting a const pointer, the
+returned pointer should also have the const modifier.
+
+Link: https://lkml.kernel.org/r/20220210170434.3924169-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/include/linux/container_of.h~container_ofh-make-container_of-const-aware
++++ a/include/linux/container_of.h
+@@ -19,7 +19,11 @@
+ 	static_assert(__same_type(*(ptr), ((type *)0)->member) ||	\
+ 		      __same_type(*(ptr), void),			\
+ 		      "pointer type mismatch in container_of()");	\
+-	((type *)(__mptr - offsetof(type, member))); })
++	_Generic((ptr),							\
++		const typeof(((type *)0)->member)*:			\
++			((const type *)(__mptr - offsetof(type, member))), \
++		default: ((type *)(__mptr - offsetof(type, member)))	\
++	); })
+ 
+ /**
+  * container_of_safe - cast a member of a structure out to the containing structure
+@@ -35,6 +39,10 @@
+ 		      __same_type(*(ptr), void),			\
+ 		      "pointer type mismatch in container_of_safe()");	\
+ 	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
+-		((type *)(__mptr - offsetof(type, member))); })
++	_Generic((ptr),							\
++		const typeof(((type *)0)->member)*:			\
++			((const type *)(__mptr - offsetof(type, member))), \
++		default: ((type *)(__mptr - offsetof(type, member)))	\
++	); })
+ 
+ #endif	/* _LINUX_CONTAINER_OF_H */
+_

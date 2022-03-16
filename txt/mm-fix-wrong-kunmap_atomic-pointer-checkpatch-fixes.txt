@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-fix-wrong-kunmap_atomic-pointer-checkpatch-fixes
+
+total: 0 errors, 0 warnings, 16 lines checked
+
+./patches/vmscanmemcg-memcg-aware-swap-token-fix-checkpatch-fixes.patch has no obvious style problems and is ready for submission.
+
+Please run checkpatch prior to sending patches
+
+Cc: Hugh Dickins <hughd@google.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: Mel Gorman <mel@csn.ul.ie>
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc: Steven Rostedt <rostedt@goodmis.org>

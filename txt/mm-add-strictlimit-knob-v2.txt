@@ -1,0 +1,34 @@
+From: Maxim Patlasov <MPatlasov@parallels.com>
+Subject: mm: add strictlimit knob
+
+The "strictlimit" feature was introduced to enforce per-bdi dirty limits
+for FUSE which sets bdi max_ratio to 1% by default:
+
+http://article.gmane.org/gmane.linux.kernel.mm/105809
+
+However the feature can be useful for other relatively slow or untrusted
+BDIs like USB flash drives and DVD+RW.  The patch adds a knob to enable
+the feature:
+
+echo 1 > /sys/class/bdi/X:Y/strictlimit
+
+Being enabled, the feature enforces bdi max_ratio limit even if global
+(10%) dirty limit is not reached.  Of course, the effect is not visible
+until /sys/class/bdi/X:Y/max_ratio is decreased to some reasonable value.
+
+Jan said:
+
+: In principle I have nothing against this and the usecase sounds reasonable
+: (in fact I believe the lack of a feature like this is one of reasons why
+: desktop automounters usually mount USB devices with 'sync' mount option). 
+: So feel free to add:
+
+Signed-off-by: Maxim Patlasov <MPatlasov@parallels.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: "Artem S. Tashkinov" <t.artem@lycos.com>
+Cc: Mel Gorman <mel@csn.ul.ie>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Wu Fengguang <fengguang.wu@intel.com>
+Cc: Jens Axboe <axboe@kernel.dk>

@@ -1,0 +1,25 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm/page_owner: use scnprintf() to avoid excessive buffer overrun check
+
+The snprintf() function can return a length greater than the given input
+size.  That will require a check for buffer overrun after each invocation
+of snprintf().  scnprintf(), on the other hand, will never return a
+greater length.  By using scnprintf() in selected places, we can avoid
+some buffer overrun checks except after stack_depot_snprint() and after
+the last snprintf().
+
+Link: https://lkml.kernel.org/r/20220202203036.744010-3-longman@redhat.com
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Acked-by: Rafael Aquini <aquini@redhat.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>

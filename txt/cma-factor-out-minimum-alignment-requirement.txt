@@ -1,0 +1,53 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: cma: factor out minimum alignment requirement
+
+Patch series "mm: enforce pageblock_order < MAX_ORDER".
+
+Having pageblock_order >= MAX_ORDER seems to be able to happen in corner
+cases and some parts of the kernel are not prepared for it.
+
+For example, Aneesh has shown [1] that such kernels can be compiled on
+ppc64 with 64k base pages by setting FORCE_MAX_ZONEORDER=8, which will run
+into a WARN_ON_ONCE(order >= MAX_ORDER) in comapction code right during
+boot.
+
+We can get pageblock_order >= MAX_ORDER when the default hugetlb size is
+bigger than the maximum allocation granularity of the buddy, in which case
+we are no longer talking about huge pages but instead gigantic pages.
+
+Having pageblock_order >= MAX_ORDER can only make alloc_contig_range() of
+such gigantic pages more likely to succeed.
+
+Reliable use of gigantic pages either requires boot time allcoation or
+CMA, no need to overcomplicate some places in the kernel to optimize for
+corner cases that are broken in other areas of the kernel.
+
+
+This patch (of 2):
+
+Let's enforce pageblock_order < MAX_ORDER and simplify.
+
+Especially patch #1 can be regarded a cleanup before:
+	[PATCH v5 0/6] Use pageblock_order for cma and alloc_contig_range
+	alignment. [2]
+
+[1] https://lkml.kernel.org/r/87r189a2ks.fsf@linux.ibm.com
+[2] https://lkml.kernel.org/r/20220211164135.1803616-1-zi.yan@sent.com
+
+Link: https://lkml.kernel.org/r/20220214174132.219303-2-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: John Garry via iommu <iommu@lists.linux-foundation.org>
+

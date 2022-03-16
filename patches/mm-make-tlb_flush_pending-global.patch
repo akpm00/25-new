@@ -1,0 +1,110 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: mm: make tlb_flush_pending global
+
+Currently, tlb_flush_pending is used only for CONFIG_[NUMA_BALANCING|
+COMPACTION] but upcoming patches to solve subtle TLB flush batching
+problem will use it regardless of compaction/NUMA so this patch doesn't
+remove the dependency.
+
+[akpm@linux-foundation.org: remove more ifdefs from world's ugliest printk statement]
+Link: http://lkml.kernel.org/r/20170802000818.4760-6-namit@vmware.com
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Rik van Riel <riel@redhat.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm_types.h |   21 ---------------------
+ mm/debug.c               |    4 ----
+ 2 files changed, 25 deletions(-)
+
+diff -puN include/linux/mm_types.h~mm-make-tlb_flush_pending-global include/linux/mm_types.h
+--- a/include/linux/mm_types.h~mm-make-tlb_flush_pending-global
++++ a/include/linux/mm_types.h
+@@ -487,14 +487,12 @@ struct mm_struct {
+ 	/* numa_scan_seq prevents two threads setting pte_numa */
+ 	int numa_scan_seq;
+ #endif
+-#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+ 	/*
+ 	 * An operation with batched TLB flushing is going on. Anything that
+ 	 * can move process memory needs to flush the TLB when moving a
+ 	 * PROT_NONE or PROT_NUMA mapped page.
+ 	 */
+ 	atomic_t tlb_flush_pending;
+-#endif
+ #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+ 	/* See flush_tlb_batched_pending() */
+ 	bool tlb_flush_batched;
+@@ -528,7 +526,6 @@ extern void tlb_gather_mmu(struct mmu_ga
+ extern void tlb_finish_mmu(struct mmu_gather *tlb,
+ 				unsigned long start, unsigned long end);
+ 
+-#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+ /*
+  * Memory barriers to keep this state in sync are graciously provided by
+  * the page table locks, outside of which no page table modifications happen.
+@@ -569,24 +566,6 @@ static inline void dec_tlb_flush_pending
+ 	smp_mb__before_atomic();
+ 	atomic_dec(&mm->tlb_flush_pending);
+ }
+-#else
+-static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
+-{
+-	return false;
+-}
+-
+-static inline void init_tlb_flush_pending(struct mm_struct *mm)
+-{
+-}
+-
+-static inline void inc_tlb_flush_pending(struct mm_struct *mm)
+-{
+-}
+-
+-static inline void dec_tlb_flush_pending(struct mm_struct *mm)
+-{
+-}
+-#endif
+ 
+ struct vm_fault;
+ 
+diff -puN mm/debug.c~mm-make-tlb_flush_pending-global mm/debug.c
+--- a/mm/debug.c~mm-make-tlb_flush_pending-global
++++ a/mm/debug.c
+@@ -124,9 +124,7 @@ void dump_mm(const struct mm_struct *mm)
+ #ifdef CONFIG_NUMA_BALANCING
+ 		"numa_next_scan %lu numa_scan_offset %lu numa_scan_seq %d\n"
+ #endif
+-#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+ 		"tlb_flush_pending %d\n"
+-#endif
+ 		"def_flags: %#lx(%pGv)\n",
+ 
+ 		mm, mm->mmap, mm->vmacache_seqnum, mm->task_size,
+@@ -158,9 +156,7 @@ void dump_mm(const struct mm_struct *mm)
+ #ifdef CONFIG_NUMA_BALANCING
+ 		mm->numa_next_scan, mm->numa_scan_offset, mm->numa_scan_seq,
+ #endif
+-#if defined(CONFIG_NUMA_BALANCING) || defined(CONFIG_COMPACTION)
+ 		atomic_read(&mm->tlb_flush_pending),
+-#endif
+ 		mm->def_flags, &mm->def_flags
+ 	);
+ }
+_

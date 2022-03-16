@@ -1,0 +1,8 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-dont-include-linux-memremaph-in-linux-mmh-fix-2-fix
+
+fix arch/powerpc/mm/book3s64/pgtable.c
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

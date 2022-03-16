@@ -1,0 +1,55 @@
+From: Sahara <keun-o.park@digital14.com>
+Subject: mm: slub: re-initialize randomized freelist sequence in calculate_sizes
+
+Slab cache flags are exported to sysfs and are allowed to get modified
+from userspace.  Some of those may call calculate_sizes function because
+the changed flag can take an effect on slab object size and layout, which
+means kmem_cache may have different order and objects.  The freelist
+pointer corruption occurs if some slab flags are modified while
+CONFIG_SLAB_FREELIST_RANDOM is turned on.
+
+ $ echo 0 > /sys/kernel/slab/zs_handle/store_user
+ $ echo 0 > /sys/kernel/slab/zspage/store_user
+ $ mkswap /dev/block/zram0
+ $ swapon /dev/block/zram0 -p 32758
+
+ =============================================================================
+ BUG zs_handle (Not tainted): Freepointer corrupt
+ -----------------------------------------------------------------------------
+
+ Disabling lock debugging due to kernel taint
+ INFO: Slab 0xffffffbf29603600 objects=102 used=102 fp=0x0000000000000000 flags=0x0200
+ INFO: Object 0xffffffca580d8d78 @offset=3448 fp=0xffffffca580d8ed0
+
+ Redzone 00000000f3cddd6c: bb bb bb bb bb bb bb bb                          ........
+ Object 0000000082d5d74e: 6b 6b 6b 6b 6b 6b 6b a5                          kkkkkkk.
+ Redzone 000000008fd80359: bb bb bb bb bb bb bb bb                          ........
+ Padding 00000000c7f56047: 5a 5a 5a 5a 5a 5a 5a 5a                          ZZZZZZZZ
+
+In this example, an Android device tries to use zram as a swap and to turn
+off store_user in order to reduce the slub object size.  When
+calculate_sizes is called in kmem_cache_open, size, order and objects for
+zs_handle is:
+
+ size:360, order:0, objects:22
+However, if the SLAB_STORE_USER bit is cleared in store_user_store:
+ size: 56, order:1, objects:73
+
+All the size, order, and objects is changed by calculate_sizes(), but the
+size of the random_seq array is still old value(22).  As a result,
+out-of-bound array access can occur at shuffle_freelist() when slab
+allocation is requested.
+
+This patch fixes the problem by re-allocating the random_seq array with
+re-calculated correct objects value.
+
+Link: https://lkml.kernel.org/r/20200808095030.13368-1-kpark3469@gmail.com
+Fixes: 210e7a43fa905 ("mm: SLUB freelist randomization")
+Reported-by: Ari-Pekka Verta <ari-pekka.verta@digital14.com>
+Reported-by: Timo Simola <timo.simola@digital14.com>
+Signed-off-by: Sahara <keun-o.park@digital14.com>
+Reviewed-by: Thomas Garnier <thgarnie@chromium.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>

@@ -1,0 +1,25 @@
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: mm: madvise: skip unmapped vma holes passed to process_madvise
+
+The process_madvise() system call is expected to skip holes in vma passed
+through 'struct iovec' vector list.  But do_madvise, which
+process_madvise() calls for each vma, returns ENOMEM in case of unmapped
+holes, despite the VMA is processed.
+
+Thus process_madvise() should treat ENOMEM as expected and consider the
+VMA passed to as process and continue processing other vmas in the
+vector list.  Returning -ENOMEM to the user, despite the VMA having
+been processed, will make userspace unable to figure out where to start
+the next madvise.
+
+Link: https://lkml.kernel.org/r/4f091776142f2ebf7b94018146de72318474e686.1647008754.git.quic_charante@quicinc.com
+Fixes: ecb8ac8b1f14("mm/madvise: introduce process_madvise() syscall: an external memory hinting API")
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org>

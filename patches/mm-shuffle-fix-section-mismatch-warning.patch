@@ -1,0 +1,51 @@
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: mm/shuffle: fix section mismatch warning
+
+clang sometimes decides not to inline shuffle_zone(), but it calls a
+__meminit function.  Without the extra __meminit annotation we get this
+warning:
+
+WARNING: modpost: vmlinux.o(.text+0x2a86d4): Section mismatch in reference from the function shuffle_zone() to the function .meminit.text:__shuffle_zone()
+The function shuffle_zone() references
+the function __meminit __shuffle_zone().
+This is often because shuffle_zone lacks a __meminit
+annotation or the annotation of __shuffle_zone is wrong.
+
+shuffle_free_memory() did not show the same problem in my tests, but it
+could happen in theory as well, so mark both as __meminit.
+
+Link: https://lkml.kernel.org/r/20210514135952.2928094-1-arnd@kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shuffle.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/shuffle.h~mm-shuffle-fix-section-mismatch-warning
++++ a/mm/shuffle.h
+@@ -10,7 +10,7 @@
+ DECLARE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
+ extern void __shuffle_free_memory(pg_data_t *pgdat);
+ extern bool shuffle_pick_tail(void);
+-static inline void shuffle_free_memory(pg_data_t *pgdat)
++static inline void __meminit shuffle_free_memory(pg_data_t *pgdat)
+ {
+ 	if (!static_branch_unlikely(&page_alloc_shuffle_key))
+ 		return;
+@@ -18,7 +18,7 @@ static inline void shuffle_free_memory(p
+ }
+ 
+ extern void __shuffle_zone(struct zone *z);
+-static inline void shuffle_zone(struct zone *z)
++static inline void __meminit shuffle_zone(struct zone *z)
+ {
+ 	if (!static_branch_unlikely(&page_alloc_shuffle_key))
+ 		return;
+_

@@ -1,0 +1,38 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kallsyms-enhance-%ps-s-b-printing-when-kallsysms-is-disabled-fix
+
+fix -Wunused-but-set-variable warning
+
+>> lib/vsprintf.c:991:13: warning: variable 'modbuildid' set but not used [-Wunused-but-set-variable]
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aaron Tomlin <atomlin@redhat.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Maninder Singh <maninder1.s@samsung.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/vsprintf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/vsprintf.c~kallsyms-enhance-%ps-s-b-printing-when-kallsysms-is-disabled-fix
++++ a/lib/vsprintf.c
+@@ -988,7 +988,7 @@ static int sprint_module_info(char *buf,
+ 	unsigned long base;
+ 	int ret = 0;
+ 	const char *modname;
+-	int modbuildid = 0;
++	int modbuildid __maybe_unused = 0;
+ 	int len;
+ #if IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID)
+ 	const unsigned char *buildid = NULL;
+_

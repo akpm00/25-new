@@ -1,0 +1,18 @@
+From: Maninder Singh <maninder1.s@samsung.com>
+Subject: scripts/checkpatch.pl: remove _deferred and _deferred_once false warning
+
+With commit 98e35f5894cf ("printk: git rid of [sched_delayed] message for
+printk_deferred") printk_deferred and printk_deferred_once requires
+LOGLEVEL in argument, but checkpatch.pl was not fixed and still reports it
+as warning:
+
+WARNING: Possible unnecessary KERN_ALERT
+printk_deferred(KERN_ALERT "checking deferred\n");
+
+Link: https://lkml.kernel.org/r/20220228073708.1610603-1-maninder1.s@samsung.com
+Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>

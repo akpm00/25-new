@@ -1,0 +1,29 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/thp: fix NR_FILE_MAPPED accounting in page_*_file_rmap()
+
+NR_FILE_MAPPED accounting in mm/rmap.c (for /proc/meminfo "Mapped" and
+/proc/vmstat "nr_mapped" and the memcg's memory.stat "mapped_file") is
+slightly flawed for file or shmem huge pages.
+
+It is well thought out, and looks convincing, but there's a racy case when
+the careful counting in page_remove_file_rmap() (without page lock) gets
+discarded.  So that in a workload like two "make -j20" kernel builds under
+memory pressure, with cc1 on hugepage text, "Mapped" can easily grow by a
+spurious 5MB or more on each iteration, ending up implausibly bigger than
+most other numbers in /proc/meminfo.  And, hypothetically, might grow to
+the point of seriously interfering in mm/vmscan.c's heuristics, which do
+take NR_FILE_MAPPED into some consideration.
+
+Fixed by moving the __mod_lruvec_page_state() down to where it will not be
+missed before return (and I've grown a bit tired of that oft-repeated
+but-not-everywhere comment on the __ness: it gets lost in the move here).
+
+Does page_add_file_rmap() need the same change?  I suspect not, because
+page lock is held in all relevant cases, and its skipping case looks safe;
+but it's much easier to be sure, if we do make the same change.
+
+Link: https://lkml.kernel.org/r/e02e52a1-8550-a57c-ed29-f51191ea2375@google.com
+Fixes: dd78fedde4b9 ("rmap: support file thp")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>

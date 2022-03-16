@@ -1,0 +1,11 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/hwpoison: check the subpage, not the head page
+
+Hardware poison is tracked on a per-page basis, not on the head page.
+
+Link: https://lkml.kernel.org/r/20220130013042.1906881-1-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

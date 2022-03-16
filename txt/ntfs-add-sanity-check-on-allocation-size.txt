@@ -1,0 +1,12 @@
+From: Dongliang Mu <mudongliangabcd@gmail.com>
+Subject: ntfs: add sanity check on allocation size
+
+ntfs_read_inode_mount invokes ntfs_malloc_nofs with zero allocation size. 
+It triggers one BUG in the __ntfs_malloc function.
+
+Fix this by adding sanity check on ni->attr_list_size.
+
+Link: https://lkml.kernel.org/r/20220120094914.47736-1-dzm91@hust.edu.cn
+Reported-by: syzbot+3c765c5248797356edaa@syzkaller.appspotmail.com
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Acked-by: Anton Altaparmakov <anton@tuxera.com>

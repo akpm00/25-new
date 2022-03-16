@@ -1,0 +1,34 @@
+From: Yang Li <yang.lee@linux.alibaba.com>
+Subject: mm: memcontrol: fix kernel-doc
+
+Fix function name in mm/memcontrol.c kernel-doc comment to remove a
+warning.
+
+mm/memcontrol.c:6546: warning: expecting prototype for
+mem_cgroup_protected(). Prototype was for
+mem_cgroup_calculate_protection() instead.
+
+Link: https://lkml.kernel.org/r/1621851862-34443-1-git-send-email-yang.lee@linux.alibaba.com
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/memcontrol.c~mm-memcontrol-fix-kernel-doc
++++ a/mm/memcontrol.c
+@@ -6625,7 +6625,7 @@ static unsigned long effective_protectio
+ }
+ 
+ /**
+- * mem_cgroup_protected - check if memory consumption is in the normal range
++ * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
+  * @root: the top ancestor of the sub-tree being checked
+  * @memcg: the memory cgroup to check
+  *
+_

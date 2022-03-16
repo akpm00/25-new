@@ -1,0 +1,56 @@
+From: Helge Deller <deller@gmx.de>
+Subject: usercopy: do not fail on memory from former init sections
+
+On some platforms the memory area between the _stext and the _etext
+symbols includes the init sections (parisc and csky).  If the init
+sections are freed after bootup, the kernel may reuse this memory.
+
+In one test the usercopy checks if the given address is inside the .text
+section (from _stext to _etext), and it wrongly fails on the mentioned
+platforms if the memory is from the former init section.
+
+Fix this failure by first checking against the init sections before
+checking against the _stext/_etext section.
+
+Link: https://lkml.kernel.org/r/YdeHDDAP+TY5wNeT@ls3530
+Fixes: 98400ad75e95 ("parisc: Fix backtrace to always include init funtion names")
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/usercopy.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+--- a/mm/usercopy.c~usercopy-do-not-fail-on-memory-from-former-init-sections
++++ a/mm/usercopy.c
+@@ -113,6 +113,15 @@ static bool overlaps(const unsigned long
+ 	return true;
+ }
+ 
++static bool inside_init_area(const unsigned long ptr, unsigned long n,
++		char *start, char *end)
++{
++	unsigned long initlow = (unsigned long) start;
++	unsigned long inithigh = (unsigned long) end;
++
++	return (ptr >= initlow && (ptr + n) < inithigh);
++}
++
+ /* Is this address range in the kernel text area? */
+ static inline void check_kernel_text_object(const unsigned long ptr,
+ 					    unsigned long n, bool to_user)
+@@ -121,6 +130,12 @@ static inline void check_kernel_text_obj
+ 	unsigned long texthigh = (unsigned long)_etext;
+ 	unsigned long textlow_linear, texthigh_linear;
+ 
++	/* Ok if inside the former init sections */
++	if (inside_init_area(ptr, n, __init_begin, __init_end))
++		return;
++	if (inside_init_area(ptr, n, _sinittext, _einittext))
++		return;
++
+ 	if (overlaps(ptr, n, textlow, texthigh))
+ 		usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
+ 
+_

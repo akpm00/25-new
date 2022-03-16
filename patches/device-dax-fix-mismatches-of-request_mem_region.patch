@@ -1,0 +1,43 @@
+From: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: drivers/dax/kmem.c: fix mismatches of request_mem_region()
+
+For neatness's sake, The resources allocated by request_mem_region()
+should be freed with release_mem_region().  These two functions are
+paired.
+
+Link: http://lkml.kernel.org/r/20200817065926.2239-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/dax/kmem.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+--- a/drivers/dax/kmem.c~device-dax-fix-mismatches-of-request_mem_region
++++ a/drivers/dax/kmem.c
+@@ -82,8 +82,7 @@ int dev_dax_kmem_probe(struct device *de
+ 	rc = add_memory_driver_managed(numa_node, new_res->start,
+ 				       resource_size(new_res), kmem_name);
+ 	if (rc) {
+-		release_resource(new_res);
+-		kfree(new_res);
++		release_mem_region(kmem_start, kmem_size);
+ 		kfree(new_res_name);
+ 		return rc;
+ 	}
+@@ -118,8 +117,7 @@ static int dev_dax_kmem_remove(struct de
+ 	}
+ 
+ 	/* Release and free dax resources */
+-	release_resource(res);
+-	kfree(res);
++	release_mem_region(kmem_start, kmem_size);
+ 	kfree(res_name);
+ 	dev_dax->dax_kmem_res = NULL;
+ 
+_

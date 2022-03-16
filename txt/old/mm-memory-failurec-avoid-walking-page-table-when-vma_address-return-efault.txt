@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: avoid walking page table when vma_address() return -EFAULT
+
+It's unnecessary to walk the page table when vma_address() return -EFAULT.
+Return early if so to save some cpu cycles.
+
+Link: https://lkml.kernel.org/r/20220210141733.1908-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-move-page-writeback-sysctls-to-is-own-file-fix
+
+fix CONFIG_SYSCTL=n warnings
+
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: zhanglianjie <zhanglianjie@uniontech.com>

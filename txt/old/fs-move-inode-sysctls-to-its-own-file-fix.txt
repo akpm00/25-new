@@ -1,0 +1,16 @@
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: fs/inode: avoid unused-variable warning
+
+Now that 'inodes_stat' is marked 'static', it causes a harmless warning
+whenever it is unused:
+
+fs/inode.c:73:29: error: 'inodes_stat' defined but not used [-Werror=unused-variable]
+   73 | static struct inodes_stat_t inodes_stat;
+
+Move it into the #ifdef that guards its only references.
+
+Link: https://lkml.kernel.org/r/20211203190123.874239-1-arnd@kernel.org
+Fixes: 245314851782 ("fs: move inode sysctls to its own file")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

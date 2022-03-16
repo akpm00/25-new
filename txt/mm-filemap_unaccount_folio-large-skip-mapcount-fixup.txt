@@ -1,0 +1,11 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm: filemap_unaccount_folio() large skip mapcount fixup
+
+The page_mapcount_reset() when folio_mapped() while mapping_exiting() was
+devised long before there were huge or compound pages in the cache.  It is
+still valid for small pages, but not at all clear what's right to check
+and reset on large pages.  Just don't try when folio_test_large().
+
+Link: https://lkml.kernel.org/r/879c4426-4122-da9c-1a86-697f2c9a083@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>

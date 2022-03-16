@@ -1,0 +1,25 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: Documentation/vm/page_owner.rst: fix comments
+
+There are some comments that need to be fixed.
+
+Thanks for Shuah Khan's constructive suggestions.  The comments have been
+fixed as follows.
+
+a. So, if you'd like to use it, you need
+to add "page_owner=on" into your boot cmdline.
+
+Here, "into" has been replaced with "to".
+
+b. ...page owner is disabled in runtime due to no
+enabling, boot option, runtime overhead is marginal.
+
+Here, "no" has been replaced with "not".
+
+Link: https://lkml.kernel.org/r/20220223134104.2663-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>

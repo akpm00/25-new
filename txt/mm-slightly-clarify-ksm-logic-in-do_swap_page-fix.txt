@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-slightly-clarify-ksm-logic-in-do_swap_page-fix
+
+fix comment, per David
+
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>

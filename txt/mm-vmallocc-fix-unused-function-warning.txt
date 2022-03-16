@@ -1,0 +1,12 @@
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: mm/vmalloc.c: fix "unused function" warning
+
+compute_subtree_max_size() is unused, when building with
+DEBUG_AUGMENT_PROPAGATE_CHECK=y.
+
+mm/vmalloc.c:785:1: warning: unused function 'compute_subtree_max_size'
+[-Wunused-function].
+
+Link: https://lkml.kernel.org/r/20220129034652.75359-1-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>

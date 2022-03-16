@@ -1,0 +1,17 @@
+From: Alex Sierra <alex.sierra@amd.com>
+Subject: tools: add hmm gup test for long term pinned device pages
+
+The intention is to test device coherent type pages that have been called
+through get user pages with PIN_LONGTERM flag set.  These pages should get
+migrated back to normal system memory.
+
+Link: https://lkml.kernel.org/r/6a2145be66877fd3a08c9acec4ec3d53d82a864f.1644207242.git-series.apopple@nvidia.com
+Signed-off-by: Alex Sierra <alex.sierra@amd.com>
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ralph Campbell <rcampbell@nvidia.com>

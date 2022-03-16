@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: proc-alloc-path_max-bytes-for-proc-pid-fd-symlinks-fix
+
+remove now-unneeded cast
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Hao Lee <haolee.swjtu@gmail.com>
+Cc: James Morris <jamorris@linux.microsoft.com>
+Cc: Kees Cook <keescook@chromium.org>

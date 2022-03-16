@@ -1,0 +1,8 @@
+From: Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Subject: mm-hwpoison-fix-condition-in-free-hugetlb-page-path-fix
+
+fix "HardwareCorrupted" counter
+
+Link: https://lkml.kernel.org/r/20211220084851.GA1460264@u2004
+Cc: Fei Luo <luofei@unicloud.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

@@ -1,0 +1,43 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, vmalloc: add vmalloc tagging for HW_TAGS
+
+Add vmalloc tagging support to HW_TAGS KASAN.
+
+The key difference between HW_TAGS and the other two KASAN modes when it
+comes to vmalloc: HW_TAGS KASAN can only assign tags to physical memory. 
+The other two modes have shadow memory covering every mapped virtual
+memory region.
+
+Make __kasan_unpoison_vmalloc() for HW_TAGS KASAN:
+
+- Skip non-VM_ALLOC mappings as HW_TAGS KASAN can only tag a single
+  mapping of normal physical memory; see the comment in the function.
+- Generate a random tag, tag the returned pointer and the allocation,
+  and initialize the allocation at the same time.
+- Propagate the tag into the page stucts to allow accesses through
+  page_address(vmalloc_to_page()).
+
+The rest of vmalloc-related KASAN hooks are not needed:
+
+- The shadow-related ones are fully skipped.
+- __kasan_poison_vmalloc() is kept as a no-op with a comment.
+
+Poisoning and zeroing of physical pages that are backing vmalloc()
+allocations are skipped via __GFP_SKIP_KASAN_UNPOISON and __GFP_SKIP_ZERO:
+__kasan_unpoison_vmalloc() does that instead.
+
+Enabling CONFIG_KASAN_VMALLOC with HW_TAGS is not yet allowed.
+
+Link: https://lkml.kernel.org/r/d19b2e9e59a9abc59d05b72dea8429dcaea739c6.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Will Deacon <will@kernel.org>

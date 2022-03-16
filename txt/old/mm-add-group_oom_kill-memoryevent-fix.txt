@@ -1,0 +1,15 @@
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+Subject: mm: add group_oom_kill memory.event fix
+
+Andrew, could you please amend the prior patch "mm: add group_oom_kill
+memory.event" with these changes from Johannes and Chris?
+
+Also - small nit: it makes better sense to
+s/group_oom_kill/oom_group_kill/g in the patch title.
+
+Link: https://lkml.kernel.org/r/20211213162511.2492267-1-schatzberg.dan@gmail.com
+Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Chris Down <chris@chrisdown.name>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Michal Hocko <mhocko@suse.com>

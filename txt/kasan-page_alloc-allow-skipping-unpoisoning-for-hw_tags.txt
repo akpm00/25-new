@@ -1,0 +1,26 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, page_alloc: allow skipping unpoisoning for HW_TAGS
+
+Add a new GFP flag __GFP_SKIP_KASAN_UNPOISON that allows skipping KASAN
+poisoning for page_alloc allocations.  The flag is only effective with
+HW_TAGS KASAN.
+
+This flag will be used by vmalloc code for page_alloc allocations backing
+vmalloc() mappings in a following patch.  The reason to skip KASAN
+poisoning for these pages in page_alloc is because vmalloc code will be
+poisoning them instead.
+
+Also reword the comment for __GFP_SKIP_KASAN_POISON.
+
+Link: https://lkml.kernel.org/r/35c97d77a704f6ff971dd3bfe4be95855744108e.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

@@ -1,0 +1,8 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory.c: use helper function range_in_vma()
+
+Use helper function range_in_vma() to check if address, address + size are
+within the vma range.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220219021441.29173-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

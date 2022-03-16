@@ -1,0 +1,15 @@
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Subject: mm/mempolicy: convert from atomic_t to refcount_t on mempolicy->refcnt
+
+refcount_t type and corresponding API can protect refcounters from
+accidental underflow and overflow and further use-after-free situations.
+
+Link: https://lkml.kernel.org/r/1626683671-64407-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Acked-by: Ben Widawsky <ben.widawsky@intel.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Yanfei Xu <yanfei.xu@windriver.com>

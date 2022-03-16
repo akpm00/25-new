@@ -1,0 +1,44 @@
+From: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: mm/page_alloc.c: fix never set ALLOC_NOFRAGMENT flag
+
+0a79cdad5eb2 ("mm: use alloc_flags to record if kswapd can wake") removed
+setting of the ALLOC_NOFRAGMENT flag.  Bring it back.
+
+The runtime effect is that ALLOC_NOFRAGMENT behaviour is restored so
+that allocations are spread across local zones to avoid fragmentation
+due to mixing pageblocks as long as possible.
+
+Link: http://lkml.kernel.org/r/20190423120806.3503-2-aryabinin@virtuozzo.com
+Fixes: 0a79cdad5eb2 ("mm: use alloc_flags to record if kswapd can wake")
+Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_alloc.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/page_alloc.c~mm-page_alloc-fix-never-set-alloc_nofragment-flag
++++ a/mm/page_alloc.c
+@@ -3436,7 +3436,7 @@ alloc_flags_nofragment(struct zone *zone
+ 		return alloc_flags;
+ 
+ 	if (zone_idx(zone) != ZONE_NORMAL)
+-		goto out;
++		return alloc_flags;
+ 
+ 	/*
+ 	 * If ZONE_DMA32 exists, assume it is the one after ZONE_NORMAL and
+@@ -3445,9 +3445,9 @@ alloc_flags_nofragment(struct zone *zone
+ 	 */
+ 	BUILD_BUG_ON(ZONE_NORMAL - ZONE_DMA32 != 1);
+ 	if (nr_online_nodes > 1 && !populated_zone(--zone))
+-		goto out;
++		return alloc_flags;
+ 
+-out:
++	alloc_flags |= ALLOC_NOFRAGMENT;
+ #endif /* CONFIG_ZONE_DMA32 */
+ 	return alloc_flags;
+ }
+_

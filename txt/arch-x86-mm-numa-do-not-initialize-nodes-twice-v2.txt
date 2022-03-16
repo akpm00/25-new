@@ -1,0 +1,8 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: arch-x86-mm-numa-do-not-initialize-nodes-twice-v2
+
+add comments
+
+Link: https://lkml.kernel.org/r/20220221142649.3457-1-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Acked-by: Michal Hocko <mhocko@suse.com>

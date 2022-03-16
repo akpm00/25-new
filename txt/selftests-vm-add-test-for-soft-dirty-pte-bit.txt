@@ -1,0 +1,18 @@
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: selftests: vm: add test for Soft-Dirty PTE bit
+
+This introduces three tests:
+1) Sanity check soft dirty basic semantics: allocate area, clean, dirty,
+check if the SD bit flipped.
+2) Check VMA reuse: validate the VM_SOFTDIRTY usage
+3) Check soft-dirty on huge pages
+
+This was motivated by Will Deacon's fix commit 912efa17e512 ("mm: proc:
+Invalidate TLB after clearing soft-dirty page state").  I was tracking the
+same issue that he fixed, and this test would have caught it.
+
+Link: https://lkml.kernel.org/r/20220224212335.3045905-1-usama.anjum@collabora.com
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>

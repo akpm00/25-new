@@ -1,0 +1,34 @@
+From: Ralph Campbell <rcampbell@nvidia.com>
+Subject: tools/testing/selftests/vm/write_to_hugetlbfs.c: remove unused variable 'i'
+
+Compiling tests in tools/testing/selftests/vm/ results in a C compiler
+warning:
+
+write_to_hugetlbfs.c: In function `main':
+write_to_hugetlbfs.c:77:16: warning: unused variable `i'
+   77 |  unsigned long i;
+
+Delete the unused variable.
+
+Link: http://lkml.kernel.org/r/20200416002616.1456-1-rcampbell@nvidia.com
+Fixes: 29750f71a9b4 ("hugetlb_cgroup: add hugetlb_cgroup reservation tests")
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+Reviewed-by: Mina Almasry <almasrymina@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/vm/write_to_hugetlbfs.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/tools/testing/selftests/vm/write_to_hugetlbfs.c~hugetlb_cgroup-remove-unused-variable-i
++++ a/tools/testing/selftests/vm/write_to_hugetlbfs.c
+@@ -74,8 +74,6 @@ int main(int argc, char **argv)
+ 	int write = 0;
+ 	int reserve = 1;
+ 
+-	unsigned long i;
+-
+ 	if (signal(SIGINT, sig_handler) == SIG_ERR)
+ 		err(1, "\ncan't catch SIGINT\n");
+ 
+_

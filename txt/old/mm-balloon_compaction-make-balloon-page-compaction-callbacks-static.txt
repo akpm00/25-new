@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/balloon_compaction: make balloon page compaction callbacks static
+
+Since commit b1123ea6d3b3 ("mm: balloon: use general non-lru movable page
+feature"), these functions are called via balloon_aops callbacks.  They're
+not called directly outside this file.  So make them static and clean up
+the relevant code.
+
+Link: https://lkml.kernel.org/r/20220125132221.2220-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Rafael Aquini <aquini@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>

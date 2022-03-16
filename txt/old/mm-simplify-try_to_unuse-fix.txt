@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-simplify-try_to_unuse-fix
+
+fix shmem_unuse() stub, per Matthew
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: documentation-vm-page_ownerrst-update-the-documentation-fix
+
+small grammatical tweaks
+
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>
+Cc: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

@@ -1,0 +1,53 @@
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: mm/hmm.c: fix unused variable warnings
+
+When CONFIG_HUGETLB_PAGE is disabled, the only use of the variable 'h' is
+compiled out, and the compiler thinks it is unnecessary:
+
+mm/hmm.c: In function 'hmm_range_snapshot':
+mm/hmm.c:1015:19: error: unused variable 'h' [-Werror=unused-variable]
+    struct hstate *h = hstate_vma(vma);
+
+Rephrase the code to avoid the temporary variable instead, so the
+compiler stops warning.
+
+Link: http://lkml.kernel.org/r/20190304200026.1140281-1-arnd@arndb.de
+Fixes: 5409a90d4212 ("mm/hmm: support hugetlbfs (snapshotting, faulting and DMA mapping)")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hmm.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+--- a/mm/hmm.c~mm-hmm-fix-unused-variable-warnings
++++ a/mm/hmm.c
+@@ -1011,9 +1011,8 @@ long hmm_range_snapshot(struct hmm_range
+ 			return -EFAULT;
+ 
+ 		if (is_vm_hugetlb_page(vma)) {
+-			struct hstate *h = hstate_vma(vma);
+-
+-			if (huge_page_shift(h) != range->page_shift &&
++			if (range->page_shift !=
++				huge_page_shift(hstate_vma(vma)) &&
+ 			    range->page_shift != PAGE_SHIFT)
+ 				return -EINVAL;
+ 		} else {
+@@ -1114,9 +1113,8 @@ long hmm_range_fault(struct hmm_range *r
+ 			return -EFAULT;
+ 
+ 		if (is_vm_hugetlb_page(vma)) {
+-			struct hstate *h = hstate_vma(vma);
+-
+-			if (huge_page_shift(h) != range->page_shift &&
++			if (range->page_shift !=
++				huge_page_shift(hstate_vma(vma)) &&
+ 			    range->page_shift != PAGE_SHIFT)
+ 				return -EINVAL;
+ 		} else {
+_

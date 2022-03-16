@@ -1,0 +1,11 @@
+From: Luis Chamberlain <mcgrof@kernel.org>
+Subject: fs/file_table: fix adding missing kmemleak_not_leak()
+
+Commit b42bc9a3c511 ("Fix regression due to "fs: move binfmt_misc sysctl
+to its own file") fixed a regression, however it failed to add a
+kmemleak_not_leak().
+
+Link: https://lkml.kernel.org/r/20220215020828.4180911-1-mcgrof@kernel.org
+Fixes: b42bc9a3c511 ("Fix regression due to "fs: move binfmt_misc sysctl to its own file")
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Reported-by: Tong Zhang <ztong0001@gmail.com>

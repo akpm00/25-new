@@ -1,0 +1,21 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: make non-LRU movable pages unhandlable
+
+We can not really handle non-LRU movable pages in memory failure. 
+Typically they are balloon, zsmalloc, etc.  Assuming we run into a base
+(4K) non-LRU movable page, we could reach as far as identify_page_state(),
+it should not fall into any category except me_unknown.
+
+For the non-LRU compound movable pages, they could be taken for transhuge
+pages but it's unexpected to split non-LRU movable pages using
+split_huge_page_to_list in memory_failure.  So we could just simply make
+non-LRU movable pages unhandlable to avoid these possible nasty cases.
+
+Link: https://lkml.kernel.org/r/20220312074613.4798-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Tony Luck <tony.luck@intel.com>

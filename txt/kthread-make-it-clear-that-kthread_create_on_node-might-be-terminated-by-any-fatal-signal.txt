@@ -1,0 +1,54 @@
+From: Petr Mladek <pmladek@suse.com>
+Subject: kthread: make it clear that kthread_create_on_node() might be terminated by any fatal signal
+
+The comments in kernel/kthread.c create a feeling that only SIGKILL is
+able to terminate the creation of kernel kthreads by
+kthread_create()/_on_node()/_on_cpu() APIs.
+
+In reality, wait_for_completion_killable() might be killed by any fatal
+signal that does not have a custom handler:
+
+	(!siginmask(signr, SIG_KERNEL_IGNORE_MASK|SIG_KERNEL_STOP_MASK) && \
+	 (t)->sighand->action[(signr)-1].sa.sa_handler == SIG_DFL)
+
+static inline void signal_wake_up(struct task_struct *t, bool resume)
+{
+	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
+}
+
+static void complete_signal(int sig, struct task_struct *p, enum pid_type type)
+{
+[...]
+	/*
+	 * Found a killable thread.  If the signal will be fatal,
+	 * then start taking the whole group down immediately.
+	 */
+	if (sig_fatal(p, sig) ...) {
+		if (!sig_kernel_coredump(sig)) {
+		[...]
+			do {
+				task_clear_jobctl_pending(t, JOBCTL_PENDING_MASK);
+				sigaddset(&t->pending.signal, SIGKILL);
+				signal_wake_up(t, 1);
+			} while_each_thread(p, t);
+			return;
+		}
+	}
+}
+
+Update the comments in kernel/kthread.c to make this more obvious.
+
+The motivation for this change was debugging why a module initialization
+failed.  The module was being loaded from initrd.  It "magically" failed
+when systemd was switching to the real root.  The clean up operations sent
+SIGTERM to various pending processed that were started from initrd.
+
+Link: https://lkml.kernel.org/r/20220315102444.2380-1-pmladek@suse.com
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Thomas Gleixner <tglx@linutronix.de>

@@ -1,0 +1,32 @@
+From: xu xin <cgel.zte@gmail.com>
+Subject: kernel/taskstats.c: make taskstats available via genetlink per namespace
+
+Currently, the application getdelays cannot get taskstats in a net
+namespace.  The returned error is just like the following:
+
+-sh-4.4# ps -ef | tail -5
+root       186     2  0 09:23 ?        00:00:00 [kworker/2:1H]
+root       187     2  0 09:23 ?        00:00:00 [kworker/0:2-eve]
+root       190   183  0 09:23 ?        00:00:00 -sh
+root       198   190  0 09:25 ?        00:00:00 ps -ef
+root       199   190  0 09:25 ?        00:00:00 tail -5
+-sh-4.4#
+-sh-4.4# ./getdelays -d -p 186 -v
+print delayacct stats ON
+debug on
+Error getting family id, errno 0
+
+As more and more applications are deployed in containers like Docker, it
+is necessary to support getdelays to be used in net namespace.  Taskstats
+is safe for use per namespace as genetlink checks the capability of
+namespace message by netlink_ns_capable().
+
+Make taskstats available via genetlink per namespace.
+
+Link: https://lkml.kernel.org/r/20220221032202.1925507-1-xu.xin16@zte.com.cn
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Reported-by: Changcheng Deng <deng.changcheng@zte.com.cn>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: David Miller <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>

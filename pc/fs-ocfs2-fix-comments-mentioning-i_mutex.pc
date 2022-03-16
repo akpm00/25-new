@@ -1,0 +1,11 @@
+fs/ocfs2/alloc.c
+fs/ocfs2/aops.c
+fs/ocfs2/cluster/nodemanager.c
+fs/ocfs2/dir.c
+fs/ocfs2/file.c
+fs/ocfs2/inode.c
+fs/ocfs2/localalloc.c
+fs/ocfs2/namei.c
+fs/ocfs2/ocfs2.h
+fs/ocfs2/quota_global.c
+fs/ocfs2/xattr.c

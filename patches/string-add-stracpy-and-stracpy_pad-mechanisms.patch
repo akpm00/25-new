@@ -1,0 +1,85 @@
+From: Joe Perches <joe@perches.com>
+Subject: string: add stracpy and stracpy_pad mechanisms
+
+Several uses of strlcpy and strscpy have had defects because the last
+argument of each function is misused or typoed.
+
+Add macro mechanisms to avoid this defect.
+
+stracpy (copy a string to a string array) must have a string array as the
+first argument (dest) and uses sizeof(dest) as the count of bytes to copy.
+
+These mechanisms verify that the dest argument is an array of char or
+other compatible types like u8 or s8 or equivalent.
+
+A BUILD_BUG is emitted when the type of dest is not compatible.
+
+Link: http://lkml.kernel.org/r/ed4611a4a96057bf8076856560bfbf9b5e95d390.1563889130.git.joe@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Nitin Gote <nitin.r.gote@intel.com>
+Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc: Stephen Kitt <steve@sk2.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/string.h |   45 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+--- a/include/linux/string.h~string-add-stracpy-and-stracpy_pad-mechanisms
++++ a/include/linux/string.h
+@@ -35,6 +35,51 @@ ssize_t strscpy(char *, const char *, si
+ /* Wraps calls to strscpy()/memset(), no arch specific code required */
+ ssize_t strscpy_pad(char *dest, const char *src, size_t count);
+ 
++/**
++ * stracpy - Copy a C-string into an array of char/u8/s8 or equivalent
++ * @dest: Where to copy the string, must be an array of char and not a pointer
++ * @src: String to copy, may be a pointer or const char array
++ *
++ * Helper for strscpy().
++ * Copies a maximum of sizeof(@dest) bytes of @src with %NUL termination.
++ *
++ * Returns:
++ * * The number of characters copied (not including the trailing %NUL)
++ * * -E2BIG if @dest is a zero size array or @src was truncated.
++ */
++#define stracpy(dest, src)						\
++({									\
++	size_t count = ARRAY_SIZE(dest);				\
++	BUILD_BUG_ON(!(__same_type(dest, char[]) ||			\
++		       __same_type(dest, unsigned char[]) ||		\
++		       __same_type(dest, signed char[])));		\
++									\
++	strscpy(dest, src, count);					\
++})
++
++/**
++ * stracpy_pad - Copy a C-string into an array of char/u8/s8 with %NUL padding
++ * @dest: Where to copy the string, must be an array of char and not a pointer
++ * @src: String to copy, may be a pointer or const char array
++ *
++ * Helper for strscpy_pad().
++ * Copies a maximum of sizeof(@dest) bytes of @src with %NUL termination
++ * and zero-pads the remaining size of @dest
++ *
++ * Returns:
++ * * The number of characters copied (not including the trailing %NUL)
++ * * -E2BIG if @dest is a zero size array or @src was truncated.
++ */
++#define stracpy_pad(dest, src)						\
++({									\
++	size_t count = ARRAY_SIZE(dest);				\
++	BUILD_BUG_ON(!(__same_type(dest, char[]) ||			\
++		       __same_type(dest, unsigned char[]) ||		\
++		       __same_type(dest, signed char[])));		\
++									\
++	strscpy_pad(dest, src, count);					\
++})
++
+ #ifndef __HAVE_ARCH_STRCAT
+ extern char * strcat(char *, const char *);
+ #endif
+_

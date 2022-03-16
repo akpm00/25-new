@@ -1,0 +1,27 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-simplify-try_to_unuse-fix
+
+fix shmem_unuse() stub, per Matthew
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shmem.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/shmem.c~mm-simplify-try_to_unuse-fix
++++ a/mm/shmem.c
+@@ -3995,7 +3995,7 @@ int __init shmem_init(void)
+ 	return 0;
+ }
+ 
+-int shmem_unuse(unsigned int type, unsigned long *fs_pages_to_unuse)
++int shmem_unuse(unsigned int type)
+ {
+ 	return 0;
+ }
+_

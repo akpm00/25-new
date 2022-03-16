@@ -1,0 +1,135 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: list_lru: transpose the array of per-node per-memcg lru lists
+
+Patch series "Optimize list lru memory consumption", v6.
+
+In our server, we found a suspected memory leak problem.  The kmalloc-32
+consumes more than 6GB of memory.  Other kmem_caches consume less than 2GB
+memory.
+
+After our in-depth analysis, the memory consumption of kmalloc-32 slab
+cache is the cause of list_lru_one allocation.
+
+  crash> p
+  memcg_nr_cache_ids memcg_nr_cache_ids = $2 = 24574
+
+memcg_nr_cache_ids is very large and memory consumption of each list_lru
+can be calculated with the following formula.
+
+  num_numa_node * memcg_nr_cache_ids * 32 (kmalloc-32)
+
+There are 4 numa nodes in our system, so each list_lru consumes ~3MB.
+
+  crash> list super_blocks | wc -l
+  952
+
+Every mount will register 2 list lrus, one is for inode, another is for
+dentry.  There are 952 super_blocks.  So the total memory is 952 * 2 * 3
+MB (~5.6GB).  But now the number of memory cgroups is less than 500.  So I
+guess more than 12286 memory cgroups have been created on this machine (I
+do not know why there are so many cgroups, it may be a user's bug or the
+user really want to do that).  Because memcg_nr_cache_ids has not been
+reduced to a suitable value.  It leads to waste a lot of memory.  If we
+want to reduce memcg_nr_cache_ids, we have to *reboot* the server.  This
+is not what we want.
+
+In order to reduce memcg_nr_cache_ids, I had posted a patchset [1] to do
+this.  But this did not fundamentally solve the problem.
+
+We currently allocate scope for every memcg to be able to tracked on every
+superblock instantiated in the system, regardless of whether that
+superblock is even accessible to that memcg.
+
+These huge memcg counts come from container hosts where memcgs are
+confined to just a small subset of the total number of superblocks that
+instantiated at any given point in time.
+
+For these systems with huge container counts, list_lru does not need the
+capability of tracking every memcg on every superblock.
+
+What it comes down to is that the list_lru is only needed for a given
+memcg if that memcg is instatiating and freeing objects on a given
+list_lru.
+
+As Dave said, "Which makes me think we should be moving more towards 'add
+the memcg to the list_lru at the first insert' model rather than
+'instantiate all at memcg init time just in case'."
+
+This patchset aims to optimize the list lru memory consumption from
+different aspects.
+
+I had done a easy test to show the optimization.  I create 10k memory
+cgroups and mount 10k filesystems in the systems.  We use free command to
+show how many memory does the systems comsumes after this operation (There
+are 2 numa nodes in the system).
+
+        +-----------------------+------------------------+
+        |      condition        |   memory consumption   |
+        +-----------------------+------------------------+
+        | without this patchset |        24464 MB        |
+        +-----------------------+------------------------+
+        |     after patch 1     |        21957 MB        | <--------+
+        +-----------------------+------------------------+          |
+        |     after patch 10    |         6895 MB        |          |
+        +-----------------------+------------------------+          |
+        |     after patch 12    |         4367 MB        |          |
+        +-----------------------+------------------------+          |
+                                                                    |
+        The more the number of nodes, the more obvious the effect---+
+
+BTW, there was a recent discussion [2] on the same issue.
+
+[1] https://lore.kernel.org/all/20210428094949.43579-1-songmuchun@bytedance.com/
+[2] https://lore.kernel.org/all/20210405054848.GA1077931@in.ibm.com/
+
+This series not only optimizes the memory usage of list_lru but also
+simplifies the code.
+
+
+This patch (of 16):
+
+The current scheme of maintaining per-node per-memcg lru lists looks like:
+  struct list_lru {
+    struct list_lru_node *node;           (for each node)
+      struct list_lru_memcg *memcg_lrus;
+        struct list_lru_one *lru[];       (for each memcg)
+  }
+
+By effectively transposing the two-dimension array of list_lru_one's structures
+(per-node per-memcg => per-memcg per-node) it's possible to save some memory
+and simplify alloc/dealloc paths. The new scheme looks like:
+  struct list_lru {
+    struct list_lru_memcg *mlrus;
+      struct list_lru_per_memcg *mlru[];  (for each memcg)
+        struct list_lru_one node[0];      (for each node)
+  }
+
+Memory savings are coming from not only 'struct rcu_head' but also some
+pointer arrays used to store the pointer to 'struct list_lru_one'.  The
+array is per node and its size is 8 (a pointer) * num_memcgs.  So the
+total size of the arrays is 8 * num_nodes * memcg_nr_cache_ids.  After
+this patch, the size becomes 8 * memcg_nr_cache_ids.
+
+Link: https://lkml.kernel.org/r/20220228122126.37293-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220228122126.37293-2-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Kari Argillander <kari.argillander@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Theodore Ts'o <tytso@mit.edu>

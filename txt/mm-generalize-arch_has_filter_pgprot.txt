@@ -1,0 +1,14 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm: generalize ARCH_HAS_FILTER_PGPROT
+
+ARCH_HAS_FILTER_PGPROT config has duplicate definitions on platforms that
+subscribe it.  Instead make it a generic config option which can be
+selected on applicable platforms when required.
+
+Link: https://lkml.kernel.org/r/1643004823-16441-1-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>

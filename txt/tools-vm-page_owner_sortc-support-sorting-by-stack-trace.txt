@@ -1,0 +1,15 @@
+From: Sean Anderson <seanga2@gmail.com>
+Subject: tools/vm/page_owner_sort.c: support sorting by stack trace
+
+This adds the ability to sort by stacktraces.  This is helpful when
+comparing multiple dumps of page_owner taken at different times, since
+blocks will not be reordered if they were allocated/free'd.
+
+Link: https://lkml.kernel.org/r/20211124193709.1805776-2-seanga2@gmail.com
+Signed-off-by: Sean Anderson <seanga2@gmail.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Changhee Han <ch0.han@lge.com>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>

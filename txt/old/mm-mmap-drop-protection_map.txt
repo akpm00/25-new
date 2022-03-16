@@ -1,0 +1,9 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: drop protection_map[]
+
+There are no other users for protection_map[].  Hence just drop this array
+construct and instead define __vm_get_page_prot() which will provide page
+protection map based on vm_flags combination switch.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-12-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>

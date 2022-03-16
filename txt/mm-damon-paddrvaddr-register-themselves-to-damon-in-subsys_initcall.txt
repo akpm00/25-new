@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/paddr,vaddr: register themselves to DAMON in subsys_initcall
+
+This commit makes the monitoring operations for the physical address space
+and virtual address spaces register themselves to DAMON in the
+subsys_initcall step.  Later, in-kernel DAMON user code can use them via
+damon_select_ops() without have to unnecessarily depend on all possible
+monitoring operations implementations.
+
+Link: https://lkml.kernel.org/r/20220215184603.1479-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Xin Hao <xhao@linux.alibaba.com>

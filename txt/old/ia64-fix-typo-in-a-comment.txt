@@ -1,0 +1,7 @@
+From: Jason Wang <wangborong@cdjrlc.com>
+Subject: ia64: fix typo in a comment
+
+The double `the' in a comment is repeated, thus it should be removed.
+
+Link: https://lkml.kernel.org/r/20211113030316.22650-1-wangborong@cdjrlc.com
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>

@@ -1,0 +1,19 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: respect KASAN_BIT_REPORTED in all reporting routines
+
+Currently, only kasan_report() checks the KASAN_BIT_REPORTED and
+KASAN_BIT_MULTI_SHOT flags.
+
+Make other reporting routines check these flags as well.
+
+Also add explanatory comments.
+
+Note that the current->kasan_depth check is split out into
+report_suppressed() and only called for kasan_report().
+
+Link: https://lkml.kernel.org/r/715e346b10b398e29ba1b425299dcd79e29d58ce.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

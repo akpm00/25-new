@@ -1,0 +1,41 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: maintain page->mlock_count while unevictable
+
+Previous patches have been preparatory: now implement page->mlock_count. 
+The ordering of the "Unevictable LRU" is of no significance, and there is
+no point holding unevictable pages on a list: place page->mlock_count to
+overlay page->lru.prev (since page->lru.next is overlaid by compound_head,
+which needs to be even so as not to satisfy PageTail - though 2 could be
+added instead of 1 for each mlock, if that's ever an improvement).
+
+But it's only safe to rely on or modify page->mlock_count while lruvec
+lock is held and page is on unevictable "LRU" - we can save lots of edits
+by continuing to pretend that there's an imaginary LRU here (there is an
+unevictable count which still needs to be maintained, but not a list).
+
+The mlock_count technique suffers from an unreliability much like with
+page_mlock(): while someone else has the page off LRU, not much can be
+done.  As before, err on the safe side (behave as if mlock_count 0), and
+let try_to_unlock_one() move the page to unevictable if reclaim finds out
+later on - a few misplaced pages don't matter, what we want to avoid is
+imbalancing reclaim by flooding evictable lists with unevictable pages.
+
+I am not a fan of "if (!isolate_lru_page(page)) putback_lru_page(page);":
+if we have taken lruvec lock to get the page off its present list, then we
+save everyone trouble (and however many extra atomic ops) by putting it on
+its destination list immediately.
+
+Link: https://lkml.kernel.org/r/cd14eda-5be0-b8b9-4273-cf28818cfef9@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

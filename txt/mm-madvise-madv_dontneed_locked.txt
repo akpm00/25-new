@@ -1,0 +1,48 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm: madvise: MADV_DONTNEED_LOCKED
+
+MADV_DONTNEED historically rejects mlocked ranges, but with MLOCK_ONFAULT
+and MCL_ONFAULT allowing to mlock without populating, there are valid use
+cases for depopulating locked ranges as well.
+
+Users mlock memory to protect secrets.  There are allocators for secure
+buffers that want in-use memory generally mlocked, but cleared and
+invalidated memory to give up the physical pages.  This could be done with
+explicit munlock -> mlock calls on free -> alloc of course, but that adds
+two unnecessary syscalls, heavy mmap_sem write locks, vma splits and
+re-merges - only to get rid of the backing pages.
+
+Users also mlockall(MCL_ONFAULT) to suppress sustained paging, but are
+okay with on-demand initial population.  It seems valid to selectively
+free some memory during the lifetime of such a process, without having to
+mess with its overall policy.
+
+Why add a separate flag? Isn't this a pretty niche usecase?
+
+- MADV_DONTNEED has been bailing on locked vmas forever. It's at least
+  conceivable that someone, somewhere is relying on mlock to protect
+  data from perhaps broader invalidation calls. Changing this behavior
+  now could lead to quiet data corruption.
+
+- It also clarifies expectations around MADV_FREE and maybe
+  MADV_REMOVE. It avoids the situation where one quietly behaves
+  different than the others. MADV_FREE_LOCKED can be added later.
+
+- The combination of mlock() and madvise() in the first place is
+  probably niche. But where it happens, I'd say that dropping pages
+  from a locked region once they don't contain secrets or won't page
+  anymore is much saner than relying on mlock to protect memory from
+  speculative or errant invalidation calls. It's just that we can't
+  change the default behavior because of the two previous points.
+
+Given that, an explicit new flag seems to make the most sense.
+
+Link: https://lkml.kernel.org/r/20220304171912.305060-1-hannes@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>

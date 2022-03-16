@@ -1,0 +1,16 @@
+From: Yosry Ahmed <yosryahmed@google.com>
+Subject: memcg-add-per-memcg-total-kernel-memory-stat-v2
+
+- Moved "kernel" stat ahead of other subset kernel stats.
+- Renamed mem_cgroup_kmem_record() to memcg_account_kmem(), following
+  Johannes's review to avoid the line wrap, but keeping a memcg_ prefix
+  to stay consistent with other static functions in the file.
+- Fixed a build error when CONFIG_MEMCG_KMEM is not set (added an empty
+  version if the config is not set).
+
+Link: https://lkml.kernel.org/r/20220203193856.972500-1-yosryahmed@google.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: kernel test robot <lkp@intel.com>
+

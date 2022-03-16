@@ -1,0 +1,45 @@
+From: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: add switch between culling by stacktrace and txt
+
+Culling by comparing stacktrace would casue loss of some information.  For
+example, if there exists 2 blocks which have the same stacktrace and the
+different head info
+
+Page allocated via order 0, mask 0x108c48(...), pid 73696,
+ ts 1578829190639010 ns, free_ts 1576583851324450 ns
+ prep_new_page+0x80/0xb8
+ get_page_from_freelist+0x924/0xee8
+ __alloc_pages+0x138/0xc18
+ alloc_pages+0x80/0xf0
+ __page_cache_alloc+0x90/0xc8
+
+Page allocated via order 0, mask 0x108c48(...), pid 61806,
+ ts 1354113726046100 ns, free_ts 1354104926841400 ns
+ prep_new_page+0x80/0xb8
+ get_page_from_freelist+0x924/0xee8
+ __alloc_pages+0x138/0xc18
+ alloc_pages+0x80/0xf0
+ __page_cache_alloc+0x90/0xc8
+
+After culling, it would be like this
+
+2 times, 2 pages:
+Page allocated via order 0, mask 0x108c48(...), pid 73696,
+ ts 1578829190639010 ns, free_ts 1576583851324450 ns
+ prep_new_page+0x80/0xb8
+ get_page_from_freelist+0x924/0xee8
+ __alloc_pages+0x138/0xc18
+ alloc_pages+0x80/0xf0
+ __page_cache_alloc+0x90/0xc8
+
+The info of second block missed.  So, add -c to turn on culling by
+stacktrace.  By default, it will cull by txt.
+
+Link: https://lkml.kernel.org/r/20211129145658.2491-1-zhangyinan2019@email.szu.edu.cn
+Signed-off-by: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Changhee Han <ch0.han@lge.com>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

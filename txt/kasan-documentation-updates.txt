@@ -1,0 +1,26 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: documentation updates
+
+Update KASAN documentation:
+
+- Bump Clang version requirement for HW_TAGS as ARM64_MTE depends on
+  AS_HAS_LSE_ATOMICS as of commit 2decad92f4731 ("arm64: mte: Ensure
+  TIF_MTE_ASYNC_FAULT is set atomically"), which requires Clang 12.
+- Add description of the new kasan.vmalloc command line flag.
+- Mention that SW_TAGS and HW_TAGS modes now support vmalloc tagging.
+- Explicitly say that the "Shadow memory" section is only applicable
+  to software KASAN modes.
+- Mention that shadow-based KASAN_VMALLOC is supported on arm64.
+
+Link: https://lkml.kernel.org/r/a61189128fa3f9fbcfd9884ff653d401864b8e74.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

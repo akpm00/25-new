@@ -1,0 +1,7 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: fix for "kasan: print basic stack frame info for SW_TAGS"
+
+Using object_is_on_stack() requires linux/sched/task_stack.h.
+
+Link: https://lkml.kernel.org/r/d7598f11a34ed96e508f7640fa038662ed2305ec.1647099922.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>

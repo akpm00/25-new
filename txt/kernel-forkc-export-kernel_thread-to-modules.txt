@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernel/fork.c: export kernel_thread() to modules
+
+mutex-subsystem-synchro-test-module.patch needs this
+
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

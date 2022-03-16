@@ -1,0 +1,27 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-oom-cgroup-aware-oom-killer-fix-fix
+
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/notify/group.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff -puN fs/notify/group.c~mm-oom-cgroup-aware-oom-killer-fix-fix fs/notify/group.c
+--- a/fs/notify/group.c~mm-oom-cgroup-aware-oom-killer-fix-fix
++++ a/fs/notify/group.c
+@@ -37,10 +37,8 @@ static void fsnotify_final_destroy_group
+ 	if (group->ops->free_group_priv)
+ 		group->ops->free_group_priv(group);
+ 
+-#ifdef CONFIG_MEMCG
+ 	if (group->memcg)
+-		css_put(&group->memcg->css);
+-#endif
++		mem_cgroup_put(group->memcg);
+ 
+ 	kfree(group);
+ }
+_

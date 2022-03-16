@@ -1,0 +1,27 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: lib/stackdepot: allow optional init and stack_table allocation by kvmalloc() - fixup
+
+On FLATMEM, we call page_ext_init_flatmem_late() just before
+kmem_cache_init() which means stack_depot_init() (called by page owner
+init) will not recognize properly it should use kvmalloc() and not
+memblock_alloc().  memblock_alloc() will also not issue a warning and
+return a block memory that can be invalid and cause kernel page fault when
+saving stacks, as reported by the kernel test robot [1].
+
+Fix this by moving page_ext_init_flatmem_late() below kmem_cache_init() so
+that slab_is_available() is true during stack_depot_init().  SPARSEMEM
+doesn't have this issue, as it doesn't do page_ext_init_flatmem_late(),
+but a different page_ext_init() even later in the boot process.
+
+Thanks to Mike Rapoport for pointing out the FLATMEM init ordering issue.
+
+While at it, also actually resolve a checkpatch warning in stack_depot_init()
+from DRM CI, which was supposed to be in the original patch already.
+
+[1] https://lore.kernel.org/all/20211014085450.GC18719@xsang-OptiPlex-9020/
+
+Link: https://lkml.kernel.org/r/6abd9213-19a9-6d58-cedc-2414386d2d81@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

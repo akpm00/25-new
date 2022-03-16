@@ -1,0 +1,7 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: MAINTAINERS: update rppt's email
+
+Use my @kernel.org address
+
+Link: https://lkml.kernel.org/r/20220203090324.3701774-1-rppt@kernel.org
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>

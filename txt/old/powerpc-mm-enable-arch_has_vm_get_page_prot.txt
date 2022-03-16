@@ -1,0 +1,13 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: powerpc/mm: enable ARCH_HAS_VM_GET_PAGE_PROT
+
+This defines and exports a platform specific custom vm_get_page_prot() via
+subscribing ARCH_HAS_VM_GET_PAGE_PROT.  Subsequently all __SXXX and __PXXX
+macros can be dropped which are no longer needed.  While here, this also
+localizes arch_vm_get_page_prot() as powerpc_vm_get_page_prot() and moves
+it near vm_get_page_prot().
+
+Link: https://lkml.kernel.org/r/1645425519-9034-5-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>

@@ -1,0 +1,32 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: delete munlock_vma_pages_all(), allow oomreap
+
+munlock_vma_pages_range() will still be required, when munlocking but not
+munmapping a set of pages; but when unmapping a pte, the mlock count will
+be maintained in much the same way as it will be maintained when mapping
+in the pte.  Which removes the need for munlock_vma_pages_all() on mlocked
+vmas when munmapping or exiting: eliminating the catastrophic contention
+on i_mmap_rwsem, and the need for page lock on the pages.
+
+There is still a need to update locked_vm accounting according to the
+munmapped vmas when munmapping: do that in detach_vmas_to_be_unmapped(). 
+exit_mmap() does not need locked_vm updates, so delete unlock_range().
+
+And wasn't I the one who forbade the OOM reaper to attack mlocked vmas,
+because of the uncertainty in blocking on all those page locks?  No fear
+of that now, so permit the OOM reaper on mlocked vmas.
+
+Link: https://lkml.kernel.org/r/d9a9f8c3-1ee0-4c81-7017-6ecb78554a7@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>

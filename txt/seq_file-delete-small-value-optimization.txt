@@ -1,0 +1,9 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: fs/seq_file.c: delete small-value optimization
+
+num_to_str() optimizes printing small integers [0..9], so the same check
+higher in callchain is unnecessary.
+
+Link: http://lkml.kernel.org/r/20170516204246.GA18123@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Joe Perches <joe@perches.com>

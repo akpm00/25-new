@@ -1,0 +1,49 @@
+From: Akira Kawata <akirakawata1@gmail.com>
+Subject: fs/binfmt_elf: fix AT_PHDR for unusual ELF files
+
+Patch series "fs/binfmt_elf: Fix AT_PHDR for unusual ELF files", v4.
+
+These patches fix a bug in AT_PHDR calculation.
+
+We cannot calculate AT_PHDR as the sum of load_addr and exec->e_phoff. 
+This is because exec->e_phoff is the offset of PHDRs in the file and the
+address of PHDRs in the memory may differ from it.  These patches fix the
+bug by calculating the address of program headers from PT_LOADs directly.
+
+
+This patch (of 2):
+
+As pointed out in the bugzilla discussion, we cannot calculate AT_PHDR as
+the sum of load_addr and exec->e_phoff.
+
+: The AT_PHDR of ELF auxiliary vectors should point to the memory address
+: of program header. But binfmt_elf.c calculates this address as follows:
+:
+: NEW_AUX_ENT(AT_PHDR, load_addr + exec->e_phoff);
+:
+: which is wrong since e_phoff is the file offset of program header and
+: load_addr is the memory base address from PT_LOAD entry.
+:
+: The ld.so uses AT_PHDR as the memory address of program header. In normal
+: case, since the e_phoff is usually 64 and in the first PT_LOAD region, it
+: is the correct program header address.
+:
+: But if the address of program header isn't equal to the first PT_LOAD
+: address + e_phoff (e.g.  Put the program header in other non-consecutive
+: PT_LOAD region), ld.so will try to read program header from wrong address
+: then crash or use incorrect program header.
+
+This is because exec->e_phoff is the offset of PHDRs in the file and the
+address of PHDRs in the memory may differ from it.  This patch fixes the
+bug by calculating the address of program headers from PT_LOADs directly.
+
+Link: https://lkml.kernel.org/r/20211212232414.1402199-1-akirakawata1@gmail.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=197921
+Link: https://lkml.kernel.org/r/20211212232414.1402199-2-akirakawata1@gmail.com
+Signed-off-by: Akira Kawata <akirakawata1@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Eric Biederman <ebiederm@xmission.com>

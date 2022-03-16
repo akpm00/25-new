@@ -1,0 +1,18 @@
+From: Xavier Roche <xavier.roche@algolia.com>
+Subject: tmpfs: support for file creation time
+
+Various filesystems (including ext4) now support file creation time.  This
+patch adds such support for tmpfs-based filesystems.
+
+Note that using shmem_getattr() on other file types than regular requires
+that shmem_is_huge() check type, to stop incorrect HPAGE_PMD_SIZE blksize.
+
+Link: https://lkml.kernel.org/r/20220314211150.GA123458@xavier-xps
+Link: https://lkml.kernel.org/r/b954973a-b8d1-cab8-63bd-6ea8063de3@google.com
+Link: https://lkml.kernel.org/r/20220211213628.GA1919658@xavier-xps
+Signed-off-by: Xavier Roche <xavier.roche@algolia.com>
+Tested-by: Jean Delvare <jdelvare@suse.de>
+Tested-by: Sylvain Bellone <sylvain.bellone@algolia.com>
+Reported-by: Xavier Grand <xavier.grand@algolia.com>
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
+Cc: Hugh Dickins <hughd@google.com>

@@ -1,0 +1,33 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: selftests: vm: add a hugetlb test case
+
+Since the head vmemmap page frame associated with each HugeTLB page is
+reused, we should hide the PG_head flag of tail struct page from the user.
+Add a tese case to check whether it is work properly.  The test steps are
+as follows.
+
+  1) alloc 2MB hugeTLB
+  2) get each page frame
+  3) apply those APIs in each page frame
+  4) Those APIs work completely the same as before.
+
+Reading the flags of a page by /proc/kpageflags is done in
+stable_page_flags(), which has invoked PageHead(), PageTail(),
+PageCompound() and compound_head().  If those APIs work properly, the head
+page must have 15 and 17 bits set.  And tail pages must have 16 and 17
+bits set but 15 bit unset.  Those flags are checked in check_page_flags().
+
+Link: https://lkml.kernel.org/r/20211101031651.75851-5-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Chen Huang <chenhuang5@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

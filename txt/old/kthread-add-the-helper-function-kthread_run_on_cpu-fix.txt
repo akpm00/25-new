@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kthread-add-the-helper-function-kthread_run_on_cpu-fix
+
+export kthread_create_on_cpu to modules
+
+ERROR: modpost: "kthread_create_on_cpu" [drivers/infiniband/sw/siw/siw.ko] undefined!
+ERROR: modpost: "kthread_create_on_cpu" [kernel/rcu/rcutorture.ko] undefined!
+
+Cc: Cai Huoqing <caihuoqing@baidu.com>

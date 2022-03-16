@@ -1,0 +1,25 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: use fprintf() to send error messages to stderr
+
+Error messages should be send to stderr using fprintf() instead of
+printf().
+
+This work is coauthored by
+	Shenghong Han
+	Yixuan Cao
+	Yinan Zhang
+	Chongxi Zhao
+	Yuhong Feng
+	Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220315163902.1567-1-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

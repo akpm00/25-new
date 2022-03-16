@@ -1,0 +1,12 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: lib/stackdepot: allow optional init and stack_table allocation by kvmalloc() - fixup4
+
+Due to 4e66934eaadc ("lib: add reference counting tracking
+infrastructure") landing recently to net-next adding a new stack depot
+user in lib/ref_tracker.c we need to add an appropriate call to
+stack_depot_init() there as well.
+
+Link: https://lkml.kernel.org/r/45c1b738-1a2f-5b5f-2f6d-86fab206d01c@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Cc: Jiri Slab <jirislaby@gmail.com>

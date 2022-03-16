@@ -1,0 +1,16 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: kernel/resource: fix kfree() of bootmem memory again
+
+Since commit ebff7d8f270d ("mem hotunplug: fix kfree() of bootmem
+memory"), we could get a resource allocated during boot via
+alloc_resource().  And it's required to release the resource using
+free_resource().  Howerver, many people use kfree directly which will
+result in kernel BUG.  In order to fix this without fixing every call
+site, just leak a couple of bytes in such corner case.
+
+Link: https://lkml.kernel.org/r/20220217083619.19305-1-linmiaohe@huawei.com
+Fixes: ebff7d8f270d ("mem hotunplug: fix kfree() of bootmem memory")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: David Hildenbrand <david@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Alistair Popple <apopple@nvidia.com>

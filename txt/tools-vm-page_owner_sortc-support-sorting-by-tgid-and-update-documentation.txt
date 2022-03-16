@@ -1,0 +1,22 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support sorting by tgid and update documentation
+
+When the "page owner" information is read, the information sorted
+by TGID is expected.
+
+As a result, the following adjustments have been made:
+
+1. Add a new -P option to sort the information of blocks by TGID in
+   ascending order.
+
+2. Adjust the order of member variables in block_list strust to avoid
+   one 4 byte hole.
+
+3. Add -P option explanation in the document.
+
+Link: https://lkml.kernel.org/r/20220301151438.166118-3-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>

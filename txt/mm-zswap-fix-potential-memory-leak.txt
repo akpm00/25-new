@@ -1,0 +1,13 @@
+From: Tian Tao <tiantao6@hisilicon.com>
+Subject: mm/zswap: fix potential memory leak
+
+If entry is NULL, the requested memory tmp should be freed, otherwise it
+may cause a memory leak.
+
+Link: https://lkml.kernel.org/r/1611538365-51811-1-git-send-email-tiantao6@hisilicon.com
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Seth Jennings <sjenning@redhat.com>

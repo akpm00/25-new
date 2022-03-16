@@ -1,0 +1,21 @@
+From: Xu Yu <xuyu@linux.alibaba.com>
+Subject: mm/vmalloc: allocate small pages for area->pages
+
+The area->pages stores the struct pages allocated for vmalloc mappings.
+The allocated memory can be hugepage if arch has HAVE_ARCH_HUGE_VMALLOC
+set, while area->pages itself does not have to be hugepage backed.
+
+Suppose that we want to vmalloc 1026M of memory, then area->pages is
+2052K in size, which is large than PMD_SIZE when the pagesize is 4K.
+Currently, 4096K will be allocated for area->pages, wherein 2044K is
+wasted.
+
+This introduces __vmalloc_node_no_huge, and makes area->pages backed by
+small pages, because I think to allocate hugepage for area->pages is
+unnecessary and vulnerable to abuse.
+
+[akpm@linux-foundation.org: tweak code layout]
+Link: https://lkml.kernel.org/r/dd04f516643fde4206c1fe93818526a768125c75.1638870169.git.xuyu@linux.alibaba.com
+Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Uladzislau Rezki <uladzislau.rezki@sony.com>

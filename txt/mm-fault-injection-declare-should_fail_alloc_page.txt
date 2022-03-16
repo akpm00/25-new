@@ -1,0 +1,18 @@
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: mm, fault-injection: declare should_fail_alloc_page()
+
+The mm/ directory can almost fully be built with W=1, which would help in
+local development.  One remaining issue is missing prototype for
+should_fail_alloc_page().  Thus add it next to the should_failslab()
+prototype.
+
+Note the previous attempt by commit f7173090033c ("mm/page_alloc: make
+should_fail_alloc_page() static") had to be reverted by commit
+54aa386661fe as it caused an unresolved symbol error with
+CONFIG_DEBUG_INFO_BTF=y
+
+Link: https://lkml.kernel.org/r/20220314165724.16071-1-vbabka@suse.cz
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>

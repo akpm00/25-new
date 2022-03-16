@@ -1,0 +1,29 @@
+From: zhong jiang <zhongjiang@huawei.com>
+Subject: kernel/kexec_file.c: remove some duplicated includes
+
+We include kexec.h and slab.h twice in kexec_file.c.  It's unnecessary. 
+hence just remove them.
+
+Link: http://lkml.kernel.org/r/1537498098-19171-1-git-send-email-zhongjiang@huawei.com
+Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Baoquan He <bhe@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/kexec_file.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/kernel/kexec_file.c~kernel-kexec_file-remove-some-duplicated-include-file
++++ a/kernel/kexec_file.c
+@@ -25,8 +25,6 @@
+ #include <linux/elf.h>
+ #include <linux/elfcore.h>
+ #include <linux/kernel.h>
+-#include <linux/kexec.h>
+-#include <linux/slab.h>
+ #include <linux/syscalls.h>
+ #include <linux/vmalloc.h>
+ #include "kexec_internal.h"
+_

@@ -1,0 +1,37 @@
+From: Rik van Riel <riel@surriel.com>
+Subject: mm, slab, vmscan: accumulate gradual pressure on small slabs
+
+There are a few issues with the way the number of slab objects to scan is
+calculated in do_shrink_slab.  First, for zero-seek slabs, we could leave
+the last object around forever.  That could result in pinning a dying
+cgroup into memory, instead of reclaiming it.  The fix for that is
+trivial.
+
+Secondly, small slabs receive much more pressure, relative to their size,
+than larger slabs, due to "rounding up" the minimum number of scanned
+objects to batch_size.
+
+We can keep the pressure on all slabs equal relative to their size by
+accumulating the scan pressure on small slabs over time, resulting in
+sometimes scanning an object, instead of always scanning several.
+
+This results in lower system CPU use, and a lower major fault rate, as
+actively used entries from smaller caches get reclaimed less aggressively,
+and need to be reloaded/recreated less often.
+
+[akpm@linux-foundation.org: whitespace fixes, per Roman]
+[riel@surriel.com: couple of fixes]
+  Link: http://lkml.kernel.org/r/20190129142831.6a373403@imladris.surriel.com
+Link: http://lkml.kernel.org/r/20190128143535.7767c397@imladris.surriel.com
+Fixes: 4b85afbdacd2 ("mm: zero-seek shrinkers")
+Fixes: 172b06c32b94 ("mm: slowly shrink slabs with a relatively small number of objects")
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Tested-by: Chris Mason <clm@fb.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Jonathan Lemon <bsd@fb.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: <stable@vger.kernel.org>
+

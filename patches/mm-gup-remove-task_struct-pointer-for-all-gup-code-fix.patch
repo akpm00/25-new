@@ -1,0 +1,27 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm-gup-remove-task_struct-pointer-for-all-gup-code-fix
+
+fix arch/arm64/kernel/mte.c
+
+Link: http://lkml.kernel.org/r/20200710122457.GK199122@xz-x1
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/kernel/mte.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/arm64/kernel/mte.c~mm-gup-remove-task_struct-pointer-for-all-gup-code-fix
++++ a/arch/arm64/kernel/mte.c
+@@ -227,7 +227,7 @@ static int __access_remote_tags(struct t
+ 		void *maddr;
+ 		struct page *page = NULL;
+ 
+-		ret = get_user_pages_remote(tsk, mm, addr, 1, gup_flags,
++		ret = get_user_pages_remote(mm, addr, 1, gup_flags,
+ 					    &page, &vma, NULL);
+ 		if (ret <= 0)
+ 			break;
+_

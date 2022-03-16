@@ -1,0 +1,17 @@
+From: Catalin Marinas <catalin.marinas@arm.com>
+Subject: arm64: add support for sub-page faults user probing
+
+With MTE, even if the pte allows an access, a mismatched tag somewhere
+within a page can still cause a fault.  Select ARCH_HAS_SUBPAGE_FAULTS if
+MTE is enabled and implement probe_user_writeable().
+
+Link: https://lkml.kernel.org/r/20211124192024.2408218-3-catalin.marinas@arm.com
+Fixes: a48b73eca4ce ("btrfs: fix potential deadlock in the search ioctl") 
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: <stable@vger.kernel.org>

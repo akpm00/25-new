@@ -1,0 +1,29 @@
+From: Colin Ian King <colin.i.king@gmail.com>
+Subject: lib: remove redundant assignment to variable ret
+
+Variable ret is being assigned a value that is never read.  If the
+for-loop is entered then ret is immediately re-assigned a new value.  If
+the for-loop is not executed ret is never read.  The assignment is
+redundant and can be removed.
+
+Link: https://lkml.kernel.org/r/20211230134557.83633-1-colin.i.king@gmail.com
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/asn1_encoder.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/lib/asn1_encoder.c~lib-remove-redundant-assignment-to-variable-ret
++++ a/lib/asn1_encoder.c
+@@ -164,8 +164,6 @@ asn1_encode_oid(unsigned char *data, con
+ 
+ 	data_len -= 3;
+ 
+-	ret = 0;
+-
+ 	for (i = 2; i < oid_len; i++) {
+ 		ret = asn1_encode_oid_digit(&d, &data_len, oid[i]);
+ 		if (ret < 0)
+_

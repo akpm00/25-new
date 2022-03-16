@@ -1,0 +1,15 @@
+From: hongnanli <hongnan.li@linux.alibaba.com>
+Subject: fs/ocfs2: fix comments mentioning i_mutex
+
+inode->i_mutex has been replaced with inode->i_rwsem long ago.  Fix
+comments still mentioning i_mutex.
+
+Link: https://lkml.kernel.org/r/20220214031314.100094-1-hongnan.li@linux.alibaba.com
+Signed-off-by: hongnanli <hongnan.li@linux.alibaba.com>
+Acked-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>

@@ -1,0 +1,14 @@
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: mm: vmscan: fix documentation for page_check_references()
+
+commit b518154e59aa ("mm/vmscan: protect the workingset on anonymous LRU")
+requires to look twice for both mapped anon/file pages are used more than
+once to take the decission of reclaim or activation.  Correct the
+documentation accordingly.
+
+Link: https://lkml.kernel.org/r/1646925640-21324-1-git-send-email-quic_charante@quicinc.com
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

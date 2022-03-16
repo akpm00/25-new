@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/core: add number of each enum type values
+
+This commit declares the number of legal values for each DAMON enum types
+to make traversals of such DAMON enum types easy and safe.
+
+Link: https://lkml.kernel.org/r/20220228081314.5770-3-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>

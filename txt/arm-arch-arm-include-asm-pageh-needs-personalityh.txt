@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: arm: arch/arm/include/asm/page.h needs personality.h
+
+VM_DATA_DEFAULT_FLAGS uses READ_IMPLIES_EXEC, so page.h should include
+personality.h to provide this.
+
+This fixes no known bugs and can be safely ignored ;)
+
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Konstantin Khlebnikov <koct9i@gmail.com>

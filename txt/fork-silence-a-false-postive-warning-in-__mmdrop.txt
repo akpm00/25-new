@@ -1,0 +1,28 @@
+From: Qian Cai <cai@lca.pw>
+Subject: fork: silence a false postive warning in __mmdrop
+
+commit bf2c59fce407 ("sched/core: Fix illegal RCU from offline CPUs")
+delayed,
+
+idle->active_mm = &init_mm;
+
+into finish_cpu() instead of idle_task_exit() which results in a false
+positive warning that was originally designed in the commit 3eda69c92d47
+("kernel/fork.c: detect early free of a live mm").
+
+ WARNING: CPU: 127 PID: 72976 at kernel/fork.c:697
+ __mmdrop+0x230/0x2c0
+ do_exit+0x424/0xfa0
+ Call Trace:
+ do_exit+0x424/0xfa0
+ do_group_exit+0x64/0xd0
+ sys_exit_group+0x24/0x30
+ system_call_exception+0x108/0x1d0
+ system_call_common+0xf0/0x278
+
+Link: http://lkml.kernel.org/r/20200604150344.1796-1-cai@lca.pw
+Fixes: bf2c59fce407 ("sched/core: Fix illegal RCU from offline CPUs")
+Signed-off-by: Qian Cai <cai@lca.pw>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Cc: <stable@vger.kernel.org>

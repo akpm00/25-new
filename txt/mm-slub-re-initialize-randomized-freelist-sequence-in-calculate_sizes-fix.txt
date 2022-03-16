@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-slub-re-initialize-randomized-freelist-sequence-in-calculate_sizes-fix
+
+simplification, per Thomas
+
+Cc: Sahara <keun-o.park@digital14.com>
+Cc: Thomas Garnier <thgarnie@chromium.org>

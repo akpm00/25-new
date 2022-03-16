@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: remove obsolete comment in __soft_offline_page
+
+Since commit add05cecef80 ("mm: soft-offline: don't free target page in
+successful page migration"), set_migratetype_isolate logic is removed. 
+Remove this obsolete comment.
+
+Link: https://lkml.kernel.org/r/20220218090118.1105-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

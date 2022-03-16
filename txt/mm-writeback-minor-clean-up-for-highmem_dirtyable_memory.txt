@@ -1,0 +1,11 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/writeback: minor clean up for highmem_dirtyable_memory
+
+Since commit a804552b9a15 ("mm/page-writeback.c: fix dirty_balance_reserve
+subtraction from dirtyable memory"), local variable x can not be negative.
+And it can not overflow when it is the total number of dirtyable highmem
+pages.  Thus remove the unneeded comment and overflow check.
+
+Link: https://lkml.kernel.org/r/20220224115416.46089-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>

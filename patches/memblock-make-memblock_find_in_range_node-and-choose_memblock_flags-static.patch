@@ -1,0 +1,81 @@
+From: Mike Rapoport <rppt@linux.ibm.com>
+Subject: memblock: make memblock_find_in_range_node() and choose_memblock_flags() static
+
+These functions are not used outside memblock. Make them static.
+
+Link: http://lkml.kernel.org/r/1548057848-15136-12-git-send-email-rppt@linux.ibm.com
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Guo Ren <ren_guo@c-sky.com>				[c-sky]
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Juergen Gross <jgross@suse.com>			[Xen]
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Paul Burton <paul.burton@mips.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Stafford Horne <shorne@gmail.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/include/linux/memblock.h~memblock-make-memblock_find_in_range_node-and-choose_memblock_flags-static
++++ a/include/linux/memblock.h
+@@ -108,9 +108,6 @@ void memblock_discard(void);
+ #define memblock_dbg(fmt, ...) \
+ 	if (memblock_debug) printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+ 
+-phys_addr_t memblock_find_in_range_node(phys_addr_t size, phys_addr_t align,
+-					phys_addr_t start, phys_addr_t end,
+-					int nid, enum memblock_flags flags);
+ phys_addr_t memblock_find_in_range(phys_addr_t start, phys_addr_t end,
+ 				   phys_addr_t size, phys_addr_t align);
+ void memblock_allow_resize(void);
+@@ -127,7 +124,6 @@ int memblock_clear_hotplug(phys_addr_t b
+ int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
+ int memblock_mark_nomap(phys_addr_t base, phys_addr_t size);
+ int memblock_clear_nomap(phys_addr_t base, phys_addr_t size);
+-enum memblock_flags choose_memblock_flags(void);
+ 
+ unsigned long memblock_free_all(void);
+ void reset_node_managed_pages(pg_data_t *pgdat);
+--- a/mm/memblock.c~memblock-make-memblock_find_in_range_node-and-choose_memblock_flags-static
++++ a/mm/memblock.c
+@@ -132,7 +132,7 @@ static int memblock_can_resize __initdat
+ static int memblock_memory_in_slab __initdata_memblock = 0;
+ static int memblock_reserved_in_slab __initdata_memblock = 0;
+ 
+-enum memblock_flags __init_memblock choose_memblock_flags(void)
++static enum memblock_flags __init_memblock choose_memblock_flags(void)
+ {
+ 	return system_has_some_mirror ? MEMBLOCK_MIRROR : MEMBLOCK_NONE;
+ }
+@@ -261,7 +261,7 @@ __memblock_find_range_top_down(phys_addr
+  * Return:
+  * Found address on success, 0 on failure.
+  */
+-phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
++static phys_addr_t __init_memblock memblock_find_in_range_node(phys_addr_t size,
+ 					phys_addr_t align, phys_addr_t start,
+ 					phys_addr_t end, int nid,
+ 					enum memblock_flags flags)
+_

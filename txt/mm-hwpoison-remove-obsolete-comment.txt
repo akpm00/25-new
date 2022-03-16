@@ -1,0 +1,14 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm/memory-failure.c: remove obsolete comment
+
+With the introduction of mf_mutex, most of memory error handling process
+is mutually exclusive, so the in-line comment about subtlety about
+double-checking PageHWPoison is no more correct.  So remove it.
+
+Link: https://lkml.kernel.org/r/20220125025601.3054511-1-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Reviewed-by: Yang Shi <shy828301@gmail.com>

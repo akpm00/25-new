@@ -1,0 +1,23 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb: replace hugetlb_free_vmemmap_enabled with a static_key
+
+The page_fixed_fake_head() is used throughout memory management and the
+conditional check requires checking a global variable, although the
+overhead of this check may be small, it increases when the memory cache
+comes under pressure.  Also, the global variable will not be modified
+after system boot, so it is very appropriate to use static key machanism.
+
+Link: https://lkml.kernel.org/r/20211101031651.75851-3-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Chen Huang <chenhuang5@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

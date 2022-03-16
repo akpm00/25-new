@@ -1,0 +1,24 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, scs: support tagged vmalloc mappings
+
+Fix up the custom KASAN instrumentation for Shadow Call Stack to support
+vmalloc() mappings and pointers being tagged.
+
+- Use the tagged pointer returned by kasan_unpoison_vmalloc() in
+  __scs_alloc() when calling memset() to avoid false-positives.
+
+- Do not return a tagged Shadow Call Stack pointer from __scs_alloc(),
+  as this might lead to conflicts with the instrumentation.
+
+Link: https://lkml.kernel.org/r/2f6605e3a358cf64d73a05710cb3da356886ad29.1646233925.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

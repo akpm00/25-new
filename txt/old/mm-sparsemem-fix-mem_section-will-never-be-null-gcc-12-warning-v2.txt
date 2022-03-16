@@ -1,0 +1,13 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning-v2
+
+Link: https://lkml.kernel.org/r/20220202003550.698768-1-longman@redhat.com
+Fixes: 83e3c48729d9 ("mm/sparsemem: Allocate mem_section at runtime for CONFIG_SPARSEMEM_EXTREME=y")
+Fixes: 3e347261a80b ("sparsemem extreme implementation")
+Reported-by: Justin Forbes <jforbes@redhat.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Rafael Aquini <aquini@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Hector Martin <marcan@marcan.st>

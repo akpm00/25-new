@@ -1,0 +1,5 @@
+include/linux/kasan.h
+lib/test_kasan.c
+mm/kasan/hw_tags.c
+mm/kasan/kasan.h
+mm/kasan/report.c

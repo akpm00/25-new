@@ -1,0 +1,8 @@
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: mm-drop-unneeded-vm_ops-checks-v2-fix
+
+fix splat reported by Marcel
+
+Link: http://lkml.kernel.org/r/20180716142049.ioa2irsd2d7sphn4@black.fi.intel.com
+Reported-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

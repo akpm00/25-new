@@ -1,0 +1,14 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm/hwpoison: set PageHWPoison after taking page lock in memory_failure_hugetlb()
+
+There is a race condition between memory_failure_hugetlb() and hugetlb
+free/demotion, which causes setting PageHWPoison flag on the wrong page
+(which was a hugetlb when memory_failrue() was called, but was removed or
+demoted when memory_failure_hugetlb() is called).  This results in killing
+wrong processes.  So set PageHWPoison flag with holding page lock,
+
+Link: https://lkml.kernel.org/r/20220309091449.2753904-1-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>

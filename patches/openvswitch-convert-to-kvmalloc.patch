@@ -1,0 +1,180 @@
+From: Kent Overstreet <kent.overstreet@gmail.com>
+Subject: openvswitch: convert to kvmalloc
+
+Patch series "generic radix trees; drop flex arrays".
+
+This patch (of 7):
+
+There was no real need for this code to be using flexarrays, it's just
+implementing a hash table - ideally it would be using rhashtables, but
+that conversion would be significantly more complicated.
+
+Link: http://lkml.kernel.org/r/20181217131929.11727-2-kent.overstreet@gmail.com
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+Reviewed-by: Matthew Wilcox <willy@infradead.org>
+Cc: Pravin B Shelar <pshelar@ovn.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Eric Paris <eparis@parisplace.org>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Shaohua Li <shli@kernel.org>
+Cc: Stephen Smalley <sds@tycho.nsa.gov>
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/net/openvswitch/flow.h~openvswitch-convert-to-kvmalloc
++++ a/net/openvswitch/flow.h
+@@ -30,7 +30,6 @@
+ #include <linux/in6.h>
+ #include <linux/jiffies.h>
+ #include <linux/time.h>
+-#include <linux/flex_array.h>
+ #include <linux/cpumask.h>
+ #include <net/inet_ecn.h>
+ #include <net/ip_tunnels.h>
+--- a/net/openvswitch/flow_netlink.h~openvswitch-convert-to-kvmalloc
++++ a/net/openvswitch/flow_netlink.h
+@@ -30,7 +30,6 @@
+ #include <linux/in6.h>
+ #include <linux/jiffies.h>
+ #include <linux/time.h>
+-#include <linux/flex_array.h>
+ 
+ #include <net/inet_ecn.h>
+ #include <net/ip_tunnels.h>
+--- a/net/openvswitch/flow_table.c~openvswitch-convert-to-kvmalloc
++++ a/net/openvswitch/flow_table.c
+@@ -111,29 +111,6 @@ int ovs_flow_tbl_count(const struct flow
+ 	return table->count;
+ }
+ 
+-static struct flex_array *alloc_buckets(unsigned int n_buckets)
+-{
+-	struct flex_array *buckets;
+-	int i, err;
+-
+-	buckets = flex_array_alloc(sizeof(struct hlist_head),
+-				   n_buckets, GFP_KERNEL);
+-	if (!buckets)
+-		return NULL;
+-
+-	err = flex_array_prealloc(buckets, 0, n_buckets, GFP_KERNEL);
+-	if (err) {
+-		flex_array_free(buckets);
+-		return NULL;
+-	}
+-
+-	for (i = 0; i < n_buckets; i++)
+-		INIT_HLIST_HEAD((struct hlist_head *)
+-					flex_array_get(buckets, i));
+-
+-	return buckets;
+-}
+-
+ static void flow_free(struct sw_flow *flow)
+ {
+ 	int cpu;
+@@ -168,31 +145,30 @@ void ovs_flow_free(struct sw_flow *flow,
+ 		flow_free(flow);
+ }
+ 
+-static void free_buckets(struct flex_array *buckets)
+-{
+-	flex_array_free(buckets);
+-}
+-
+-
+ static void __table_instance_destroy(struct table_instance *ti)
+ {
+-	free_buckets(ti->buckets);
++	kvfree(ti->buckets);
+ 	kfree(ti);
+ }
+ 
+ static struct table_instance *table_instance_alloc(int new_size)
+ {
+ 	struct table_instance *ti = kmalloc(sizeof(*ti), GFP_KERNEL);
++	int i;
+ 
+ 	if (!ti)
+ 		return NULL;
+ 
+-	ti->buckets = alloc_buckets(new_size);
+-
++	ti->buckets = kvmalloc_array(new_size, sizeof(struct hlist_head),
++				     GFP_KERNEL);
+ 	if (!ti->buckets) {
+ 		kfree(ti);
+ 		return NULL;
+ 	}
++
++	for (i = 0; i < new_size; i++)
++		INIT_HLIST_HEAD(&ti->buckets[i]);
++
+ 	ti->n_buckets = new_size;
+ 	ti->node_ver = 0;
+ 	ti->keep_flows = false;
+@@ -249,7 +225,7 @@ static void table_instance_destroy(struc
+ 
+ 	for (i = 0; i < ti->n_buckets; i++) {
+ 		struct sw_flow *flow;
+-		struct hlist_head *head = flex_array_get(ti->buckets, i);
++		struct hlist_head *head = &ti->buckets[i];
+ 		struct hlist_node *n;
+ 		int ver = ti->node_ver;
+ 		int ufid_ver = ufid_ti->node_ver;
+@@ -294,7 +270,7 @@ struct sw_flow *ovs_flow_tbl_dump_next(s
+ 	ver = ti->node_ver;
+ 	while (*bucket < ti->n_buckets) {
+ 		i = 0;
+-		head = flex_array_get(ti->buckets, *bucket);
++		head = &ti->buckets[*bucket];
+ 		hlist_for_each_entry_rcu(flow, head, flow_table.node[ver]) {
+ 			if (i < *last) {
+ 				i++;
+@@ -313,8 +289,7 @@ struct sw_flow *ovs_flow_tbl_dump_next(s
+ static struct hlist_head *find_bucket(struct table_instance *ti, u32 hash)
+ {
+ 	hash = jhash_1word(hash, ti->hash_seed);
+-	return flex_array_get(ti->buckets,
+-				(hash & (ti->n_buckets - 1)));
++	return &ti->buckets[hash & (ti->n_buckets - 1)];
+ }
+ 
+ static void table_instance_insert(struct table_instance *ti,
+@@ -347,9 +322,7 @@ static void flow_table_copy_flows(struct
+ 	/* Insert in new table. */
+ 	for (i = 0; i < old->n_buckets; i++) {
+ 		struct sw_flow *flow;
+-		struct hlist_head *head;
+-
+-		head = flex_array_get(old->buckets, i);
++		struct hlist_head *head = &old->buckets[i];
+ 
+ 		if (ufid)
+ 			hlist_for_each_entry(flow, head,
+--- a/net/openvswitch/flow_table.h~openvswitch-convert-to-kvmalloc
++++ a/net/openvswitch/flow_table.h
+@@ -29,7 +29,6 @@
+ #include <linux/in6.h>
+ #include <linux/jiffies.h>
+ #include <linux/time.h>
+-#include <linux/flex_array.h>
+ 
+ #include <net/inet_ecn.h>
+ #include <net/ip_tunnels.h>
+@@ -37,7 +36,7 @@
+ #include "flow.h"
+ 
+ struct table_instance {
+-	struct flex_array *buckets;
++	struct hlist_head *buckets;
+ 	unsigned int n_buckets;
+ 	struct rcu_head rcu;
+ 	int node_ver;
+_

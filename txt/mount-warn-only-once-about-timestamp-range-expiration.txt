@@ -1,0 +1,24 @@
+From: Anthony Iliopoulos <ailiop@suse.com>
+Subject: mount: warn only once about timestamp range expiration
+
+Commit f8b92ba67c5d ("mount: Add mount warning for impending timestamp
+expiry") introduced a mount warning regarding filesystem timestamp limits,
+that is printed upon each writable mount or remount.
+
+This can result in a lot of unnecessary messages in the kernel log in
+setups where filesystems are being frequently remounted (or mounted
+multiple times).
+
+Avoid this by setting a superblock flag which indicates that the warning
+has been emitted at least once for any particular mount, as suggested in
+[1].
+
+[1] https://lore.kernel.org/CAHk-=wim6VGnxQmjfK_tDg6fbHYKL4EFkmnTjVr9QnRqjDBAeA@mail.gmail.com/
+
+Link: https://lkml.kernel.org/r/20220119202934.26495-1-ailiop@suse.com
+Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>

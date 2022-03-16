@@ -1,0 +1,37 @@
+From: Tomer Maimon <tmaimon77@gmail.com>
+Subject: MAINTAINERS: add maintainer and replacing reviewer ARM/NUVOTON NPCM
+
+Add Tali Perry as Nuvoton NPCM maintainer, replace Brendan Higgins
+Nuvoton NPCM reviewer with Benjamin Fair.
+
+Link: http://lkml.kernel.org/r/20190328235752.334462-2-tmaimon77@gmail.com
+Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Reviewed-by: Benjamin Fair <benjaminfair@google.com>
+Reviewed-by: Mukesh Ojha <mojha@codeaurora.org>
+Cc: Joe Perches <joe@perches.com>
+Cc: Avi Fishman <avifishman70@gmail.com>
+Cc: Patrick Venture <venture@google.com>
+Cc: Nancy Yuen <yuenn@google.com>
+Cc: Tali Perry <tali.perry1@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/MAINTAINERS~maintainers-add-maintainer-and-replacing-reviewer-arm-nuvoton-npcm
++++ a/MAINTAINERS
+@@ -1893,9 +1893,10 @@ T:	git git://git.kernel.org/pub/scm/linu
+ ARM/NUVOTON NPCM ARCHITECTURE
+ M:	Avi Fishman <avifishman70@gmail.com>
+ M:	Tomer Maimon <tmaimon77@gmail.com>
++M:	Tali Perry <tali.perry1@gmail.com>
+ R:	Patrick Venture <venture@google.com>
+ R:	Nancy Yuen <yuenn@google.com>
+-R:	Brendan Higgins <brendanhiggins@google.com>
++R:	Benjamin Fair <benjaminfair@google.com>
+ L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
+ S:	Supported
+ F:	arch/arm/mach-npcm/
+_

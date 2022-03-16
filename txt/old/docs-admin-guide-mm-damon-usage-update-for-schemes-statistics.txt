@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/usage: update for schemes statistics
+
+This commit updates DAMON debugfs interface for statistics of schemes
+successfully applied regions and time/space quota limit exceeds counts.
+
+Link: https://lkml.kernel.org/r/20211210150016.35349-7-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

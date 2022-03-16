@@ -1,0 +1,20 @@
+From: zhanglianjie <zhanglianjie@uniontech.com>
+Subject: mm: move page-writeback sysctls to their own file
+
+kernel/sysctl.c is a kitchen sink where everyone leaves their dirty
+dishes, this makes it very difficult to maintain.
+
+To help with this maintenance let's start by moving sysctls to places
+where they actually belong.  The proc sysctl maintainers do not want to
+know what sysctl knobs you wish to add for your own piece of code, we just
+care about the core logic.
+
+So move the page-writeback sysctls to its own file.
+
+[akpm@linux-foundation.org: coding-style cleanups]
+akpm@linux-foundation.org: fix CONFIG_SYSCTL=n warnings]
+Link: https://lkml.kernel.org/r/20220129012955.26594-1-zhanglianjie@uniontech.com
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>

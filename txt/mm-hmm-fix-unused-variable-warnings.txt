@@ -1,0 +1,20 @@
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: mm/hmm.c: fix unused variable warnings
+
+When CONFIG_HUGETLB_PAGE is disabled, the only use of the variable 'h' is
+compiled out, and the compiler thinks it is unnecessary:
+
+mm/hmm.c: In function 'hmm_range_snapshot':
+mm/hmm.c:1015:19: error: unused variable 'h' [-Werror=unused-variable]
+    struct hstate *h = hstate_vma(vma);
+
+Rephrase the code to avoid the temporary variable instead, so the
+compiler stops warning.
+
+Link: http://lkml.kernel.org/r/20190304200026.1140281-1-arnd@arndb.de
+Fixes: 5409a90d4212 ("mm/hmm: support hugetlbfs (snapshotting, faulting and DMA mapping)")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>

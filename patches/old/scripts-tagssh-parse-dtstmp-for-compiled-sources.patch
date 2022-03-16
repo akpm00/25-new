@@ -1,0 +1,32 @@
+From: Jialu Xu <xujialu@vimux.org>
+Subject: scripts/tags.sh: parse *.dts.tmp for compiled sources
+
+There are files listed in *.dts.tmp, parse them as *.cmd for compiled
+sources.
+
+Link: https://lkml.kernel.org/r/20220221084614.1682022-1-xujialu@vimux.org
+Signed-off-by: Jialu Xu <xujialu@vimux.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Rustam Kovhaev <rkovhaev@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ scripts/tags.sh |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/scripts/tags.sh~scripts-tagssh-parse-dtstmp-for-compiled-sources
++++ a/scripts/tags.sh
+@@ -97,8 +97,8 @@ all_compiled_sources()
+ {
+ 	realpath -es $([ -z "$KBUILD_ABS_SRCTREE" ] && echo --relative-to=.) \
+ 		include/generated/autoconf.h $(find $ignore -name "*.cmd" -exec \
+-		grep -Poh '(?(?=^source_.* \K).*|(?=^  \K\S).*(?= \\))' {} \+ |
+-		awk '!a[$0]++') | sort -u
++		grep -Poh '(?(?=^source_.* \K).*|(?=^  \K\S).*(?= \\))' {} \+ | awk '!a[$0]++') \
++		$(find -name "*.dts.tmp" -exec grep -Poh '(?(?=^# \d+ "\K).*(?="))' {} \+) | sort -u
+ }
+ 
+ all_target_sources()
+_

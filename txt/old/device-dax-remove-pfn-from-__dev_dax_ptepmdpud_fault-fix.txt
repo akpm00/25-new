@@ -1,0 +1,6 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: device-dax-remove-pfn-from-__dev_dax_ptepmdpud_fault-fix
+
+fix CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=n build
+
+Cc: Joao Martins <joao.m.martins@oracle.com>

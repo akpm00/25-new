@@ -1,0 +1,9 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: fix for "kasan, vmalloc: only tag normal vmalloc allocations"
+
+"kasan, vmalloc: only tag normal vmalloc allocations" unintentionally
+disabled poisoning of executable memory for the Generic mode.  Fix it.
+
+Link: https://lkml.kernel.org/r/de4587d6a719232e83c760113e46ed2d4d8da61e.1646757322.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: Vasily Gorbik <gor@linux.ibm.com>

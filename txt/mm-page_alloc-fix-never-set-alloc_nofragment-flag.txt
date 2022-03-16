@@ -1,0 +1,14 @@
+From: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: mm/page_alloc.c: fix never set ALLOC_NOFRAGMENT flag
+
+0a79cdad5eb2 ("mm: use alloc_flags to record if kswapd can wake") removed
+setting of the ALLOC_NOFRAGMENT flag.  Bring it back.
+
+The runtime effect is that ALLOC_NOFRAGMENT behaviour is restored so
+that allocations are spread across local zones to avoid fragmentation
+due to mixing pageblocks as long as possible.
+
+Link: http://lkml.kernel.org/r/20190423120806.3503-2-aryabinin@virtuozzo.com
+Fixes: 0a79cdad5eb2 ("mm: use alloc_flags to record if kswapd can wake")
+Signed-off-by: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>

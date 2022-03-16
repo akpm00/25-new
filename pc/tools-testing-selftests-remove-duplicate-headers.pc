@@ -1,0 +1,4 @@
+tools/testing/selftests/gpio/gpio-mockup-chardev.c
+tools/testing/selftests/rseq/rseq.h
+tools/testing/selftests/timers/skew_consistency.c
+tools/testing/selftests/x86/mpx-dig.c

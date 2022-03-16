@@ -1,0 +1,49 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support for selecting by PID, TGID or task command name
+
+When viewing page owner information, we may also need to select the blocks
+by PID, TGID or task command name, which helps to get more accurate page
+allocation information as needed.
+
+Therefore, following adjustments are made:
+
+1. Add three new options, including --pid, --tgid and --name, to support
+the selection of information blocks by a specific pid, tgid and task
+command name. In addtion, multiple options are allowed to be used at the
+same time.
+
+	./page_owner_sort [input] [output] --pid <PID>
+	./page_owner_sort [input] [output] --tgid <TGID>
+	./page_owner_sort [input] [output] --name <TASK_COMMAND_NAME>
+
+Assuming a scenario when a multi-threaded program, ./demo (PID = 5280),
+is running, and ./demo creates a child process (PID = 5281).
+
+	$ps
+	PID   TTY        TIME   CMD
+	5215  pts/0    00:00:00  bash
+	5280  pts/0    00:00:00  ./demo
+	5281  pts/0    00:00:00  ./demo
+	5282  pts/0    00:00:00  ps
+
+It would be better to filter out the records with tgid=5280 and the
+task name "demo" when debugging the parent process, and the specific
+usage is
+
+	./page_owner_sort [input] [output] --tgid 5280 --name demo
+
+2. Add explanations of three new options, including --pid, --tgid
+and --name, to the document.
+
+This work is coauthored by
+	Shenghong Han <hanshenghong2019@email.szu.edu.cn>,
+	Yixuan Cao <caoyixuan2019@email.szu.edu.cn>,
+	Yinan Zhang <zhangyinan2019@email.szu.edu.cn>,
+	Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>,
+	Yuhong Feng <yuhongf@szu.edu.cn>.
+
+Link: https://lkml.kernel.org/r/1646835223-7584-1-git-send-email-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

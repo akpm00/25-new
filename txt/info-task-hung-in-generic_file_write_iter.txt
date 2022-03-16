@@ -1,0 +1,22 @@
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: fs/buffer.c: add debug print for __getblk_gfp() stall problem
+
+Among syzbot's unresolved hung task reports, 18 out of 65 reports contain
+__getblk_gfp() line in the backtrace.  Since there is a comment block that
+says that __getblk_gfp() will lock up the machine if try_to_free_buffers()
+attempt from grow_dev_page() is failing, let's start from checking whether
+syzbot is hitting that case.  This change will be removed after the bug is
+fixed.
+
+Link: http://lkml.kernel.org/r/9b9fcdda-c347-53ee-fdbb-8a7d11cf430e@I-love.SAKURA.ne.jp
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jeff Layton <jlayton@redhat.com>
+Cc: <syzkaller-bugs@googlegroups.com>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>

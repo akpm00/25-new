@@ -1,0 +1,7 @@
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
+Subject: mm/page_table_check.c: use strtobool for param parsing
+
+Use strtobool rather than open coding "on" and "off" parsing.
+
+Link: https://lkml.kernel.org/r/20220227181038.126926-1-linux@treblig.org
+Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>

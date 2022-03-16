@@ -1,0 +1,17 @@
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Subject: mm/rmap: convert from atomic_t to refcount_t on anon_vma->refcount
+
+refcount_t type and corresponding API can protect refcounters from
+accidental underflow and overflow and further use-after-free situations.
+
+Link: https://lkml.kernel.org/r/1626665029-49104-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: <yuanxzhang@fudan.edu.cn>
+Cc: Xin Tan <tanxin.ctf@gmail.com>

@@ -1,0 +1,22 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: usercopy: check valid lifetime via stack depth
+
+Under CONFIG_HARDENED_USERCOPY=y, when exact stack frame boundary checking
+is not available (i.e.  everything except x86 with FRAME_POINTER), check a
+stack object as being at least "current depth valid", in the sense that
+any object within the stack region but not between start-of-stack and
+current_stack_pointer should be considered unavailable (i.e.  its lifetime
+is from a call no longer present on the stack).
+
+Additionally report usercopy bounds checking failures with an offset from
+current_stack_pointer, which may assist with diagnosing failures.
+
+The LKDTM USERCOPY_STACK_FRAME_TO and USERCOPY_STACK_FRAME_FROM tests
+(once slightly adjusted in a separate patch) will pass again with this
+fixed.
+
+Link: https://lkml.kernel.org/r/20220216201449.2087956-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>

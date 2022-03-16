@@ -1,0 +1,16 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: print virtual mapping info in reports
+
+Print virtual mapping range and its creator in reports affecting virtual
+mappings.
+
+Also get physical page pointer for such mappings, so page information gets
+printed as well.
+
+Link: https://lkml.kernel.org/r/6ebb11210ae21253198e264d4bb0752c1fad67d7.1645548178.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitriy Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>

@@ -1,0 +1,45 @@
+From: Aleksandr Nogikh <nogikh@google.com>
+Subject: kcov: split ioctl handling into locked and unlocked parts
+
+Patch series "kcov: improve mmap processing", v3.
+
+Subsequent mmaps of the same kcov descriptor currently do not update the
+virtual memory of the task and yet return 0 (success).  This is
+counter-intuitive and may lead to unexpected memory access errors.
+
+Also, this unnecessarily limits the functionality of kcov to only the
+simplest usage scenarios.  Kcov instances are effectively forever attached
+to their first address spaces and it becomes impossible to e.g.  reuse the
+same kcov handle in forked child processes without mmapping the memory
+first.  This is exactly what we tried to do in syzkaller and inadvertently
+came upon this behavior.
+
+This patch series addresses the problem described above.
+
+
+This patch (of 3):
+
+Currently all ioctls are de facto processed under a spinlock in order to
+serialise them.  This, however, prohibits the use of vmalloc and other
+memory management functions in the implementations of those ioctls,
+unnecessary complicating any further changes to the code.
+
+Let all ioctls first be processed inside the kcov_ioctl() function which
+should execute the ones that are not compatible with spinlock and then
+pass control to kcov_ioctl_locked() for all other ones. 
+KCOV_REMOTE_ENABLE is processed both in kcov_ioctl() and
+kcov_ioctl_locked() as the steps are easily separable.
+
+Although it is still compatible with a spinlock, move KCOV_INIT_TRACE
+handling to kcov_ioctl(), so that the changes from the next commit are
+easier to follow.
+
+Link: https://lkml.kernel.org/r/20220117153634.150357-1-nogikh@google.com
+Link: https://lkml.kernel.org/r/20220117153634.150357-2-nogikh@google.com
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Taras Madan <tarasmadan@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>

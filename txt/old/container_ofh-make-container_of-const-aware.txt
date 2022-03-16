@@ -1,0 +1,11 @@
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: container_of.h: make container_of const-aware
+
+container_of() macro has one major drawback.  It does not check whether
+the passed ptr has a const pointer, the result will always be a non-const
+pointer.  Use a _Generic() construct (supported since gcc 4.9 and Clang
+3.0) to teach container_of that if converting a const pointer, the
+returned pointer should also have the const modifier.
+
+Link: https://lkml.kernel.org/r/20220210170434.3924169-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>

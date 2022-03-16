@@ -1,0 +1,5 @@
+arch/x86/kernel/cpu/mce/core.c
+drivers/base/memory.c
+mm/hwpoison-inject.c
+mm/madvise.c
+mm/memory-failure.c

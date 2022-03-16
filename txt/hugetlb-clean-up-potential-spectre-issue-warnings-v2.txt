@@ -1,0 +1,10 @@
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Subject: hugetlb-clean-up-potential-spectre-issue-warnings-v2
+
+Link: https://lkml.kernel.org/r/20220218212946.35441-1-mike.kravetz@oracle.com
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liu Yuntao <liuyuntao10@huawei.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Zhenguo Yao <yaozhenguo1@gmail.com>

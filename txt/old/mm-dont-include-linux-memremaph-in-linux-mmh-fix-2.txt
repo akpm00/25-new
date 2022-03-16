@@ -1,0 +1,8 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix for "mm: don't include <linux/memremap.h> in <linux/mm.h>"
+
+fix arch/powerpc/kvm/book3s_hv_uvmem.c
+
+Link: https://lkml.kernel.org/r/20220214180040.44f8316a@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Christoph Hellwig <hch@lst.de>

@@ -1,0 +1,11 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: clarify protection_map[] indices
+
+protection_map[] maps vm_flags access combinations into page protection
+value as defined by the platform via __PXXX and __SXXX macros.  The array
+indices in protection_map[], represents vm_flags access combinations but
+it's not very intuitive to derive.  This makes it clear and explicit.
+
+Link: https://lkml.kernel.org/r/1645425519-9034-3-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

@@ -1,0 +1,9 @@
+From: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Subject: zpool: remove the list of pools_head
+
+The list of pools_head is no longer needed because the caller has been
+deleted in commit 479305fd7172 ("zpool: remove zpool_evict()").
+
+Link: https://lkml.kernel.org/r/20211215163727.GA17196@pc
+Signed-off-by: Zhaoyu Liu <zackary.liu.pro@gmail.com>
+Cc: Dan Streetman <ddstreet@ieee.org>

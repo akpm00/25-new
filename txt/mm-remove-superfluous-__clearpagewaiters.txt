@@ -1,0 +1,23 @@
+From: Yu Zhao <yuzhao@google.com>
+Subject: mm: remove superfluous __ClearPageWaiters()
+
+Presumably __ClearPageWaiters() was added to follow the previously removed
+__ClearPageActive() pattern.
+
+Only flags that are in PAGE_FLAGS_CHECK_AT_FREE needs to be properly
+cleared because otherwise we think there may be some kind of leak. 
+PG_waiters is not one of those flags and leaving the clearing to
+PAGE_FLAGS_CHECK_AT_PREP is more appropriate.
+
+Link: http://lkml.kernel.org/r/20200818184704.3625199-3-yuzhao@google.com
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Yang Shi <yang.shi@linux.alibaba.com>

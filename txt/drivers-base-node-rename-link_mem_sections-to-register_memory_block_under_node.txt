@@ -1,0 +1,56 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: drivers/base/node: rename link_mem_sections() to register_memory_block_under_node()
+
+Patch series "drivers/base/memory: determine and store zone for single-zone memory blocks", v2.
+
+I remember talking to Michal in the past about removing
+test_pages_in_a_zone(), which we use for:
+* verifying that a memory block we intend to offline is really only managed
+  by a single zone. We don't support offlining of memory blocks that are
+  managed by multiple zones (e.g., multiple nodes, DMA and DMA32)
+* exposing that zone to user space via
+  /sys/devices/system/memory/memory*/valid_zones
+
+Now that I identified some more cases where test_pages_in_a_zone() might
+go wrong, and we received an UBSAN report (see patch #3), let's get rid of
+this PFN walker.
+
+So instead of detecting the zone at runtime with test_pages_in_a_zone() by
+scanning the memmap, let's determine and remember for each memory block if
+it's managed by a single zone.  The stored zone can then be used for the
+above two cases, avoiding a manual lookup using test_pages_in_a_zone().
+
+This avoids eventually stumbling over uninitialized memmaps in corner
+cases, especially when ZONE_DEVICE ranges partly fall into memory block
+(that are responsible for managing System RAM).
+
+Handling memory onlining is easy, because we online to exactly one zone. 
+Handling boot memory is more tricky, because we want to avoid scanning all
+zones of all nodes to detect possible zones that overlap with the physical
+memory region of interest.  Fortunately, we already have code that
+determines the applicable nodes for a memory block, to create sysfs links
+-- we'll hook into that.
+
+Patch #1 is a simple cleanup I had laying around for a longer time.
+Patch #2 contains the main logic to remove test_pages_in_a_zone() and
+further details.
+
+[1] https://lkml.kernel.org/r/20220128144540.153902-1-david@redhat.com
+[2] https://lkml.kernel.org/r/20220203105212.30385-1-david@redhat.com
+
+
+This patch (of 2):
+
+Let's adjust the stale terminology, making it match
+unregister_memory_block_under_nodes() and
+do_register_memory_block_under_node().  We're dealing with memory block
+devices, which span 1..X memory sections.
+
+Link: https://lkml.kernel.org/r/20220210184359.235565-1-david@redhat.com
+Link: https://lkml.kernel.org/r/20220210184359.235565-2-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Oscar Salvador <osalvador@suse.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Rafael Parra <rparrazo@redhat.com>

@@ -1,0 +1,81 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: usercopy: check valid lifetime via stack depth
+
+Under CONFIG_HARDENED_USERCOPY=y, when exact stack frame boundary checking
+is not available (i.e.  everything except x86 with FRAME_POINTER), check a
+stack object as being at least "current depth valid", in the sense that
+any object within the stack region but not between start-of-stack and
+current_stack_pointer should be considered unavailable (i.e.  its lifetime
+is from a call no longer present on the stack).
+
+Additionally report usercopy bounds checking failures with an offset from
+current_stack_pointer, which may assist with diagnosing failures.
+
+The LKDTM USERCOPY_STACK_FRAME_TO and USERCOPY_STACK_FRAME_FROM tests
+(once slightly adjusted in a separate patch) will pass again with this
+fixed.
+
+Link: https://lkml.kernel.org/r/20220216201449.2087956-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/usercopy.c |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+--- a/mm/usercopy.c~usercopy-check-valid-lifetime-via-stack-depth
++++ a/mm/usercopy.c
+@@ -29,13 +29,20 @@
+  * Returns:
+  *	NOT_STACK: not at all on the stack
+  *	GOOD_FRAME: fully within a valid stack frame
+- *	GOOD_STACK: fully on the stack (when can't do frame-checking)
++ *	GOOD_STACK: within the current stack (when can't frame-check exactly)
+  *	BAD_STACK: error condition (invalid stack position or bad stack frame)
+  */
+ static noinline int check_stack_object(const void *obj, unsigned long len)
+ {
+ 	const void * const stack = task_stack_page(current);
+ 	const void * const stackend = stack + THREAD_SIZE;
++#ifndef CONFIG_STACK_GROWSUP
++	const void * const high = stackend;
++	const void * const low = (void *)current_stack_pointer;
++#else
++	const void * const high = (void *)current_stack_pointer;
++	const void * const low = stack;
++#endif
+ 	int ret;
+ 
+ 	/* Object is not on the stack at all. */
+@@ -55,6 +62,12 @@ static noinline int check_stack_object(c
+ 	if (ret)
+ 		return ret;
+ 
++	/*
++	 * Reject: object not within current stack depth.
++	 */
++	if (obj < low || high < obj + len)
++		return BAD_STACK;
++
+ 	return GOOD_STACK;
+ }
+ 
+@@ -269,7 +282,13 @@ void __check_object_size(const void *ptr
+ 		 */
+ 		return;
+ 	default:
+-		usercopy_abort("process stack", NULL, to_user, 0, n);
++		usercopy_abort("process stack", NULL, to_user,
++#ifndef CONFIG_STACK_GROWSUP
++				(void *)current_stack_pointer - ptr,
++#else
++				ptr - (void *)current_stack_pointer,
++#endif
++				n);
+ 	}
+ 
+ 	/* Check for bad heap object. */
+_

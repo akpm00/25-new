@@ -1,0 +1,27 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: Kconfig.debug: make DEBUG_INFO selectable from a choice
+
+Currently it's not possible to enable DEBUG_INFO for an all*config build,
+since it is marked as "depends on !COMPILE_TEST".  This generally makes
+sense because a debug build of an all*config target ends up taking much
+longer and the output is much larger.  Having this be "default off" makes
+sense.  However, there are cases where enabling DEBUG_INFO for such builds
+is useful for doing treewide A/B comparisons of build options, etc.
+
+Make DEBUG_INFO selectable from any of the DWARF version choice options,
+with DEBUG_INFO_NONE being the default for COMPILE_TEST.  The mutually
+exclusive relationship between DWARF5 and BTF must be inverted, but the
+result remains the same.  Additionally moves DEBUG_KERNEL and DEBUG_MISC
+up to the top of the menu because they were enabling features _above_ it,
+making it weird to navigate menuconfig.
+
+Link: https://lkml.kernel.org/r/20220125075126.891825-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>

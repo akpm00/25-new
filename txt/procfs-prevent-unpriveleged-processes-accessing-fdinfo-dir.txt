@@ -1,0 +1,22 @@
+From: Kalesh Singh <kaleshsingh@google.com>
+Subject: procfs: prevent unprivileged processes accessing fdinfo dir
+
+The file permissions on the fdinfo dir from were changed from
+S_IRUSR|S_IXUSR to S_IRUGO|S_IXUGO, and a PTRACE_MODE_READ check was added
+for opening the fdinfo files [1].  However, the ptrace permission check
+was not added to the directory, allowing anyone to get the open FD numbers
+by reading the fdinfo directory.
+
+Add the missing ptrace permission check for opening the fdinfo directory.
+
+[1] https://lkml.kernel.org/r/20210308170651.919148-1-kaleshsingh@google.com
+
+Link: https://lkml.kernel.org/r/20210713162008.1056986-1-kaleshsingh@google.com
+Fixes: 7bc3fa0172a4 ("procfs: allow reading fdinfo with PTRACE_MODE_READ")
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Jann Horn <jannh@google.com>

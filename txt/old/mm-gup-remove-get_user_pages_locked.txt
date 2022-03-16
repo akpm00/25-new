@@ -1,0 +1,26 @@
+From: John Hubbard <jhubbard@nvidia.com>
+Subject: mm/gup: remove get_user_pages_locked()
+
+There is only one caller of get_user_pages_locked().  The purpose of
+get_user_pages_locked() is to allow for unlocking the mmap_lock when
+reading a page from the disk during a page fault (hidden behind
+VM_FAULT_RETRY).  The idea is to reduce contention on the heavily-used
+mmap_lock.  (Thanks to Jan Kara for clearly pointing that out, and in fact
+I've used some of his wording here.)
+
+However, it is unlikely for lookup_node() to take a page fault.  With that
+in mind, change over to calling get_user_pages_fast().  This simplifies
+the code, runs a little faster in the expected case, and allows removing
+get_user_pages_locked() entirely.
+
+Link: https://lkml.kernel.org/r/20220201101108.306062-5-jhubbard@nvidia.com
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>

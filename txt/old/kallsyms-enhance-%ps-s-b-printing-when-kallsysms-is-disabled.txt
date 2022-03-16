@@ -1,0 +1,48 @@
+From: Maninder Singh <maninder1.s@samsung.com>
+Subject: kallsyms: enhance %pS/s/b printing when KALLSYSMS is disabled
+
+with commit '82b37e632513 ("kallsyms: print module name in %ps/S
+case when KALLSYMS is disabled"), module name printing was enhanced.
+
+As per suggestion from Petr Mladek <pmladek@suse.com>, covering
+other flavours also to print build id also.
+
+for %pB no change as it needs to know symbol name to adjust address
+value which can't be done without KALLSYMS.
+
+original output with KALLSYMS:
+[8.842129] ps function_1 [crash]
+[8.842735] pS function_1+0x4/0x2c [crash]
+[8.842890] pSb function_1+0x4/0x2c [crash b367e79021b9f3b0172f9a36d4261c1f528ca1b3]
+[8.843175] pB function_1+0x4/0x2c [crash]
+[8.843362] pBb function_1+0x4/0x2c [crash b367e79021b9f3b0172f9a36d4261c1f528ca1b3]
+
+original output without KALLSYMS:
+[12.487424] ps 0xffff800000eb008c
+[12.487598] pS 0xffff800000eb008c
+[12.487723] pSb 0xffff800000eb008c
+[12.487850] pB 0xffff800000eb008c
+[12.487967] pBb 0xffff800000eb008c
+
+With patched kernel without KALLSYMS:
+[9.205207] ps 0xffff800000eb008c [crash]
+[9.205564] pS 0xffff800000eb0000+0x8c [crash]
+[9.205757] pSb 0xffff800000eb0000+0x8c [crash b367e79021b9f3b0172f9a36d4261c1f528ca1b3]
+[9.206066] pB 0xffff800000eb0000+0x8c [crash]
+[9.206257] pBb 0xffff800000eb0000+0x8c [crash b367e79021b9f3b0172f9a36d4261c1f528ca1b3]
+
+[akpm@linux-foundation.org: fix -Wunused-but-set-variable warning]
+Link: https://lkml.kernel.org/r/20220228053447.1584704-1-maninder1.s@samsung.com
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Co-developed-by: Vaneet Narang <v.narang@samsung.com>
+Suggested-by: Petr Mladek <pmladek@suse.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Aaron Tomlin <atomlin@redhat.com>

@@ -1,0 +1,29 @@
+From: Daniel Walker <danielwa@cisco.com>
+Subject: cmdline: add generic builtin command line
+
+Patch series "Generic command line", v2.
+
+This patch (of 4):
+
+This code allows architectures to use a generic builtin command line.  The
+state of the builtin command line options across architecture is diverse. 
+On x86 and mips they have pretty much the same code and the code prepends
+the builtin command line onto the boot loader provided one.  On powerpc
+there is only a builtin override and nothing else.
+
+The code in this commit unifies the mips and x86 code into a generic
+header file under the CONFIG_GENERIC_CMDLINE option.  When this option is
+enabled the architecture can call the cmdline_add_builtin() to add the
+builtin command line.
+
+[maksym.kokhan@globallogic.com: fix cmdline_add_builtin() macro]
+Link: http://lkml.kernel.org/r/20190319232448.45964-2-danielwa@cisco.com
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+Signed-off-by: Maksym Kokhan <maksym.kokhan@globallogic.com>
+Cc: Daniel Walker <dwalker@fifo99.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Frank Rowand <frowand.list@gmail.com>

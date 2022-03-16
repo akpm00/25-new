@@ -1,0 +1,56 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: memcontrol: fix forget to obtain the ref to objcg in split_page_memcg
+
+Christian Borntraeger reported a warning about "percpu ref
+(obj_cgroup_release) <= 0 (-1) after switching to atomic".  Because we
+forgot to obtain the reference to the objcg and wrongly obtain the
+reference of memcg.
+
+Link: https://lkml.kernel.org/r/20210401030141.37061-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/memcontrol.h |    6 ++++++
+ mm/memcontrol.c            |    6 +++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+--- a/include/linux/memcontrol.h~mm-memcontrol-fix-forget-to-obtain-the-ref-to-objcg-in-split_page_memcg
++++ a/include/linux/memcontrol.h
+@@ -803,6 +803,12 @@ static inline void obj_cgroup_get(struct
+ 	percpu_ref_get(&objcg->refcnt);
+ }
+ 
++static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
++				       unsigned long nr)
++{
++	percpu_ref_get_many(&objcg->refcnt, nr);
++}
++
+ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+ {
+ 	percpu_ref_put(&objcg->refcnt);
+--- a/mm/memcontrol.c~mm-memcontrol-fix-forget-to-obtain-the-ref-to-objcg-in-split_page_memcg
++++ a/mm/memcontrol.c
+@@ -3257,7 +3257,11 @@ void split_page_memcg(struct page *head,
+ 
+ 	for (i = 1; i < nr; i++)
+ 		head[i].memcg_data = head->memcg_data;
+-	css_get_many(&memcg->css, nr - 1);
++
++	if (PageMemcgKmem(head))
++		obj_cgroup_get_many(__page_objcg(head), nr - 1);
++	else
++		css_get_many(&memcg->css, nr - 1);
+ }
+ 
+ #ifdef CONFIG_MEMCG_SWAP
+_

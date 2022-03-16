@@ -1,0 +1,20 @@
+From: Aleksandr Nogikh <nogikh@google.com>
+Subject: kcov: properly handle subsequent mmap calls
+
+Allocate the kcov buffer during KCOV_MODE_INIT in order to untie mmapping
+of a kcov instance and the actual coverage collection process. Modify
+kcov_mmap, so that it can be reliably used any number of times once
+KCOV_MODE_INIT has succeeded.
+
+These changes to the user-facing interface of the tool only weaken the
+preconditions, so all existing user space code should remain compatible
+with the new version.
+
+Link: https://lkml.kernel.org/r/20220117153634.150357-3-nogikh@google.com
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Taras Madan <tarasmadan@google.com>

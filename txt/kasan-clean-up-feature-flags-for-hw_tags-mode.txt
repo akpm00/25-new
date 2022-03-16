@@ -1,0 +1,25 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: clean up feature flags for HW_TAGS mode
+
+- Untie kasan_init_hw_tags() code from the default values of
+  kasan_arg_mode and kasan_arg_stacktrace.
+
+- Move static_branch_enable(&kasan_flag_enabled) to the end of
+  kasan_init_hw_tags_cpu().
+
+- Remove excessive comments in kasan_arg_mode switch.
+
+- Add new comments.
+
+Link: https://lkml.kernel.org/r/76ebb340265be57a218564a497e1f52ff36a3879.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

@@ -1,0 +1,11 @@
+From: Shakeel Butt <shakeelb@google.com>
+Subject: memcg-add-per-memcg-vmalloc-stat-v2
+
+page_memcg() within rcu lock, per Muchun
+
+Link: https://lkml.kernel.org/r/20211222052457.1960701-1-shakeelb@google.com
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Michal Hocko <mhocko@suse.com>

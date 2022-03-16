@@ -1,0 +1,84 @@
+From: Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: lib: reduce user_access_begin() boundaries in strncpy_from_user() and strnlen_user()
+
+The range passed to user_access_begin() by strncpy_from_user() and
+strnlen_user() starts at 'src' and goes up to the limit of userspace
+allthough reads will be limited by the 'count' param.
+
+On 32 bits powerpc (book3s/32) access has to be granted for each 256Mbytes
+segment and the cost increases with the number of segments to unlock.
+
+Limit the range with 'count' param.
+
+Link: http://lkml.kernel.org/r/70f99f7474826883877e84f93224e937d9c974de.1579767339.git.christophe.leroy@c-s.fr
+Fixes: 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/strncpy_from_user.c |   14 +++++++-------
+ lib/strnlen_user.c      |   14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
+
+--- a/lib/strncpy_from_user.c~lib-reduce-user_access_begin-boundaries-in-strncpy_from_user-and-strnlen_user
++++ a/lib/strncpy_from_user.c
+@@ -30,13 +30,6 @@ static inline long do_strncpy_from_user(
+ 	const struct word_at_a_time constants = WORD_AT_A_TIME_CONSTANTS;
+ 	unsigned long res = 0;
+ 
+-	/*
+-	 * Truncate 'max' to the user-specified limit, so that
+-	 * we only have one limit we need to check in the loop
+-	 */
+-	if (max > count)
+-		max = count;
+-
+ 	if (IS_UNALIGNED(src, dst))
+ 		goto byte_at_a_time;
+ 
+@@ -114,6 +107,13 @@ long strncpy_from_user(char *dst, const
+ 		unsigned long max = max_addr - src_addr;
+ 		long retval;
+ 
++		/*
++		 * Truncate 'max' to the user-specified limit, so that
++		 * we only have one limit we need to check in the loop
++		 */
++		if (max > count)
++			max = count;
++
+ 		kasan_check_write(dst, count);
+ 		check_object_size(dst, count, false);
+ 		if (user_access_begin(src, max)) {
+--- a/lib/strnlen_user.c~lib-reduce-user_access_begin-boundaries-in-strncpy_from_user-and-strnlen_user
++++ a/lib/strnlen_user.c
+@@ -27,13 +27,6 @@ static inline long do_strnlen_user(const
+ 	unsigned long c;
+ 
+ 	/*
+-	 * Truncate 'max' to the user-specified limit, so that
+-	 * we only have one limit we need to check in the loop
+-	 */
+-	if (max > count)
+-		max = count;
+-
+-	/*
+ 	 * Do everything aligned. But that means that we
+ 	 * need to also expand the maximum..
+ 	 */
+@@ -109,6 +102,13 @@ long strnlen_user(const char __user *str
+ 		unsigned long max = max_addr - src_addr;
+ 		long retval;
+ 
++		/*
++		 * Truncate 'max' to the user-specified limit, so that
++		 * we only have one limit we need to check in the loop
++		 */
++		if (max > count)
++			max = count;
++
+ 		if (user_access_begin(str, max)) {
+ 			retval = do_strnlen_user(str, count, max);
+ 			user_access_end();
+_

@@ -1,0 +1,156 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb: free the 2nd vmemmap page associated with each HugeTLB page
+
+Patch series "Free the 2nd vmemmap page associated with each HugeTLB page", v7.
+
+This series can minimize the overhead of struct page for 2MB HugeTLB pages
+significantly.  It further reduces the overhead of struct page by 12.5%
+for a 2MB HugeTLB compared to the previous approach, which means 2GB per
+1TB HugeTLB.  It is a nice gain.  Comments and reviews are welcome. 
+Thanks.
+
+The main implementation and details can refer to the commit log of patch
+1.  In this series, I have changed the following four helpers, the
+following table shows the impact of the overhead of those helpers.
+
+	+------------------+-----------------------+
+	|       APIs       | head page | tail page |
+	+------------------+-----------+-----------+
+	|    PageHead()    |     Y     |     N     |
+	+------------------+-----------+-----------+
+	|    PageTail()    |     Y     |     N     |
+	+------------------+-----------+-----------+
+	|  PageCompound()  |     N     |     N     |
+	+------------------+-----------+-----------+
+	|  compound_head() |     Y     |     N     |
+	+------------------+-----------+-----------+
+
+	Y: Overhead is increased.
+	N: Overhead is _NOT_ increased.
+
+It shows that the overhead of those helpers on a tail page don't change
+between "hugetlb_free_vmemmap=on" and "hugetlb_free_vmemmap=off".  But the
+overhead on a head page will be increased when "hugetlb_free_vmemmap=on"
+(except PageCompound()).  So I believe that Matthew Wilcox's folio series
+will help with this.
+
+The users of PageHead() and PageTail() are much less than compound_head()
+and most users of PageTail() are VM_BUG_ON(), so I have done some tests
+about the overhead of compound_head() on head pages.
+
+I have tested the overhead of calling compound_head() on a head page,
+which is 2.11ns (Measure the call time of 10 million times
+compound_head(), and then average).
+
+For a head page whose address is not aligned with PAGE_SIZE or a
+non-compound page, the overhead of compound_head() is 2.54ns which is
+increased by 20%.  For a head page whose address is aligned with
+PAGE_SIZE, the overhead of compound_head() is 2.97ns which is increased by
+40%.  Most pages are the former.  I do not think the overhead is
+significant since the overhead of compound_head() itself is low.
+
+
+This patch (of 5):
+
+This patch minimizes the overhead of struct page for 2MB HugeTLB pages
+significantly.  It further reduces the overhead of struct page by 12.5%
+for a 2MB HugeTLB compared to the previous approach, which means 2GB per
+1TB HugeTLB (2MB type).
+
+After the feature of "Free sonme vmemmap pages of HugeTLB page" is
+enabled, the mapping of the vmemmap addresses associated with a 2MB
+HugeTLB page becomes the figure below.
+
+     HugeTLB                    struct pages(8 pages)         page frame(8 pages)
+ +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+---> PG_head
+ |           |                     |     0     | -------------> |     0     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     1     | -------------> |     1     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     2     | ----------------^ ^ ^ ^ ^ ^
+ |           |                     +-----------+                   | | | | |
+ |           |                     |     3     | ------------------+ | | | |
+ |           |                     +-----------+                     | | | |
+ |           |                     |     4     | --------------------+ | | |
+ |    2MB    |                     +-----------+                       | | |
+ |           |                     |     5     | ----------------------+ | |
+ |           |                     +-----------+                         | |
+ |           |                     |     6     | ------------------------+ |
+ |           |                     +-----------+                           |
+ |           |                     |     7     | --------------------------+
+ |           |                     +-----------+
+ |           |
+ |           |
+ |           |
+ +-----------+
+
+As we can see, the 2nd vmemmap page frame (indexed by 1) is reused and
+remaped. However, the 2nd vmemmap page frame is also can be freed to
+the buddy allocator, then we can change the mapping from the figure
+above to the figure below.
+
+    HugeTLB                    struct pages(8 pages)         page frame(8 pages)
+ +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+---> PG_head
+ |           |                     |     0     | -------------> |     0     |
+ |           |                     +-----------+                +-----------+
+ |           |                     |     1     | ---------------^ ^ ^ ^ ^ ^ ^
+ |           |                     +-----------+                  | | | | | |
+ |           |                     |     2     | -----------------+ | | | | |
+ |           |                     +-----------+                    | | | | |
+ |           |                     |     3     | -------------------+ | | | |
+ |           |                     +-----------+                      | | | |
+ |           |                     |     4     | ---------------------+ | | |
+ |    2MB    |                     +-----------+                        | | |
+ |           |                     |     5     | -----------------------+ | |
+ |           |                     +-----------+                          | |
+ |           |                     |     6     | -------------------------+ |
+ |           |                     +-----------+                            |
+ |           |                     |     7     | ---------------------------+
+ |           |                     +-----------+
+ |           |
+ |           |
+ |           |
+ +-----------+
+
+After we do this, all tail vmemmap pages (1-7) are mapped to the head
+vmemmap page frame (0).  In other words, there are more than one page
+struct with PG_head associated with each HugeTLB page.  We __know__ that
+there is only one head page struct, the tail page structs with PG_head are
+fake head page structs.  We need an approach to distinguish between those
+two different types of page structs so that compound_head(), PageHead()
+and PageTail() can work properly if the parameter is the tail page struct
+but with PG_head.
+
+The following code snippet describes how to distinguish between real and
+fake head page struct.
+
+	if (test_bit(PG_head, &page->flags)) {
+		unsigned long head = READ_ONCE(page[1].compound_head);
+
+		if (head & 1) {
+			if (head == (unsigned long)page + 1)
+				==> head page struct
+			else
+				==> tail page struct
+		} else
+			==> head page struct
+	}
+
+We can safely access the field of the @page[1] with PG_head because the
+@page is a compound page composed with at least two contiguous pages.
+
+Link: https://lkml.kernel.org/r/20211101031651.75851-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20211101031651.75851-2-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Chen Huang <chenhuang5@huawei.com>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>

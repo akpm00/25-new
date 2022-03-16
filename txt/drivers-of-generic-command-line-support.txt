@@ -1,0 +1,20 @@
+From: Daniel Walker <danielwa@cisco.com>
+Subject: drivers: of: generic command line support
+
+This adds support for the generic command line implementation into the
+device tree code. This allows some platforms to use the original
+CONFIG_CMDLINE implementation, but powerpc platforms can used the newer
+generic command line code. As platforms support the generic command line
+code they can simply add "select GENERIC_CMDLINE" and delete their
+Kconfig options for the current CMDLINE.
+
+Link: http://lkml.kernel.org/r/20190319232448.45964-3-danielwa@cisco.com
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Daniel Walker <dwalker@fifo99.com>
+Cc: Maksym Kokhan <maksym.kokhan@globallogic.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Rob Herring <robh+dt@kernel.org>

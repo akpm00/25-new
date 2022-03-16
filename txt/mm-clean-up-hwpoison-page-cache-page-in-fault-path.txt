@@ -1,0 +1,29 @@
+From: Rik van Riel <riel@surriel.com>
+Subject: mm: invalidate hwpoison page cache page in fault path
+
+Sometimes the page offlining code can leave behind a hwpoisoned clean page
+cache page.  This can lead to programs being killed over and over and over
+again as they fault in the hwpoisoned page, get killed, and then get
+re-spawned by whatever wanted to run them.
+
+This is particularly embarrassing when the page was offlined due to having
+too many corrected memory errors.  Now we are killing tasks due to them
+trying to access memory that probably isn't even corrupted.
+
+This problem can be avoided by invalidating the page from the page fault
+handler, which already has a branch for dealing with these kinds of pages.
+With this patch we simply pretend the page fault was successful if the
+page was invalidated, return to userspace, incur another page fault, read
+in the file from disk (to a new memory page), and then everything works
+again.
+
+Link: https://lkml.kernel.org/r/20220212213740.423efcea@imladris.surriel.com
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: <stable@vger.kernel.org>

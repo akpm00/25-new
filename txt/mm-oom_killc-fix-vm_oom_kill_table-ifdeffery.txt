@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/oom_kill.c: fix vm_oom_kill_table[] ifdeffery
+
+arm allnoconfig:
+
+mm/oom_kill.c:60:25: warning: 'vm_oom_kill_table' defined but not used [-Wunused-variable]
+   60 | static struct ctl_table vm_oom_kill_table[] = {
+      |                         ^~~~~~~~~~~~~~~~~
+
+Cc: Luis Chamberlain <mcgrof@kernel.org>

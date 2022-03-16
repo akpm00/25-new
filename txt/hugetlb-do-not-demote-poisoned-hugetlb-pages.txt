@@ -1,0 +1,21 @@
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Subject: hugetlb: do not demote poisoned hugetlb pages
+
+It is possible for poisoned hugetlb pages to reside on the free lists. 
+The huge page allocation routines which dequeue entries from the free
+lists make a point of avoiding poisoned pages.  There is no such check and
+avoidance in the demote code path.
+
+If a hugetlb page on the is on a free list, poison will only be set in the
+head page rather then the page with the actual error.  If such a page is
+demoted, then the poison flag may follow the wrong page.  A page without
+error could have poison set, and a page with poison could not have the
+flag set.
+
+Check for poison before attempting to demote a hugetlb page.  Also, return
+-EBUSY to the caller if only poisoned pages are on the free list.
+
+Link: https://lkml.kernel.org/r/20220307215707.50916-1-mike.kravetz@oracle.com
+Fixes: 8531fc6f52f5 ("hugetlb: add hugetlb demote page support")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: <stable@vger.kernel.org>

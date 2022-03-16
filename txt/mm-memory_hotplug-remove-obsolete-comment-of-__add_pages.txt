@@ -1,0 +1,18 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory_hotplug: remove obsolete comment of __add_pages
+
+Patch series "A few cleanup patches around memory_hotplug".
+
+This series contains a few patches to fix obsolete and misplaced comments,
+clean up the try_offline_node function and so on.  
+
+
+This patch (of 4):
+
+Since commit f1dd2cd13c4b ("mm, memory_hotplug: do not associate hotadded
+memory to zones until online"), there is no need to pass in the zone.
+
+Link: https://lkml.kernel.org/r/20220207133643.23427-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220207133643.23427-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>

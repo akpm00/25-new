@@ -1,0 +1,28 @@
+From: Stafford Horne <shorne@gmail.com>
+Subject: mm: remove mmu_gathers storage from remaining architectures
+
+Originally the mmu_gathers were removed in commit 1c3951769621 ("mm: now
+that all old mmu_gather code is gone, remove the storage").  However, the
+openrisc and hexagon architecture were merged around the same time and
+mmu_gathers was not removed.
+
+This patch removes them from openrisc, hexagon and nds32:
+
+Noticed while cleaning this warning:
+
+    arch/openrisc/mm/init.c:41:1: warning: symbol 'mmu_gathers' was not declared. Should it be static?
+
+Link: https://lkml.kernel.org/r/20220205141956.3315419-1-shorne@gmail.com
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Brian Cain <bcain@codeaurora.org>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>

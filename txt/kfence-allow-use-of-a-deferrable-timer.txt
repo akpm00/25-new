@@ -1,0 +1,15 @@
+From: Marco Elver <elver@google.com>
+Subject: kfence: allow use of a deferrable timer
+
+Allow the use of a deferrable timer, which does not force CPU wake-ups
+when the system is idle.  A consequence is that the sample interval
+becomes very unpredictable, to the point that it is not guaranteed that
+the KFENCE KUnit test still passes.
+
+Nevertheless, on power-constrained systems this may be preferable, so
+let's give the user the option should they accept the above trade-off.
+
+Link: https://lkml.kernel.org/r/20220308141415.3168078-1-elver@google.com
+Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>

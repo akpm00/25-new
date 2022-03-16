@@ -1,0 +1,11 @@
+From: Nitin Gote <nitin.r.gote@intel.com>
+Subject: Documentation/checkpatch: prefer stracpy/strscpy over strcpy/strlcpy/strncpy.
+
+Add check in checkpatch.pl to deprecate strcpy(), strlcpy() and strncpy()
+in favor of stracpy() or strscpy().
+
+Update Documentation/process/deprecated.rst for stracpy() and strscpy().
+
+Link: http://lkml.kernel.org/r/20190728160608.3119-1-nitin.r.gote@intel.com
+Signed-off-by: Nitin Gote <nitin.r.gote@intel.com>
+Cc: Joe Perches <joe@perches.com>

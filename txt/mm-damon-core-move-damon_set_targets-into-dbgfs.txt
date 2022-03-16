@@ -1,0 +1,11 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/core: move damon_set_targets() into dbgfs
+
+damon_set_targets() function is defined in the core for general use cases,
+but called from only dbgfs.  Also, because the function is for general use
+cases, dbgfs does additional handling of pid type target id case.  To make
+the situation simpler, this commit moves the function into dbgfs and makes
+it to do the pid type case handling on its own.
+
+Link: https://lkml.kernel.org/r/20211230100723.2238-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

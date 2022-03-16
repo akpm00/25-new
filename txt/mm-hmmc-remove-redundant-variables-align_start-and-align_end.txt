@@ -1,0 +1,13 @@
+From: Colin Ian King <colin.king@canonical.com>
+Subject: mm/hmm.c: remove redundant variables align_start and align_end
+
+Variables align_start and align_end are being assigned but are
+never used hence they are redundant and can be removed.
+
+Cleans up clang warnings:
+warning: variable 'align_start' set but not used [-Wunused-but-set-variable]
+warning: variable 'align_size' set but not used [-Wunused-but-set-variable]
+
+Link: http://lkml.kernel.org/r/20180714161124.3923-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: Jérôme Glisse <jglisse@redhat.com>

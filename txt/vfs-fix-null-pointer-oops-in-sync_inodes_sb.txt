@@ -1,0 +1,18 @@
+From: Jens Axboe <axboe@kernel.dk>
+Subject: vfs: fix null pointer OOPS in sync_inodes_sb()
+
+When we move the potential dirty list entries to the
+default_backing_dev_info, reassign the sb->s_bdi as well. 
+default_backing_dev_info will always be around.  I hope this can fix it up
+for 2.6.38 and we can add the proper ref counting for .39.
+
+Addresses https://bugzilla.kernel.org/show_bug.cgi?id=31112
+
+Cc: Anton Altaparmakov <aia21@cam.ac.uk>
+Reported-by: George Spelvin <linux@horizon.com>
+Tested-by: George Spelvin <linux@horizon.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Andreas Biemann <biessmann@corscience.de>
+Tested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Tested-by: Torsten Hilbrich <torsten.hilbrich@secunet.com>
+Cc: <stable@vger.kernel.org>	[2.6.38.x]

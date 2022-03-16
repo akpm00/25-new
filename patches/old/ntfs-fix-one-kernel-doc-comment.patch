@@ -1,0 +1,43 @@
+From: Yang Li <yang.lee@linux.alibaba.com>
+Subject: fs/ntfs/attrib.c: fix one kernel-doc comment
+
+/**
+ * attrib.c - NTFS attribute operations.  Part of the Linux-NTFS
+
+The comments for the file should not be in kernel-doc format, which causes
+it to be incorrectly identified for function ntfs_map_runlist_nolock(),
+causing some warnings found by running scripts/kernel-doc.
+
+fs/ntfs/attrib.c:25: warning: Incorrect use of kernel-doc format:  *
+ntfs_map_runlist_nolock - map (a part of) a runlist of an ntfs inode
+fs/ntfs/attrib.c:71: warning: Function parameter or member 'ni' not
+described in 'ntfs_map_runlist_nolock'
+fs/ntfs/attrib.c:71: warning: Function parameter or member 'vcn' not
+described in 'ntfs_map_runlist_nolock'
+fs/ntfs/attrib.c:71: warning: Function parameter or member 'ctx' not
+described in 'ntfs_map_runlist_nolock'
+fs/ntfs/attrib.c:71: warning: expecting prototype for attrib.c - NTFS
+attribute operations.  Part of the Linux(). Prototype was for
+ntfs_map_runlist_nolock() instead
+
+Link: https://lkml.kernel.org/r/20220106015145.67067-1-yang.lee@linux.alibaba.com
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Anton Altaparmakov <anton@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/ntfs/attrib.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/fs/ntfs/attrib.c~ntfs-fix-one-kernel-doc-comment
++++ a/fs/ntfs/attrib.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+-/**
++/*
+  * attrib.c - NTFS attribute operations.  Part of the Linux-NTFS project.
+  *
+  * Copyright (c) 2001-2012 Anton Altaparmakov and Tuxera Inc.
+_

@@ -1,0 +1,13 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm: compaction: cleanup the compaction trace events
+
+As Steven suggested [1], we should access the pointers from the trace
+event to avoid dereferencing them to the tracepoint function when the
+tracepoint is disabled.
+
+[1] https://lkml.org/lkml/2021/11/3/409
+
+Link: https://lkml.kernel.org/r/4cd393b4d57f8f01ed72c001509b28e3a3b1a8c1.1646985115.git.baolin.wang@linux.alibaba.com
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>

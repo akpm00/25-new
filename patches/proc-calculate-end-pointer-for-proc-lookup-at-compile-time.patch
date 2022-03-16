@@ -1,0 +1,108 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: calculate end pointer for /proc/*/* lookup at compile time
+
+Compilers like to transform loops like
+
+	for (i = 0; i < n; i++) {
+		[use p[i]]
+	}
+
+into
+	for (p = p0; p < end; p++) {
+		...
+	}
+
+Do it by hand, so that it results in overall simpler loop
+and smaller code.
+
+Space savings:
+
+	$ ./scripts/bloat-o-meter ../vmlinux-001 ../obj/vmlinux
+	add/remove: 0/0 grow/shrink: 2/1 up/down: 4/-9 (-5)
+	Function                                     old     new   delta
+	proc_tid_base_lookup                          17      19      +2
+	proc_tgid_base_lookup                         17      19      +2
+	proc_pident_lookup                           179     170      -9
+
+The same could be done to proc_pident_readdir(), but the code becomes
+bigger for some reason.
+
+[sfr@canb.auug.org.au: merge fix for proc_pident_lookup() API change]
+  Link: http://lkml.kernel.org/r/20190131160135.4a8ae70b@canb.auug.org.au
+Link: http://lkml.kernel.org/r/20190114200422.GB9680@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: James Morris <jmorris@namei.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/fs/proc/base.c~proc-calculate-end-pointer-for-proc-lookup-at-compile-time
++++ a/fs/proc/base.c
+@@ -2459,11 +2459,10 @@ static struct dentry *proc_pident_instan
+ 
+ static struct dentry *proc_pident_lookup(struct inode *dir, 
+ 					 struct dentry *dentry,
+-					 const struct pid_entry *ents,
+-					 unsigned int nents)
++					 const struct pid_entry *p,
++					 const struct pid_entry *end)
+ {
+ 	struct task_struct *task = get_proc_task(dir);
+-	const struct pid_entry *p, *last;
+ 	struct dentry *res = ERR_PTR(-ENOENT);
+ 
+ 	if (!task)
+@@ -2473,8 +2472,7 @@ static struct dentry *proc_pident_lookup
+ 	 * Yes, it does not scale. And it should not. Don't add
+ 	 * new entries into /proc/<tgid>/ without very good reasons.
+ 	 */
+-	last = &ents[nents];
+-	for (p = ents; p < last; p++) {
++	for (; p < end; p++) {
+ 		if (p->len != dentry->d_name.len)
+ 			continue;
+ 		if (!memcmp(dentry->d_name.name, p->name, p->len)) {
+@@ -2610,7 +2608,7 @@ static struct dentry *proc_##LSM##_attr_
+ { \
+ 	return proc_pident_lookup(dir, dentry, \
+ 				  LSM##_attr_dir_stuff, \
+-				  ARRAY_SIZE(LSM##_attr_dir_stuff)); \
++				  LSM##_attr_dir_stuff + ARRAY_SIZE(LSM##_attr_dir_stuff)); \
+ } \
+ \
+ static const struct inode_operations proc_##LSM##_attr_dir_inode_ops = { \
+@@ -2655,7 +2653,8 @@ static struct dentry *proc_attr_dir_look
+ 				struct dentry *dentry, unsigned int flags)
+ {
+ 	return proc_pident_lookup(dir, dentry,
+-				  attr_dir_stuff, ARRAY_SIZE(attr_dir_stuff));
++				  attr_dir_stuff,
++				  attr_dir_stuff + ARRAY_SIZE(attr_dir_stuff));
+ }
+ 
+ static const struct inode_operations proc_attr_dir_inode_operations = {
+@@ -3091,7 +3090,8 @@ static const struct file_operations proc
+ static struct dentry *proc_tgid_base_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+ {
+ 	return proc_pident_lookup(dir, dentry,
+-				  tgid_base_stuff, ARRAY_SIZE(tgid_base_stuff));
++				  tgid_base_stuff,
++				  tgid_base_stuff + ARRAY_SIZE(tgid_base_stuff));
+ }
+ 
+ static const struct inode_operations proc_tgid_base_inode_operations = {
+@@ -3463,7 +3463,8 @@ static int proc_tid_base_readdir(struct
+ static struct dentry *proc_tid_base_lookup(struct inode *dir, struct dentry *dentry, unsigned int flags)
+ {
+ 	return proc_pident_lookup(dir, dentry,
+-				  tid_base_stuff, ARRAY_SIZE(tid_base_stuff));
++				  tid_base_stuff,
++				  tid_base_stuff + ARRAY_SIZE(tid_base_stuff));
+ }
+ 
+ static const struct file_operations proc_tid_base_operations = {
+_

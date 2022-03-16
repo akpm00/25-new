@@ -1,0 +1,14 @@
+From: tangmeng <tangmeng@uniontech.com>
+Subject: mm/kfence: remove unnecessary CONFIG_KFENCE option
+
+In mm/Makefile has:
+obj-$(CONFIG_KFENCE) += kfence/
+
+So that we don't need 'obj-$(CONFIG_KFENCE) :=' in mm/kfence/Makefile,
+delete it from mm/kfence/Makefile.
+
+Link: https://lkml.kernel.org/r/20220221065525.21344-1-tangmeng@uniontech.com
+Signed-off-by: tangmeng <tangmeng@uniontech.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitriy Vyukov <dvyukov@google.com>

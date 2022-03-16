@@ -1,0 +1,68 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: delete page_mlock() and all its works
+
+Patch series "mm/munlock: rework of mlock+munlock page handling", v2.
+
+
+This patch (of 13):
+
+We have recommended some applications to mlock their userspace, but that
+turns out to be counter-productive: when many processes mlock the same
+file, contention on rmap's i_mmap_rwsem can become intolerable at exit: it
+is needed for write, to remove any vma mapping that file from rmap's tree;
+but hogged for read by those with mlocks calling page_mlock() (formerly
+known as try_to_munlock()) on *each* page mapped from the file (the
+purpose being to find out whether another process has the page mlocked, so
+therefore it should not be unmlocked yet).
+
+Several optimizations have been made in the past: one is to skip
+page_mlock() when mapcount tells that nothing else has this page mapped;
+but that doesn't help at all when others do have it mapped.  This time
+around, I initially intended to add a preliminary search of the rmap tree
+for overlapping VM_LOCKED ranges; but that gets messy with locking order,
+when in doubt whether a page is actually present; and risks adding even
+more contention on the i_mmap_rwsem.
+
+A solution would be much easier, if only there were space in struct page
+for an mlock_count...  but actually, most of the time, there is space for
+it - an mlocked page spends most of its life on an unevictable LRU, but
+since 3.18 removed the scan_unevictable_pages sysctl, that "LRU" has been
+redundant.  Let's try to reuse its page->lru.
+
+But leave that until a later patch: in this patch, clear the ground by
+removing page_mlock(), and all the infrastructure that has gathered around
+it - which mostly hinders understanding, and will make reviewing new
+additions harder.  Don't mind those old comments about THPs, they date
+from before 4.5's refcounting rework: splitting is not a risk here.
+
+Just keep a minimal version of munlock_vma_page(), as reminder of what it
+should attend to (in particular, the odd way PGSTRANDED is counted out of
+PGMUNLOCKED), and likewise a stub for munlock_vma_pages_range().  Move
+unchanged __mlock_posix_error_return() out of the way, down to above its
+caller: this series then makes no further change after mlock_fixup().
+
+After this and each following commit, the kernel builds, boots and runs;
+but with deficiencies which may show up in testing of mlock and munlock. 
+The system calls succeed or fail as before, and mlock remains effective in
+preventing page reclaim; but meminfo's Unevictable and Mlocked amounts may
+be shown too low after mlock, grow, then stay too high after munlock: with
+previously mlocked pages remaining unevictable for too long, until finally
+unmapped and freed and counts corrected.  Normal service will be resumed
+in "mm/munlock: mlock_pte_range() when mlocking or munlocking".
+
+Link: https://lkml.kernel.org/r/55a49083-37f9-3766-1de9-9feea7428ac@google.com
+Link: https://lkml.kernel.org/r/48c44eae-4cf0-a8ce-454c-5ec88457ffea@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Shakeel Butt <shakeelb@google.com>

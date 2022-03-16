@@ -1,0 +1,38 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon: rename damon_primitives to damon_operations
+
+Patch series "Allow DAMON user code independent of monitoring primitives".
+
+In-kernel DAMON user code is required to configure the monitoring context
+(struct damon_ctx) with proper monitoring primitives (struct
+damon_primitive).  This makes the user code dependent to all supporting
+monitoring primitives.  For example, DAMON debugfs interface depends on
+both DAMON_VADDR and DAMON_PADDR, though some users have interest in only
+one use case.  As more monitoring primitives are introduced, the problem
+will be bigger.
+
+To minimize such unnecessary dependency, this patchset makes monitoring
+primitives can be registered by the implemnting code and later dynamically
+searched and selected by the user code.
+
+In addition to that, this patchset renames monitoring primitives to
+monitoring operations, which is more easy to intuitively understand what
+it means and how it would be structed.
+
+
+This patch (of 8):
+
+DAMON has a set of callback functions called monitoring primitives and let
+it can be configured with various implementations for easy extension for
+different address spaces and usages.  However, the word 'primitive' is not
+so explicit.  Meanwhile, many other structs resembles similar purpose
+calls themselves 'operations'.  To make the code easier to be understood,
+this commit renames 'damon_primitives' to 'damon_operations' before it is
+too late to rename.
+
+Link: https://lkml.kernel.org/r/20220215184603.1479-1-sj@kernel.org
+Link: https://lkml.kernel.org/r/20220215184603.1479-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Cc: Xin Hao <xhao@linux.alibaba.com>
+Cc: David Rientjes <rientjes@google.com>
+

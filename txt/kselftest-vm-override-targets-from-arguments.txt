@@ -1,0 +1,11 @@
+From: Chengming Zhou <zhouchengming@bytedance.com>
+Subject: kselftest/vm: override TARGETS from arguments
+
+We can specify which testcases to build using TARGETS argument, for
+example: make -C tools/testing/selftests TARGETS=vm, cause the ordinary
+assignment of TARGETS in Makefile will be ignored.  So we need to use
+override directive to change that.
+
+Link: https://lkml.kernel.org/r/20220227055330.43087-1-zhouchengming@bytedance.com
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Shuah Khan <shuah@kernel.org>

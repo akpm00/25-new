@@ -1,0 +1,13 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: kasan: no need to unset panic_on_warn in end_report()
+
+panic_on_warn is unset inside panic(), so no need to unset it before
+calling panic() in end_report().
+
+Link: https://lkml.kernel.org/r/1644324666-15947-6-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Xuefeng Li <lixuefeng@loongson.cn>

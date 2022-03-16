@@ -1,0 +1,2 @@
+include/linux/kallsyms.h
+lib/vsprintf.c

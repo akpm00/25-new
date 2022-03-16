@@ -1,0 +1,59 @@
+From: Joe Perches <joe@perches.com>
+Subject: kernel/resource.c: convert printks to pr_<level>
+
+Use pr_<level> to get the output prefixed by the existing #define pr_fmt
+
+Miscellanea:
+
+o Convert bare printk to pr_info
+o Reduce printk(KERN_WARNING to pr_info as the log level seems better
+
+Link: http://lkml.kernel.org/r/2a72a19c81b7e57c044c583452127b453a1a455c.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/resource.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+--- a/kernel/resource.c~kernel-resourcec-convert-printks-to-pr_level
++++ a/kernel/resource.c
+@@ -901,7 +901,8 @@ void insert_resource_expand_to_fit(struc
+ 		if (conflict->end > new->end)
+ 			new->end = conflict->end;
+ 
+-		printk("Expanded resource %s due to conflict with %s\n", new->name, conflict->name);
++		pr_info("Expanded resource %s due to conflict with %s\n",
++			new->name, conflict->name);
+ 	}
+ 	write_unlock(&resource_lock);
+ }
+@@ -1223,9 +1224,8 @@ void __release_region(struct resource *p
+ 
+ 	write_unlock(&resource_lock);
+ 
+-	printk(KERN_WARNING "Trying to free nonexistent resource "
+-		"<%016llx-%016llx>\n", (unsigned long long)start,
+-		(unsigned long long)end);
++	pr_warn("Trying to free nonexistent resource <%016llx-%016llx>\n",
++		(unsigned long long)start, (unsigned long long)end);
+ }
+ EXPORT_SYMBOL(__release_region);
+ 
+@@ -1557,10 +1557,10 @@ int iomem_map_sanity_check(resource_size
+ 		if (p->flags & IORESOURCE_BUSY)
+ 			continue;
+ 
+-		printk(KERN_WARNING "resource sanity check: requesting [mem %#010llx-%#010llx], which spans more than %s %pR\n",
+-		       (unsigned long long)addr,
+-		       (unsigned long long)(addr + size - 1),
+-		       p->name, p);
++		pr_info("sanity check: requesting [mem %#010llx-%#010llx], which spans more than %s %pR\n",
++			(unsigned long long)addr,
++			(unsigned long long)(addr + size - 1),
++			p->name, p);
+ 		err = -1;
+ 		break;
+ 	}
+_

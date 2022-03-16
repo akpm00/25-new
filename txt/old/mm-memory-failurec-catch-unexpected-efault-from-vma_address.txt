@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: catch unexpected -EFAULT from vma_address()
+
+It's unexpected to walk the page table when vma_address() return -EFAULT. 
+But dev_pagemap_mapping_shift() is called only when vma associated to the
+error page is found already in collect_procs_{file,anon}, so vma_address()
+should not return -EFAULT except with some bug, as Naoya pointed out.  We
+can use VM_BUG_ON_VMA() to catch this bug here.
+
+Link: https://lkml.kernel.org/r/20220216091431.39406-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

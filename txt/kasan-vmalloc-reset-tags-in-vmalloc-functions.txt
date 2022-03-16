@@ -1,0 +1,26 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan, vmalloc: reset tags in vmalloc functions
+
+In preparation for adding vmalloc support to SW/HW_TAGS KASAN, reset
+pointer tags in functions that use pointer values in range checks.
+
+vread() is a special case here.  Despite the untagging of the addr pointer
+in its prologue, the accesses performed by vread() are checked.
+
+Instead of accessing the virtual mappings though addr directly, vread()
+recovers the physical address via page_address(vmalloc_to_page()) and
+acceses that.  And as page_address() recovers the pointer tag, the
+accesses get checked.
+
+Link: https://lkml.kernel.org/r/046003c5f683cacb0ba18e1079e9688bb3dca943.1643047180.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

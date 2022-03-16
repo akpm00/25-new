@@ -1,0 +1,10 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/highmem: remove unnecessary done label
+
+Remove unnecessary done label to simplify the code.
+
+Link: https://lkml.kernel.org/r/20220126092542.64659-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: David Rientjes <rientjes@google.com>

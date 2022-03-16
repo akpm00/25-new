@@ -1,0 +1,13 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: use .%02u format
+
+Both /proc/loadavg and /proc/uptime use the following format string:
+
+	%lu.%02lu
+
+Fractional part definitely doesn't need "unsigned long" as it is
+by definition in [0, 99] range which fits into "unsigned int".
+
+Link: http://lkml.kernel.org/r/20180627200932.GD18434@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>

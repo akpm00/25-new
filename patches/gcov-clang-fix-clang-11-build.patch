@@ -1,0 +1,29 @@
+From: Johannes Berg <johannes.berg@intel.com>
+Subject: gcov: clang: fix clang-11+ build
+
+With clang-11+, the code is broken due to my kvmalloc() conversion (which
+predated the clang-11 support code) leaving one vmalloc() in place.  Fix
+that.
+
+Link: https://lkml.kernel.org/r/20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/gcov/clang.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/kernel/gcov/clang.c~gcov-clang-fix-clang-11-build
++++ a/kernel/gcov/clang.c
+@@ -369,7 +369,7 @@ static struct gcov_fn_info *gcov_fn_info
+ 	INIT_LIST_HEAD(&fn_dup->head);
+ 
+ 	cv_size = fn->num_counters * sizeof(fn->counters[0]);
+-	fn_dup->counters = vmalloc(cv_size);
++	fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
+ 	if (!fn_dup->counters) {
+ 		kfree(fn_dup);
+ 		return NULL;
+_

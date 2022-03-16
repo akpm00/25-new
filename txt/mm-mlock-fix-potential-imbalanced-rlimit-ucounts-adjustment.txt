@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mlock: fix potential imbalanced rlimit ucounts adjustment
+
+user_shm_lock forgets to set allowed to 0 when get_ucounts fails. So
+the later user_shm_unlock might do the extra dec_rlimit_ucounts. Fix
+this by resetting allowed to 0.
+
+Link: https://lkml.kernel.org/r/20220310132417.41189-1-linmiaohe@huawei.com
+Fixes: d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Herbert van den Bergh <herbert.van.den.bergh@oracle.com>
+Cc: Chris Mason <chris.mason@oracle.com>

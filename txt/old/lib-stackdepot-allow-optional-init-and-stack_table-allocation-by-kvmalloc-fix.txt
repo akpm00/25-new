@@ -1,0 +1,9 @@
+From: Colin Ian King <colin.king@canonical.com>
+Subject: lib/stackdepot: fix spelling mistake and grammar in pr_err message
+
+There is a spelling mistake of the work allocation so fix this and
+re-phrase the message to make it easier to read.
+
+Link: https://lkml.kernel.org/r/20211015104159.11282-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

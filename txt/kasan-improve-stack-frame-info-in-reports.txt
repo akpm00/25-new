@@ -1,0 +1,14 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: improve stack frame info in reports
+
+- Print at least task name and id for reports affecting allocas
+  (get_address_stack_frame_info() does not support them).
+
+- Capitalize first letter of each sentence.
+
+Link: https://lkml.kernel.org/r/aa613f097c12f7b75efb17f2618ae00480fb4bc3.1646237226.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

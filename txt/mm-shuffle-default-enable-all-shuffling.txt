@@ -1,0 +1,17 @@
+From: Dan Williams <dan.j.williams@intel.com>
+Subject: mm/shuffle: default enable all shuffling
+
+Per Andrew's request arrange for all memory allocation shuffling code to
+be enabled by default.
+
+The page_alloc.shuffle command line parameter can still be used to disable
+shuffling at boot, but the kernel will default enable the shuffling if the
+command line option is not specified.
+
+Link: http://lkml.kernel.org/r/154943713572.3858443.11206307988382889377.stgit@dwillia2-desk3.amr.corp.intel.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Keith Busch <keith.busch@intel.com>
+

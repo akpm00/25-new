@@ -1,0 +1,25 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/migration: add trace events for THP migrations
+
+Patch series "mm/migration: Add trace events".
+
+This adds trace events for all migration scenarios including base page,
+THP and HugeTLB.
+
+
+This patch (of 2):
+
+This adds two trace events for PMD based THP migration without split. 
+These events closely follow the implementation details like setting and
+removing of PMD migration entries, which are essential operations for THP
+migration.
+
+Link: https://lkml.kernel.org/r/1643080105-11416-1-git-send-email-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/1643080105-11416-2-git-send-email-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Matthew Wilcox <willy@infradead.org>

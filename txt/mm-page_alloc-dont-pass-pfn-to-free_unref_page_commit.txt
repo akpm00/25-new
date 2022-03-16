@@ -1,0 +1,10 @@
+From: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: mm/page_alloc: don't pass pfn to free_unref_page_commit()
+
+free_unref_page_commit() doesn't make use of its pfn argument, so get
+rid of it.
+
+Link: https://lkml.kernel.org/r/20220202140451.415928-1-nsaenzju@redhat.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>

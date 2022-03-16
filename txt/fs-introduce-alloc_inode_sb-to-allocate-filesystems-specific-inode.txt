@@ -1,0 +1,33 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: fs: introduce alloc_inode_sb() to allocate filesystems specific inode
+
+The allocated inode cache is supposed to be added to its memcg list_lru
+which should be allocated as well in advance.  That can be done by
+kmem_cache_alloc_lru() which allocates object and list_lru.  The file
+systems is main user of it.  So introduce alloc_inode_sb() to allocate
+file system specific inodes and set up the inode reclaim context properly.
+The file system is supposed to use alloc_inode_sb() to allocate inodes. 
+In the later patches, we will convert all users to the new API.
+
+Link: https://lkml.kernel.org/r/20220228122126.37293-4-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Alex Shi <alexs@kernel.org>
+Cc: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc: Chao Yu <chao@kernel.org>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Kari Argillander <kari.argillander@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Yang Shi <shy828301@gmail.com>
