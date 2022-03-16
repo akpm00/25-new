@@ -5,41 +5,30 @@ origin.patch
 #mm/swap
 mm-swap-get-rid-of-deadloop-in-swapin-readahead.patch
 #
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START mainline-later (next week, approximately)
-#mm/pagealloc
-#mm-fix-panic-in-__alloc_pages.patch: more acks? https://lkml.kernel.org/r/2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com
-mm-fix-panic-in-__alloc_pages.patch
-#
-#mm/userfaultfd
-#userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
-userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
-#
-#selftests
-#selftests-vm-fix-clang-build-error-multiple-output-files.patch: acks?
-selftests-vm-fix-clang-build-error-multiple-output-files.patch
-#
-#mm/pagealloc
-#mm-page_alloc-add-scheduling-point-to-free_unref_page_list.patch: -stable?
-#
-#mm/hugetlb
-#hugetlb-do-not-demote-poisoned-hugetlb-pages.patch: linmiaohe@huawei.com issue
-hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
-#
 #kconfig
 configs-debug-restore-debug_info=y-for-overriding.patch
 #
 #ocfs2
 ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
 #
+#selftests
+selftests-vm-fix-clang-build-error-multiple-output-files.patch
+#
+#NEXT_PATCHES_END
+#NEXT_PATCHES_START mainline-later (next week, approximately)
+#mm/userfaultfd
+#userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
+userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
+#
+#mm/hugetlb
+#hugetlb-do-not-demote-poisoned-hugetlb-pages.patch: linmiaohe@huawei.com issue
+hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
+#
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
 #proc-kpageflags-do-not-use-uninitialized-struct-pages.patch: Dan issues
 proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-#
-#procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: acks?
-procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START merge-window-first
@@ -746,6 +735,7 @@ mm-hwpoison-check-the-subpage-not-the-head-page.patch
 #mm/madvise
 mm-madvise-use-vma_lookup-instead-of-find_vma.patch
 #
+#mm-madvise-return-correct-bytes-advised-with-process_madvise.patch: fix manpage?
 mm-madvise-return-correct-bytes-advised-with-process_madvise.patch
 mm-madvise-skip-unmapped-vma-holes-passed-to-process_madvise.patch
 #
@@ -913,6 +903,8 @@ proc-vmcore-fix-possible-deadlock-on-concurrent-mmap-and-read.patch
 proc-vmcore-fix-vmcore_alloc_buf-kernel-doc-comment.patch
 #
 mm-proc-remove-redundant-page-validation-of-pte_page.patch
+#
+procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
@@ -1906,3 +1898,4 @@ workaround-for-a-pci-restoring-bug.patch
 #[obsolete]linux-next-git-rejects.patch
 #[to-be-updated]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #[folded-merged]memcg-sync-flush-only-if-periodic-flush-is-delayed-fix.patch
+#[alternative-merged]mm-fix-panic-in-__alloc_pages.patch
