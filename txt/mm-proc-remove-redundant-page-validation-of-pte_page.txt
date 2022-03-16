@@ -1,0 +1,13 @@
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
+Subject: fs/proc/task_mmu.c: remove redundant page validation of pte_page
+
+pte_page() always returns a valid page, so remove the redundant page
+validation, as we did in many other places.
+
+Link: https://lkml.kernel.org/r/20220316025947.328276-1-xianting.tian@linux.alibaba.com
+Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>

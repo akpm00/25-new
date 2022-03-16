@@ -1,0 +1,14 @@
+From: luofei <luofei@unicloud.com>
+Subject: hugetlb: fix comments about avoiding atomic allocation of vmemmap pages
+
+Since there is no longer an atomic allocation of vmemmap pages, but a
+fixed flag(GFP_KERNEL | __GFP_NORETRY | __GFP_THISNODE) is used.  The
+description of atomicity here is some what inappropriate.
+
+And the atomic parameter naming of update_and_free_page() may be
+misleading, add a comment here.
+
+Link: https://lkml.kernel.org/r/20220316031602.377452-1-luofei@unicloud.com
+Signed-off-by: luofei <luofei@unicloud.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

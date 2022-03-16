@@ -1,0 +1,12 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection
+
+We have the helper IS_ENABLED(). Use that instead of having an
+unnecessary hidden config option.
+
+Link: https://lkml.kernel.org/r/20220316102622.562572-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Kyle McMartin <kmcmarti@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>

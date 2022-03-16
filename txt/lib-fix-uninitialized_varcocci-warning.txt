@@ -1,0 +1,16 @@
+From: Guo Zhengkui <guozhengkui@vivo.com>
+Subject: lib/glob.c: fix uninitialized_var.cocci warning
+
+Fix the following coccicheck warning:
+lib/glob.c:48:40-41: WARNING this kind of initialization is deprecated.
+
+`char const *back_str = back_str` has the same form of uninitialized_var()
+macro.  I remove the redundant assignement.  It has been tested with gcc
+(Debian 8.3.0-6) 8.3.0.
+
+The patch which removed uninitialized_var() is:
+https://lore.kernel.org/all/20121028102007.GA7547@gmail.com/
+And there are very few "/* GCC */" comments in the Linux kernel code now.
+
+Link: https://lkml.kernel.org/r/20220316072709.4746-1-guozhengkui@vivo.com
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>

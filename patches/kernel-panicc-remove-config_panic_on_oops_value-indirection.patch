@@ -1,0 +1,46 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection
+
+We have the helper IS_ENABLED(). Use that instead of having an
+unnecessary hidden config option.
+
+Link: https://lkml.kernel.org/r/20220316102622.562572-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Kyle McMartin <kmcmarti@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/panic.c    |    2 +-
+ lib/Kconfig.debug |    6 ------
+ 2 files changed, 1 insertion(+), 7 deletions(-)
+
+--- a/kernel/panic.c~kernel-panicc-remove-config_panic_on_oops_value-indirection
++++ a/kernel/panic.c
+@@ -46,7 +46,7 @@
+ unsigned int __read_mostly sysctl_oops_all_cpu_backtrace;
+ #endif /* CONFIG_SMP */
+ 
+-int panic_on_oops = CONFIG_PANIC_ON_OOPS_VALUE;
++int panic_on_oops = IS_ENABLED(CONFIG_PANIC_ON_OOPS);
+ static unsigned long tainted_mask =
+ 	IS_ENABLED(CONFIG_GCC_PLUGIN_RANDSTRUCT) ? (1 << TAINT_RANDSTRUCT) : 0;
+ static int pause_on_oops;
+--- a/lib/Kconfig.debug~kernel-panicc-remove-config_panic_on_oops_value-indirection
++++ a/lib/Kconfig.debug
+@@ -1005,12 +1005,6 @@ config PANIC_ON_OOPS
+ 
+ 	  Say N if unsure.
+ 
+-config PANIC_ON_OOPS_VALUE
+-	int
+-	range 0 1
+-	default 0 if !PANIC_ON_OOPS
+-	default 1 if PANIC_ON_OOPS
+-
+ config PANIC_TIMEOUT
+ 	int "panic timeout"
+ 	default 0
+_

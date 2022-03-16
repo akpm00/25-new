@@ -5,11 +5,6 @@ origin.patch
 #mm/swap
 mm-swap-get-rid-of-deadloop-in-swapin-readahead.patch
 #
-#mm/memcg
-#memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
-memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
-memcg-sync-flush-only-if-periodic-flush-is-delayed-fix.patch
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #mm/pagealloc
@@ -36,6 +31,7 @@ configs-debug-restore-debug_info=y-for-overriding.patch
 #
 #ocfs2
 ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
+#
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -456,6 +452,8 @@ mm-shmem-use-helper-macro-__attr_rw.patch
 #mm/frontswap
 #mm/memremap
 #mm/memcg
+memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
+#
 memcg-replace-in_interrupt-with-in_task.patch
 #
 memcg-add-per-memcg-total-kernel-memory-stat.patch
@@ -614,6 +612,7 @@ mm-page_alloc-call-check_new_pages-while-zone-spinlock-is-not-held.patch
 mm-page_alloc-check-high-order-pages-for-corruption-during-pcp-operations.patch
 #
 #mm/memory-failure
+#
 mm-hwpoison-remove-obsolete-comment.patch
 #
 mm-hwpoison-fix-error-page-recovered-but-reported-not-recovered.patch
@@ -637,7 +636,7 @@ mm-hwpoison-inject-support-injecting-hwpoison-to-free-page-fix.patch
 mm-hwpoison-avoid-the-impact-of-hwpoison_filter-return-value-on-mce-handler.patch
 mm-hwpoison-add-in-use-hugepage-hwpoison-filter-judgement.patch
 #
-#mm-memory-failurec-fix-race-with-changing-page-compound-again.patch+2: acks? Mike comment.  check review
+#mm-memory-failurec-fix-race-with-changing-page-compound-again.patch+2: acks? Mike comment.  check review, incorporated into https://lkml.kernel.org/r/20220316120701.394061-1-naoya.horiguchi@linux.dev
 mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
 mm-memory-failurec-fix-race-with-changing-page-compound-again-fix.patch
 mm-memory-failurec-avoid-calling-invalidate_inode_page-with-unexpected-pages.patch
@@ -668,6 +667,8 @@ mm-export-pageheadhuge.patch
 mm-export-pageheadhuge-fix.patch
 #
 mm-remove-unneeded-local-variable-follflags-v2.patch
+#
+hugetlb-fix-comments-about-avoiding-atomic-allocation-of-vmemmap-pages.patch
 #
 #mm/dax
 #mm/userfaultfd
@@ -911,6 +912,8 @@ proc-vmcore-fix-possible-deadlock-on-concurrent-mmap-and-read.patch
 #
 proc-vmcore-fix-vmcore_alloc_buf-kernel-doc-comment.patch
 #
+mm-proc-remove-redundant-page-validation-of-pte_page.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
 #proc-sysctl-make-protected_-world-readable.patch: mcgrof request
@@ -972,6 +975,10 @@ lib-kconfigdebug-add-arch-dependency-for-function_align-option.patch
 #
 lib-bitmap-fix-many-kernel-doc-warnings.patch
 #
+locking-refcount-use-refcount_warn-to-simplify-code.patch
+#
+lib-fix-uninitialized_varcocci-warning.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END
@@ -1026,8 +1033,6 @@ checkpatch-use-python3-to-find-codespell-dictionary.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kallsyms
 kallsyms-print-module-name-in-%ps-s-case-when-kallsyms-is-disabled.patch
-#
-#kallsyms-enhance-%ps-s-b-printing-when-kallsysms-is-disabled.patch: acks? TBU
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ramfs
@@ -1261,6 +1266,8 @@ docs-sysctl-kernel-add-missing-bit-to-panic_print-fix.patch
 panic-add-option-to-dump-all-cpus-backtraces-in-panic_print.patch
 #
 panic-move-panic_print-before-kmsg-dumpers.patch
+#
+kernel-panicc-remove-config_panic_on_oops_value-indirection.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START parport
@@ -1898,3 +1905,4 @@ workaround-for-a-pci-restoring-bug.patch
 #[to-be-updated]mm-memcg-add-next_mz-back-to-soft-limit-tree-if-not-reclaimed-yet.patch:TBU.patch
 #[obsolete]linux-next-git-rejects.patch
 #[to-be-updated]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
+#[folded-merged]memcg-sync-flush-only-if-periodic-flush-is-delayed-fix.patch

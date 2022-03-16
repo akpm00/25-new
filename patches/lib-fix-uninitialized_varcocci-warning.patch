@@ -1,0 +1,34 @@
+From: Guo Zhengkui <guozhengkui@vivo.com>
+Subject: lib/glob.c: fix uninitialized_var.cocci warning
+
+Fix the following coccicheck warning:
+lib/glob.c:48:40-41: WARNING this kind of initialization is deprecated.
+
+`char const *back_str = back_str` has the same form of uninitialized_var()
+macro.  I remove the redundant assignement.  It has been tested with gcc
+(Debian 8.3.0-6) 8.3.0.
+
+The patch which removed uninitialized_var() is:
+https://lore.kernel.org/all/20121028102007.GA7547@gmail.com/
+And there are very few "/* GCC */" comments in the Linux kernel code now.
+
+Link: https://lkml.kernel.org/r/20220316072709.4746-1-guozhengkui@vivo.com
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/glob.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/glob.c~lib-fix-uninitialized_varcocci-warning
++++ a/lib/glob.c
+@@ -45,7 +45,7 @@ bool __pure glob_match(char const *pat,
+ 	 * (no exception for /), it can be easily proved that there's
+ 	 * never a need to backtrack multiple levels.
+ 	 */
+-	char const *back_pat = NULL, *back_str = back_str;
++	char const *back_pat = NULL, *back_str;
+ 
+ 	/*
+ 	 * Loop over each token (character or class) in pat, matching
+_

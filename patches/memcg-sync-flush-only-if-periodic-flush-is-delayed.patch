@@ -28,6 +28,7 @@ writeback stats used by dirty throttling and second is the deactivation
 heuristic in the reclaim.  For now keeping an eye on them and if there is
 report of regression due to these codepaths, we will reevaluate then.
 
+[akpm@linux-foundation.org: remove leftover rstat_flush_time, per Shakeel]
 Link: https://lore.kernel.org/all/CA+wXwBSyO87ZX5PVwdHm-=dBjZYECGmfnydUicUyrQqndgX2MQ@mail.gmail.com [1]
 Link: https://lkml.kernel.org/r/20220304184040.1304781-1-shakeelb@google.com
 Fixes: 1f828223b799 ("memcg: flush lruvec stats in the refault")
@@ -95,7 +96,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 +void mem_cgroup_flush_stats_delayed(void)
 +{
-+	if (rstat_flush_time && time_after64(jiffies_64, flush_next_time))
++	if (time_after64(jiffies_64, flush_next_time))
 +		mem_cgroup_flush_stats();
 +}
 +

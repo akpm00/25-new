@@ -1,0 +1,29 @@
+From: Zhen Lei <thunder.leizhen@huawei.com>
+Subject: lib/refcount.c: use REFCOUNT_WARN() to simplify code
+
+To avoid the check "new > val" appears twice, and make the style
+consistent with that in refcount_warn_saturate().
+
+Link: https://lkml.kernel.org/r/20220316125114.1177-1-thunder.leizhen@huawei.com
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/refcount.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/refcount.c~locking-refcount-use-refcount_warn-to-simplify-code
++++ a/lib/refcount.c
+@@ -84,7 +84,7 @@ bool refcount_dec_not_one(refcount_t *r)
+ 
+ 		new = val - 1;
+ 		if (new > val) {
+-			WARN_ONCE(new > val, "refcount_t: underflow; use-after-free.\n");
++			REFCOUNT_WARN("underflow; use-after-free");
+ 			return true;
+ 		}
+ 
+_
