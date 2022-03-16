@@ -1568,8 +1568,6 @@ selftests-vm-remove-dependecy-from-internal-kernel-macros.patch
 #
 selftests-kselftest-framework-provide-finished-helper.patch
 #
-#selftests-vm-add-test-for-soft-dirty-pte-bit.patch: check review, TBU
-selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #
 #kselftest-vm-override-targets-from-arguments.patch: TBU
 kselftest-vm-override-targets-from-arguments.patch
@@ -1899,3 +1897,4 @@ workaround-for-a-pci-restoring-bug.patch
 #[to-be-updated]mm-memcg-__mem_cgroup_remove_exceeded-could-handle-a-on-tree-mz-properly.patch
 #[to-be-updated]mm-memcg-add-next_mz-back-to-soft-limit-tree-if-not-reclaimed-yet.patch:TBU.patch
 #[obsolete]linux-next-git-rejects.patch
+#[to-be-updated]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
