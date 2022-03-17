@@ -3,16 +3,12 @@ origin.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
 #mm/swap
-mm-swap-get-rid-of-deadloop-in-swapin-readahead.patch
 #
 #kconfig
-configs-debug-restore-debug_info=y-for-overriding.patch
 #
 #ocfs2
-ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
 #
 #selftests
-selftests-vm-fix-clang-build-error-multiple-output-files.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
@@ -623,7 +619,9 @@ mm-hwpoison-add-in-use-hugepage-hwpoison-filter-judgement.patch
 #mm-memory-failurec-fix-race-with-changing-page-compound-again.patch+2: acks? Mike comment.  check review, incorporated into https://lkml.kernel.org/r/20220316120701.394061-1-naoya.horiguchi@linux.dev
 mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
 mm-memory-failurec-fix-race-with-changing-page-compound-again-fix.patch
+#mm-memory-failurec-avoid-calling-invalidate_inode_page-with-unexpected-pages.patch: TBU
 mm-memory-failurec-avoid-calling-invalidate_inode_page-with-unexpected-pages.patch
+#mm-memory-failurec-make-non-lru-movable-pages-unhandlable.patch: TBU
 mm-memory-failurec-make-non-lru-movable-pages-unhandlable.patch
 #
 mm-fault-injection-declare-should_fail_alloc_page.patch
@@ -1896,3 +1894,7 @@ workaround-for-a-pci-restoring-bug.patch
 #[to-be-updated]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #[folded-merged]memcg-sync-flush-only-if-periodic-flush-is-delayed-fix.patch
 #[alternative-merged]mm-fix-panic-in-__alloc_pages.patch
+#[merged]mm-swap-get-rid-of-deadloop-in-swapin-readahead.patch
+#[merged]configs-debug-restore-debug_info=y-for-overriding.patch
+#[merged]ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
+#[merged]selftests-vm-fix-clang-build-error-multiple-output-files.patch
