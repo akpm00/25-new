@@ -15,9 +15,9 @@ Link: https://lkml.kernel.org/r/20220312074613.4798-4-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Suggested-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

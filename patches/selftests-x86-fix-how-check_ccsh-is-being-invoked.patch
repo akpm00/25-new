@@ -16,6 +16,7 @@ Link: https://lkml.kernel.org/r/d0d460d7be0107a69e3c52477761a6fe694c1840.1646991
 Fixes: e9886ace222e ("selftests, x86: Rework x86 target architecture detection")
 Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 Tested-by: "kernelci.org bot" <bot@kernelci.org>
+Reviewed-by: Guenter Roeck <groeck@google.com>
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Borislav Petkov <bp@suse.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>

@@ -30,11 +30,11 @@ Link: https://lkml.kernel.org/r/cover.1647008754.git.quic_charante@quicinc.com
 Link: https://lkml.kernel.org/r/125b61a0edcee5c2db8658aed9d06a43a19ccafc.1647008754.git.quic_charante@quicinc.com
 Fixes: ecb8ac8b1f14("mm/madvise: introduce process_madvise() syscall: an external memory hinting API")
 Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
 Cc: Suren Baghdasaryan <surenb@google.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Minchan Kim <minchan@kernel.org>
 Cc: Nadav Amit <nadav.amit@gmail.com>
 Cc: Michal Hocko <mhocko@suse.com>
 Cc: <stable@vger.kernel.org>

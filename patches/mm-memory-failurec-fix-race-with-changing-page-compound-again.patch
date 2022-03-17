@@ -27,9 +27,9 @@ introduced to record this event.
 Link: https://lkml.kernel.org/r/20220312074613.4798-1-linmiaohe@huawei.com
 Link: https://lkml.kernel.org/r/20220312074613.4798-2-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Tony Luck <tony.luck@intel.com>
 Cc: Borislav Petkov <bp@alien8.de>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>

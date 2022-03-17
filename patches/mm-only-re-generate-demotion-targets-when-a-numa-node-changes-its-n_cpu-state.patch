@@ -20,14 +20,30 @@ numa node change its N_CPU state.
 [1] https://lore.kernel.org/linux-mm/20210721063926.3024591-2-ying.huang@intel.com/
 [2] https://lore.kernel.org/linux-mm/eb438ddd-2919-73d4-bd9f-b7eecdd9577a@linux.vnet.ibm.com/
 
+Abhishek said:
+
+Tested three different kernels on a ppc system for hotplug operation-
+
+  Kernel version                                 Time taken
+1. 5.14.0(baseline kernel)                       9.6s
+2. 5.15.0(upstream kernel without this patch)    23.1s
+3. 5.17.0-rc8+(upstream kernel with this patch)  11.3s
+
+*Time taken= avg total time taken to switch from smt=8 to smt=1
+
+I have used v5.15.0 kernel for 2nd experiment as the issue was
+introduced between 5.14 and 5.15.  Similar numbers are observed for any
+subsequent upstream kernels without this fix patch.
+
 Link: https://lkml.kernel.org/r/20220310120749.23077-1-osalvador@suse.de
 Fixes: 884a6e5d1f93b ("mm/migrate: update node demotion order on hotplug events")
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Tested by: Abhishek Goel <huntbag@linux.vnet.ibm.com>
 Reported-by: Abhishek Goel <huntbag@linux.vnet.ibm.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
 Cc: Abhishek Goel <huntbag@linux.vnet.ibm.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>

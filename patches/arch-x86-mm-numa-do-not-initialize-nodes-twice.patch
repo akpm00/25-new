@@ -1,5 +1,5 @@
 From: Oscar Salvador <osalvador@suse.de>
-Subject: arch/x86/mm/numa: Do not initialize nodes twice
+Subject: arch/x86/mm/numa: do not initialize nodes twice
 
 On x86, prior to ("mm: handle uninitialized numa nodes gracecully"), NUMA
 nodes could be allocated at three different places.
