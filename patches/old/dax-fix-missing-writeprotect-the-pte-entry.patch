@@ -23,17 +23,17 @@ result in data loss in the following sequence:
 
 Just to use pfn_mkclean_range() to clean the pfns to fix this issue.
 
-Link: https://lkml.kernel.org/r/20220228063536.24911-6-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220302082718.32268-6-songmuchun@bytedance.com
 Fixes: 4b4bb46d00b3 ("dax: clear dirty entry tags on cache flush")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Alistair Popple <apopple@nvidia.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Christoph Hellwig <hch@infradead.org>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Jan Kara <jack@suse.cz>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Ralph Campbell <rcampbell@nvidia.com>
 Cc: Ross Zwisler <zwisler@kernel.org>
 Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

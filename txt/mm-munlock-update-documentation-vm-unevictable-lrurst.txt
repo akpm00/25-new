@@ -1,0 +1,29 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: update Documentation/vm/unevictable-lru.rst
+
+Update Documentation/vm/unevictable-lru.rst to reflect the changes made by
+the mm/munlock series: keeping an mlock_count instead of page_mlock()
+(formerly try_to_munlock()) and munlock_vma_pages_all() etc.  Also make
+other little updates or cleanups wherever noticed.
+
+But, I apologize, this is already out of date, in that "folio" appears
+nowhere: 5.18 will be in a transitional state from "page" to "folio", and
+documenting its current mix of the two does not help to understand "the
+Unevictable LRU".  Should be revisited when naming is more settled.
+
+Link: https://lkml.kernel.org/r/3753962-d491-bf60-f59f-51bfe84fd6a0@google.com
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Shakeel Butt <shakeelb@google.com>

@@ -1420,16 +1420,10 @@ mm-filemap_unaccount_folio-large-skip-mapcount-fixup.patch
 #mm/thp
 mm-thp-fix-nr_file_mapped-accounting-in-page__file_rmap.patch
 #
+#mm/mlock
+mm-munlock-update-documentation-vm-unevictable-lrurst.patch
 #
 #mm/rmap
-mm-rmap-fix-cache-flush-on-thp-pages.patch
-dax-fix-cache-flush-on-pmd-mapped-pages.patch
-#mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch: Dan comment, TBU?
-mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
-mm-pvmw-add-support-for-walking-devmap-pages.patch
-#dax-fix-missing-writeprotect-the-pte-entry.patch: Can comment, TBU? check review
-dax-fix-missing-writeprotect-the-pte-entry.patch
-mm-remove-range-parameter-from-follow_invalidate_pte.patch
 #
 #mm/migration
 mm-migration-add-trace-events-for-thp-migrations.patch
@@ -1898,3 +1892,9 @@ workaround-for-a-pci-restoring-bug.patch
 #[merged]configs-debug-restore-debug_info=y-for-overriding.patch
 #[merged]ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
 #[merged]selftests-vm-fix-clang-build-error-multiple-output-files.patch
+#[to-be-updated]mm-rmap-fix-cache-flush-on-thp-pages.patch
+#[to-be-updated]dax-fix-cache-flush-on-pmd-mapped-pages.patch
+#[to-be-updated]mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
+#[to-be-updated]mm-pvmw-add-support-for-walking-devmap-pages.patch
+#[to-be-updated]dax-fix-missing-writeprotect-the-pte-entry.patch
+#[to-be-updated]mm-remove-range-parameter-from-follow_invalidate_pte.patch
