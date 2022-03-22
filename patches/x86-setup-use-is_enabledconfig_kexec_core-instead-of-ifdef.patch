@@ -31,7 +31,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/arch/x86/kernel/setup.c~x86-setup-use-is_enabledconfig_kexec_core-instead-of-ifdef
 +++ a/arch/x86/kernel/setup.c
-@@ -411,8 +411,6 @@ static void __init memblock_x86_reserve_
+@@ -391,8 +391,6 @@ static void __init memblock_x86_reserve_
   * --------- Crashkernel reservation ------------------------------
   */
  
@@ -40,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* 16M alignment for crash kernel regions */
  #define CRASH_ALIGN		SZ_16M
  
-@@ -490,6 +488,9 @@ static void __init reserve_crashkernel(v
+@@ -470,6 +468,9 @@ static void __init reserve_crashkernel(v
  	bool high = false;
  	int ret;
  
@@ -50,7 +50,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	total_mem = memblock_phys_mem_size();
  
  	/* crashkernel=XM */
-@@ -555,11 +556,6 @@ static void __init reserve_crashkernel(v
+@@ -535,11 +536,6 @@ static void __init reserve_crashkernel(v
  	crashk_res.end   = crash_base + crash_size - 1;
  	insert_resource(&iomem_resource, &crashk_res);
  }

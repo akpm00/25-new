@@ -38,6 +38,7 @@ ia64 and that is changed to use the early allocator as well.
 [3] http://lkml.kernel.org/r/20190114082416.30939-1-mhocko@kernel.org
 [4] http://lkml.kernel.org/r/20200428093836.27190-1-srikar@linux.vnet.ibm.com
 
+[akpm@linux-foundation.org: replace comment, per Mike]
 Link: https://lkml.kernel.org/r/Yfe7RBeLCijnWBON@dhcp22.suse.cz
 Reported-by: Alexey Makhalov <amakhalov@vmware.com>
 Tested-by: Alexey Makhalov <amakhalov@vmware.com>
@@ -59,9 +60,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  arch/ia64/mm/discontig.c       |    4 +--
  include/linux/memory_hotplug.h |    2 -
  mm/internal.h                  |    2 +
- mm/memory_hotplug.c            |   21 +++++++-----------
- mm/page_alloc.c                |   36 +++++++++++++++++++++++++++----
- 5 files changed, 46 insertions(+), 19 deletions(-)
+ mm/memory_hotplug.c            |   21 ++++++----------
+ mm/page_alloc.c                |   40 +++++++++++++++++++++++++++----
+ 5 files changed, 50 insertions(+), 19 deletions(-)
 
 --- a/arch/ia64/mm/discontig.c~mm-handle-uninitialized-numa-nodes-gracefully
 +++ a/arch/ia64/mm/discontig.c
@@ -159,7 +160,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  error_mem_hotplug_end:
 --- a/mm/page_alloc.c~mm-handle-uninitialized-numa-nodes-gracefully
 +++ a/mm/page_alloc.c
-@@ -6332,7 +6332,7 @@ static void per_cpu_pages_init(struct pe
+@@ -6341,7 +6341,7 @@ static void per_cpu_pages_init(struct pe
  #define BOOT_PAGESET_BATCH	1
  static DEFINE_PER_CPU(struct per_cpu_pages, boot_pageset);
  static DEFINE_PER_CPU(struct per_cpu_zonestat, boot_zonestats);
@@ -168,7 +169,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  static void __build_all_zonelists(void *data)
  {
-@@ -6354,7 +6354,11 @@ static void __build_all_zonelists(void *
+@@ -6363,7 +6363,11 @@ static void __build_all_zonelists(void *
  	if (self && !node_online(self->node_id)) {
  		build_zonelists(self);
  	} else {
@@ -181,7 +182,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pg_data_t *pgdat = NODE_DATA(nid);
  
  			build_zonelists(pgdat);
-@@ -8054,8 +8058,32 @@ void __init free_area_init(unsigned long
+@@ -8063,8 +8067,36 @@ void __init free_area_init(unsigned long
  	/* Initialise every node */
  	mminit_verify_pageflags_layout();
  	setup_nr_node_ids();
@@ -202,12 +203,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +			}
 +			arch_refresh_nodedata(nid, pgdat);
 +			free_area_init_memoryless_node(nid);
++
 +			/*
-+			 * not marking this node online because we do not want to
-+			 * confuse userspace by sysfs files/directories for node
-+			 * without any memory attached to it (see topology_init)
-+			 * The pgdat will get fully initialized when a memory is
-+			 * hotpluged into it by hotadd_init_pgdat
++			 * We do not want to confuse userspace by sysfs
++			 * files/directories for node without any memory
++			 * attached to it, so this node is not marked as
++			 * N_MEMORY and not marked online so that no sysfs
++			 * hierarchy will be created via register_one_node for
++			 * it. The pgdat will get fully initialized by
++			 * hotadd_init_pgdat() when memory is hotplugged into
++			 * this node.
 +			 */
 +			continue;
 +		}

@@ -7,10 +7,9 @@ process_madvise() calls for each vma, returns ENOMEM in case of unmapped
 holes, despite the VMA is processed.
 
 Thus process_madvise() should treat ENOMEM as expected and consider the
-VMA passed to as process and continue processing other vmas in the
-vector list.  Returning -ENOMEM to the user, despite the VMA having
-been processed, will make userspace unable to figure out where to start
-the next madvise.
+VMA passed to as processed and continue processing other vma's in the
+vector list.  Returning -ENOMEM to user, despite the VMA is processed,
+will be unable to figure out where to start the next madvise.
 
 Link: https://lkml.kernel.org/r/4f091776142f2ebf7b94018146de72318474e686.1647008754.git.quic_charante@quicinc.com
 Fixes: ecb8ac8b1f14("mm/madvise: introduce process_madvise() syscall: an external memory hinting API")

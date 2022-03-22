@@ -6,7 +6,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
  Documentation/admin-guide/sysctl/kernel.rst |   50 ---
  arch/nds32/mm/init.c                        |  262 ------------------
- include/linux/compiler_types.h              |    7 
  lib/Kconfig.debug                           |    1 
  mm/huge_memory.c                            |    4 
  mm/memcontrol.c                             |    2 
@@ -17,7 +16,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  mm/vmscan.c                                 |   40 +-
  tools/include/linux/gfp.h                   |    3 
  tools/testing/radix-tree/linux/gfp.h        |   32 --
- 13 files changed, 44 insertions(+), 392 deletions(-)
+ 12 files changed, 37 insertions(+), 392 deletions(-)
 
 --- a/arch/nds32/mm/init.c
 +++ /dev/null
@@ -343,22 +342,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  oops_all_cpu_backtrace
  ======================
---- a/include/linux/compiler_types.h~linux-next-rejects
-+++ a/include/linux/compiler_types.h
-@@ -4,6 +4,13 @@
- 
- #ifndef __ASSEMBLY__
- 
-+#if defined(CONFIG_DEBUG_INFO_BTF) && defined(CONFIG_PAHOLE_HAS_BTF_TAG) && \
-+	__has_attribute(btf_type_tag)
-+# define BTF_TYPE_TAG(value) __attribute__((btf_type_tag(#value)))
-+#else
-+# define BTF_TYPE_TAG(value) /* nothing */
-+#endif
-+
- /* sparse defines __CHECKER__; see Documentation/dev-tools/sparse.rst */
- #ifdef __CHECKER__
- /* address spaces */
 --- a/lib/Kconfig.debug~linux-next-rejects
 +++ a/lib/Kconfig.debug
 @@ -275,6 +275,7 @@ config DEBUG_INFO_DWARF5
@@ -385,7 +368,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	update_mmu_cache_pmd(vma, address, pvmw->pmd);
 --- a/mm/memcontrol.c~linux-next-rejects
 +++ a/mm/memcontrol.c
-@@ -7117,7 +7117,7 @@ void mem_cgroup_swapout(struct folio *fo
+@@ -7123,7 +7123,7 @@ void mem_cgroup_swapout(struct folio *fo
  	memcg_stats_lock();
  	mem_cgroup_charge_statistics(memcg, -nr_entries);
  	memcg_stats_unlock();

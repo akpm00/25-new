@@ -24,6 +24,7 @@ before we try to get hwpoison page.  Think about the below race window:
 If this race happens, just bail out.  Also MF_MSG_DIFFERENT_PAGE_SIZE is
 introduced to record this event.
 
+[akpm@linux-foundation.org: s@/**@/*@, per Naoya Horiguchi]
 Link: https://lkml.kernel.org/r/20220312074613.4798-1-linmiaohe@huawei.com
 Link: https://lkml.kernel.org/r/20220312074613.4798-2-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

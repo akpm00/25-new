@@ -1,5 +1,5 @@
 From: Oscar Salvador <osalvador@suse.de>
-Subject: arch/x86/mm/numa: do not initialize nodes twice
+Subject: arch/x86/mm/numa: Do not initialize nodes twice
 
 On x86, prior to ("mm: handle uninitialized numa nodes gracecully"), NUMA
 nodes could be allocated at three different places.
@@ -132,6 +132,8 @@ This is subtle, broken and deserves a deep analysis and thought about how
 to put this into shape, but for now let us have this easy fix for the
 leaking memory issue.
 
+[osalvador@suse.de: add comments]
+  Link: https://lkml.kernel.org/r/20220221142649.3457-1-osalvador@suse.de
 Link: https://lkml.kernel.org/r/20220218224302.5282-2-osalvador@suse.de
 Fixes: da4490c958ad ("mm: handle uninitialized numa nodes gracefully")
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
@@ -145,10 +147,10 @@ Cc: Alexey Makhalov <amakhalov@vmware.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/x86/mm/numa.c |   15 ++-------------
+ arch/x86/mm/numa.c |   33 ++++++++++++++++++++-------------
  include/linux/mm.h |    1 -
  mm/page_alloc.c    |    2 +-
- 3 files changed, 3 insertions(+), 15 deletions(-)
+ 3 files changed, 21 insertions(+), 15 deletions(-)
 
 --- a/arch/x86/mm/numa.c~arch-x86-mm-numa-do-not-initialize-nodes-twice
 +++ a/arch/x86/mm/numa.c
@@ -170,8 +172,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  /*
   * A node may exist which has one or more Generic Initiators but no CPUs and no
-@@ -768,7 +757,7 @@ void __init init_gi_nodes(void)
+@@ -766,9 +755,18 @@ void __init init_gi_nodes(void)
+ {
+ 	int nid;
  
++	/*
++	 * Exclude this node from
++	 * bringup_nonboot_cpus
++	 *  cpu_up
++	 *   __try_online_node
++	 *    register_one_node
++	 * because node_subsys is not initialized yet.
++	 * TODO remove dependency on node_online
++	 */
  	for_each_node_state(nid, N_GENERIC_INITIATOR)
  		if (!node_online(nid))
 -			init_memory_less_node(nid);
@@ -179,9 +192,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -799,7 +788,7 @@ void __init init_cpu_to_node(void)
+@@ -798,8 +796,17 @@ void __init init_cpu_to_node(void)
+ 		if (node == NUMA_NO_NODE)
  			continue;
  
++		/*
++		 * Exclude this node from
++		 * bringup_nonboot_cpus
++		 *  cpu_up
++		 *   __try_online_node
++		 *    register_one_node
++		 * because node_subsys is not initialized yet.
++		 * TODO remove dependency on node_online
++		 */
  		if (!node_online(node))
 -			init_memory_less_node(node);
 +			node_set_online(node);
@@ -200,7 +223,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
 --- a/mm/page_alloc.c~arch-x86-mm-numa-do-not-initialize-nodes-twice
 +++ a/mm/page_alloc.c
-@@ -7617,7 +7617,7 @@ static void __init free_area_init_node(i
+@@ -7626,7 +7626,7 @@ static void __init free_area_init_node(i
  	free_area_init_core(pgdat);
  }
  

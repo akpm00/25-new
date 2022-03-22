@@ -20,39 +20,25 @@ numa node change its N_CPU state.
 [1] https://lore.kernel.org/linux-mm/20210721063926.3024591-2-ying.huang@intel.com/
 [2] https://lore.kernel.org/linux-mm/eb438ddd-2919-73d4-bd9f-b7eecdd9577a@linux.vnet.ibm.com/
 
-Abhishek said:
-
-Tested three different kernels on a ppc system for hotplug operation-
-
-  Kernel version                                 Time taken
-1. 5.14.0(baseline kernel)                       9.6s
-2. 5.15.0(upstream kernel without this patch)    23.1s
-3. 5.17.0-rc8+(upstream kernel with this patch)  11.3s
-
-*Time taken= avg total time taken to switch from smt=8 to smt=1
-
-I have used v5.15.0 kernel for 2nd experiment as the issue was
-introduced between 5.14 and 5.15.  Similar numbers are observed for any
-subsequent upstream kernels without this fix patch.
-
+[osalvador@suse.de: add feedback from Huang Ying]
+  Link: https://lkml.kernel.org/r/20220314150945.12694-1-osalvador@suse.de
 Link: https://lkml.kernel.org/r/20220310120749.23077-1-osalvador@suse.de
 Fixes: 884a6e5d1f93b ("mm/migrate: update node demotion order on hotplug events")
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Tested by: Abhishek Goel <huntbag@linux.vnet.ibm.com>
 Reported-by: Abhishek Goel <huntbag@linux.vnet.ibm.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
 Cc: Abhishek Goel <huntbag@linux.vnet.ibm.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/linux/migrate.h |    8 +++++++
- mm/migrate.c            |   41 ++++----------------------------------
- mm/vmstat.c             |   13 +++++++++++-
- 3 files changed, 25 insertions(+), 37 deletions(-)
+ include/linux/migrate.h |    8 ++++++
+ mm/migrate.c            |   47 ++++++++------------------------------
+ mm/vmstat.c             |   13 +++++++++-
+ 3 files changed, 30 insertions(+), 38 deletions(-)
 
 --- a/include/linux/migrate.h~mm-only-re-generate-demotion-targets-when-a-numa-node-changes-its-n_cpu-state
 +++ a/include/linux/migrate.h
@@ -83,7 +69,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	get_online_mems();
  	__set_migration_target_nodes();
-@@ -3273,51 +3273,20 @@ static int __meminit migrate_on_reclaim_
+@@ -3273,51 +3273,24 @@ static int __meminit migrate_on_reclaim_
  	return notifier_from_errno(0);
  }
  
@@ -101,14 +87,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -}
 -
 -static int migration_offline_cpu(unsigned int cpu)
-+void __init migrate_on_reclaim_init(void)
- {
+-{
 -	set_migration_target_nodes();
 -	return 0;
 -}
 -
 -static int __init migrate_on_reclaim_init(void)
--{
++void __init migrate_on_reclaim_init(void)
+ {
 -	int ret;
 -
  	node_demotion = kmalloc_array(nr_node_ids,
@@ -118,6 +104,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 -	ret = cpuhp_setup_state_nocalls(CPUHP_MM_DEMOTION_DEAD, "mm/demotion:offline",
 -					NULL, migration_offline_cpu);
++	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
  	/*
 -	 * In the unlikely case that this fails, the automatic
 -	 * migration targets may become suboptimal for nodes
@@ -125,15 +112,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -	 * rare case, do not bother trying to do anything special.
 +	 * At this point, all numa nodes with memory/CPus have their state
 +	 * properly set, so we can build the demotion order now.
++	 * Let us hold the cpu_hotplug lock just, as we could possibily have
++	 * CPU hotplug events during boot.
  	 */
 -	WARN_ON(ret < 0);
 -	ret = cpuhp_setup_state(CPUHP_AP_MM_DEMOTION_ONLINE, "mm/demotion:online",
 -				migration_online_cpu, NULL);
 -	WARN_ON(ret < 0);
 -
-+	set_migration_target_nodes();
- 	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
+-	hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
 -	return 0;
++	cpus_read_lock();
++	set_migration_target_nodes();
++	cpus_read_unlock();
  }
 -late_initcall(migrate_on_reclaim_init);
  #endif /* CONFIG_HOTPLUG_CPU */

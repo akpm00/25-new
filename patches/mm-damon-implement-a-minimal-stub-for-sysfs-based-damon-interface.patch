@@ -56,8 +56,11 @@ Please note that this commit is implementing only the sysfs part stub as
 abovely mentioned.  This commit doesn't implement the special keywords for
 'state' files.  Following commits will do that.
 
+[jiapeng.chong@linux.alibaba.com: fix missing error code in damon_sysfs_attrs_add_dirs()]
+  Link: https://lkml.kernel.org/r/20220302111120.24984-1-jiapeng.chong@linux.alibaba.com
 Link: https://lkml.kernel.org/r/20220228081314.5770-4-sj@kernel.org
 Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -68,8 +71,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
  mm/damon/Kconfig  |    7 
  mm/damon/Makefile |    1 
- mm/damon/sysfs.c  | 1082 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 1090 insertions(+)
+ mm/damon/sysfs.c  | 1084 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 1092 insertions(+)
 
 --- a/mm/damon/Kconfig~mm-damon-implement-a-minimal-stub-for-sysfs-based-damon-interface
 +++ a/mm/damon/Kconfig
@@ -98,7 +101,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  obj-$(CONFIG_DAMON_RECLAIM)	+= reclaim.o
 --- /dev/null
 +++ a/mm/damon/sysfs.c
-@@ -0,0 +1,1082 @@
+@@ -0,0 +1,1084 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * DAMON sysfs Interface
@@ -553,8 +556,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	attrs->intervals = intervals;
 +
 +	nr_regions_range = damon_sysfs_ul_range_alloc(10, 1000);
-+	if (!nr_regions_range)
++	if (!nr_regions_range) {
++		err = -ENOMEM;
 +		goto put_intervals_out;
++	}
 +
 +	err = kobject_init_and_add(&nr_regions_range->kobj,
 +			&damon_sysfs_ul_range_ktype, &attrs->kobj,

@@ -5,6 +5,7 @@ memory_failure() can handle free buddy page.  Support injecting hwpoison
 to free page by adding is_free_buddy_page check when hwpoison filter is
 disabled.
 
+[akpm@linux-foundation.org: export is_free_buddy_page() to modules]
 Link: https://lkml.kernel.org/r/20220218092052.3853-1-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

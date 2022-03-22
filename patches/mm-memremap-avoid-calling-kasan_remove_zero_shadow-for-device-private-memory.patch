@@ -17,7 +17,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memremap.c~mm-memremap-avoid-calling-kasan_remove_zero_shadow-for-device-private-memory
 +++ a/mm/memremap.c
-@@ -302,7 +302,8 @@ static int pagemap_range(struct dev_page
+@@ -282,7 +282,8 @@ static int pagemap_range(struct dev_page
  	return 0;
  
  err_add_memory:

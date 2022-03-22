@@ -100,6 +100,8 @@ even_cows==false, and always zap them when even_cows==true.
 
 The issue seems to exist starting from the initial commit of git.
 
+[peterx@redhat.com: comment tweaks]
+  Link: https://lkml.kernel.org/r/20220217060746.71256-2-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220217060746.71256-1-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220216094810.60572-1-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220216094810.60572-2-peterx@redhat.com

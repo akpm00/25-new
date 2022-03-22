@@ -1,5 +1,5 @@
 From: Oscar Salvador <osalvador@suse.de>
-Subject: arch/x86/mm/numa: do not initialize nodes twice
+Subject: arch/x86/mm/numa: Do not initialize nodes twice
 
 On x86, prior to ("mm: handle uninitialized numa nodes gracecully"), NUMA
 nodes could be allocated at three different places.
@@ -132,6 +132,8 @@ This is subtle, broken and deserves a deep analysis and thought about how
 to put this into shape, but for now let us have this easy fix for the
 leaking memory issue.
 
+[osalvador@suse.de: add comments]
+  Link: https://lkml.kernel.org/r/20220221142649.3457-1-osalvador@suse.de
 Link: https://lkml.kernel.org/r/20220218224302.5282-2-osalvador@suse.de
 Fixes: da4490c958ad ("mm: handle uninitialized numa nodes gracefully")
 Signed-off-by: Oscar Salvador <osalvador@suse.de>

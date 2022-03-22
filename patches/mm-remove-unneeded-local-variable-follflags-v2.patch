@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			continue;
 --- a/mm/migrate.c~mm-remove-unneeded-local-variable-follflags-v2
 +++ a/mm/migrate.c
-@@ -1604,7 +1604,6 @@ static int add_page_for_migration(struct
+@@ -1611,7 +1611,6 @@ static int add_page_for_migration(struct
  {
  	struct vm_area_struct *vma;
  	struct page *page;
@@ -44,7 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int err;
  
  	mmap_read_lock(mm);
-@@ -1614,8 +1613,7 @@ static int add_page_for_migration(struct
+@@ -1621,8 +1620,7 @@ static int add_page_for_migration(struct
  		goto out;
  
  	/* FOLL_DUMP to ignore special (like zero) pages */

@@ -14,17 +14,19 @@ clarify this for future users.
 
 [1] https://lore.kernel.org/lkml/20211213154543.GM3538886@iweiny-DESK2.sc.intel.com/
 
+[ira.weiny@intel.com: updates per Christoph]
+  Link: https://lkml.kernel.org/r/20220124182138.816693-1-ira.weiny@intel.com
 Link: https://lkml.kernel.org/r/20220124013045.806718-1-ira.weiny@intel.com
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/linux/highmem-internal.h |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ include/linux/highmem-internal.h |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 --- a/include/linux/highmem-internal.h~highmem-document-kunmap_local
 +++ a/include/linux/highmem-internal.h
-@@ -246,6 +246,17 @@ do {								\
+@@ -246,6 +246,16 @@ do {								\
  	__kunmap_atomic(__addr);				\
  } while (0)
  
@@ -32,9 +34,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 + * kunmap_local - Unmap a page mapped via kmap_local_page().
 + * @__addr: An address within the page mapped
 + *
-+ * __addr is often an address returned from kmap_local_page().  However,
-+ * this address can be any address within the mapped page.  It does not need to
-+ * be the exact address returned from kmap_local_page()
++ * @__addr can be any address within the mapped page.  Commonly it is the
++ * address return from kmap_local_page(), but it can also include offsets.
 + *
 + * Unmapping should be done in the reverse order of the mapping.  See
 + * kmap_local_page() for details.

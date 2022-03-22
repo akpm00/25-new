@@ -9,6 +9,7 @@ of memory when there are tens of thousands continers in the system.  If we
 use xarray, we also can remove the logic code of resizing array, which can
 simplify the code.
 
+[akpm@linux-foundation.org: remove unused local]
 Link: https://lkml.kernel.org/r/20220228122126.37293-13-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Alex Shi <alexs@kernel.org>

@@ -294,7 +294,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return 0;
 --- a/mm/page_alloc.c~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/mm/page_alloc.c
-@@ -8432,7 +8432,8 @@ static void __setup_per_zone_wmarks(void
+@@ -8441,7 +8441,8 @@ static void __setup_per_zone_wmarks(void
  
  		zone->watermark_boost = 0;
  		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;

@@ -56,8 +56,11 @@ Please note that this commit is implementing only the sysfs part stub as
 abovely mentioned.  This commit doesn't implement the special keywords for
 'state' files.  Following commits will do that.
 
+[jiapeng.chong@linux.alibaba.com: fix missing error code in damon_sysfs_attrs_add_dirs()]
+  Link: https://lkml.kernel.org/r/20220302111120.24984-1-jiapeng.chong@linux.alibaba.com
 Link: https://lkml.kernel.org/r/20220228081314.5770-4-sj@kernel.org
 Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jonathan Corbet <corbet@lwn.net>

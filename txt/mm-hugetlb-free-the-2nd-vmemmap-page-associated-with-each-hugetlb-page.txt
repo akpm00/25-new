@@ -139,6 +139,7 @@ fake head page struct.
 We can safely access the field of the @page[1] with PG_head because the
 @page is a compound page composed with at least two contiguous pages.
 
+[songmuchun@bytedance.com: restore lost comment changes]
 Link: https://lkml.kernel.org/r/20211101031651.75851-1-songmuchun@bytedance.com
 Link: https://lkml.kernel.org/r/20211101031651.75851-2-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>

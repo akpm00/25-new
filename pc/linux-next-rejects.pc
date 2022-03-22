@@ -1,6 +1,5 @@
 arch/nds32/mm/init.c
 Documentation/admin-guide/sysctl/kernel.rst
-include/linux/compiler_types.h
 lib/Kconfig.debug
 mm/huge_memory.c
 mm/memcontrol.c

@@ -43,6 +43,9 @@ accordingly.
 Initialize real_address in various code-paths to be consistent with
 address, even when it is not used, to be on the safe side.
 
+[namit@vmware.com: initialize real_address on all code paths, per Jan]
+  Link: https://lkml.kernel.org/r/20220226022655.350562-1-namit@vmware.com
+[akpm@linux-foundation.org: fix typo in comment, per Jan]
 Link: https://lkml.kernel.org/r/20220218041003.3508-1-namit@vmware.com
 Signed-off-by: Nadav Amit <namit@vmware.com>
 Acked-by: Peter Xu <peterx@redhat.com>
@@ -56,8 +59,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  fs/userfaultfd.c                 |    5 ++++-
  include/linux/mm.h               |    3 ++-
  include/uapi/linux/userfaultfd.h |    8 +++++++-
+ mm/hugetlb.c                     |    6 ++++--
  mm/memory.c                      |    1 +
- 4 files changed, 14 insertions(+), 3 deletions(-)
+ mm/swapfile.c                    |    1 +
+ 6 files changed, 19 insertions(+), 5 deletions(-)
 
 --- a/fs/userfaultfd.c~userfaultfd-provide-unmasked-address-on-page-fault
 +++ a/fs/userfaultfd.c
@@ -88,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		pgoff_t pgoff;			/* Logical page offset based on vma */
 -		unsigned long address;		/* Faulting virtual address */
 +		unsigned long address;		/* Faulting virtual address - masked */
-+		unsigned long real_address;	/* Faulting virtual address - unmaked */
++		unsigned long real_address;	/* Faulting virtual address - unmasked */
  	};
  	enum fault_flag flags;		/* FAULT_FLAG_xxx flags
  					 * XXX: should really be 'const' */
@@ -123,6 +128,42 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__u64 features;
  
  	__u64 ioctls;
+--- a/mm/hugetlb.c~userfaultfd-provide-unmasked-address-on-page-fault
++++ a/mm/hugetlb.c
+@@ -5341,6 +5341,7 @@ static inline vm_fault_t hugetlb_handle_
+ 						  pgoff_t idx,
+ 						  unsigned int flags,
+ 						  unsigned long haddr,
++						  unsigned long addr,
+ 						  unsigned long reason)
+ {
+ 	vm_fault_t ret;
+@@ -5348,6 +5349,7 @@ static inline vm_fault_t hugetlb_handle_
+ 	struct vm_fault vmf = {
+ 		.vma = vma,
+ 		.address = haddr,
++		.real_address = addr,
+ 		.flags = flags,
+ 
+ 		/*
+@@ -5416,7 +5418,7 @@ retry:
+ 		/* Check for page in userfault range */
+ 		if (userfaultfd_missing(vma)) {
+ 			ret = hugetlb_handle_userfault(vma, mapping, idx,
+-						       flags, haddr,
++						       flags, haddr, address,
+ 						       VM_UFFD_MISSING);
+ 			goto out;
+ 		}
+@@ -5480,7 +5482,7 @@ retry:
+ 			unlock_page(page);
+ 			put_page(page);
+ 			ret = hugetlb_handle_userfault(vma, mapping, idx,
+-						       flags, haddr,
++						       flags, haddr, address,
+ 						       VM_UFFD_MINOR);
+ 			goto out;
+ 		}
 --- a/mm/memory.c~userfaultfd-provide-unmasked-address-on-page-fault
 +++ a/mm/memory.c
 @@ -4633,6 +4633,7 @@ static vm_fault_t __handle_mm_fault(stru
@@ -133,4 +174,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		.flags = flags,
  		.pgoff = linear_page_index(vma, address),
  		.gfp_mask = __get_fault_gfp_mask(vma),
+--- a/mm/swapfile.c~userfaultfd-provide-unmasked-address-on-page-fault
++++ a/mm/swapfile.c
+@@ -1951,6 +1951,7 @@ static int unuse_pte_range(struct vm_are
+ 			struct vm_fault vmf = {
+ 				.vma = vma,
+ 				.address = addr,
++				.real_address = addr,
+ 				.pmd = pmd,
+ 			};
+ 
 _

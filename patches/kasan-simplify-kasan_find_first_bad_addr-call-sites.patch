@@ -59,7 +59,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/kasan/report_sw_tags.c~kasan-simplify-kasan_find_first_bad_addr-call-sites
 +++ a/mm/kasan/report_sw_tags.c
-@@ -36,8 +36,12 @@ void *kasan_find_first_bad_addr(void *ad
+@@ -35,8 +35,12 @@ void *kasan_find_first_bad_addr(void *ad
  	void *p = kasan_reset_tag(addr);
  	void *end = p + size;
  

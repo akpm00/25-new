@@ -34,7 +34,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/list_lru.c~mm-list_lru-optimize-memcg_reparent_list_lru_node
 +++ a/mm/list_lru.c
-@@ -519,6 +519,12 @@ static void memcg_drain_list_lru_node(st
+@@ -395,6 +395,12 @@ static void memcg_reparent_list_lru_node
  	struct list_lru_one *src, *dst;
  
  	/*

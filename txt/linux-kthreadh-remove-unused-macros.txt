@@ -17,8 +17,8 @@ allocates the struct kthread_worker and spawns the kthread.
 Link: https://lkml.kernel.org/r/20220314145343.494694-1-linux@rasmusvillemoes.dk
 Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Petr Mladek <pmladek@suse.com>
 Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Petr Mladek <pmladek@suse.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Yafang Shao <laoar.shao@gmail.com>
 Cc: Cai Huoqing <caihuoqing@baidu.com>

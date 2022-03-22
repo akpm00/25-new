@@ -9,6 +9,7 @@ can't call it from a module.
 Kirill suggested rearranging things to put it in a header, but that
 introduces header dependencies because of where constants are defined.
 
+[akpm@linux-foundation.org: s/EXPORT_SYMBOL/EXPORT_SYMBOL_GPL/, per Christoph]
 Link: https://lkml.kernel.org/r/2494562.1646054576@warthog.procyon.org.uk
 Link: https://lore.kernel.org/r/163707085314.3221130.14783857863702203440.stgit@warthog.procyon.org.uk/
 Signed-off-by: David Howells <dhowells@redhat.com>
@@ -28,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	return page_head[1].compound_dtor == HUGETLB_PAGE_DTOR;
  }
-+EXPORT_SYMBOL(PageHeadHuge);
++EXPORT_SYMBOL_GPL(PageHeadHuge);
  
  /*
   * Find and lock address space (mapping) in write mode.

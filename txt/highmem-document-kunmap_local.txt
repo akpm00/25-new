@@ -14,5 +14,7 @@ clarify this for future users.
 
 [1] https://lore.kernel.org/lkml/20211213154543.GM3538886@iweiny-DESK2.sc.intel.com/
 
+[ira.weiny@intel.com: updates per Christoph]
+  Link: https://lkml.kernel.org/r/20220124182138.816693-1-ira.weiny@intel.com
 Link: https://lkml.kernel.org/r/20220124013045.806718-1-ira.weiny@intel.com
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>

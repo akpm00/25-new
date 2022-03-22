@@ -7,39 +7,50 @@ patch adds such support for tmpfs-based filesystems.
 Note that using shmem_getattr() on other file types than regular requires
 that shmem_is_huge() check type, to stop incorrect HPAGE_PMD_SIZE blksize.
 
+[hughd@google.com: three tweaks to creation time patch]
+  Link: https://lkml.kernel.org/r/b954973a-b8d1-cab8-63bd-6ea8063de3@google.com
 Link: https://lkml.kernel.org/r/20220314211150.GA123458@xavier-xps
 Link: https://lkml.kernel.org/r/b954973a-b8d1-cab8-63bd-6ea8063de3@google.com
 Link: https://lkml.kernel.org/r/20220211213628.GA1919658@xavier-xps
 Signed-off-by: Xavier Roche <xavier.roche@algolia.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
 Tested-by: Jean Delvare <jdelvare@suse.de>
 Tested-by: Sylvain Bellone <sylvain.bellone@algolia.com>
 Reported-by: Xavier Grand <xavier.grand@algolia.com>
 Reviewed-by: Jean Delvare <jdelvare@suse.de>
-Cc: Hugh Dickins <hughd@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  include/linux/shmem_fs.h |    1 +
- mm/shmem.c               |   11 +++++++++++
- 2 files changed, 12 insertions(+)
+ mm/shmem.c               |   16 +++++++++++++---
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
 --- a/include/linux/shmem_fs.h~tmpfs-support-for-file-creation-time
 +++ a/include/linux/shmem_fs.h
-@@ -25,6 +25,7 @@ struct shmem_inode_info {
+@@ -24,6 +24,7 @@ struct shmem_inode_info {
+ 	struct shared_policy	policy;		/* NUMA memory alloc policy */
  	struct simple_xattrs	xattrs;		/* list of xattrs */
  	atomic_t		stop_eviction;	/* hold when working on inode */
- 	struct inode		vfs_inode;
 +	struct timespec64	i_crtime;	/* file creation time */
+ 	struct inode		vfs_inode;
  };
  
- struct shmem_sb_info {
 --- a/mm/shmem.c~tmpfs-support-for-file-creation-time
 +++ a/mm/shmem.c
-@@ -1061,6 +1061,12 @@ static int shmem_getattr(struct user_nam
+@@ -476,6 +476,8 @@ bool shmem_is_huge(struct vm_area_struct
+ {
+ 	loff_t i_size;
+ 
++	if (!S_ISREG(inode->i_mode))
++		return false;
+ 	if (shmem_huge == SHMEM_HUGE_DENY)
+ 		return false;
+ 	if (vma && ((vma->vm_flags & VM_NOHUGEPAGE) ||
+@@ -1061,6 +1063,12 @@ static int shmem_getattr(struct user_nam
  	if (shmem_is_huge(NULL, inode, 0))
  		stat->blksize = HPAGE_PMD_SIZE;
  
-+	if ((request_mask & STATX_BTIME)) {
++	if (request_mask & STATX_BTIME) {
 +		stat->result_mask |= STATX_BTIME;
 +		stat->btime.tv_sec = info->i_crtime.tv_sec;
 +		stat->btime.tv_nsec = info->i_crtime.tv_nsec;
@@ -48,7 +59,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -2265,6 +2271,7 @@ static struct inode *shmem_get_inode(str
+@@ -1854,9 +1862,6 @@ repeat:
+ 		return 0;
+ 	}
+ 
+-	/* Never use a huge page for shmem_symlink() */
+-	if (S_ISLNK(inode->i_mode))
+-		goto alloc_nohuge;
+ 	if (!shmem_is_huge(vma, inode, index))
+ 		goto alloc_nohuge;
+ 
+@@ -2265,6 +2270,7 @@ static struct inode *shmem_get_inode(str
  		atomic_set(&info->stop_eviction, 0);
  		info->seals = F_SEAL_SEAL;
  		info->flags = flags & VM_NORESERVE;
@@ -56,7 +77,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		INIT_LIST_HEAD(&info->shrinklist);
  		INIT_LIST_HEAD(&info->swaplist);
  		simple_xattrs_init(&info->xattrs);
-@@ -3196,6 +3203,7 @@ static ssize_t shmem_listxattr(struct de
+@@ -3196,6 +3202,7 @@ static ssize_t shmem_listxattr(struct de
  #endif /* CONFIG_TMPFS_XATTR */
  
  static const struct inode_operations shmem_short_symlink_operations = {
@@ -64,7 +85,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.get_link	= simple_get_link,
  #ifdef CONFIG_TMPFS_XATTR
  	.listxattr	= shmem_listxattr,
-@@ -3203,6 +3211,7 @@ static const struct inode_operations shm
+@@ -3203,6 +3210,7 @@ static const struct inode_operations shm
  };
  
  static const struct inode_operations shmem_symlink_inode_operations = {
@@ -72,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.get_link	= shmem_get_link,
  #ifdef CONFIG_TMPFS_XATTR
  	.listxattr	= shmem_listxattr,
-@@ -3790,6 +3799,7 @@ static const struct inode_operations shm
+@@ -3790,6 +3798,7 @@ static const struct inode_operations shm
  
  static const struct inode_operations shmem_dir_inode_operations = {
  #ifdef CONFIG_TMPFS
@@ -80,7 +101,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.create		= shmem_create,
  	.lookup		= simple_lookup,
  	.link		= shmem_link,
-@@ -3811,6 +3821,7 @@ static const struct inode_operations shm
+@@ -3811,6 +3820,7 @@ static const struct inode_operations shm
  };
  
  static const struct inode_operations shmem_special_inode_operations = {

@@ -30,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~mm-__isolate_lru_page_prepare-in-isolate_migratepages_block
 +++ a/include/linux/swap.h
-@@ -384,7 +384,6 @@ extern void lru_cache_add_inactive_or_un
+@@ -387,7 +387,6 @@ extern void lru_cache_add_inactive_or_un
  extern unsigned long zone_reclaimable_pages(struct zone *zone);
  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
  					gfp_t gfp_mask, nodemask_t *mask);

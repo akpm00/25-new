@@ -100,6 +100,8 @@ even_cows==false, and always zap them when even_cows==true.
 
 The issue seems to exist starting from the initial commit of git.
 
+[peterx@redhat.com: comment tweaks]
+  Link: https://lkml.kernel.org/r/20220217060746.71256-2-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220217060746.71256-1-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220216094810.60572-1-peterx@redhat.com
 Link: https://lkml.kernel.org/r/20220216094810.60572-2-peterx@redhat.com
@@ -118,8 +120,8 @@ Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/memory.c |   45 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 36 insertions(+), 9 deletions(-)
+ mm/memory.c |   40 +++++++++++++++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 9 deletions(-)
 
 --- a/mm/memory.c~mm-dont-skip-swap-entry-even-if-zap_details-specified
 +++ a/mm/memory.c
@@ -150,7 +152,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	if (should_zap_cows(details))
 +		return false;
 +
-+	/* E.g. zero page */
++	/* E.g. the caller passes NULL for the case of a zero page */
 +	if (!page)
  		return false;
  
@@ -160,7 +162,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  static unsigned long zap_pte_range(struct mmu_gather *tlb,
-@@ -1405,17 +1420,29 @@ again:
+@@ -1405,17 +1420,24 @@ again:
  			continue;
  		}
  
@@ -170,11 +172,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -
 -		if (!non_swap_entry(entry))
 +		if (!non_swap_entry(entry)) {
-+			/*
-+			 * If this is a genuine swap entry, then it must be an
-+			 * private anon page.  If the caller wants to skip
-+			 * COWed pages, ignore it.
-+			 */
++			/* Genuine swap entry, hence a private anon page */
 +			if (!should_zap_cows(details))
 +				continue;
  			rss[MM_SWAPENTS]--;
@@ -187,7 +185,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +				continue;
  			rss[mm_counter(page)]--;
 +		} else if (is_hwpoison_entry(entry)) {
-+			/* If the caller wants to skip COWed pages, ignore it */
 +			if (!should_zap_cows(details))
 +				continue;
 +		} else {

@@ -43,6 +43,9 @@ accordingly.
 Initialize real_address in various code-paths to be consistent with
 address, even when it is not used, to be on the safe side.
 
+[namit@vmware.com: initialize real_address on all code paths, per Jan]
+  Link: https://lkml.kernel.org/r/20220226022655.350562-1-namit@vmware.com
+[akpm@linux-foundation.org: fix typo in comment, per Jan]
 Link: https://lkml.kernel.org/r/20220218041003.3508-1-namit@vmware.com
 Signed-off-by: Nadav Amit <namit@vmware.com>
 Acked-by: Peter Xu <peterx@redhat.com>

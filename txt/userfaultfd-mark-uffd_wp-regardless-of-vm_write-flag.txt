@@ -22,8 +22,8 @@ write-permission in the VMA flags.
 Link: https://lkml.kernel.org/r/20220217211602.2769-1-namit@vmware.com
 Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
 Signed-off-by: Nadav Amit <namit@vmware.com>
-Acked-by: Peter Xu <peterx@redhat.com>
 Cc: Axel Rasmussen <axelrasmussen@google.com>
 Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Peter Xu <peterx@redhat.com>
 Cc: <stable@vger.kernel.org>

@@ -10,6 +10,7 @@ cause a small change in behaviour, but only when PF_LOCAL_THROTTLE is set.
 So replace the calls by 'false' and simplify the code - and remove the
 functions.
 
+[akpm@linux-foundation.org: fix build]
 Link: https://lkml.kernel.org/r/164549983742.9187.2570198746005819592.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>	[nilfs]

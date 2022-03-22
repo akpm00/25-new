@@ -38,6 +38,7 @@ ia64 and that is changed to use the early allocator as well.
 [3] http://lkml.kernel.org/r/20190114082416.30939-1-mhocko@kernel.org
 [4] http://lkml.kernel.org/r/20200428093836.27190-1-srikar@linux.vnet.ibm.com
 
+[akpm@linux-foundation.org: replace comment, per Mike]
 Link: https://lkml.kernel.org/r/Yfe7RBeLCijnWBON@dhcp22.suse.cz
 Reported-by: Alexey Makhalov <amakhalov@vmware.com>
 Tested-by: Alexey Makhalov <amakhalov@vmware.com>
