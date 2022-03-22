@@ -34,11 +34,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  drivers/block/drbd/drbd_int.h |    3 ---
  drivers/block/drbd/drbd_req.c |    3 +--
  fs/ext2/ialloc.c              |    5 -----
- fs/nilfs2/segbuf.c            |   15 ---------------
+ fs/nilfs2/segbuf.c            |   16 ----------------
  fs/xfs/xfs_buf.c              |    3 ---
  include/linux/backing-dev.h   |   26 --------------------------
  mm/vmscan.c                   |    4 +---
- 7 files changed, 2 insertions(+), 57 deletions(-)
+ 7 files changed, 2 insertions(+), 58 deletions(-)
 
 --- a/drivers/block/drbd/drbd_int.h~remove-bdi_congested-and-wb_congested-and-related-functions
 +++ a/drivers/block/drbd/drbd_int.h
@@ -80,10 +80,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	gdp = ext2_get_group_desc(inode->i_sb, block_group, NULL);
 --- a/fs/nilfs2/segbuf.c~remove-bdi_congested-and-wb_congested-and-related-functions
 +++ a/fs/nilfs2/segbuf.c
-@@ -343,17 +343,6 @@ static int nilfs_segbuf_submit_bio(struc
+@@ -341,18 +341,6 @@ static int nilfs_segbuf_submit_bio(struc
+ 				   int mode_flags)
+ {
  	struct bio *bio = wi->bio;
- 	int err;
- 
+-	int err;
+-
 -	if (segbuf->sb_nbio > 0 &&
 -	    bdi_write_congested(segbuf->sb_super->s_bdi)) {
 -		wait_for_completion(&segbuf->sb_bio_event);
@@ -94,11 +96,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -			goto failed;
 -		}
 -	}
--
+ 
  	bio->bi_end_io = nilfs_end_bio_write;
  	bio->bi_private = segbuf;
- 	bio_set_op_attrs(bio, mode, mode_flags);
-@@ -365,10 +354,6 @@ static int nilfs_segbuf_submit_bio(struc
+@@ -365,10 +353,6 @@ static int nilfs_segbuf_submit_bio(struc
  	wi->nr_vecs = min(wi->max_pages, wi->rest_blocks);
  	wi->start = wi->end;
  	return 0;
