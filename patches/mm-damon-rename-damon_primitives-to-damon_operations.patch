@@ -44,11 +44,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  mm/damon/core.c         |   65 +++++++++---------
  mm/damon/dbgfs-test.h   |    2 
  mm/damon/dbgfs.c        |   10 +-
- mm/damon/ops-common.c   |  133 ++++++++++++++++++++++++++++++++++++++
- mm/damon/ops-common.h   |   16 ++++
+ mm/damon/{prmtv-common.c => ops-common.c} |  2 +-
+ mm/damon/{prmtv-common.h => ops-common.h} |  0
  mm/damon/paddr.c        |   22 +++---
- mm/damon/prmtv-common.c |  133 --------------------------------------
- mm/damon/prmtv-common.h |   16 ----
  mm/damon/reclaim.c      |    2 
  mm/damon/vaddr-test.h   |    2 
  mm/damon/vaddr.c        |   22 +++---

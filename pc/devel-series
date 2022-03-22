@@ -286,7 +286,6 @@ mm-hwpoison-check-the-subpage-not-the-head-page.patch
 #mm/madvise
 mm-madvise-use-vma_lookup-instead-of-find_vma.patch
 #
-#mm-madvise-return-correct-bytes-advised-with-process_madvise.patch+1: 5.17?
 mm-madvise-return-correct-bytes-advised-with-process_madvise.patch
 mm-madvise-skip-unmapped-vma-holes-passed-to-process_madvise.patch
 #
@@ -362,7 +361,6 @@ mm-damon-remove-the-target-id-concept.patch
 #
 mm-damon-remove-redundant-page-validation.patch
 #
-#mm-damon-rename-damon_primitives-to-damon_operations.patch: rename
 mm-damon-rename-damon_primitives-to-damon_operations.patch
 mm-damon-let-monitoring-operations-can-be-registered-and-selected.patch
 mm-damon-paddrvaddr-register-themselves-to-damon-in-subsys_initcall.patch
