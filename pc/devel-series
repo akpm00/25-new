@@ -827,7 +827,6 @@ mm-memcg-move-generation-assignment-and-comparison-together.patch
 #mm/vmalloc
 #
 #vmap-dont-allow-invalid-pages.patch: TBU (changelog)
-vmap-dont-allow-invalid-pages.patch
 #
 #mm/documentation
 #mm/initialization
@@ -854,7 +853,6 @@ mm-discard-__gfp_atomic.patch
 #mm/compaction
 #mm/mempolicy
 #mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch: https://lkml.kernel.org/r/Yi9w7TCYbj+OLGXJ@dhcp22.suse.cz
-mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch
 #
 #mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch: bloat!
 mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
@@ -1631,3 +1629,17 @@ workaround-for-a-pci-restoring-bug.patch
 #[folded-merged]highmem-document-kunmap_local-v2.patch
 #[folded-merged]mm-damon-implement-a-minimal-stub-for-sysfs-based-damon-interface-fix.patch
 #[folded-merged]mm-damon-sysfs-support-damos-watermarks-fix.patch
+#[merged]userfaultfd-provide-unmasked-address-on-page-fault-v3-fix.patch
+#[merged]userfaultfd-provide-unmasked-address-on-page-fault-v3.patch
+#[merged]mm-export-pageheadhuge-fix.patch
+#[merged]hugetlb-clean-up-potential-spectre-issue-warnings-v2.patch
+#[merged]mm-hugetlb-free-the-2nd-vmemmap-page-associated-with-each-hugetlb-page-fix.patch
+#[merged]mm-memory-failurec-fix-race-with-changing-page-compound-again-fix.patch
+#[merged]mm-hwpoison-inject-support-injecting-hwpoison-to-free-page-fix.patch
+#[merged]arch-x86-mm-numa-do-not-initialize-nodes-twice-v2.patch
+#[merged]mm-dont-skip-swap-entry-even-if-zap_details-specified-v5.patch
+#[merged]mm-list_lru-replace-linear-array-with-xarray-fix.patch
+#[merged]tmpfs-support-for-file-creation-time-fix.patch
+#[merged]remove-bdi_congested-and-wb_congested-and-related-functions-fix.patch
+#[to-be-updated]mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch
+#[to-be-updated]vmap-dont-allow-invalid-pages.patch
