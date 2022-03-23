@@ -46,6 +46,7 @@ Cc: Stephen Boyd <swboyd@chromium.org>
 Cc: Miguel Ojeda <ojeda@kernel.org>
 Cc: Will Deacon <will@kernel.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
