@@ -19,6 +19,8 @@ kernel-parameters.txt, not in the sysctl guide.
 
 Fix it here by adding bit 5 to sysctl admin-guide documentation.
 
+[rdunlap@infradead.org: fix table format warning]
+  Link: https://lkml.kernel.org/r/20220109055635.6999-1-rdunlap@infradead.org
 Link: https://lkml.kernel.org/r/20211109202848.610874-1-gpiccoli@igalia.com
 Link: https://lkml.kernel.org/r/20211109202848.610874-2-gpiccoli@igalia.com
 Fixes: de6da1e8bcf0 ("panic: add an option to replay all the printk message in buffer")
@@ -40,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  bit 2  print timer info
  bit 3  print locks info if ``CONFIG_LOCKDEP`` is on
  bit 4  print ftrace buffer
-+bit 5: print all printk messages in buffer
++bit 5  print all printk messages in buffer
  =====  ============================================
  
  So for example to print tasks and memory info on panic, user can::

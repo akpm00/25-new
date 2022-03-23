@@ -1,4 +1,3 @@
-#origin.patch
 #NEXT_PATCHES_START linus
 #kthread
 linux-kthreadh-remove-unused-macros.patch
@@ -391,6 +390,103 @@ docs-admin-guide-mm-damon-usage-document-damon-sysfs-interface.patch
 docs-abi-testing-add-damon-sysfs-interface-abi-document.patch
 #
 mm-damon-sysfs-remove-repeat-container_of-in-damon_sysfs_kdamond_release.patch
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#procfs
+proc-alloc-path_max-bytes-for-proc-pid-fd-symlinks.patch
+#
+proc-vmcore-fix-possible-deadlock-on-concurrent-mmap-and-read.patch
+#
+proc-vmcore-fix-vmcore_alloc_buf-kernel-doc-comment.patch
+#
+#misc
+linux-typesh-remove-unnecessary-__bitwise__.patch
+documentation-sparse-add-hints-about-__checker__.patch
+#
+#core-kernel
+kernel-ksysfsc-use-helper-macro-__attr_rw.patch
+#
+#lib
+kconfigdebug-make-debug_info-selectable-from-a-choice.patch
+#
+include-drop-pointless-__compiler_offsetof-indirection.patch
+#
+ilog2-force-inlining-of-__ilog2_u32-and-__ilog2_u64.patch
+#
+bitfield-add-explicit-inclusions-to-the-example.patch
+#
+lib-kconfigdebug-add-arch-dependency-for-function_align-option.patch
+#
+lib-bitmap-fix-many-kernel-doc-warnings.patch
+#
+#checkpatch
+checkpatch-prefer-module_licensegpl-over-module_licensegpl-v2.patch
+checkpatch-add-fix-option-for-some-trailing_statements.patch
+#
+checkpatch-add-early_param-exception-to-blank-line-after-struct-function-test.patch
+#
+checkpatch-use-python3-to-find-codespell-dictionary.patch
+#
+#init
+init-use-ktime_us_delta-to-make-initcall_debug-log-more-precise.patch
+#
+inith-improve-__setup-and-early_param-documentation.patch
+init-mainc-return-1-from-handled-__setup-functions.patch
+#
+#pipe
+fs-pipe-use-kvcalloc-to-allocate-a-pipe_buffer-array.patch
+#
+fs-pipe-local-vars-has-to-match-types-of-proper-pipe_inode_info-fields.patch
+#
+#minix
+minix-fix-bug-when-opening-a-file-with-o_direct.patch
+#
+#fat
+fat-use-pointer-to-simple-type-in-put_user.patch
+#
+#cgroups
+cgroup-use-irqsave-in-cgroup_rstat_flush_locked.patch
+#
+#kexec
+kexec-make-crashk_res-crashk_low_res-and-crash_notes-symbols-always-visible.patch
+riscv-mm-init-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
+x86-setup-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
+arm64-mm-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
+#
+#kdump
+docs-kdump-update-description-about-sysfs-file-system-support.patch
+docs-kdump-add-scp-example-to-write-out-the-dump-file.patch
+panic-unset-panic_on_warn-inside-panic.patch
+ubsan-no-need-to-unset-panic_on_warn-in-ubsan_epilogue.patch
+kasan-no-need-to-unset-panic_on_warn-in-end_report.patch
+#
+#taskstats
+taskstats-remove-unneeded-dead-assignment.patch
+#
+#panic
+docs-sysctl-kernel-add-missing-bit-to-panic_print.patch
+panic-add-option-to-dump-all-cpus-backtraces-in-panic_print.patch
+#
+panic-move-panic_print-before-kmsg-dumpers.patch
+#
+#kcov
+kcov-split-ioctl-handling-into-locked-and-unlocked-parts.patch
+kcov-properly-handle-subsequent-mmap-calls.patch
+#
+#resource
+kernel-resource-fix-kfree-of-bootmem-memory-again.patch
+#
+#ubsan
+revert-ubsan-kcsan-dont-combine-sanitizer-with-kcov-on-clang.patch
 #
 #
 #
@@ -916,13 +1012,9 @@ kernel-hung_taskc-monitor-killed-tasks.patch
 #NEXT_PATCHES_START power-management
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START procfs
-proc-alloc-path_max-bytes-for-proc-pid-fd-symlinks.patch
-proc-alloc-path_max-bytes-for-proc-pid-fd-symlinks-fix.patch
 #
 #proc-vmcore-fix-possible-deadlock-on-concurrent-mmap-and-read.patch: -stable?
-proc-vmcore-fix-possible-deadlock-on-concurrent-mmap-and-read.patch
 #
-proc-vmcore-fix-vmcore_alloc_buf-kernel-doc-comment.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
@@ -936,9 +1028,6 @@ proc-sysctl-make-protected_-world-readable.patch
 #NEXT_PATCHES_START v850
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START misc
-linux-typesh-remove-unnecessary-__bitwise__.patch
-linux-typesh-remove-unnecessary-__bitwise__-fix.patch
-documentation-sparse-add-hints-about-__checker__.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sparse
@@ -946,7 +1035,6 @@ documentation-sparse-add-hints-about-__checker__.patch
 #NEXT_PATCHES_START notifiers
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START core-kernel
-kernel-ksysfsc-use-helper-macro-__attr_rw.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START dca
@@ -972,18 +1060,11 @@ kernel-ksysfsc-use-helper-macro-__attr_rw.patch
 #NEXT_PATCHES_START leds
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START lib
-kconfigdebug-make-debug_info-selectable-from-a-choice.patch
-kconfigdebug-make-debug_info-selectable-from-a-choice-fix.patch
 #
-include-drop-pointless-__compiler_offsetof-indirection.patch
 #
-ilog2-force-inlining-of-__ilog2_u32-and-__ilog2_u64.patch
 #
-bitfield-add-explicit-inclusions-to-the-example.patch
 #
-lib-kconfigdebug-add-arch-dependency-for-function_align-option.patch
 #
-lib-bitmap-fix-many-kernel-doc-warnings.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
@@ -1006,12 +1087,8 @@ lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch
 #NEXT_PATCHES_START mmc
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START checkpatch
-checkpatch-prefer-module_licensegpl-over-module_licensegpl-v2.patch
-checkpatch-add-fix-option-for-some-trailing_statements.patch
 #
-checkpatch-add-early_param-exception-to-blank-line-after-struct-function-test.patch
 #
-checkpatch-use-python3-to-find-codespell-dictionary.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START crc
@@ -1035,7 +1112,6 @@ checkpatch-use-python3-to-find-codespell-dictionary.patch
 #NEXT_PATCHES_START swiotlb
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kallsyms
-kallsyms-print-module-name-in-%ps-s-case-when-kallsyms-is-disabled.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ramfs
@@ -1043,10 +1119,7 @@ kallsyms-print-module-name-in-%ps-s-case-when-kallsyms-is-disabled.patch
 #NEXT_PATCHES_START rwsem
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START init
-init-use-ktime_us_delta-to-make-initcall_debug-log-more-precise.patch
 #
-inith-improve-__setup-and-early_param-documentation.patch
-init-mainc-return-1-from-handled-__setup-functions.patch
 #
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
@@ -1085,15 +1158,12 @@ init-mainc-silence-some-wunused-parameter-warnings.patch
 #NEXT_PATCHES_START pnpbios
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START pipe
-fs-pipe-use-kvcalloc-to-allocate-a-pipe_buffer-array.patch
 #
-fs-pipe-local-vars-has-to-match-types-of-proper-pipe_inode_info-fields.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START telephony
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START minix
-minix-fix-bug-when-opening-a-file-with-o_direct.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ext2
@@ -1121,7 +1191,6 @@ minix-fix-bug-when-opening-a-file-with-o_direct.patch
 #NEXT_PATCHES_START hppfs
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START fat
-fat-use-pointer-to-simple-type-in-put_user.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START quota
@@ -1131,8 +1200,6 @@ fat-use-pointer-to-simple-type-in-put_user.patch
 #NEXT_PATCHES_START cpusets
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START cgroups
-cgroup-use-irqsave-in-cgroup_rstat_flush_locked.patch
-cgroup-use-irqsave-in-cgroup_rstat_flush_locked-fix.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START crash_dump
@@ -1166,18 +1233,9 @@ cgroup-use-irqsave-in-cgroup_rstat_flush_locked-fix.patch
 #NEXT_PATCHES_START cpu hotplug
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kexec
-kexec-make-crashk_res-crashk_low_res-and-crash_notes-symbols-always-visible.patch
-riscv-mm-init-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
-x86-setup-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
-arm64-mm-use-is_enabledconfig_kexec_core-instead-of-ifdef.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kdump
-docs-kdump-update-description-about-sysfs-file-system-support.patch
-docs-kdump-add-scp-example-to-write-out-the-dump-file.patch
-panic-unset-panic_on_warn-inside-panic.patch
-ubsan-no-need-to-unset-panic_on_warn-in-ubsan_epilogue.patch
-kasan-no-need-to-unset-panic_on_warn-in-end_report.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START idr
@@ -1229,8 +1287,6 @@ kasan-no-need-to-unset-panic_on_warn-in-end_report.patch
 #NEXT_PATCHES_START accounting
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START taskstats
-taskstats-remove-unneeded-dead-assignment.patch
-taskstats-remove-unneeded-dead-assignment-fix.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START timerfd
@@ -1262,11 +1318,7 @@ taskstats-remove-unneeded-dead-assignment-fix.patch
 #NEXT_PATCHES_START criu
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START panic
-docs-sysctl-kernel-add-missing-bit-to-panic_print.patch
-docs-sysctl-kernel-add-missing-bit-to-panic_print-fix.patch
-panic-add-option-to-dump-all-cpus-backtraces-in-panic_print.patch
 #
-panic-move-panic_print-before-kmsg-dumpers.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START parport
@@ -1318,14 +1370,11 @@ panic-move-panic_print-before-kmsg-dumpers.patch
 #NEXT_PATCHES_START kconfig
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kcov
-kcov-split-ioctl-handling-into-locked-and-unlocked-parts.patch
-kcov-properly-handle-subsequent-mmap-calls.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START gdb
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START resource
-kernel-resource-fix-kfree-of-bootmem-memory-again.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ssb
@@ -1347,7 +1396,6 @@ kernel-resource-fix-kfree-of-bootmem-memory-again.patch
 #NEXT_PATCHES_START unaligned
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ubsan
-revert-ubsan-kcsan-dont-combine-sanitizer-with-kcov-on-clang.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START cramfs
@@ -1584,41 +1632,10 @@ mutex-subsystem-synchro-test-module-fix.patch
 kernel-forkc-export-kernel_thread-to-modules.patch
 workaround-for-a-pci-restoring-bug.patch
 #
-#[to-be-updated]mm-rmap-fix-cache-flush-on-thp-pages.patch
-#[to-be-updated]dax-fix-cache-flush-on-pmd-mapped-pages.patch
-#[to-be-updated]mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
-#[to-be-updated]mm-pvmw-add-support-for-walking-devmap-pages.patch
-#[to-be-updated]dax-fix-missing-writeprotect-the-pte-entry.patch
-#[to-be-updated]mm-remove-range-parameter-from-follow_invalidate_pte.patch
-#[folded-merged]remove-bdi_congested-and-wb_congested-and-related-functions-fix.patch
-#[folded-merged]tmpfs-support-for-file-creation-time-fix.patch
-#[folded-merged]mm-list_lru-replace-linear-array-with-xarray-fix.patch
-#[folded-merged]mm-dont-skip-swap-entry-even-if-zap_details-specified-v5.patch
-#[folded-merged]arch-x86-mm-numa-do-not-initialize-nodes-twice-v2.patch
-#[folded-merged]mm-hwpoison-inject-support-injecting-hwpoison-to-free-page-fix.patch
-#[folded-merged]mm-memory-failurec-fix-race-with-changing-page-compound-again-fix.patch
-#[folded-merged]mm-hugetlb-free-the-2nd-vmemmap-page-associated-with-each-hugetlb-page-fix.patch
-#[folded-merged]hugetlb-clean-up-potential-spectre-issue-warnings-v2.patch
-#[folded-merged]mm-export-pageheadhuge-fix.patch
-#[folded-merged]userfaultfd-provide-unmasked-address-on-page-fault-v3.patch
-#[folded-merged]userfaultfd-provide-unmasked-address-on-page-fault-v3-fix.patch
-#[folded-merged]mm-handle-uninitialized-numa-nodes-gracefully-fix.patch
-#[folded-merged]mm-memory_hotplug-remove-obsolete-comment-of-__add_pages-fix.patch
-#[folded-merged]mm-only-re-generate-demotion-targets-when-a-numa-node-changes-its-n_cpu-state-v3.patch
-#[folded-merged]highmem-document-kunmap_local-v2.patch
-#[folded-merged]mm-damon-implement-a-minimal-stub-for-sysfs-based-damon-interface-fix.patch
-#[folded-merged]mm-damon-sysfs-support-damos-watermarks-fix.patch
-#[merged]userfaultfd-provide-unmasked-address-on-page-fault-v3-fix.patch
-#[merged]userfaultfd-provide-unmasked-address-on-page-fault-v3.patch
-#[merged]mm-export-pageheadhuge-fix.patch
-#[merged]hugetlb-clean-up-potential-spectre-issue-warnings-v2.patch
-#[merged]mm-hugetlb-free-the-2nd-vmemmap-page-associated-with-each-hugetlb-page-fix.patch
-#[merged]mm-memory-failurec-fix-race-with-changing-page-compound-again-fix.patch
-#[merged]mm-hwpoison-inject-support-injecting-hwpoison-to-free-page-fix.patch
-#[merged]arch-x86-mm-numa-do-not-initialize-nodes-twice-v2.patch
-#[merged]mm-dont-skip-swap-entry-even-if-zap_details-specified-v5.patch
-#[merged]mm-list_lru-replace-linear-array-with-xarray-fix.patch
-#[merged]tmpfs-support-for-file-creation-time-fix.patch
-#[merged]remove-bdi_congested-and-wb_congested-and-related-functions-fix.patch
-#[to-be-updated]mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch
-#[to-be-updated]vmap-dont-allow-invalid-pages.patch
+#[obsolete]kallsyms-print-module-name-in-%ps-s-case-when-kallsyms-is-disabled.patch
+#[folded-merged]proc-alloc-path_max-bytes-for-proc-pid-fd-symlinks-fix.patch
+#[folded-merged]linux-typesh-remove-unnecessary-__bitwise__-fix.patch
+#[folded-merged]kconfigdebug-make-debug_info-selectable-from-a-choice-fix.patch
+#[folded-merged]cgroup-use-irqsave-in-cgroup_rstat_flush_locked-fix.patch
+#[folded-merged]taskstats-remove-unneeded-dead-assignment-fix.patch
+#[folded-merged]docs-sysctl-kernel-add-missing-bit-to-panic_print-fix.patch

@@ -21,6 +21,7 @@ the resulting object code is identical before and after this change.
 
 No functional change. No change to object code.
 
+[akpm@linux-foundation.org: reduce scope of `rc']
 Link: https://lkml.kernel.org/r/20220307093942.21310-1-lukas.bulwahn@gmail.com
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>

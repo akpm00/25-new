@@ -50,7 +50,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/memcontrol.h~memcg-sync-flush-only-if-periodic-flush-is-delayed
 +++ a/include/linux/memcontrol.h
-@@ -999,6 +999,7 @@ static inline unsigned long lruvec_page_
+@@ -1012,6 +1012,7 @@ static inline unsigned long lruvec_page_
  }
  
  void mem_cgroup_flush_stats(void);
@@ -58,7 +58,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
  			      int val);
-@@ -1442,6 +1443,10 @@ static inline void mem_cgroup_flush_stat
+@@ -1455,6 +1456,10 @@ static inline void mem_cgroup_flush_stat
  {
  }
  
@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
 --- a/mm/memcontrol.c~memcg-sync-flush-only-if-periodic-flush-is-delayed
 +++ a/mm/memcontrol.c
-@@ -628,6 +628,9 @@ static DECLARE_DEFERRABLE_WORK(stats_flu
+@@ -586,6 +586,9 @@ static DECLARE_DEFERRABLE_WORK(stats_flu
  static DEFINE_SPINLOCK(stats_flush_lock);
  static DEFINE_PER_CPU(unsigned int, stats_updates);
  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
@@ -79,9 +79,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +#define FLUSH_TIME (2UL*HZ)
  
- static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- {
-@@ -649,6 +652,7 @@ static void __mem_cgroup_flush_stats(voi
+ /*
+  * Accessors to ensure that preemption is disabled on PREEMPT_RT because it can
+@@ -636,6 +639,7 @@ static void __mem_cgroup_flush_stats(voi
  	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
  		return;
  
@@ -89,7 +89,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
  	atomic_set(&stats_flush_threshold, 0);
  	spin_unlock_irqrestore(&stats_flush_lock, flag);
-@@ -660,10 +664,16 @@ void mem_cgroup_flush_stats(void)
+@@ -647,10 +651,16 @@ void mem_cgroup_flush_stats(void)
  		__mem_cgroup_flush_stats();
  }
  

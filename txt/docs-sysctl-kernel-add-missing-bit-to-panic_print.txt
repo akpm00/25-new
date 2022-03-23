@@ -19,6 +19,8 @@ kernel-parameters.txt, not in the sysctl guide.
 
 Fix it here by adding bit 5 to sysctl admin-guide documentation.
 
+[rdunlap@infradead.org: fix table format warning]
+  Link: https://lkml.kernel.org/r/20220109055635.6999-1-rdunlap@infradead.org
 Link: https://lkml.kernel.org/r/20211109202848.610874-1-gpiccoli@igalia.com
 Link: https://lkml.kernel.org/r/20211109202848.610874-2-gpiccoli@igalia.com
 Fixes: de6da1e8bcf0 ("panic: add an option to replay all the printk message in buffer")

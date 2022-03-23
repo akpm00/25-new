@@ -8,6 +8,7 @@ buffer directly.  We'd better use kmalloc and PATH_MAX.
 	with very long canonical pathname will readlink differently
 	because "(deleted)" eats into a buffer.	--adobriyan
 
+[akpm@linux-foundation.org: remove now-unneeded cast]
 Link: https://lkml.kernel.org/r/Ye1fCxyZZ0I5lgOL@localhost.localdomain
 Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>

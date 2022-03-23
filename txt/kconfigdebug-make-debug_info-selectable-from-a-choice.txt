@@ -15,6 +15,9 @@ result remains the same.  Additionally moves DEBUG_KERNEL and DEBUG_MISC
 up to the top of the menu because they were enabling features _above_ it,
 making it weird to navigate menuconfig.
 
+[keescook@chromium.org: make DEBUG_INFO always default=n]
+  Link: https://lkml.kernel.org/r/20220128214131.580131-1-keescook@chromium.org
+  Link: https://lore.kernel.org/lkml/YfRY6+CaQxX7O8vF@dev-arch.archlinux-ax161
 Link: https://lkml.kernel.org/r/20220125075126.891825-1-keescook@chromium.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>

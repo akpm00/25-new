@@ -20,3 +20,14 @@ Acked-by: Tejun Heo <tj@kernel.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Zefan Li <lizefan.x@bytedance.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: cgroup: add a comment to cgroup_rstat_flush_locked().
+
+Add a comment why spin_lock_irq() -> raw_spin_lock_irqsave() is needed.
+
+Link: https://lkml.kernel.org/r/Yh+DOK73hfVV5ThX@linutronix.de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Zefan Li <lizefan.x@bytedance.com>

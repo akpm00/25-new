@@ -15,6 +15,9 @@ result remains the same.  Additionally moves DEBUG_KERNEL and DEBUG_MISC
 up to the top of the menu because they were enabling features _above_ it,
 making it weird to navigate menuconfig.
 
+[keescook@chromium.org: make DEBUG_INFO always default=n]
+  Link: https://lkml.kernel.org/r/20220128214131.580131-1-keescook@chromium.org
+  Link: https://lore.kernel.org/lkml/YfRY6+CaQxX7O8vF@dev-arch.archlinux-ax161
 Link: https://lkml.kernel.org/r/20220125075126.891825-1-keescook@chromium.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Suggested-by: Arnd Bergmann <arnd@arndb.de>
@@ -28,12 +31,12 @@ Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- lib/Kconfig.debug |  140 +++++++++++++++++++++++---------------------
- 1 file changed, 75 insertions(+), 65 deletions(-)
+ lib/Kconfig.debug |  139 +++++++++++++++++++++++---------------------
+ 1 file changed, 74 insertions(+), 65 deletions(-)
 
 --- a/lib/Kconfig.debug~kconfigdebug-make-debug_info-selectable-from-a-choice
 +++ a/lib/Kconfig.debug
-@@ -208,20 +208,88 @@ config DEBUG_BUGVERBOSE
+@@ -208,20 +208,87 @@ config DEBUG_BUGVERBOSE
  
  endmenu # "printk and dmesg options"
  
@@ -67,7 +70,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +choice
 +	prompt "Debug information"
 +	depends on DEBUG_KERNEL
-+	default DEBUG_INFO_NONE if COMPILE_TEST
 +	help
 +	  Selecting something other than "None" results in a kernel image
 +	  that will include debugging info resulting in a larger kernel image.
@@ -79,6 +81,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -	  If unsure, say N.
 +	  Choose which version of DWARF debug info to emit. If unsure,
 +	  select "Toolchain default".
++
++config DEBUG_INFO_NONE
++	bool "Disable debug information"
++	help
++	  Do not build the kernel with debugging information, which will
++	  result in a faster and smaller build.
 +
 +config DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT
 +	bool "Rely on the toolchain's implicit default DWARF version"
@@ -118,17 +126,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	  config if they rely on tooling that has not yet been updated to
 +	  support DWARF Version 5.
 +
-+config DEBUG_INFO_NONE
-+	bool "Disable debug information"
-+	help
-+	  Do not build the kernel with debugging information, which will
-+	  result in a faster and smaller build.
-+
 +endchoice # "Debug information"
  
  if DEBUG_INFO
  
-@@ -267,56 +335,12 @@ config DEBUG_INFO_SPLIT
+@@ -267,56 +334,12 @@ config DEBUG_INFO_SPLIT
  	  to know about the .dwo files and include them.
  	  Incompatible with older versions of ccache.
  
@@ -186,7 +188,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	help
  	  Generate deduplicated BTF type information from DWARF debug info.
  	  Turning this on expects presence of pahole tool, which will convert
-@@ -585,20 +609,6 @@ source "lib/Kconfig.kcsan"
+@@ -585,20 +608,6 @@ source "lib/Kconfig.kcsan"
  
  endmenu
  
