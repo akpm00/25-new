@@ -707,15 +707,6 @@ ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
 #NEXT_PATCHES_START block
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START block
-#mm-document-and-polish-read-ahead-code.patch: check Jan review
-#
-#mm/vmscan
-#mm-fs-delete-pf_swapwrite.patch: needs remove-inode_congested.patch
-#
-#
-#
-#mm-lru_cache_disable-replace-work-queue-synchronization-with-synchronize_rcu.patch: fake Fixes:?
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sparc
 #NEXT_PATCHES_END
@@ -823,9 +814,6 @@ mm-memcg-move-generation-assignment-and-comparison-together.patch
 #mm/tracing
 #mm/page-reporting
 #mm/vmalloc
-#
-#vmap-dont-allow-invalid-pages.patch: TBU (changelog)
-#
 #mm/documentation
 #mm/initialization
 #mm/pagealloc
@@ -837,7 +825,6 @@ mm-page_alloc-add-penalty-to-local_node.patch
 mm-discard-__gfp_atomic.patch
 #
 #mm/memory-failure
-#mm-hwpoison-inject-support-injecting-hwpoison-to-free-page.patch: acks?
 #mm/mlock
 #mm/hugetlb
 #mm/dax
@@ -1040,9 +1027,6 @@ checkpatch-use-python3-to-find-codespell-dictionary.patch
 #NEXT_PATCHES_START epoll
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START binfmt
-#
-#
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START list
 #NEXT_PATCHES_END
@@ -1172,10 +1156,8 @@ cgroup-use-irqsave-in-cgroup_rstat_flush_locked-fix.patch
 #NEXT_PATCHES_START seq_file
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START fork
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START exec
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START wait
 #NEXT_PATCHES_END
@@ -1406,7 +1388,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_START scatterlist
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START seccomp
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START splice
 #NEXT_PATCHES_END
