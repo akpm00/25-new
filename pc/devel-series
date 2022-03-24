@@ -1,3 +1,4 @@
+origin.patch
 #NEXT_PATCHES_START linus
 #kthread
 linux-kthreadh-remove-unused-macros.patch
@@ -504,13 +505,11 @@ revert-ubsan-kcsan-dont-combine-sanitizer-with-kcov-on-clang.patch
 #mm/memcg
 #memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
 memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
-memcg-sync-flush-only-if-periodic-flush-is-delayed-fix.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #mm/pagealloc
 #mm-fix-panic-in-__alloc_pages.patch: more acks? https://lkml.kernel.org/r/2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com
-mm-fix-panic-in-__alloc_pages.patch
 #
 #mm/userfaultfd
 #userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
@@ -518,7 +517,6 @@ userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
 #selftests
 #selftests-vm-fix-clang-build-error-multiple-output-files.patch: acks?
-selftests-vm-fix-clang-build-error-multiple-output-files.patch
 #
 #mm/pagealloc
 #mm-page_alloc-add-scheduling-point-to-free_unref_page_list.patch: -stable?
@@ -528,10 +526,8 @@ selftests-vm-fix-clang-build-error-multiple-output-files.patch
 hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
 #
 #kconfig
-configs-debug-restore-debug_info=y-for-overriding.patch
 #
 #ocfs2
-ocfs2-fix-crash-when-initialize-filecheck-kobj-fails.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -891,9 +887,6 @@ mm-unexport-page_init_poison.patch
 #mm/memremap
 #mm/memcg
 #mm-memcg-set-memcg-after-css-verified-and-got-reference.patch: mhocko nack
-mm-memcg-set-memcg-after-css-verified-and-got-reference.patch
-mm-memcg-set-pos-to-prev-unconditionally.patch
-mm-memcg-move-generation-assignment-and-comparison-together.patch
 #
 #mm/selftests
 #mm/pagemap
