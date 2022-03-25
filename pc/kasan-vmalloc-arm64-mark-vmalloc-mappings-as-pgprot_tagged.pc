@@ -1,3 +1,0 @@
-arch/arm64/include/asm/vmalloc.h
-include/linux/vmalloc.h
-mm/vmalloc.c

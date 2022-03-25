@@ -1,35 +1,48 @@
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 Subject: mm/migration: add trace events for THP migrations
 
-Patch series "mm/migration: Add trace events".
+Patch series "mm/migration: Add trace events", v3.
 
 This adds trace events for all migration scenarios including base page,
 THP and HugeTLB.
 
 
-This patch (of 2):
+This patch (of 3):
 
 This adds two trace events for PMD based THP migration without split. 
 These events closely follow the implementation details like setting and
 removing of PMD migration entries, which are essential operations for THP
-migration.
+migration.  This moves CREATE_TRACE_POINTS into generic THP from powerpc
+for these new trace events to be available on other platforms as well.
 
-Link: https://lkml.kernel.org/r/1643080105-11416-1-git-send-email-anshuman.khandual@arm.com
-Link: https://lkml.kernel.org/r/1643080105-11416-2-git-send-email-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/1643368182-9588-1-git-send-email-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/1643368182-9588-2-git-send-email-anshuman.khandual@arm.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Zi Yan <ziy@nvidia.com>
-Cc: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/trace/events/thp.h |   27 +++++++++++++++++++++++++++
- mm/huge_memory.c           |    5 +++++
- 2 files changed, 32 insertions(+)
+ arch/powerpc/mm/book3s64/trace.c |    1 -
+ include/trace/events/thp.h       |   27 +++++++++++++++++++++++++++
+ mm/huge_memory.c                 |    5 +++++
+ 3 files changed, 32 insertions(+), 1 deletion(-)
 
+--- a/arch/powerpc/mm/book3s64/trace.c~mm-migration-add-trace-events-for-thp-migrations
++++ a/arch/powerpc/mm/book3s64/trace.c
+@@ -3,6 +3,5 @@
+  * This file is for defining trace points and trace related helpers.
+  */
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-#define CREATE_TRACE_POINTS
+ #include <trace/events/thp.h>
+ #endif
 --- a/include/trace/events/thp.h~mm-migration-add-trace-events-for-thp-migrations
 +++ a/include/trace/events/thp.h
 @@ -48,6 +48,33 @@ TRACE_EVENT(hugepage_update,
@@ -68,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* This part must be outside protection */
 --- a/mm/huge_memory.c~mm-migration-add-trace-events-for-thp-migrations
 +++ a/mm/huge_memory.c
-@@ -39,6 +39,9 @@
+@@ -40,6 +40,9 @@
  #include <asm/pgalloc.h>
  #include "internal.h"
  
@@ -78,17 +91,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * By default, transparent hugepage support is disabled in order to avoid
   * risking an increased memory footprint for applications that are not
-@@ -3173,6 +3176,7 @@ void set_pmd_migration_entry(struct page
+@@ -3131,6 +3134,7 @@ void set_pmd_migration_entry(struct page
  	set_pmd_at(mm, address, pvmw->pmd, pmdswp);
- 	page_remove_rmap(page, true);
+ 	page_remove_rmap(page, vma, true);
  	put_page(page);
 +	trace_set_migration_pmd(address, pmd_val(pmdswp));
  }
  
  void remove_migration_pmd(struct page_vma_mapped_walk *pvmw, struct page *new)
-@@ -3206,5 +3210,6 @@ void remove_migration_pmd(struct page_vm
- 	if ((vma->vm_flags & VM_LOCKED) && !PageDoubleMap(new))
- 		mlock_vma_page(new);
+@@ -3163,5 +3167,6 @@ void remove_migration_pmd(struct page_vm
+ 
+ 	/* No need to invalidate - it was non-present before */
  	update_mmu_cache_pmd(vma, address, pvmw->pmd);
 +	trace_remove_migration_pmd(address, pmd_val(pmde));
  }

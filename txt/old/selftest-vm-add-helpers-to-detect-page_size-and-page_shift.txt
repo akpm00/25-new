@@ -12,8 +12,7 @@ Without this tests are broken w.r.t reading /proc/self/pagemap
               (uintptr_t)ptr >> (PAGE_SHIFT - 3)) != sizeof(ent))
               err(2, "read pagemap");
 
-Link: https://lkml.kernel.org/r/20220217083537.374160-2-aneesh.kumar@linux.ibm.com
+Link: https://lkml.kernel.org/r/20220307054355.149820-2-aneesh.kumar@linux.ibm.com
 Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 Cc: Shuah Khan <shuah@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>

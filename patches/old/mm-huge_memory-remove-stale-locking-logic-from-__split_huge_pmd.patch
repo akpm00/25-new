@@ -3,8 +3,10 @@ Subject: mm/huge_memory: remove stale locking logic from __split_huge_pmd()
 
 Let's remove the stale logic that was required for reuse_swap_page().
 
+[akpm@linux-foundation.org: simplification, per Yang Shi]
 Link: https://lkml.kernel.org/r/20220131162940.210846-10-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Rientjes <rientjes@google.com>
@@ -24,36 +26,34 @@ Cc: Nadav Amit <nadav.amit@gmail.com>
 Cc: Oleg Nesterov <oleg@redhat.com>
 Cc: Peter Xu <peterx@redhat.com>
 Cc: Rik van Riel <riel@surriel.com>
-Cc: Roman Gushchin <guro@fb.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/huge_memory.c |   32 +-------------------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+ mm/huge_memory.c |   40 ++++------------------------------------
+ 1 file changed, 4 insertions(+), 36 deletions(-)
 
 --- a/mm/huge_memory.c~mm-huge_memory-remove-stale-locking-logic-from-__split_huge_pmd
 +++ a/mm/huge_memory.c
-@@ -2152,8 +2152,6 @@ void __split_huge_pmd(struct vm_area_str
+@@ -2133,8 +2133,6 @@ void __split_huge_pmd(struct vm_area_str
  {
  	spinlock_t *ptl;
  	struct mmu_notifier_range range;
--	bool do_unlock_page = false;
+-	bool do_unlock_folio = false;
 -	pmd_t _pmd;
  
  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
  				address & HPAGE_PMD_MASK,
-@@ -2172,35 +2170,9 @@ void __split_huge_pmd(struct vm_area_str
+@@ -2153,42 +2151,12 @@ void __split_huge_pmd(struct vm_area_str
  			goto out;
  	}
  
 -repeat:
- 	if (pmd_trans_huge(*pmd)) {
--		if (!page) {
-+		if (!page)
- 			page = pmd_page(*pmd);
+-	if (pmd_trans_huge(*pmd)) {
+-		if (!folio) {
+-			folio = page_folio(pmd_page(*pmd));
 -			/*
 -			 * An anonymous page must be locked, to ensure that a
 -			 * concurrent reuse_swap_page() sees stable mapcount;
@@ -61,33 +61,35 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -			 * and page lock must not be taken when zap_pmd_range()
 -			 * calls __split_huge_pmd() while i_mmap_lock is held.
 -			 */
--			if (PageAnon(page)) {
--				if (unlikely(!trylock_page(page))) {
--					get_page(page);
+-			if (folio_test_anon(folio)) {
+-				if (unlikely(!folio_trylock(folio))) {
+-					folio_get(folio);
 -					_pmd = *pmd;
 -					spin_unlock(ptl);
--					lock_page(page);
+-					folio_lock(folio);
 -					spin_lock(ptl);
 -					if (unlikely(!pmd_same(*pmd, _pmd))) {
--						unlock_page(page);
--						put_page(page);
--						page = NULL;
+-						folio_unlock(folio);
+-						folio_put(folio);
+-						folio = NULL;
 -						goto repeat;
 -					}
--					put_page(page);
+-					folio_put(folio);
 -				}
--				do_unlock_page = true;
+-				do_unlock_folio = true;
 -			}
 -		}
- 		if (PageMlocked(page))
- 			clear_page_mlock(page);
- 	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
-@@ -2208,8 +2180,6 @@ repeat:
- 	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
+-	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
+-		goto out;
+-	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
++	if (pmd_trans_huge(*pmd) || pmd_devmap(*pmd) ||
++	    is_pmd_migration_entry(*pmd))
++		__split_huge_pmd_locked(vma, pmd, range.start, freeze);
++
  out:
  	spin_unlock(ptl);
--	if (do_unlock_page)
--		unlock_page(page);
+-	if (do_unlock_folio)
+-		folio_unlock(folio);
  	/*
  	 * No need to double call mmu_notifier->invalidate_range() callback.
  	 * They are 3 cases to consider inside __split_huge_pmd_locked():

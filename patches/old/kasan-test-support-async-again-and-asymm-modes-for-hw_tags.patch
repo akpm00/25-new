@@ -13,9 +13,10 @@ tests.
 
 Also rename kunit_kasan_expectation to kunit_kasan_status and move its
 definition to mm/kasan/kasan.h from include/linux/kasan.h, as this
-structure is only internally used by KASAN.
+structure is only internally used by KASAN.  Also put the structure
+definition under IS_ENABLED(CONFIG_KUNIT).
 
-Link: https://lkml.kernel.org/r/51ae4a56205a41953971113ab2c264c7e2e5d969.1644938763.git.andreyknvl@google.com
+Link: https://lkml.kernel.org/r/133970562ccacc93ba19d754012c562351d4a8c8.1645033139.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Cc: Marco Elver <elver@google.com>
 Cc: Alexander Potapenko <glider@google.com>
@@ -35,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/kasan.h~kasan-test-support-async-again-and-asymm-modes-for-hw_tags
 +++ a/include/linux/kasan.h
-@@ -18,11 +18,6 @@ struct task_struct;
+@@ -19,11 +19,6 @@ struct task_struct;
  #include <linux/linkage.h>
  #include <asm/kasan.h>
  
@@ -180,7 +181,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <linux/kfence.h>
  #include <linux/stackdepot.h>
  
-+#ifdef CONFIG_KASAN_KUNIT_TEST
++#if IS_ENABLED(CONFIG_KUNIT)
 +
 +/* Used in KUnit-compatible KASAN tests. */
 +struct kunit_kasan_status {
@@ -210,7 +211,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif /* CONFIG_KASAN_HW_TAGS || CONFIG_KASAN_KUNIT_TEST */
 --- a/mm/kasan/report.c~kasan-test-support-async-again-and-asymm-modes-for-hw_tags
 +++ a/mm/kasan/report.c
-@@ -344,20 +344,21 @@ static bool report_enabled(void)
+@@ -336,20 +336,21 @@ static bool report_enabled(void)
  }
  
  #if IS_ENABLED(CONFIG_KUNIT)
@@ -237,7 +238,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	kunit_put_resource(resource);
  }
  #endif /* IS_ENABLED(CONFIG_KUNIT) */
-@@ -371,7 +372,7 @@ void kasan_report_invalid_free(void *obj
+@@ -363,7 +364,7 @@ void kasan_report_invalid_free(void *obj
  
  #if IS_ENABLED(CONFIG_KUNIT)
  	if (current->kunit_test)
@@ -246,7 +247,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif /* IS_ENABLED(CONFIG_KUNIT) */
  
  	start_report(&flags);
-@@ -391,7 +392,7 @@ void kasan_report_async(void)
+@@ -383,7 +384,7 @@ void kasan_report_async(void)
  
  #if IS_ENABLED(CONFIG_KUNIT)
  	if (current->kunit_test)
@@ -255,7 +256,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif /* IS_ENABLED(CONFIG_KUNIT) */
  
  	start_report(&flags);
-@@ -413,7 +414,7 @@ static void __kasan_report(unsigned long
+@@ -405,7 +406,7 @@ static void __kasan_report(unsigned long
  
  #if IS_ENABLED(CONFIG_KUNIT)
  	if (current->kunit_test)

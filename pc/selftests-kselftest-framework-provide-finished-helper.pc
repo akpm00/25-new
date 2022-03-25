@@ -1,2 +1,0 @@
-tools/testing/selftests/kselftest.h
-tools/testing/selftests/vm/memfd_secret.c

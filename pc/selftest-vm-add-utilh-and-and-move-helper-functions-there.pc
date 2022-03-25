@@ -1,3 +1,0 @@
-tools/testing/selftests/vm/ksm_tests.c
-tools/testing/selftests/vm/transhuge-stress.c
-tools/testing/selftests/vm/util.h

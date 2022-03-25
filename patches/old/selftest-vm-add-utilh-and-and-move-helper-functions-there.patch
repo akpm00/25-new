@@ -4,16 +4,17 @@ Subject: selftest/vm: add util.h and and move helper functions there
 Avoid code duplication by adding util.h.  No functional change in this
 patch.
 
-Link: https://lkml.kernel.org/r/20220217083537.374160-1-aneesh.kumar@linux.ibm.com
+Link: https://lkml.kernel.org/r/20220307054355.149820-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 Cc: Shuah Khan <shuah@kernel.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  tools/testing/selftests/vm/ksm_tests.c        |   38 ------------
- tools/testing/selftests/vm/transhuge-stress.c |   42 +-------------
+ tools/testing/selftests/vm/transhuge-stress.c |   41 +------------
  tools/testing/selftests/vm/util.h             |   48 ++++++++++++++++
- 3 files changed, 52 insertions(+), 76 deletions(-)
+ 3 files changed, 52 insertions(+), 75 deletions(-)
 
 --- a/tools/testing/selftests/vm/ksm_tests.c~selftest-vm-add-utilh-and-and-move-helper-functions-there
 +++ a/tools/testing/selftests/vm/ksm_tests.c
@@ -78,9 +79,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	void *map_ptr, *map_ptr_orig;
 --- a/tools/testing/selftests/vm/transhuge-stress.c~selftest-vm-add-utilh-and-and-move-helper-functions-there
 +++ a/tools/testing/selftests/vm/transhuge-stress.c
-@@ -16,44 +16,7 @@
+@@ -15,48 +15,12 @@
+ #include <fcntl.h>
  #include <string.h>
  #include <sys/mman.h>
++#include "util.h"
  
 -#define PAGE_SHIFT 12
 -#define HPAGE_SHIFT 21
@@ -92,15 +95,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -#define PAGEMAP_PFN(ent)	((ent) & ((1ull << 55) - 1))
 -
 -int pagemap_fd;
--
+ int backing_fd = -1;
+ int mmap_flags = MAP_ANONYMOUS | MAP_NORESERVE | MAP_PRIVATE;
+ #define PROT_RW (PROT_READ | PROT_WRITE)
+ 
 -int64_t allocate_transhuge(void *ptr)
 -{
 -	uint64_t ent[2];
 -
 -	/* drop pmd */
--	if (mmap(ptr, HPAGE_SIZE, PROT_READ | PROT_WRITE,
--				MAP_FIXED | MAP_ANONYMOUS |
--				MAP_NORESERVE | MAP_PRIVATE, -1, 0) != ptr)
+-	if (mmap(ptr, HPAGE_SIZE, PROT_RW, MAP_FIXED | mmap_flags,
+-		 backing_fd, 0) != ptr)
 -		errx(2, "mmap transhuge");
 -
 -	if (madvise(ptr, HPAGE_SIZE, MADV_HUGEPAGE))
@@ -120,11 +125,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -
 -	return -1;
 -}
-+#include "util.h"
- 
+-
  int main(int argc, char **argv)
  {
-@@ -65,6 +28,7 @@ int main(int argc, char **argv)
+ 	size_t ram, len;
+@@ -67,6 +31,7 @@ int main(int argc, char **argv)
  	double s;
  	uint8_t *map;
  	size_t map_len;
@@ -132,7 +137,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ram = sysconf(_SC_PHYS_PAGES);
  	if (ram > SIZE_MAX / sysconf(_SC_PAGESIZE) / 4)
-@@ -120,7 +84,7 @@ int main(int argc, char **argv)
+@@ -122,7 +87,7 @@ int main(int argc, char **argv)
  		for (p = ptr; p < ptr + len; p += HPAGE_SIZE) {
  			int64_t pfn;
  

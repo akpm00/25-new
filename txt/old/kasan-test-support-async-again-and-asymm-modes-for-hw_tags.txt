@@ -13,9 +13,10 @@ tests.
 
 Also rename kunit_kasan_expectation to kunit_kasan_status and move its
 definition to mm/kasan/kasan.h from include/linux/kasan.h, as this
-structure is only internally used by KASAN.
+structure is only internally used by KASAN.  Also put the structure
+definition under IS_ENABLED(CONFIG_KUNIT).
 
-Link: https://lkml.kernel.org/r/51ae4a56205a41953971113ab2c264c7e2e5d969.1644938763.git.andreyknvl@google.com
+Link: https://lkml.kernel.org/r/133970562ccacc93ba19d754012c562351d4a8c8.1645033139.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Cc: Marco Elver <elver@google.com>
 Cc: Alexander Potapenko <glider@google.com>

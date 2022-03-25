@@ -4,6 +4,7 @@ Subject: selftest/vm: add util.h and and move helper functions there
 Avoid code duplication by adding util.h.  No functional change in this
 patch.
 
-Link: https://lkml.kernel.org/r/20220217083537.374160-1-aneesh.kumar@linux.ibm.com
+Link: https://lkml.kernel.org/r/20220307054355.149820-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 Cc: Shuah Khan <shuah@kernel.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
