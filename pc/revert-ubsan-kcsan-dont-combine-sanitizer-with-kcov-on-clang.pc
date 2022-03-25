@@ -1,2 +1,0 @@
-lib/Kconfig.kcsan
-lib/Kconfig.ubsan

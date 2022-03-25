@@ -17,8 +17,17 @@ Add new vmalloc-related tests:
 
 [1] https://bugzilla.kernel.org/show_bug.cgi?id=215019
 
+[sfr@canb.auug.org.au: similar to "kasan: test: fix compatibility with FORTIFY_SOURCE"]
+  Link: https://lkml.kernel.org/r/20220128144801.73f5ced0@canb.auug.org.au
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+[andreyknvl@google.com: vmap_tags() and vm_map_ram_tags() pass invalid page array size]
+  Link: https://lkml.kernel.org/r/865c91ba49b90623ab50c7526b79ccb955f544f0.1644950160.git.andreyknvl@google.com
+[andreyknvl@google.com: set_memory_rw/ro() are not exported to modules]
+  Link: https://lkml.kernel.org/r/019ac41602e0c4a7dfe96dc8158a95097c2b2ebd.1645554036.git.andreyknvl@google.com
+[akpm@linux-foundation.org: fix build]
 Link: https://lkml.kernel.org/r/bbdc1c0501c5275e7f26fdb8e2a7b14a40a9f36b.1643047180.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Acked-by: Marco Elver <elver@google.com>
 Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>

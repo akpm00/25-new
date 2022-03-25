@@ -1,2 +1,0 @@
-arch/ia64/mm/discontig.c
-include/linux/memory_hotplug.h

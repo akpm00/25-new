@@ -6,10 +6,10 @@ this was dealing only with migratetypes but storing high-order pages means
 that there can be many more empty lists that are uselessly checked.  Track
 the minimum and maximum active pindex to reduce the search space.
 
-Link: https://lkml.kernel.org/r/20220215145111.27082-3-mgorman@techsingularity.net
+Link: https://lkml.kernel.org/r/20220217002227.5739-3-mgorman@techsingularity.net
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Cc: Aaron Lu <aaron.lu@intel.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Tested-by: Aaron Lu <aaron.lu@intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Jesper Dangaard Brouer <brouer@redhat.com>
 Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>

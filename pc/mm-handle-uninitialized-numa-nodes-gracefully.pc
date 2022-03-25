@@ -1,5 +1,0 @@
-arch/ia64/mm/discontig.c
-include/linux/memory_hotplug.h
-mm/internal.h
-mm/memory_hotplug.c
-mm/page_alloc.c

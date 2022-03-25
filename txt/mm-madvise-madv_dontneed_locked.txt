@@ -37,6 +37,7 @@ Why add a separate flag? Isn't this a pretty niche usecase?
 
 Given that, an explicit new flag seems to make the most sense.
 
+[hannes@cmpxchg.org: fix mips build]
 Link: https://lkml.kernel.org/r/20220304171912.305060-1-hannes@cmpxchg.org
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Michal Hocko <mhocko@suse.com>

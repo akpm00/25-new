@@ -15,7 +15,10 @@ as the pid, ts, and free_ts will almost never be the same.  Instead, sort
 by the contents of the stack trace, which we assume to be whatever is
 after the first line.
 
+[seanga2@gmail.com: fix NULL-pointer dereference when comparing stack traces]
+  Link: https://lkml.kernel.org/r/20211125162653.1855958-1-seanga2@gmail.com
 Link: https://lkml.kernel.org/r/20211124193709.1805776-1-seanga2@gmail.com
+Signed-off-by: Sean Anderson <seanga2@gmail.com>
 Signed-off-by: Sean Anderson <seanga2@gmail.com>
 Cc: Changhee Han <ch0.han@lge.com>
 Cc: Tang Bin <tangbin@cmss.chinamobile.com>
@@ -49,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	const struct block_list *l1 = p1, *l2 = p2;
  
 -	return strcmp(l1->txt, l2->txt);
-+	return strcmp(l1->stacktrace ?: "", l2->stacktrace ?: "");
++	return strcmp(l1->stacktrace, l2->stacktrace);
  }
  
  static int compare_num(const void *p1, const void *p2)
@@ -57,7 +60,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	list[list_size].page_num = get_page_num(buf);
  	memcpy(list[list_size].txt, buf, len);
  	list[list_size].txt[len] = 0;
-+	list[list_size].stacktrace = strchr(list[list_size].txt, '\n');
++	list[list_size].stacktrace = strchr(list[list_size].txt, '\n') ?: "";
  	list_size++;
  	if (list_size % 1000 == 0) {
  		printf("loaded %d\r", list_size);

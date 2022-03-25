@@ -7,32 +7,33 @@ memory subsystem of these machines can be called memory tiering system,
 because the performance of the different types of memory are usually
 different.
 
-In such system, because of the memory accessing pattern changing etc, some
-pages in the slow memory may become hot globally.  So in this patch, the
-NUMA balancing mechanism is enhanced to optimize the page placement among
-the different memory types according to hot/cold dynamically.
+In such system, because of the memory accessing pattern changing etc,
+some pages in the slow memory may become hot globally.  So in this
+patch, the NUMA balancing mechanism is enhanced to optimize the page
+placement among the different memory types according to hot/cold
+dynamically.
 
-In a typical memory tiering system, there are CPUs, fast memory and slow
-memory in each physical NUMA node.  The CPUs and the fast memory will be
-put in one logical node (called fast memory node), while the slow memory
-will be put in another (faked) logical node (called slow memory node). 
-That is, the fast memory is regarded as local while the slow memory is
-regarded as remote.  So it's possible for the recently accessed pages in
-the slow memory node to be promoted to the fast memory node via the
-existing NUMA balancing mechanism.
+In a typical memory tiering system, there are CPUs, fast memory and
+slow memory in each physical NUMA node.  The CPUs and the fast memory
+will be put in one logical node (called fast memory node), while the
+slow memory will be put in another (faked) logical node (called slow
+memory node).  That is, the fast memory is regarded as local while the
+slow memory is regarded as remote.  So it's possible for the recently
+accessed pages in the slow memory node to be promoted to the fast
+memory node via the existing NUMA balancing mechanism.
 
 The original NUMA balancing mechanism will stop to migrate pages if the
-free memory of the target node becomes below the high watermark.  This is
-a reasonable policy if there's only one memory type.  But this makes the
-original NUMA balancing mechanism almost do not work to optimize page
-placement among different memory types.  Details are as follows.
+free memory of the target node becomes below the high watermark.  This
+is a reasonable policy if there's only one memory type.  But this makes
+the original NUMA balancing mechanism almost do not work to optimize
+page placement among different memory types.  Details are as follows.
 
-It's the common cases that the working-set size of the workload is larger
-than the size of the fast memory nodes.  Otherwise, it's unnecessary to
-use the slow memory at all.  So, there are almost always no enough free
-pages in the fast memory nodes, so that the globally hot pages in the slow
-memory node cannot be promoted to the fast memory node.  To solve the
-issue, we have 2 choices as follows,
+It's the common cases that the working-set size of the workload is
+larger than the size of the fast memory nodes.  Otherwise, it's
+unnecessary to use the slow memory at all.  So, there are almost always
+no enough free pages in the fast memory nodes, so that the globally hot
+pages in the slow memory node cannot be promoted to the fast memory
+node.  To solve the issue, we have 2 choices as follows,
 
 a. Ignore the free pages watermark checking when promoting hot pages
    from the slow memory node to the fast memory node.  This will
@@ -40,76 +41,79 @@ a. Ignore the free pages watermark checking when promoting hot pages
    the memory reclaiming.  So that, the cold pages in the fast memory
    node will be demoted to the slow memory node.
 
-b. Make kswapd of the fast memory node to reclaim pages until the
-   free pages are a little (for example, high_watermark / 4) more than
-   the high watermark.  Then, if the free pages of the fast memory
-   node reaches high watermark, and some hot pages need to be
-   promoted, kswapd of the fast memory node will be waken up to demote
-   more cold pages in the fast memory node to the slow memory node.
-   This will free some extra space in the fast memory node, so the hot
-   pages in the slow memory node can be promoted to the fast memory
-   node.
+b. Define a new watermark called wmark_promo which is higher than
+   wmark_high, and have kswapd reclaiming pages until free pages reach
+   such watermark.  The scenario is as follows: when we want to promote
+   hot-pages from a slow memory to a fast memory, but fast memory's free
+   pages would go lower than high watermark with such promotion, we wake
+   up kswapd with wmark_promo watermark in order to demote cold pages and
+   free us up some space.  So, next time we want to promote hot-pages we
+   might have a chance of doing so.
 
-The choice "a" may create high memory pressure in the fast memory node. 
-If the memory pressure of the workload is high, the memory pressure may
-become so high that the memory allocation latency of the workload is
-influenced, e.g.  the direct reclaiming may be triggered.
+The choice "a" may create high memory pressure in the fast memory node.
+If the memory pressure of the workload is high, the memory pressure
+may become so high that the memory allocation latency of the workload
+is influenced, e.g.  the direct reclaiming may be triggered.
 
-The choice "b" works much better at this aspect.  If the memory pressure
-of the workload is high, the hot pages promotion will stop earlier because
-its allocation watermark is higher than that of the normal memory
-allocation.  So in this patch, choice "b" is implemented.
+The choice "b" works much better at this aspect.  If the memory
+pressure of the workload is high, the hot pages promotion will stop
+earlier because its allocation watermark is higher than that of the
+normal memory allocation.  So in this patch, choice "b" is implemented.
+A new zone watermark (WMARK_PROMO) is added.  Which is larger than the
+high watermark and can be controlled via watermark_scale_factor.
 
-In addition to the original page placement optimization among sockets, the
-NUMA balancing mechanism is extended to be used to optimize page placement
-according to hot/cold among different memory types.  So the sysctl user
-space interface (numa_balancing) is extended in a backward compatible way
-as follow, so that the users can enable/disable these functionality
-individually.
+In addition to the original page placement optimization among sockets,
+the NUMA balancing mechanism is extended to be used to optimize page
+placement according to hot/cold among different memory types.  So the
+sysctl user space interface (numa_balancing) is extended in a backward
+compatible way as follow, so that the users can enable/disable these
+functionality individually.
 
 The sysctl is converted from a Boolean value to a bits field.  The
 definition of the flags is,
 
-- 0x0: NUMA_BALANCING_DISABLED
-- 0x1: NUMA_BALANCING_NORMAL
-- 0x2: NUMA_BALANCING_MEMORY_TIERING
+- 0: NUMA_BALANCING_DISABLED
+- 1: NUMA_BALANCING_NORMAL
+- 2: NUMA_BALANCING_MEMORY_TIERING
 
-We have tested the patch with the pmbench memory accessing benchmark with
-the 80:20 read/write ratio and the Gauss access address distribution on a
-2 socket Intel server with Optane DC Persistent Memory Model.  The test
-results shows that the pmbench score can improve up to 95.9%.
+We have tested the patch with the pmbench memory accessing benchmark
+with the 80:20 read/write ratio and the Gauss access address
+distribution on a 2 socket Intel server with Optane DC Persistent
+Memory Model.  The test results shows that the pmbench score can
+improve up to 95.9%.
 
-[akpm@linux-foundation.org: fix Documentation/admin-guide/sysctl/kernel.rst]
-[akpm@linux-foundation.org: s/,/::/ per Randy]
-[ying.huang@intel.com: fix warnings of `make htmldocs`]
-  Link: https://lkml.kernel.org/r/87r18cjwbe.fsf@yhuang6-desk2.ccr.corp.intel.com
-Link: https://lkml.kernel.org/r/20220128082751.593478-3-ying.huang@intel.com
+Thanks Andrew Morton to help fix the document format error.
+
+Link: https://lkml.kernel.org/r/20220221084529.1052339-3-ying.huang@intel.com
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
 Tested-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
 Cc: Michal Hocko <mhocko@suse.com>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Yang Shi <shy828301@gmail.com>
 Cc: Zi Yan <ziy@nvidia.com>
 Cc: Wei Xu <weixugc@google.com>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: zhongjiang-ali <zhongjiang-ali@linux.alibaba.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
 Cc: Feng Tang <feng.tang@intel.com>
-Cc: Hasan Al Maruf <hasanalmaruf@fb.com>
-Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  Documentation/admin-guide/sysctl/kernel.rst |   31 ++++++++++++------
+ include/linux/mmzone.h                      |    1 
  include/linux/sched/sysctl.h                |   10 +++++
  kernel/sched/core.c                         |   21 +++++++++---
  kernel/sysctl.c                             |    2 -
- mm/migrate.c                                |   19 +++++++++--
- mm/vmscan.c                                 |   17 +++++++++
- 6 files changed, 83 insertions(+), 17 deletions(-)
+ mm/migrate.c                                |   16 ++++++++-
+ mm/page_alloc.c                             |    3 +
+ mm/vmscan.c                                 |    6 ++-
+ 8 files changed, 71 insertions(+), 19 deletions(-)
 
 --- a/Documentation/admin-guide/sysctl/kernel.rst~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/Documentation/admin-guide/sysctl/kernel.rst
@@ -128,7 +132,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -time of the page fault, it is determined if the data being accessed should
 -be migrated to a local memory node.
 +Enables/disables and configures automatic page fault based NUMA memory
-+balancing.  Memory is moved automatically to nodes that access it often. 
++balancing.  Memory is moved automatically to nodes that access it often.
 +The value to set can be the result of ORing the following:
 +
 += =================================
@@ -158,6 +162,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  numa_balancing_scan_period_min_ms, numa_balancing_scan_delay_ms, numa_balancing_scan_period_max_ms, numa_balancing_scan_size_mb
  ===============================================================================================================================
+--- a/include/linux/mmzone.h~numa-balancing-optimize-page-placement-for-memory-tiering-system
++++ a/include/linux/mmzone.h
+@@ -353,6 +353,7 @@ enum zone_watermarks {
+ 	WMARK_MIN,
+ 	WMARK_LOW,
+ 	WMARK_HIGH,
++	WMARK_PROMO,
+ 	NR_WMARK
+ };
+ 
 --- a/include/linux/sched/sysctl.h~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/include/linux/sched/sysctl.h
 @@ -23,6 +23,16 @@ enum sched_tunable_scaling {
@@ -179,7 +193,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   *
 --- a/kernel/sched/core.c~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/kernel/sched/core.c
-@@ -4280,7 +4280,9 @@ DEFINE_STATIC_KEY_FALSE(sched_numa_balan
+@@ -4279,7 +4279,9 @@ DEFINE_STATIC_KEY_FALSE(sched_numa_balan
  
  #ifdef CONFIG_NUMA_BALANCING
  
@@ -190,7 +204,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	if (enabled)
  		static_branch_enable(&sched_numa_balancing);
-@@ -4288,13 +4290,22 @@ void set_numabalancing_state(bool enable
+@@ -4287,13 +4289,22 @@ void set_numabalancing_state(bool enable
  		static_branch_disable(&sched_numa_balancing);
  }
  
@@ -214,7 +228,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (write && !capable(CAP_SYS_ADMIN))
  		return -EPERM;
-@@ -4304,8 +4315,10 @@ int sysctl_numa_balancing(struct ctl_tab
+@@ -4303,8 +4314,10 @@ int sysctl_numa_balancing(struct ctl_tab
  	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
  	if (err < 0)
  		return err;
@@ -229,7 +243,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif
 --- a/kernel/sysctl.c~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/kernel/sysctl.c
-@@ -1689,7 +1689,7 @@ static struct ctl_table kern_table[] = {
+@@ -1696,7 +1696,7 @@ static struct ctl_table kern_table[] = {
  		.mode		= 0644,
  		.proc_handler	= sysctl_numa_balancing,
  		.extra1		= SYSCTL_ZERO,
@@ -248,7 +262,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include <asm/tlbflush.h>
  
-@@ -2046,16 +2047,30 @@ static int numamigrate_isolate_page(pg_d
+@@ -2031,16 +2032,27 @@ static int numamigrate_isolate_page(pg_d
  {
  	int page_lru;
  	int nr_pages = thp_nr_pages(page);
@@ -266,10 +280,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
 +		int z;
 +
-+		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING) ||
-+		    !numa_demotion_enabled)
-+			return 0;
-+		if (next_demotion_node(pgdat->node_id) == NUMA_NO_NODE)
++		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
 +			return 0;
 +		for (z = pgdat->nr_zones - 1; z >= 0; z--) {
 +			if (populated_zone(pgdat->node_zones + z))
@@ -281,6 +292,18 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (isolate_lru_page(page))
  		return 0;
+--- a/mm/page_alloc.c~numa-balancing-optimize-page-placement-for-memory-tiering-system
++++ a/mm/page_alloc.c
+@@ -8441,7 +8441,8 @@ static void __setup_per_zone_wmarks(void
+ 
+ 		zone->watermark_boost = 0;
+ 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+-		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
++		zone->_watermark[WMARK_HIGH] = low_wmark_pages(zone) + tmp;
++		zone->_watermark[WMARK_PROMO] = high_wmark_pages(zone) + tmp;
+ 
+ 		spin_unlock_irqrestore(&zone->lock, flags);
+ 	}
 --- a/mm/vmscan.c~numa-balancing-optimize-page-placement-for-memory-tiering-system
 +++ a/mm/vmscan.c
 @@ -56,6 +56,7 @@
@@ -291,33 +314,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include "internal.h"
  
-@@ -3941,6 +3942,13 @@ static bool pgdat_watermark_boosted(pg_d
- }
- 
- /*
-+ * Keep the free pages on fast memory node a little more than the high
-+ * watermark to accommodate the promoted pages.
-+ */
-+#define NUMA_BALANCING_PROMOTE_WATERMARK_DIV	4
-+#define NUMA_BALANCING_PROMOTE_WATERMARK_MIN	(10UL * 1024 * 1024 >> PAGE_SHIFT)
-+
-+/*
-  * Returns true if there is an eligible zone balanced for the request order
-  * and highest_zoneidx
-  */
-@@ -3961,6 +3969,15 @@ static bool pgdat_balanced(pg_data_t *pg
+@@ -3895,7 +3896,10 @@ static bool pgdat_balanced(pg_data_t *pg
+ 		if (!managed_zone(zone))
  			continue;
  
- 		mark = high_wmark_pages(zone);
-+		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
-+		    numa_demotion_enabled &&
-+		    next_demotion_node(pgdat->node_id) != NUMA_NO_NODE) {
-+			unsigned long promote_mark;
-+
-+			promote_mark = max(NUMA_BALANCING_PROMOTE_WATERMARK_MIN,
-+				mark / NUMA_BALANCING_PROMOTE_WATERMARK_DIV);
-+			mark += promote_mark;
-+		}
+-		mark = high_wmark_pages(zone);
++		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
++			mark = wmark_pages(zone, WMARK_PROMO);
++		else
++			mark = high_wmark_pages(zone);
  		if (zone_watermark_ok_safe(zone, order, mark, highest_zoneidx))
  			return true;
  	}

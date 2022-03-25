@@ -1,22 +1,33 @@
 From: Muchun Song <songmuchun@bytedance.com>
 Subject: mm: thp: fix wrong cache flush in remove_migration_pmd()
 
+Patch series "Fix some cache flush bugs", v5.
+
+This series focuses on fixing cache maintenance.
+
+
+This patch (of 7):
+
 The flush_cache_range() is supposed to be justified only if the page is
 already placed in process page table, and that is done right after
 flush_cache_range().  So using this interface is wrong.  And there is no
 need to invalite cache since it was non-present before in
 remove_migration_pmd().  So just to remove it.
 
-Link: https://lkml.kernel.org/r/20220208073617.70342-2-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220210123058.79206-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220210123058.79206-2-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Zi Yan <ziy@nvidia.com>
 Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Lars Persson <lars.persson@axis.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
 Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mina Almasry <almasrymina@google.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Peter Xu <peterx@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -25,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/huge_memory.c~mm-thp-fix-wrong-cache-flush-in-remove_migration_pmd
 +++ a/mm/huge_memory.c
-@@ -3124,7 +3124,6 @@ void remove_migration_pmd(struct page_vm
+@@ -3197,7 +3197,6 @@ void remove_migration_pmd(struct page_vm
  	if (pmd_swp_uffd_wp(*pvmw->pmd))
  		pmde = pmd_wrprotect(pmd_mkuffd_wp(pmde));
  
@@ -33,7 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (PageAnon(new))
  		page_add_anon_rmap(new, vma, mmun_start, true);
  	else
-@@ -3132,6 +3131,8 @@ void remove_migration_pmd(struct page_vm
+@@ -3205,6 +3204,8 @@ void remove_migration_pmd(struct page_vm
  	set_pmd_at(mm, mmun_start, pvmw->pmd, pmde);
  	if ((vma->vm_flags & VM_LOCKED) && !PageDoubleMap(new))
  		mlock_vma_page(new);

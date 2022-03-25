@@ -1,3 +1,0 @@
-arch/hexagon/mm/init.c
-arch/nds32/mm/init.c
-arch/openrisc/mm/init.c

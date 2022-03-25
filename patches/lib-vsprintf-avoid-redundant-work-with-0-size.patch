@@ -85,7 +85,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/lib/vsprintf.c~lib-vsprintf-avoid-redundant-work-with-0-size
 +++ a/lib/vsprintf.c
-@@ -2895,13 +2895,15 @@ int vscnprintf(char *buf, size_t size, c
+@@ -2906,13 +2906,15 @@ int vscnprintf(char *buf, size_t size, c
  {
  	int i;
  

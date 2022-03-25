@@ -3,6 +3,7 @@ Subject: mm/huge_memory: remove stale locking logic from __split_huge_pmd()
 
 Let's remove the stale logic that was required for reuse_swap_page().
 
+[akpm@linux-foundation.org: simplification, per Yang Shi]
 Link: https://lkml.kernel.org/r/20220131162940.210846-10-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
@@ -31,8 +32,8 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/huge_memory.c |   32 +-------------------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+ mm/huge_memory.c |   40 ++++------------------------------------
+ 1 file changed, 4 insertions(+), 36 deletions(-)
 
 --- a/mm/huge_memory.c~mm-huge_memory-remove-stale-locking-logic-from-__split_huge_pmd
 +++ a/mm/huge_memory.c
@@ -45,15 +46,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
  				address & HPAGE_PMD_MASK,
-@@ -2153,42 +2151,14 @@ void __split_huge_pmd(struct vm_area_str
+@@ -2153,42 +2151,12 @@ void __split_huge_pmd(struct vm_area_str
  			goto out;
  	}
  
 -repeat:
- 	if (pmd_trans_huge(*pmd)) {
+-	if (pmd_trans_huge(*pmd)) {
 -		if (!folio) {
-+		if (!folio)
- 			folio = page_folio(pmd_page(*pmd));
+-			folio = page_folio(pmd_page(*pmd));
 -			/*
 -			 * An anonymous page must be locked, to ensure that a
 -			 * concurrent reuse_swap_page() sees stable mapcount;
@@ -79,9 +79,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -				do_unlock_folio = true;
 -			}
 -		}
- 	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
- 		goto out;
- 	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
+-	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
+-		goto out;
+-	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
++	if (pmd_trans_huge(*pmd) || pmd_devmap(*pmd) ||
++	    is_pmd_migration_entry(*pmd))
++		__split_huge_pmd_locked(vma, pmd, range.start, freeze);
++
  out:
  	spin_unlock(ptl);
 -	if (do_unlock_folio)

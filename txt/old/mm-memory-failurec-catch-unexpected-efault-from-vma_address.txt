@@ -7,6 +7,6 @@ error page is found already in collect_procs_{file,anon}, so vma_address()
 should not return -EFAULT except with some bug, as Naoya pointed out.  We
 can use VM_BUG_ON_VMA() to catch this bug here.
 
-Link: https://lkml.kernel.org/r/20220216091431.39406-3-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220218090118.1105-3-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

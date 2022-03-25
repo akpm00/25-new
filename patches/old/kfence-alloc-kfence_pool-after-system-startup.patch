@@ -2,19 +2,20 @@ From: Tianchen Ding <dtcccc@linux.alibaba.com>
 Subject: kfence: alloc kfence_pool after system startup
 
 Allow enabling KFENCE after system startup by allocating its pool via the
-page allocator.  This provides the flexibility to enable KFENCE even if it
+page allocator. This provides the flexibility to enable KFENCE even if it
 wasn't enabled at boot time.
 
-Link: https://lkml.kernel.org/r/20220305144858.17040-3-dtcccc@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20220307074516.6920-3-dtcccc@linux.alibaba.com
 Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Tested-by: Peng Liu <liupeng256@huawei.com>
 Cc: Alexander Potapenko <glider@google.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Marco Elver <elver@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/kfence/core.c |   99 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 78 insertions(+), 21 deletions(-)
+ mm/kfence/core.c |  111 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 90 insertions(+), 21 deletions(-)
 
 --- a/mm/kfence/core.c~kfence-alloc-kfence_pool-after-system-startup
 +++ a/mm/kfence/core.c
@@ -103,13 +104,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Only release unprotected pages, and do not try to go back and change
  	 * page attributes due to risk of failing to do so as well. If changing
-@@ -623,6 +637,22 @@ err:
+@@ -623,6 +637,26 @@ err:
  	return false;
  }
  
 +static bool kfence_init_pool_late(void)
 +{
-+	unsigned long addr, free_pages;
++	unsigned long addr, free_size;
 +
 +	addr = kfence_init_pool();
 +
@@ -117,8 +118,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		return true;
 +
 +	/* Same as above. */
-+	free_pages = (KFENCE_POOL_SIZE - (addr - (unsigned long)__kfence_pool)) / PAGE_SIZE;
-+	free_contig_range(page_to_pfn(virt_to_page(addr)), free_pages);
++	free_size = KFENCE_POOL_SIZE - (addr - (unsigned long)__kfence_pool);
++#ifdef CONFIG_CONTIG_ALLOC
++	free_contig_range(page_to_pfn(virt_to_page(addr)), free_size / PAGE_SIZE);
++#else
++	free_pages_exact((void *)addr, free_size);
++#endif
 +	__kfence_pool = NULL;
 +	return false;
 +}
@@ -126,7 +131,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* === DebugFS Interface ==================================================== */
  
  static int stats_show(struct seq_file *seq, void *v)
-@@ -771,31 +801,58 @@ void __init kfence_alloc_pool(void)
+@@ -771,31 +805,66 @@ void __init kfence_alloc_pool(void)
  		pr_err("failed to allocate pool\n");
  }
  
@@ -169,14 +174,22 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static int kfence_init_late(void)
 +{
 +	const unsigned long nr_pages = KFENCE_POOL_SIZE / PAGE_SIZE;
++#ifdef CONFIG_CONTIG_ALLOC
 +	struct page *pages;
 +
 +	pages = alloc_contig_pages(nr_pages, GFP_KERNEL, first_online_node, NULL);
-+
 +	if (!pages)
 +		return -ENOMEM;
-+
 +	__kfence_pool = page_to_virt(pages);
++#else
++	if (nr_pages > MAX_ORDER_NR_PAGES) {
++		pr_warn("KFENCE_NUM_OBJECTS too large for buddy allocator\n");
++		return -EINVAL;
++	}
++	__kfence_pool = alloc_pages_exact(KFENCE_POOL_SIZE, GFP_KERNEL);
++	if (!__kfence_pool)
++		return -ENOMEM;
++#endif
 +
 +	if (!kfence_init_pool_late()) {
 +		pr_err("%s failed\n", __func__);

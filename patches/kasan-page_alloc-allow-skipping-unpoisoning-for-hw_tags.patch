@@ -51,7 +51,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #else
  #define ___GFP_NOLOCKDEP	0
  #endif
-@@ -237,22 +239,25 @@ struct vm_area_struct;
+@@ -241,22 +243,25 @@ struct vm_area_struct;
   * intended for optimization: setting memory tags at the same time as zeroing
   * memory has minimal additional performace impact.
   *
@@ -85,7 +85,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/include/trace/events/mmflags.h~kasan-page_alloc-allow-skipping-unpoisoning-for-hw_tags
 +++ a/include/trace/events/mmflags.h
-@@ -51,8 +51,9 @@
+@@ -52,8 +52,9 @@
  	{(unsigned long)__GFP_ZEROTAGS,		"__GFP_ZEROTAGS"}	\
  
  #ifdef CONFIG_KASAN_HW_TAGS

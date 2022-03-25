@@ -115,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		vfree(kasan_mem_to_shadow(vm->addr));
 --- a/mm/vmalloc.c~kasan-x86-arm64-s390-rename-functions-for-modules-shadow
 +++ a/mm/vmalloc.c
-@@ -2549,7 +2549,7 @@ struct vm_struct *remove_vm_area(const v
+@@ -2547,7 +2547,7 @@ struct vm_struct *remove_vm_area(const v
  		va->vm = NULL;
  		spin_unlock(&vmap_area_lock);
  

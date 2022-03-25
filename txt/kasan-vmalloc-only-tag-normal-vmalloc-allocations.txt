@@ -11,6 +11,12 @@ which is not tolerated by the kernel.
 
 Only tag the allocations for normal kernel pages.
 
+[andreyknvl@google.com: pass KASAN_VMALLOC_PROT_NORMAL to kasan_unpoison_vmalloc()]
+  Link: https://lkml.kernel.org/r/9230ca3d3e40ffca041c133a524191fd71969a8d.1646233925.git.andreyknvl@google.com
+[andreyknvl@google.com: support tagged vmalloc mappings]
+  Link: https://lkml.kernel.org/r/2f6605e3a358cf64d73a05710cb3da356886ad29.1646233925.git.andreyknvl@google.com
+[andreyknvl@google.com: don't unintentionally disabled poisoning]
+  Link: https://lkml.kernel.org/r/de4587d6a719232e83c760113e46ed2d4d8da61e.1646757322.git.andreyknvl@google.com
 Link: https://lkml.kernel.org/r/fbfd9939a4dc375923c9a5c6b9e7ab05c26b8c6b.1643047180.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Acked-by: Marco Elver <elver@google.com>

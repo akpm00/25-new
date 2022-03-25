@@ -1,3 +1,0 @@
-Documentation/dev-tools/kfence.rst
-lib/Kconfig.kfence
-mm/kfence/core.c

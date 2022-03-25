@@ -3,6 +3,7 @@ Subject: Documentation/vm/page_owner.rst: update the documentation
 
 Update the documentation of ``page_owner``.
 
+[akpm@linux-foundation.org: small grammatical tweaks]
 Link: https://lkml.kernel.org/r/20211214134736.2569-1-hanshenghong2019@email.szu.edu.cn
 Signed-off-by: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
 Cc: Jonathan Corbet <corbet@lwn.net>

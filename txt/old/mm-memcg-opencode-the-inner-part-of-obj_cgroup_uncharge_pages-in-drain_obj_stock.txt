@@ -8,7 +8,7 @@ in drain_obj_stock() and use __refill_stock().  The caller of
 drain_obj_stock() already disables interrupts.
 
 [bigeasy@linutronix.de: patch body around Johannes' diff]
-Link: https://lkml.kernel.org/r/20220221182540.380526-5-bigeasy@linutronix.de
+Link: https://lkml.kernel.org/r/20220226204144.1008339-5-bigeasy@linutronix.de
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>

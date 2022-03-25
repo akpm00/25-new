@@ -37,6 +37,7 @@ Why add a separate flag? Isn't this a pretty niche usecase?
 
 Given that, an explicit new flag seems to make the most sense.
 
+[hannes@cmpxchg.org: fix mips build]
 Link: https://lkml.kernel.org/r/20220304171912.305060-1-hannes@cmpxchg.org
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Michal Hocko <mhocko@suse.com>
@@ -49,10 +50,58 @@ Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/alpha/include/uapi/asm/mman.h     |    2 +
+ arch/mips/include/uapi/asm/mman.h      |    2 +
+ arch/parisc/include/uapi/asm/mman.h    |    2 +
+ arch/xtensa/include/uapi/asm/mman.h    |    2 +
  include/uapi/asm-generic/mman-common.h |    2 +
  mm/madvise.c                           |   24 +++++++++++++----------
- 2 files changed, 16 insertions(+), 10 deletions(-)
+ 6 files changed, 24 insertions(+), 10 deletions(-)
 
+--- a/arch/alpha/include/uapi/asm/mman.h~mm-madvise-madv_dontneed_locked
++++ a/arch/alpha/include/uapi/asm/mman.h
+@@ -74,6 +74,8 @@
+ #define MADV_POPULATE_READ	22	/* populate (prefault) page tables readable */
+ #define MADV_POPULATE_WRITE	23	/* populate (prefault) page tables writable */
+ 
++#define MADV_DONTNEED_LOCKED	24	/* like DONTNEED, but drop locked pages too */
++
+ /* compatibility flags */
+ #define MAP_FILE	0
+ 
+--- a/arch/mips/include/uapi/asm/mman.h~mm-madvise-madv_dontneed_locked
++++ a/arch/mips/include/uapi/asm/mman.h
+@@ -101,6 +101,8 @@
+ #define MADV_POPULATE_READ	22	/* populate (prefault) page tables readable */
+ #define MADV_POPULATE_WRITE	23	/* populate (prefault) page tables writable */
+ 
++#define MADV_DONTNEED_LOCKED	24	/* like DONTNEED, but drop locked pages too */
++
+ /* compatibility flags */
+ #define MAP_FILE	0
+ 
+--- a/arch/parisc/include/uapi/asm/mman.h~mm-madvise-madv_dontneed_locked
++++ a/arch/parisc/include/uapi/asm/mman.h
+@@ -55,6 +55,8 @@
+ #define MADV_POPULATE_READ	22	/* populate (prefault) page tables readable */
+ #define MADV_POPULATE_WRITE	23	/* populate (prefault) page tables writable */
+ 
++#define MADV_DONTNEED_LOCKED	24	/* like DONTNEED, but drop locked pages too */
++
+ #define MADV_MERGEABLE   65		/* KSM may merge identical pages */
+ #define MADV_UNMERGEABLE 66		/* KSM may not merge identical pages */
+ 
+--- a/arch/xtensa/include/uapi/asm/mman.h~mm-madvise-madv_dontneed_locked
++++ a/arch/xtensa/include/uapi/asm/mman.h
+@@ -109,6 +109,8 @@
+ #define MADV_POPULATE_READ	22	/* populate (prefault) page tables readable */
+ #define MADV_POPULATE_WRITE	23	/* populate (prefault) page tables writable */
+ 
++#define MADV_DONTNEED_LOCKED	24	/* like DONTNEED, but drop locked pages too */
++
+ /* compatibility flags */
+ #define MAP_FILE	0
+ 
 --- a/include/uapi/asm-generic/mman-common.h~mm-madvise-madv_dontneed_locked
 +++ a/include/uapi/asm-generic/mman-common.h
 @@ -75,6 +75,8 @@

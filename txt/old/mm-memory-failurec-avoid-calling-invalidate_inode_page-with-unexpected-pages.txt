@@ -8,6 +8,10 @@ But invalidate_inode_page() is not expected to deal with the pages in swap
 cache.  Also non-lru movable page can reach here too.  They're not page
 cache pages.  Skip these pages by checking PageSwapCache and PageLRU.
 
-Link: https://lkml.kernel.org/r/20220228140245.24552-4-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220312074613.4798-3-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Yang Shi <shy828301@gmail.com>

@@ -3,17 +3,17 @@ Subject: mm/hwpoison: avoid the impact of hwpoison_filter() return value on mce 
 
 When the hwpoison page meets the filter conditions, it should not be
 regarded as successful memory_failure() processing for mce handler, but
-should return a value(-EHWPOISON), otherwise mce handler regards the error
+should return a distinct value, otherwise mce handler regards the error
 page has been identified and isolated, which may lead to calling
 set_mce_nospec() to change page attribute, etc.
 
-Here a new MF_MCE_HANDLE flag is introduced to identify the call from the
-mce handler and instruct hwpoison_filter() to return -EHWPOISON, otherwise
-return 0 for compatibility with the hwpoison injector.
+Here memory_failure() return -EOPNOTSUPP to indicate that the error event
+is filtered, mce handler should not take any action for this situation and
+hwpoison injector should treat as correct.
 
-Link: https://lkml.kernel.org/r/20220221021415.2328992-1-luofei@unicloud.com
+Link: https://lkml.kernel.org/r/20220223082135.2769649-1-luofei@unicloud.com
 Signed-off-by: luofei <luofei@unicloud.com>
-Cc: Borislav Petkov <bp@alien8.de>
+Acked-by: Borislav Petkov <bp@suse.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: H. Peter Anvin <hpa@zytor.com>
 Cc: Ingo Molnar <mingo@redhat.com>

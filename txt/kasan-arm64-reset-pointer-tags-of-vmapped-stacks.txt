@@ -17,10 +17,16 @@ so keep it non-tagged for now.
 Note, that the memory for the stack allocation still gets tagged to catch
 vmalloc-into-stack out-of-bounds accesses.
 
+[andreyknvl@google.com: fix case when a stack is retrieved from cached_stacks]
+  Link: https://lkml.kernel.org/r/f50c5f96ef896d7936192c888b0c0a7674e33184.1644943792.git.andreyknvl@google.com
+[dan.carpenter@oracle.com: remove unnecessary check in alloc_thread_stack_node()]
+  Link: https://lkml.kernel.org/r/20220301080706.GB17208@kili
 Link: https://lkml.kernel.org/r/698c5ab21743c796d46c15d075b9481825973e34.1643047180.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Acked-by: Marco Elver <elver@google.com>
+Reviewed-by: Marco Elver <elver@google.com>
 Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>

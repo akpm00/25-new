@@ -21,10 +21,10 @@ because the sections remain short and they don't involve sleeping locks
 Disable preemption during update of the per-CPU variables which do not
 explicitly disable interrupts.
 
-Link: https://lkml.kernel.org/r/20220221182540.380526-4-bigeasy@linutronix.de
+Link: https://lkml.kernel.org/r/20220226204144.1008339-4-bigeasy@linutronix.de
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: kernel test robot <oliver.sang@intel.com>
 Cc: Michal Hocko <mhocko@kernel.org>

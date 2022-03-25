@@ -1,243 +1,36 @@
-Return-Path: <songmuchun@bytedance.com>
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on y
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.5 tests=BAYES_00,T_DKIM_INVALID
-	autolearn=ham autolearn_force=no version=3.4.1
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.15.2/8.15.2/Debian-8ubuntu1) with ESMTP id 21ACc2BP032619
-	for <akpm@localhost>; Thu, 10 Feb 2022 04:38:13 -0800
-Received: from imap.fastmail.com [66.111.4.135]
-	by localhost.localdomain with IMAP (fetchmail-6.3.26)
-	for <akpm@localhost> (single-drop); Thu, 10 Feb 2022 04:38:13 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	 by sloti43n14 (Cyrus 3.5.0-alpha0-4748-g31a5b5f50e-fm-cal2020-20220204.001-g31a5b5f5) with LMTPA;
-	 Thu, 10 Feb 2022 07:37:47 -0500
-X-Cyrus-Session-Id: sloti43n14-1644496667-229924-2-11060410974469354812
-X-Sieve: CMU Sieve 3.0
-X-Resolved-to: akpm@mbx.kernel.org
-X-Delivered-to: akpm@mbx.kernel.org
-X-Original-Delivered-to: akpm@linux-foundation.org
-X-Mail-from: songmuchun@bytedance.com
-Received: from mx2 ([10.202.2.201])
-  by compute2.internal (LMTPProxy); Thu, 10 Feb 2022 07:37:47 -0500
-Received: from mx2.messagingengine.com (localhost [127.0.0.1])
-	by mailmx.nyi.internal (Postfix) with ESMTP id 315E11A2011D
-	for <akpm@mbx.kernel.org>; Thu, 10 Feb 2022 07:37:47 -0500 (EST)
-Received: from mx2.messagingengine.com (localhost [127.0.0.1])
-    by mx2.messagingengine.com (Authentication Milter) with ESMTP
-    id 636E9FA28C9;
-    Thu, 10 Feb 2022 07:37:47 -0500
-ARC-Seal: i=2; a=rsa-sha256; cv=pass; d=messagingengine.com; s=fm2; t=
-    1644496667; b=FXeZUBXsacbgwFc9GObdyA7oj67HXBNK16MzYrPe1kRw+GqbXJ
-    ZZdjTI1QsNjlGKCXV9z78mpXvFF4ymHI6V2jE3pXDCuEEwuhahg4SSxgWHWpTEd3
-    67eeNfeUcjXh+ASaHaY63u5bB5Fh7wmcSakiJQKA05UR3kgrdXq+Nk3oOneC+Z7f
-    9MFzj+vm/+YOyz32i46nUb1GrEVk9ojsLq3Qnr1k+0CNjWpGPfkS8K6SR/0YCp2F
-    Xv5k+p0jHxW5DMjwcp0AB+xsQDVhKe8JpUUVoF/42U0HejNhuzBPuXv1jLmA7qwy
-    ClO4xFCRXNidxkP8B8v+y/bVU/waYyHt2Log==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=
-    messagingengine.com; h=from:to:cc:subject:date:message-id
-    :in-reply-to:references:mime-version:content-transfer-encoding;
-    s=fm2; t=1644496667; bh=tKpVSiHHtaj87FMK/TeB9fab8FVNXtwv8Xc4GuI
-    j/Kg=; b=e1bYGuxqtBs55l+l2994VtJOxwUcgFsCk0l5pctMbvP6EQwUY2Aw3qN
-    Fxiw+DhFTPSEh2wS9xeJmuXIPxkmhAfgnKEGOgcuoOdtV8PlBeM6sX4a2IBv94ne
-    zl+sdn8k3tNKmLKLpztJJZMXSpv3+a82lCO6xXgPhDjKp9erECHdlDxOH4HLlLje
-    3vRuReeCgO2h1QJITowf6QSLAN2u3ZOTLCFBEyNOx8xh9YRAiRa1X6qszJbjUMJt
-    ihmfMsw7hecvUD5P34jNZcL+9MoKgWW8cPhbNr5hzDsWRHyp9bStwT3JONehjs8w
-    +utc/7tMLVt+pPIEBp2CEITJpVrGKIA==
-ARC-Authentication-Results: i=2; mx2.messagingengine.com;
-    x-csa=none;
-    x-me-sender=none;
-    x-ptr=pass smtp.helo=mail-pl1-f198.google.com
-    policy.ptr=mail-pl1-f198.google.com;
-    bimi=skipped (DMARC Policy is not at enforcement);
-    arc=pass (as.1.google.com=pass, ams.1.google.com=pass)
-    smtp.remote-ip=209.85.214.198;
-    x-arc-spf=pass
-    (google.com: domain of songmuchun@bytedance.com designates 209.85.220.41 as permitted sender)
-    smtp.mailfrom=songmuchun@bytedance.com x-arc-instance=1
-    x-arc-domain=google.com (Trusted from aar.1.google.com);
-    dkim=pass (2048-bit rsa key sha256)
-    header.d=bytedance-com.20210112.gappssmtp.com
-    header.i=@bytedance-com.20210112.gappssmtp.com header.b=fQy8vfqp
-    header.a=rsa-sha256 header.s=20210112 x-bits=2048;
-    dmarc=pass policy.published-domain-policy=none
-    policy.applied-disposition=none policy.evaluated-disposition=none
-    (p=none,d=none,d.eval=none) policy.policy-from=p
-    header.from=bytedance.com;
-    iprev=pass smtp.remote-ip=209.85.214.198 (mail-pl1-f198.google.com);
-    spf=pass smtp.mailfrom=songmuchun@bytedance.com
-    smtp.helo=mail-pl1-f198.google.com
-X-ME-Authentication-Results: mx2.messagingengine.com;
-    x-aligned-from=pass (Address match);
-    x-google-dkim=fail (message has been altered, 2048-bit rsa key)
-      header.d=1e100.net header.i=@1e100.net header.b=HgZ3hvyH;
-    x-return-mx=pass header.domain=bytedance.com policy.is_org=yes
-      (MX Records found: alt1.aspmx.l.google.com,alt2.aspmx.l.google.com,aspmx.l.google.com,aspmx2.googlemail.com,aspmx3.googlemail.com);
-    x-return-mx=pass smtp.domain=bytedance.com policy.is_org=yes
-      (MX Records found: alt1.aspmx.l.google.com,alt2.aspmx.l.google.com,aspmx.l.google.com,aspmx2.googlemail.com,aspmx3.googlemail.com);
-    x-tls=pass smtp.version=TLSv1.3 smtp.cipher=TLS_AES_256_GCM_SHA384
-      smtp.bits=256/256;
-    x-vs=clean score=0 state=0
-Authentication-Results: mx2.messagingengine.com;
-    x-csa=none;
-    x-me-sender=none;
-    x-ptr=pass smtp.helo=mail-pl1-f198.google.com
-      policy.ptr=mail-pl1-f198.google.com
-Authentication-Results: mx2.messagingengine.com;
-    bimi=skipped (DMARC Policy is not at enforcement)
-Authentication-Results: mx2.messagingengine.com;
-    arc=pass (as.1.google.com=pass, ams.1.google.com=pass)
-      smtp.remote-ip=209.85.214.198;
-    x-arc-spf=pass
-      (google.com: domain of songmuchun@bytedance.com designates 209.85.220.41 as permitted sender)
-      smtp.mailfrom=songmuchun@bytedance.com x-arc-instance=1
-      x-arc-domain=google.com (Trusted from aar.1.google.com)
-Authentication-Results: mx2.messagingengine.com;
-    dkim=pass (2048-bit rsa key sha256)
-      header.d=bytedance-com.20210112.gappssmtp.com
-      header.i=@bytedance-com.20210112.gappssmtp.com header.b=fQy8vfqp
-      header.a=rsa-sha256 header.s=20210112 x-bits=2048;
-    dmarc=pass policy.published-domain-policy=none
-      policy.applied-disposition=none policy.evaluated-disposition=none
-      (p=none,d=none,d.eval=none) policy.policy-from=p
-      header.from=bytedance.com;
-    iprev=pass smtp.remote-ip=209.85.214.198 (mail-pl1-f198.google.com);
-    spf=pass smtp.mailfrom=songmuchun@bytedance.com
-      smtp.helo=mail-pl1-f198.google.com
-X-ME-VSCause: gggruggvucftvghtrhhoucdtuddrgedvvddriedugdegudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkf
-    fojghfggfgsedtkeertdertddtnecuhfhrohhmpefouhgthhhunhcuufhonhhguceoshho
-    nhhgmhhutghhuhhnsegshihtvggurghntggvrdgtohhmqeenucggtffrrghtthgvrhhnpe
-    eifeeukeeugfeiudegledtleegfffgkeefieffudehheeijeeuieffvdevteehieenucfk
-    phepvddtledrkeehrddvudegrdduleekpddufeelrddujeejrddvvdehrddvfeejnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddtledrkeehrddvudeg
-    rdduleekpdhhvghlohepmhgrihhlqdhplhduqdhfudelkedrghhoohhglhgvrdgtohhmpd
-    hmrghilhhfrhhomhepoehsohhnghhmuhgthhhunhessgihthgvuggrnhgtvgdrtghomheq
-X-ME-VSScore: 0
-X-ME-VSCategory: clean
-X-ME-CSA: none
-Received-SPF: pass
-    (bytedance.com: Sender is authorized to use 'songmuchun@bytedance.com' in 'mfrom' identity (mechanism 'include:_spf.google.com' matched))
-    receiver=mx2.messagingengine.com;
-    identity=mailfrom;
-    envelope-from="songmuchun@bytedance.com";
-    helo=mail-pl1-f198.google.com;
-    client-ip=209.85.214.198
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx2.messagingengine.com (Postfix) with ESMTPS
-	for <akpm@mbx.kernel.org>; Thu, 10 Feb 2022 07:37:47 -0500 (EST)
-Received: by mail-pl1-f198.google.com with SMTP id b5-20020a1709027e0500b0014ca986e6d8so1425092plm.13
-        for <akpm@mbx.kernel.org>; Thu, 10 Feb 2022 04:37:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:dkim-signature:from:to:cc:subject:date
-         :message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=tKpVSiHHtaj87FMK/TeB9fab8FVNXtwv8Xc4GuIj/Kg=;
-        b=HgZ3hvyHjHRQIckctxvgu69HvZpXe0fpE9gsk7Z7Jfr5Vvq7uPKiz9uwBdn7p1WYVV
-         z/1q+f1HSv73VbxCGWfsEmBj2VthgZ9Ri0wT9MWd1jUEPJXu9mHO5gInR+yTBpFuM+xK
-         stpGK9cQe2NOp4nj//ITpUE38DOIiui3lAohqGodbijUu6a+gNt2B2tDqX1Kb7pxpVWs
-         SiklG0IhqwF+aN19mW+94ecjhlUDmMFlcqe0qKhN0wjc6Crll1q3VSdKnsHy0ZF9mHzT
-         J9pfcPn9miNcR8DSu0Y4r2LdlSQqBex7V3XtjpOv3IIw0LGa1njlTS0Z7ry3btt2nMMZ
-         BPrQ==
-X-Gm-Message-State: AOAM533gvmQh0cvv3xxIHhVfwY4ncHsFmjQJ54FcCafDGLQ70qrvWeGZ
-	qdDtfMAIgjAkfPoD9pRLwT5BCrdnw45rI+cf4NUDIHiW/9aHVIFvCbX4UxfIzbM2YnZI3Q3SLC0
-	YpE1MCZuXNjO2FX/TQNcTPc+ZImRVCfDXyu88ZPT7WJXpmY/GweG2Kuc=
-X-Received: by 2002:a17:90a:688e:: with SMTP id a14mr2587067pjd.63.1644496665208;
-        Thu, 10 Feb 2022 04:37:45 -0800 (PST)
-X-Received: by 2002:a17:90a:688e:: with SMTP id a14mr2586971pjd.63.1644496664001;
-        Thu, 10 Feb 2022 04:37:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1644496663; cv=none;
-        d=google.com; s=arc-20160816;
-        b=qh9BGKuftknqvHlKc+AHeT1TcOIkKoB+DH1GV396CgYkci0jmVv71OBdnogOvDQjOQ
-         VulkQvmAJk9CZy2vEbOephaXZgRx3LdbCBrLZJPHuwsWiQOtY4dVFUDlvqHRWJMg1//L
-         t3PeirG5hVGegsUrBWBlOFAiBQOoHEDOlXNwHNU7gr9MYsZB5TVrRC0ewCzcGn1krUgp
-         LnvHt+itvcLfunRWAylzU6AQzp0yWTfLQbQS4AzDRtDAj0bxYBh25BkddzmOFE1DvOMm
-         yhg5BKwm6UtzLS0mja1EJ33yM2N0rDEFaEdAFz0pdwZunrmeNzsIOJtTAboVf5xTPODr
-         7yIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:dkim-signature;
-        bh=tKpVSiHHtaj87FMK/TeB9fab8FVNXtwv8Xc4GuIj/Kg=;
-        b=WN066CHjw8wWqZ0J8eNjqW74cw/OZqS5WjwUyW+8jiEah2pZnLYVrVRPUeY8xNKPOB
-         xaUf0EIWrFKHRdsAckmK5Ew/2GGeYNQZXS74iyJ9evdXZk6S8WDjGDv9fvZfC0c5h6jK
-         swA1QY7kxNnVOvAQk+GCs8Hf9NduLKi4fOTAIiQf6382WpMKJQ5fN1cm11gP6YA/2nrO
-         AkYCeC5evJsacfMr50bhkPO8uGB8YOSYfzR3dryUFsbmTedSybM9ym5eyOC258DoFuOU
-         kVWOPy8cSpqU8hHwlrAE6GyZJgMVvor/l+8GjIwxXJ92PLFZX0G8daABtHi4QZA8QMmL
-         QQDw==
-ARC-Authentication-Results: i=1; mx.google.com;
-       dkim=pass header.i=@bytedance-com.20210112.gappssmtp.com header.s=20210112 header.b=fQy8vfqp;
-       spf=pass (google.com: domain of songmuchun@bytedance.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=songmuchun@bytedance.com;
-       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=bytedance.com
-Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
-        by mx.google.com with SMTPS id 9sor703074pjs.38.2022.02.10.04.37.43
-        for <akpm@linux-foundation.org>
-        (Google Transport Security);
-        Thu, 10 Feb 2022 04:37:43 -0800 (PST)
-Received-SPF: pass (google.com: domain of songmuchun@bytedance.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
-Authentication-Results: mx.google.com;
-       dkim=pass header.i=@bytedance-com.20210112.gappssmtp.com header.s=20210112 header.b=fQy8vfqp;
-       spf=pass (google.com: domain of songmuchun@bytedance.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=songmuchun@bytedance.com;
-       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=bytedance.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=tKpVSiHHtaj87FMK/TeB9fab8FVNXtwv8Xc4GuIj/Kg=;
-        b=fQy8vfqpU9cS9VF0UkKIV2NNCg0tQEdPXZgAQyveKt+IqZMhPhSLL2L91pt18Zg06N
-         vNvRvBopSQe6m1BOl262fpfSHiT8PTxbkyLfR2s8UUCSsGqv6jhJr5tF046QxWGKPvQ4
-         j1luq5AgDAl2iOiKPsSWugj44vi8gpSPdoJjaafW25tBKv8lpwq+uDQF3SBoV0mX0uWh
-         oeE64v4w2/BhLSM2qEBvn2JtkZhtGWhP1r03BRWqGEilJv2WHtsOlbBI0BeMeSkYlft6
-         BtL8Es/U26EonkHfhoxdHnW89rwm0do83Rj77+xgClJ16smYtj669p2PtIeIaa0K/Otd
-         MINg==
-X-Google-Smtp-Source: ABdhPJyGp2GsZvSDMqpR5iLkDxZjE53dEk3dm5rB0VkaJA74+KantoyMJ9LJ6pDdNdp3d3NZ3dXk6A==
-X-Received: by 2002:a17:90b:1c0e:: with SMTP id oc14mr2638965pjb.2.1644496663463;
-        Thu, 10 Feb 2022 04:37:43 -0800 (PST)
-Received: from FVFYT0MHHV2J.tiktokcdn.com ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id i8sm11767812pgf.94.2022.02.10.04.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 04:37:43 -0800 (PST)
 From: Muchun Song <songmuchun@bytedance.com>
-To: akpm@linux-foundation.org, zi.yan@cs.rutgers.edu,
-        kirill.shutemov@linux.intel.com, rientjes@google.com,
-        lars.persson@axis.com, mike.kravetz@oracle.com, ziy@nvidia.com
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>
 Subject: mm: shmem: fix missing cache flush in shmem_mfill_atomic_pte()
-Date: Thu, 10 Feb 2022 20:30:56 +0800
-Message-Id: <20220210123058.79206-6-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
-In-Reply-To: <20220210123058.79206-1-songmuchun@bytedance.com>
-References: <20220210123058.79206-1-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Gm-Original-To: akpm@linux-foundation.org
 
-The userfaultfd calls shmem_mfill_atomic_pte() which does not do any
-cache flushing for the target page.  Then the target page will be mapped
-to the user space with a different address (user address), which might
-have an alias issue with the kernel address used to copy the data from the
-user to.  Insert flush_dcache_page() in non-zero-page case.  And replace
-clear_highpage() with clear_user_highpage() which already considers
-the cache maintenance.
+userfaultfd calls shmem_mfill_atomic_pte() which does not do any cache
+flushing for the target page.  Then the target page will be mapped to the
+user space with a different address (user address), which might have an
+alias issue with the kernel address used to copy the data from the user
+to.  Insert flush_dcache_page() in non-zero-page case.  And replace
+clear_highpage() with clear_user_highpage() which already considers the
+cache maintenance.
 
+Link: https://lkml.kernel.org/r/20220210123058.79206-6-songmuchun@bytedance.com
 Fixes: 8d1039634206 ("userfaultfd: shmem: add shmem_mfill_zeropage_pte for userfaultfd support")
 Fixes: 4c27fe4c4c84 ("userfaultfd: shmem: add shmem_mcopy_atomic_pte for userfaultfd support")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Lars Persson <lars.persson@axis.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- mm/shmem.c | 4 +++-
+
+ mm/shmem.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index eb0fd9001130..2e17ec9231a2 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2371,8 +2371,10 @@ int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+--- a/mm/shmem.c~mm-shmem-fix-missing-cache-flush-in-shmem_mfill_atomic_pte
++++ a/mm/shmem.c
+@@ -2364,8 +2364,10 @@ int shmem_mfill_atomic_pte(struct mm_str
  				/* don't free the page */
  				goto out_unacct_blocks;
  			}
@@ -249,5 +42,4 @@ index eb0fd9001130..2e17ec9231a2 100644
  		}
  	} else {
  		page = *pagep;
--- 
-2.11.0
+_

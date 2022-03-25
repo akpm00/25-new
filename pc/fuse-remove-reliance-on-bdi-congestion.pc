@@ -1,3 +1,0 @@
-fs/fuse/control.c
-fs/fuse/dev.c
-fs/fuse/file.c

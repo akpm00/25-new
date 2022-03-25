@@ -1,4 +1,0 @@
-arch/arm/Kconfig
-arch/riscv/Kconfig
-arch/x86/Kconfig
-mm/Kconfig

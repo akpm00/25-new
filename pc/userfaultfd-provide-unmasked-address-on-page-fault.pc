@@ -1,6 +1,0 @@
-fs/userfaultfd.c
-include/linux/mm.h
-include/uapi/linux/userfaultfd.h
-mm/hugetlb.c
-mm/memory.c
-mm/swapfile.c

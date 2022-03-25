@@ -1,7 +1,16 @@
 From: Tianchen Ding <dtcccc@linux.alibaba.com>
 Subject: kfence: allow re-enabling KFENCE after system startup
 
-Patch series "provide the flexibility to enable KFENCE", v2.
+Patch series "provide the flexibility to enable KFENCE", v3.
+
+If CONFIG_CONTIG_ALLOC is not supported, we fallback to try
+alloc_pages_exact().  Allocating pages in this way has limits about
+MAX_ORDER (default 11).  So we will not support allocating kfence pool
+after system startup with a large KFENCE_NUM_OBJECTS.
+
+When handling failures in kfence_init_pool_late(), we pair
+free_pages_exact() to alloc_pages_exact() for compatibility consideration,
+though it actually does the same as free_contig_range().
 
 
 This patch (of 2):
@@ -12,11 +21,11 @@ KFENCE could never be re-enabled until next rebooting.
 
 Allow re-enabling it by writing a positive num to sample_interval.
 
-Link: https://lkml.kernel.org/r/20220305144858.17040-1-dtcccc@linux.alibaba.com
-Link: https://lkml.kernel.org/r/20220305144858.17040-2-dtcccc@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20220307074516.6920-1-dtcccc@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20220307074516.6920-2-dtcccc@linux.alibaba.com
 Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+Reviewed-by: Marco Elver <elver@google.com>
 Cc: Alexander Potapenko <glider@google.com>
-Cc: Marco Elver <elver@google.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

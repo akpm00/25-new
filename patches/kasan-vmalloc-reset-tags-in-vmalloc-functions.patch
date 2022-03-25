@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	return addr >= VMALLOC_START && addr < VMALLOC_END;
  }
-@@ -633,7 +633,7 @@ int is_vmalloc_or_module_addr(const void
+@@ -631,7 +631,7 @@ int is_vmalloc_or_module_addr(const void
  	 * just put it in the vmalloc space.
  	 */
  #if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
@@ -50,7 +50,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (addr >= MODULES_VADDR && addr < MODULES_END)
  		return 1;
  #endif
-@@ -797,6 +797,8 @@ static struct vmap_area *find_vmap_area_
+@@ -795,6 +795,8 @@ static struct vmap_area *find_vmap_area_
  	struct vmap_area *va = NULL;
  	struct rb_node *n = vmap_area_root.rb_node;
  
@@ -59,7 +59,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	while (n) {
  		struct vmap_area *tmp;
  
-@@ -818,6 +820,8 @@ static struct vmap_area *__find_vmap_are
+@@ -816,6 +818,8 @@ static struct vmap_area *__find_vmap_are
  {
  	struct rb_node *n = vmap_area_root.rb_node;
  
@@ -68,7 +68,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	while (n) {
  		struct vmap_area *va;
  
-@@ -2168,7 +2172,7 @@ EXPORT_SYMBOL_GPL(vm_unmap_aliases);
+@@ -2166,7 +2170,7 @@ EXPORT_SYMBOL_GPL(vm_unmap_aliases);
  void vm_unmap_ram(const void *mem, unsigned int count)
  {
  	unsigned long size = (unsigned long)count << PAGE_SHIFT;
@@ -77,7 +77,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct vmap_area *va;
  
  	might_sleep();
-@@ -3426,6 +3430,8 @@ long vread(char *buf, char *addr, unsign
+@@ -3424,6 +3428,8 @@ long vread(char *buf, char *addr, unsign
  	unsigned long buflen = count;
  	unsigned long n;
  

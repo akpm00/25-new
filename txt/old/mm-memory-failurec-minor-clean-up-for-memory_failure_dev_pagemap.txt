@@ -1,12 +1,12 @@
 From: Miaohe Lin <linmiaohe@huawei.com>
 Subject: mm/memory-failure.c: minor clean up for memory_failure_dev_pagemap
 
-Patch series "A few cleanup and fixup patches for memory failure", v2.
+Patch series "A few cleanup and fixup patches for memory failure", v3.
 
 This series contains a few patches to simplify the code logic, remove
 unneeded variable and remove obsolete comment.  Also we fix race changing
 page more robustly in memory_failure.  More details can be found in the
-respective changelogs.
+respective changelogs.  
 
 
 This patch (of 8):
@@ -14,7 +14,7 @@ This patch (of 8):
 The flags always has MF_ACTION_REQUIRED and MF_MUST_KILL set.  So we do
 not need to check these flags again.
 
-Link: https://lkml.kernel.org/r/20220216091431.39406-1-linmiaohe@huawei.com
-Link: https://lkml.kernel.org/r/20220216091431.39406-2-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220218090118.1105-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220218090118.1105-2-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

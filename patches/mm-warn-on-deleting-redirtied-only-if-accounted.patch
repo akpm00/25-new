@@ -25,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/pagemap.h~mm-warn-on-deleting-redirtied-only-if-accounted
 +++ a/include/linux/pagemap.h
-@@ -991,8 +991,7 @@ static inline void __set_page_dirty(stru
+@@ -1009,8 +1009,7 @@ static inline void __set_page_dirty(stru
  {
  	__folio_mark_dirty(page_folio(page), mapping, warn);
  }
@@ -65,7 +65,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
 --- a/mm/page-writeback.c~mm-warn-on-deleting-redirtied-only-if-accounted
 +++ a/mm/page-writeback.c
-@@ -2548,16 +2548,14 @@ static void folio_account_dirtied(struct
+@@ -2465,16 +2465,14 @@ static void folio_account_dirtied(struct
   *
   * Caller must hold lock_page_memcg().
   */
@@ -89,7 +89,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -2768,7 +2766,7 @@ void __folio_cancel_dirty(struct folio *
+@@ -2683,7 +2681,7 @@ void __folio_cancel_dirty(struct folio *
  		wb = unlocked_inode_to_wb_begin(inode, &cookie);
  
  		if (folio_test_clear_dirty(folio))

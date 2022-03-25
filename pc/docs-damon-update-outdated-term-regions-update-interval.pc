@@ -1,2 +1,0 @@
-Documentation/admin-guide/mm/damon/usage.rst
-Documentation/vm/damon/design.rst

@@ -8,10 +8,10 @@ by starting with a list that definitely has pages on it in
 free_unref_page_commit() and for drain, it does not matter where draining
 starts as all pages are removed.
 
-Link: https://lkml.kernel.org/r/20220215145111.27082-4-mgorman@techsingularity.net
+Link: https://lkml.kernel.org/r/20220217002227.5739-4-mgorman@techsingularity.net
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Aaron Lu <aaron.lu@intel.com>
+Tested-by: Aaron Lu <aaron.lu@intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Jesper Dangaard Brouer <brouer@redhat.com>
 Cc: Michal Hocko <mhocko@kernel.org>

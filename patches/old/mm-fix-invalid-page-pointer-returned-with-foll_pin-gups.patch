@@ -1,15 +1,14 @@
 From: Peter Xu <peterx@redhat.com>
 Subject: mm: fix invalid page pointer returned with FOLL_PIN gups
 
-Patch series "mm/gup: some cleanups", v2.
+Patch series "mm/gup: some cleanups", v5.
 
 
-This patch (of 4):
+This patch (of 5):
 
 Alex reported invalid page pointer returned with pin_user_pages_remote()
 from vfio after upstream commit 4b6c33b32296 ("vfio/type1: Prepare for
-batched pinning with struct vfio_batch").  This problem breaks NVIDIA vfio
-mdev.
+batched pinning with struct vfio_batch").
 
 It turns out that it's not the fault of the vfio commit; however after
 vfio switches to a full page buffer to store the page pointers it starts
@@ -33,21 +32,26 @@ follow_devmap_pud() on checking FOLL_PIN when it needs to return an
 Attaching the Fixes to the FOLL_PIN rework commit, as it happened later than
 1027e4436b6a.
 
-Link: https://lkml.kernel.org/r/20220201101108.306062-1-jhubbard@nvidia.com
-Link: https://lkml.kernel.org/r/20220201101108.306062-2-jhubbard@nvidia.com
+[jhubbard@nvidia.com: added some tags, removed a reference to an out of tree module.]
+Link: https://lkml.kernel.org/r/20220207062213.235127-1-jhubbard@nvidia.com
+Link: https://lkml.kernel.org/r/20220204020010.68930-1-jhubbard@nvidia.com
+Link: https://lkml.kernel.org/r/20220204020010.68930-2-jhubbard@nvidia.com
 Fixes: 3faa52c03f44 ("mm/gup: track FOLL_PIN pages")
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 Reported-by: Alex Williamson <alex.williamson@redhat.com>
 Debugged-by: Alex Williamson <alex.williamson@redhat.com>
 Tested-by: Alex Williamson <alex.williamson@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Jan Kara <jack@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
 Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Jason Gunthorpe <jgg@nvidia.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -56,7 +60,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/gup.c~mm-fix-invalid-page-pointer-returned-with-foll_pin-gups
 +++ a/mm/gup.c
-@@ -440,7 +440,7 @@ static int follow_pfn_pte(struct vm_area
+@@ -465,7 +465,7 @@ static int follow_pfn_pte(struct vm_area
  		pte_t *pte, unsigned int flags)
  {
  	/* No page to get reference */

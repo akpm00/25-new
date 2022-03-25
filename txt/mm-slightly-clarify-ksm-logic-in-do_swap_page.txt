@@ -6,6 +6,7 @@ have a page in the swapcache, not if we allocated a fresh page and
 bypassed the swapcache.  While at it, add a comment why this is usually
 necessary and merge the two swapcache conditions.
 
+[akpm@linux-foundation.org: fix comment, per David]
 Link: https://lkml.kernel.org/r/20220131162940.210846-4-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>

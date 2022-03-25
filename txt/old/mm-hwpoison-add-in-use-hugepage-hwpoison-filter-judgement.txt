@@ -6,7 +6,7 @@ still necessary to call hwpoison_filter() to make a filter judgement,
 otherwise the filter hugepage will be unmaped and the related process may
 be killed.
 
-Link: https://lkml.kernel.org/r/20220221021521.2329075-1-luofei@unicloud.com
+Link: https://lkml.kernel.org/r/20220223082254.2769757-1-luofei@unicloud.com
 Signed-off-by: luofei <luofei@unicloud.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Borislav Petkov <bp@alien8.de>

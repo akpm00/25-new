@@ -1,3 +1,0 @@
-include/linux/migrate.h
-mm/migrate.c
-mm/vmstat.c

@@ -77,7 +77,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/memremap.c~mm-delete-__clearpagewaiters
 +++ a/mm/memremap.c
-@@ -486,8 +486,6 @@ void free_zone_device_page(struct page *
+@@ -456,8 +456,6 @@ void free_zone_device_page(struct page *
  	if (WARN_ON_ONCE(!page->pgmap->ops || !page->pgmap->ops->page_free))
  		return;
  

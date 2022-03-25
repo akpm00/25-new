@@ -18,10 +18,10 @@ Make memory.soft_limit_in_bytes and cgroup.event_control return
 memcg_write_event_control() which return only -EOPNOTSUPP on PREEMPT_RT. 
 Document that the two knobs are disabled on PREEMPT_RT.
 
-Link: https://lkml.kernel.org/r/20220221182540.380526-3-bigeasy@linutronix.de
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lkml.kernel.org/r/20220226204144.1008339-3-bigeasy@linutronix.de
 Suggested-by: Michal Hocko <mhocko@kernel.org>
 Suggested-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Acked-by: Roman Gushchin <guro@fb.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>

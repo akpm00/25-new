@@ -1,4 +1,0 @@
-include/linux/hugetlb.h
-include/linux/page-flags.h
-mm/hugetlb_vmemmap.c
-mm/memory_hotplug.c

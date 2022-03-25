@@ -3,6 +3,7 @@ Subject: Documentation/vm/page_owner.rst: update the documentation
 
 Update the documentation of ``page_owner``.
 
+[akpm@linux-foundation.org: small grammatical tweaks]
 Link: https://lkml.kernel.org/r/20211214134736.2569-1-hanshenghong2019@email.szu.edu.cn
 Signed-off-by: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
 Cc: Jonathan Corbet <corbet@lwn.net>
@@ -16,8 +17,8 @@ Cc: Xiaoming Ni <nixiaoming@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- Documentation/vm/page_owner.rst |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ Documentation/vm/page_owner.rst |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
 --- a/Documentation/vm/page_owner.rst~documentation-vm-page_ownerrst-update-the-documentation
 +++ a/Documentation/vm/page_owner.rst
@@ -30,20 +31,22 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
     See the result about who allocated each page
     in the ``sorted_page_owner.txt``. General output::
-@@ -108,3 +108,22 @@ Usage
+@@ -107,4 +107,23 @@ Usage
+ 	 // Detailed stack
  
     By default, ``page_owner_sort`` is sorted according to the times of buf.
-    If you want to sort by the pages nums of buf, use the ``-m`` parameter.
-+   The detail parameters are shown as follows:
+-   If you want to sort by the pages nums of buf, use the ``-m`` parameter.
++   If you want to sort by the page nums of buf, use the ``-m`` parameter.
++   The detailed parameters are:
 +
 +   fundamental function:
 +
 +	Sort:
-+		-a		Sort by memory allocate time.
++		-a		Sort by memory allocation time.
 +		-m		Sort by total memory.
 +		-p		Sort by pid.
 +		-r		Sort by memory release time.
-+		-s		Sort by the stack trace.
++		-s		Sort by stack trace.
 +		-t		Sort by times (default).
 +
 +   additional function:

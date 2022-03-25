@@ -30,14 +30,14 @@ which uses the locked version of refill_stock().
   drain_obj_stock().
 
 Link: https://lkml.kernel.org/r/20220209014709.GA26885@xsang-OptiPlex-9020
-Link: https://lkml.kernel.org/r/20220221182540.380526-6-bigeasy@linutronix.de
+Link: https://lkml.kernel.org/r/20220226204144.1008339-6-bigeasy@linutronix.de
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Reported-by: kernel test robot <oliver.sang@intel.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Koutný <mkoutny@suse.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Roman Gushchin <guro@fb.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Vladimir Davydov <vdavydov.dev@gmail.com>

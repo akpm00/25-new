@@ -4,7 +4,7 @@ Subject: mm/memory-failure.c: rework the signaling logic in kill_proc
 BUS_MCEERR_AR code is only sent when MF_ACTION_REQUIRED is set and the
 target is current.  Rework the code to make this clear.
 
-Link: https://lkml.kernel.org/r/20220216091431.39406-4-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220218090118.1105-4-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>

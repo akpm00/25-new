@@ -3,19 +3,19 @@ Subject: mm/memory-failure.c: fix race with changing page more robustly
 
 We're only intended to deal with the non-Compound page after we split thp
 in memory_failure.  However, the page could have changed compound pages
-due to race window.  If this happens, we could try again to hopefully
+due to race window.  If this happens, we could retry once to hopefully
 handle the page next round.  Also remove unneeded orig_head.  It's always
 equal to the hpage.  So we can use hpage directly and remove this
 redundant one.
 
-Link: https://lkml.kernel.org/r/20220216091431.39406-5-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220218090118.1105-5-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/memory-failure.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ mm/memory-failure.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
 --- a/mm/memory-failure.c~mm-memory-failurec-fix-race-with-changing-page-more-robustly
 +++ a/mm/memory-failure.c
@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	num_poisoned_pages_inc();
  
  	/*
-@@ -1813,13 +1812,18 @@ try_again:
+@@ -1813,10 +1812,21 @@ try_again:
  	lock_page(p);
  
  	/*
@@ -48,17 +48,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	 * handle the page next round.
  	 */
 -	if (PageCompound(p) && compound_head(p) != orig_head) {
--		action_result(pfn, MF_MSG_DIFFERENT_COMPOUND, MF_IGNORED);
--		res = -EBUSY;
--		goto unlock_page;
 +	if (PageCompound(p)) {
-+		if (TestClearPageHWPoison(p))
-+			num_poisoned_pages_dec();
-+		unlock_page(p);
-+		put_page(p);
-+		flags &= ~MF_COUNT_INCREASED;
-+		goto try_again;
- 	}
- 
- 	/*
++		if (retry) {
++			if (TestClearPageHWPoison(p))
++				num_poisoned_pages_dec();
++			unlock_page(p);
++			put_page(p);
++			flags &= ~MF_COUNT_INCREASED;
++			retry = false;
++			goto try_again;
++		}
+ 		action_result(pfn, MF_MSG_DIFFERENT_COMPOUND, MF_IGNORED);
+ 		res = -EBUSY;
+ 		goto unlock_page;
 _

@@ -1,20 +1,35 @@
 From: Miaohe Lin <linmiaohe@huawei.com>
 Subject: mm/memory-failure.c: fix race with changing page compound again
 
-Patch series "A few fixup patches for memory failure".
+Patch series "A few fixup patches for memory failure", v2.
 
 This series contains a few patches to fix the race with changing page
-compound page, fix potential VM_BUG_ON_PAGE and so on.  More details can
-be found in the respective changelogs.
+compound page, make non-LRU movable pages unhandlable and so on.  More
+details can be found in the respective changelogs.
 
-
-This patch (of 4):
 
 There is a race window where we got the compound_head, the hugetlb page
 could be freed to buddy, or even changed to another compound page just
-before we try to get hwpoison page.  If this happens, just bail out.
+before we try to get hwpoison page.  Think about the below race window:
 
-Link: https://lkml.kernel.org/r/20220228140245.24552-1-linmiaohe@huawei.com
-Link: https://lkml.kernel.org/r/20220228140245.24552-2-linmiaohe@huawei.com
+  CPU 1					  CPU 2
+  memory_failure_hugetlb
+  struct page *head = compound_head(p);
+					  hugetlb page might be freed to
+					  buddy, or even changed to another
+					  compound page.
+
+  get_hwpoison_page -- page is not what we want now...
+
+If this race happens, just bail out.  Also MF_MSG_DIFFERENT_PAGE_SIZE is
+introduced to record this event.
+
+[akpm@linux-foundation.org: s@/**@/*@, per Naoya Horiguchi]
+Link: https://lkml.kernel.org/r/20220312074613.4798-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220312074613.4798-2-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Yang Shi <shy828301@gmail.com>
