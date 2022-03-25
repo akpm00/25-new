@@ -1,7 +1,0 @@
-drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-drivers/net/ethernet/intel/ice/ice.h
-drivers/net/ethernet/intel/ice/ice_main.c
-drivers/net/phy/meson-gxl.c
-drivers/staging/gdm724x/gdm_lte.c
-net/bluetooth/hci_sync.c
-net/dsa/dsa2.c

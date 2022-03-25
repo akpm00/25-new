@@ -24,16 +24,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/rmap.h~mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount
 +++ a/include/linux/rmap.h
-@@ -12,6 +12,8 @@
- #include <linux/memcontrol.h>
+@@ -13,6 +13,8 @@
  #include <linux/highmem.h>
+ #include <linux/pagemap.h>
  
 +#include <linux/refcount.h>
 +
  /*
   * The anon_vma heads a list of private "related" vmas, to scan if
   * an anonymous page pointing to this anon_vma needs to be unmapped:
-@@ -36,7 +38,7 @@ struct anon_vma {
+@@ -37,7 +39,7 @@ struct anon_vma {
  	 * the reference is responsible for clearing up the
  	 * anon_vma if they are the last user on release
  	 */
@@ -42,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * Count of child anon_vmas and VMAs which points to this anon_vma.
-@@ -100,14 +102,14 @@ enum ttu_flags {
+@@ -101,14 +103,14 @@ enum ttu_flags {
  #ifdef CONFIG_MMU
  static inline void get_anon_vma(struct anon_vma *anon_vma)
  {
@@ -61,7 +61,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/rmap.c~mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount
 +++ a/mm/rmap.c
-@@ -89,7 +89,7 @@ static inline struct anon_vma *anon_vma_
+@@ -91,7 +91,7 @@ static inline struct anon_vma *anon_vma_
  
  	anon_vma = kmem_cache_alloc(anon_vma_cachep, GFP_KERNEL);
  	if (anon_vma) {
@@ -70,7 +70,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		anon_vma->degree = 1;	/* Reference for first vma */
  		anon_vma->parent = anon_vma;
  		/*
-@@ -104,7 +104,7 @@ static inline struct anon_vma *anon_vma_
+@@ -106,7 +106,7 @@ static inline struct anon_vma *anon_vma_
  
  static inline void anon_vma_free(struct anon_vma *anon_vma)
  {
@@ -78,8 +78,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	VM_BUG_ON(refcount_read(&anon_vma->refcount));
  
  	/*
- 	 * Synchronize against page_lock_anon_vma_read() such that
-@@ -446,7 +446,7 @@ static void anon_vma_ctor(void *data)
+ 	 * Synchronize against folio_lock_anon_vma_read() such that
+@@ -448,7 +448,7 @@ static void anon_vma_ctor(void *data)
  	struct anon_vma *anon_vma = data;
  
  	init_rwsem(&anon_vma->rwsem);
@@ -88,7 +88,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	anon_vma->rb_root = RB_ROOT_CACHED;
  }
  
-@@ -496,7 +496,7 @@ struct anon_vma *page_get_anon_vma(struc
+@@ -498,7 +498,7 @@ struct anon_vma *page_get_anon_vma(struc
  		goto out;
  
  	anon_vma = (struct anon_vma *) (anon_mapping - PAGE_MAPPING_ANON);
@@ -97,7 +97,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		anon_vma = NULL;
  		goto out;
  	}
-@@ -555,7 +555,7 @@ struct anon_vma *page_lock_anon_vma_read
+@@ -557,7 +557,7 @@ struct anon_vma *folio_lock_anon_vma_rea
  	}
  
  	/* trylock failed, we got to sleep */
@@ -106,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		anon_vma = NULL;
  		goto out;
  	}
-@@ -570,7 +570,7 @@ struct anon_vma *page_lock_anon_vma_read
+@@ -572,7 +572,7 @@ struct anon_vma *folio_lock_anon_vma_rea
  	rcu_read_unlock();
  	anon_vma_lock_read(anon_vma);
  
@@ -115,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/*
  		 * Oops, we held the last refcount, release the lock
  		 * and bail -- can't simply use put_anon_vma() because
-@@ -2257,7 +2257,7 @@ void __put_anon_vma(struct anon_vma *ano
+@@ -2205,7 +2205,7 @@ void __put_anon_vma(struct anon_vma *ano
  	struct anon_vma *root = anon_vma->root;
  
  	anon_vma_free(anon_vma);

@@ -78,7 +78,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/proc/page.c~proc-kpageflags-do-not-use-uninitialized-struct-pages
 +++ a/fs/proc/page.c
-@@ -117,6 +117,9 @@ u64 stable_page_flags(struct page *page)
+@@ -118,6 +118,9 @@ u64 stable_page_flags(struct page *page)
  	if (!page)
  		return BIT_ULL(KPF_NOPAGE);
  
@@ -90,7 +90,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/include/linux/memremap.h~proc-kpageflags-do-not-use-uninitialized-struct-pages
 +++ a/include/linux/memremap.h
-@@ -130,6 +130,7 @@ static inline unsigned long pgmap_vmemma
+@@ -151,6 +151,7 @@ static inline bool is_pci_p2pdma_page(co
  }
  
  #ifdef CONFIG_ZONE_DEVICE
@@ -98,7 +98,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void *memremap_pages(struct dev_pagemap *pgmap, int nid);
  void memunmap_pages(struct dev_pagemap *pgmap);
  void *devm_memremap_pages(struct device *dev, struct dev_pagemap *pgmap);
-@@ -142,6 +143,11 @@ unsigned long vmem_altmap_offset(struct
+@@ -163,6 +164,11 @@ unsigned long vmem_altmap_offset(struct
  void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
  unsigned long memremap_compat_align(void);
  #else
@@ -112,7 +112,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
 --- a/mm/memremap.c~proc-kpageflags-do-not-use-uninitialized-struct-pages
 +++ a/mm/memremap.c
-@@ -115,6 +115,26 @@ static unsigned long pfn_len(struct dev_
+@@ -107,6 +107,26 @@ static unsigned long pfn_len(struct dev_
  		pfn_first(pgmap, range_id)) >> pgmap->vmemmap_shift;
  }
  
@@ -136,7 +136,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	return ret;
 +}
 +
- #define for_each_device_pfn(pfn, map, i) \
- 	for (pfn = pfn_first(map, i); pfn < pfn_end(map, i); \
- 	     pfn = pfn_next(map, pfn))
+ static void pageunmap_range(struct dev_pagemap *pgmap, int range_id)
+ {
+ 	struct range *range = &pgmap->ranges[range_id];
 _
