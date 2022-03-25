@@ -1,0 +1,49 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: stacktrace: add interface based on shadow call stack
+
+Patch series "kasan, arm64, scs, stacktrace: collect stack traces from Shadow Call Stack", v2.
+
+Currently, KASAN always uses the normal stack trace collection routines,
+which rely on the unwinder, when saving alloc and free stack traces.
+
+Instead of invoking the unwinder, collect the stack trace by copying
+frames from the Shadow Call Stack whenever it is enabled.  This reduces
+boot time by 30% for all KASAN modes when Shadow Call Stack is enabled.
+
+Stack staces are collected from the Shadow Call Stack via a new
+stack_trace_save_shadow() interface.
+
+Note that the frame of the interrupted function is not included into the
+stack trace, as it is not yet saved on the SCS when an interrupt happens.
+
+
+This patch (of 4):
+
+Add a new interface stack_trace_save_shadow() for collecting stack traces
+by copying frames from the Shadow Call Stack.
+
+Collecting stack traces this way is significantly faster: boot time of a
+defconfig build with KASAN enabled gets descreased by ~30%.
+
+The few patches following this one add an implementation of
+stack_trace_save_shadow() for arm64.
+
+The implementation of the added interface is not meant to use
+stack_trace_consume_fn to avoid making a function call for each collected
+frame to further improve performance.
+
+Link: https://lkml.kernel.org/r/cover.1648049113.git.andreyknvl@google.com
+Link: https://lkml.kernel.org/r/21e3e20ea58e242e3c82c19abbfe65b579e0e4b8.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>

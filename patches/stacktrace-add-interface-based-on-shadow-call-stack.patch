@@ -1,0 +1,134 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: stacktrace: add interface based on shadow call stack
+
+Patch series "kasan, arm64, scs, stacktrace: collect stack traces from Shadow Call Stack", v2.
+
+Currently, KASAN always uses the normal stack trace collection routines,
+which rely on the unwinder, when saving alloc and free stack traces.
+
+Instead of invoking the unwinder, collect the stack trace by copying
+frames from the Shadow Call Stack whenever it is enabled.  This reduces
+boot time by 30% for all KASAN modes when Shadow Call Stack is enabled.
+
+Stack staces are collected from the Shadow Call Stack via a new
+stack_trace_save_shadow() interface.
+
+Note that the frame of the interrupted function is not included into the
+stack trace, as it is not yet saved on the SCS when an interrupt happens.
+
+
+This patch (of 4):
+
+Add a new interface stack_trace_save_shadow() for collecting stack traces
+by copying frames from the Shadow Call Stack.
+
+Collecting stack traces this way is significantly faster: boot time of a
+defconfig build with KASAN enabled gets descreased by ~30%.
+
+The few patches following this one add an implementation of
+stack_trace_save_shadow() for arm64.
+
+The implementation of the added interface is not meant to use
+stack_trace_consume_fn to avoid making a function call for each collected
+frame to further improve performance.
+
+Link: https://lkml.kernel.org/r/cover.1648049113.git.andreyknvl@google.com
+Link: https://lkml.kernel.org/r/21e3e20ea58e242e3c82c19abbfe65b579e0e4b8.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/Kconfig               |    6 ++++++
+ include/linux/stacktrace.h |   15 +++++++++++++++
+ kernel/stacktrace.c        |   21 +++++++++++++++++++++
+ 3 files changed, 42 insertions(+)
+
+--- a/arch/Kconfig~stacktrace-add-interface-based-on-shadow-call-stack
++++ a/arch/Kconfig
+@@ -1036,6 +1036,12 @@ config HAVE_RELIABLE_STACKTRACE
+ 	  arch_stack_walk_reliable() function which only returns a stack trace
+ 	  if it can guarantee the trace is reliable.
+ 
++config HAVE_SHADOW_STACKTRACE
++	bool
++	help
++	  If this is set, the architecture provides the arch_stack_walk_shadow()
++	  function, which collects the stack trace from the shadow call stack.
++
+ config HAVE_ARCH_HASH
+ 	bool
+ 	default n
+--- a/include/linux/stacktrace.h~stacktrace-add-interface-based-on-shadow-call-stack
++++ a/include/linux/stacktrace.h
+@@ -60,6 +60,9 @@ int arch_stack_walk_reliable(stack_trace
+ 
+ void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
+ 			  const struct pt_regs *regs);
++
++int arch_stack_walk_shadow(unsigned long *store, unsigned int size,
++			   unsigned int skipnr);
+ #endif /* CONFIG_ARCH_STACKWALK */
+ 
+ #ifdef CONFIG_STACKTRACE
+@@ -106,6 +109,18 @@ static inline int stack_trace_save_tsk_r
+ {
+ 	return -ENOSYS;
+ }
++#endif
++
++#if defined(CONFIG_STACKTRACE) && defined(CONFIG_HAVE_SHADOW_STACKTRACE)
++int stack_trace_save_shadow(unsigned long *store, unsigned int size,
++			    unsigned int skipnr);
++#else
++static inline int stack_trace_save_shadow(unsigned long *store,
++					  unsigned int size,
++					  unsigned int skipnr)
++{
++	return -ENOSYS;
++}
+ #endif
+ 
+ #endif /* __LINUX_STACKTRACE_H */
+--- a/kernel/stacktrace.c~stacktrace-add-interface-based-on-shadow-call-stack
++++ a/kernel/stacktrace.c
+@@ -237,6 +237,27 @@ unsigned int stack_trace_save_user(unsig
+ }
+ #endif
+ 
++#ifdef CONFIG_HAVE_SHADOW_STACKTRACE
++/**
++ * stack_trace_save_shadow - Save a stack trace based on shadow call stack
++ * @store:	Pointer to the storage array
++ * @size:	Size of the storage array
++ * @skipnr:	Number of entries to skip at the start of the stack trace
++ *
++ * Return: Number of trace entries stored.
++ */
++int stack_trace_save_shadow(unsigned long *store, unsigned int size,
++			    unsigned int skipnr)
++{
++	/*
++	 * Do not use stack_trace_consume_fn to avoid making a function
++	 * call for each collected frame to improve performance.
++	 * Skip + 1 frame to skip stack_trace_save_shadow.
++	 */
++	return arch_stack_walk_shadow(store, size, skipnr + 1);
++}
++#endif
++
+ #else /* CONFIG_ARCH_STACKWALK */
+ 
+ /*
+_

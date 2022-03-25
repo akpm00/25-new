@@ -1,0 +1,26 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: arm64: implement stack_trace_save_shadow
+
+Implement the stack_trace_save_shadow() interface that collects stack
+traces based on the Shadow Call Stack (SCS) for arm64.
+
+The implementation walks through available SCS pointers (the per-task one
+and the per-interrupt-type ones) and copies the frames.
+
+Note that the frame of the interrupted function is not included into the
+stack trace, as it is not yet saved on the SCS when an interrupt happens.
+
+Link: https://lkml.kernel.org/r/0bb72ea8fa88ef9ae3508c23d993952a0ae6f0f9.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

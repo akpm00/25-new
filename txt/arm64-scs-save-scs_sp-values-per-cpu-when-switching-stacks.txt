@@ -1,0 +1,44 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: arm64, scs: save scs_sp values per-cpu when switching stacks
+
+When an interrupt happens, the current Shadow Call Stack (SCS) pointer is
+switched to a per-interrupt one stored in a per-CPU variable.  The old
+pointer is then saved on the normal stack and restored when the interrupt
+is handled.
+
+To collect the current stack trace based on SCS when the interrupt is
+being handled, we need to know the SCS pointers that belonged to the task
+and potentially other interrupts that were interrupted.
+
+Instead of trying to retrieve the SCS pointers from the stack, change
+interrupt handlers (for hard IRQ, Normal and Critical SDEI) to save the
+previous SCS pointer in a per-CPU variable.
+
+Note that interrupts stack.  A task can be interrupted by a hard IRQ,
+which then can interrupted by a normal SDEI, etc.  This is handled by
+using a separate per-CPU variable for each interrupt type.
+
+Also reset the saved SCS pointer when exiting the interrupt.  This allows
+checking whether we should include any interrupt frames when collecting
+the stack trace.  While we could use in_hardirq(), there seems to be no
+easy way to check whether we are in an SDEI handler.  Directly checking
+the per-CPU variables for being non-zero is more resilient.
+
+Also expose both the added saved SCS variables and the existing SCS base
+variables in arch/arm64/include/asm/scs.h so that the stack trace
+collection impementation can use them.
+
+Link: https://lkml.kernel.org/r/f75c58b17bfaa419f84286cd174e3a08f971b779.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>

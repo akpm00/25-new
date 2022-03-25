@@ -1,0 +1,19 @@
+From: Joel Savitz <jsavitz@redhat.com>
+Subject: Documentation/sysctl: document page_lock_unfairness
+
+commit 5ef64cc8987a ("mm: allow a controlled amount of unfairness in the
+page lock") introduced a new systctl but no accompanying documentation.
+
+Add a simple entry to the documentation.
+
+Link: https://lkml.kernel.org/r/20220325164437.120246-1-jsavitz@redhat.com
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "zhangyi (F)" <yi.zhang@huawei.com>
+Cc: Charan Teja Reddy <charante@codeaurora.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>

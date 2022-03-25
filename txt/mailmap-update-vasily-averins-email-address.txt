@@ -1,0 +1,7 @@
+From: Vasily Averin <vasily.averin@linux.dev>
+Subject: mailmap: update Vasily Averin's email address
+
+I'm moving to a @linux.dev account. Map my old addresses.
+
+Link: https://lkml.kernel.org/r/737c7c2b-cdab-63ee-be90-cb33316c9657@linux.dev
+Signed-off-by: Vasily Averin <vasily.averin@linux.dev>

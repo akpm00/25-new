@@ -1,0 +1,143 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: arm64: implement stack_trace_save_shadow
+
+Implement the stack_trace_save_shadow() interface that collects stack
+traces based on the Shadow Call Stack (SCS) for arm64.
+
+The implementation walks through available SCS pointers (the per-task one
+and the per-interrupt-type ones) and copies the frames.
+
+Note that the frame of the interrupted function is not included into the
+stack trace, as it is not yet saved on the SCS when an interrupt happens.
+
+Link: https://lkml.kernel.org/r/0bb72ea8fa88ef9ae3508c23d993952a0ae6f0f9.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/Kconfig             |    1 
+ arch/arm64/kernel/stacktrace.c |   83 +++++++++++++++++++++++++++++++
+ 2 files changed, 84 insertions(+)
+
+--- a/arch/arm64/Kconfig~arm64-implement-stack_trace_save_shadow
++++ a/arch/arm64/Kconfig
+@@ -200,6 +200,7 @@ config ARM64
+ 	select HAVE_FUNCTION_ARG_ACCESS_API
+ 	select MMU_GATHER_RCU_TABLE_FREE
+ 	select HAVE_RSEQ
++	select HAVE_SHADOW_STACKTRACE
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_KPROBES
+--- a/arch/arm64/kernel/stacktrace.c~arm64-implement-stack_trace_save_shadow
++++ a/arch/arm64/kernel/stacktrace.c
+@@ -12,9 +12,11 @@
+ #include <linux/sched/debug.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/stacktrace.h>
++#include <linux/scs.h>
+ 
+ #include <asm/irq.h>
+ #include <asm/pointer_auth.h>
++#include <asm/scs.h>
+ #include <asm/stack_pointer.h>
+ #include <asm/stacktrace.h>
+ 
+@@ -210,3 +212,84 @@ noinline notrace void arch_stack_walk(st
+ 
+ 	walk_stackframe(task, &frame, consume_entry, cookie);
+ }
++
++static const struct {
++	unsigned long ** __percpu saved;
++	unsigned long ** __percpu base;
++} scs_parts[] = {
++#ifdef CONFIG_ARM_SDE_INTERFACE
++	{
++		.saved = &sdei_shadow_call_stack_critical_saved_ptr,
++		.base = &sdei_shadow_call_stack_critical_ptr,
++	},
++	{
++		.saved = &sdei_shadow_call_stack_normal_saved_ptr,
++		.base = &sdei_shadow_call_stack_normal_ptr,
++	},
++#endif /* CONFIG_ARM_SDE_INTERFACE */
++	{
++		.saved = &irq_shadow_call_stack_saved_ptr,
++		.base = &irq_shadow_call_stack_ptr,
++	},
++};
++
++static inline bool walk_shadow_stack_part(
++				unsigned long *scs_top, unsigned long *scs_base,
++				unsigned long *store, unsigned int size,
++				unsigned int *skipnr, unsigned int *len)
++{
++	unsigned long *frame;
++
++	for (frame = scs_top; frame >= scs_base; frame--) {
++		if (*skipnr > 0) {
++			(*skipnr)--;
++			continue;
++		}
++		/*
++		 * Do not leak PTR_AUTH tags in stack traces.
++		 * Use READ_ONCE_NOCHECK as SCS is poisoned with Generic KASAN.
++		 */
++		store[(*len)++] =
++			ptrauth_strip_insn_pac(READ_ONCE_NOCHECK(*frame));
++		if (*len >= size)
++			return true;
++	}
++
++	return false;
++}
++
++noinline notrace int arch_stack_walk_shadow(unsigned long *store,
++					    unsigned int size,
++					    unsigned int skipnr)
++{
++	unsigned long *scs_top, *scs_base, *scs_next;
++	unsigned int len = 0, part;
++
++	preempt_disable();
++
++	/* Get the SCS pointer. */
++	asm volatile("mov %0, x18" : "=&r" (scs_top));
++
++	/* The top SCS slot is empty. */
++	scs_top -= 1;
++
++	/* Handle SDEI and hardirq frames. */
++	for (part = 0; part < ARRAY_SIZE(scs_parts); part++) {
++		scs_next = *this_cpu_ptr(scs_parts[part].saved);
++		if (scs_next) {
++			scs_base = *this_cpu_ptr(scs_parts[part].base);
++			if (walk_shadow_stack_part(scs_top, scs_base, store,
++						   size, &skipnr, &len))
++				goto out;
++			scs_top = scs_next;
++		}
++	}
++
++	/* Handle task and softirq frames. */
++	scs_base = task_scs(current);
++	walk_shadow_stack_part(scs_top, scs_base, store, size, &skipnr, &len);
++
++out:
++	preempt_enable();
++	return len;
++}
+_

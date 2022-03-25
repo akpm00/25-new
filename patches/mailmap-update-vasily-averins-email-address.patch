@@ -1,0 +1,27 @@
+From: Vasily Averin <vasily.averin@linux.dev>
+Subject: mailmap: update Vasily Averin's email address
+
+I'm moving to a @linux.dev account. Map my old addresses.
+
+Link: https://lkml.kernel.org/r/737c7c2b-cdab-63ee-be90-cb33316c9657@linux.dev
+Signed-off-by: Vasily Averin <vasily.averin@linux.dev>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ .mailmap |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/.mailmap~mailmap-update-vasily-averins-email-address
++++ a/.mailmap
+@@ -389,6 +389,10 @@ Uwe Kleine-König <ukleinek@strlen.de>
+ Uwe Kleine-König <ukl@pengutronix.de>
+ Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+ Valdis Kletnieks <Valdis.Kletnieks@vt.edu>
++Vasily Averin <vasily.averin@linux.dev> <vvs@virtuozzo.com>
++Vasily Averin <vasily.averin@linux.dev> <vvs@openvz.org>
++Vasily Averin <vasily.averin@linux.dev> <vvs@parallels.com>
++Vasily Averin <vasily.averin@linux.dev> <vvs@sw.ru>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@intel.com>
+ Vinod Koul <vkoul@kernel.org> <vinod.koul@linux.intel.com>
+ Vinod Koul <vkoul@kernel.org> <vkoul@infradead.org>
+_

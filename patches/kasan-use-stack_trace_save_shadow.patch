@@ -1,0 +1,47 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: use stack_trace_save_shadow
+
+Now that stack_trace_save_shadow() is implemented by arm64, use it
+whenever CONFIG_HAVE_SHADOW_STACKTRACE is enabled.  This improves the boot
+time of a defconfig build by ~30% for all KASAN modes.
+
+Link: https://lkml.kernel.org/r/7027b9b6b0cae2921ff65739582ae499bf61470c.1648049113.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Florian Mayer <fmayer@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kasan/common.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--- a/mm/kasan/common.c~kasan-use-stack_trace_save_shadow
++++ a/mm/kasan/common.c
+@@ -33,10 +33,13 @@
+ depot_stack_handle_t kasan_save_stack(gfp_t flags, bool can_alloc)
+ {
+ 	unsigned long entries[KASAN_STACK_DEPTH];
+-	unsigned int nr_entries;
++	unsigned int size;
+ 
+-	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
+-	return __stack_depot_save(entries, nr_entries, flags, can_alloc);
++	if (IS_ENABLED(CONFIG_HAVE_SHADOW_STACKTRACE))
++		size = stack_trace_save_shadow(entries, ARRAY_SIZE(entries), 0);
++	else
++		size = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
++	return __stack_depot_save(entries, size, flags, can_alloc);
+ }
+ 
+ void kasan_set_track(struct kasan_track *track, gfp_t flags)
+_

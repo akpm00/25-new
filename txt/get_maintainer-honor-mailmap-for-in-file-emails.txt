@@ -1,0 +1,9 @@
+From: Rob Herring <robh@kernel.org>
+Subject: get_maintainer: Honor mailmap for in file emails
+
+Add support to also use the mailmap for 'in file' email addresses.
+
+Link: https://lkml.kernel.org/r/20220323193645.317514-1-robh@kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+Reported-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Joe Perches <joe@perches.com>

@@ -1,0 +1,18 @@
+From: Alistair Popple <apopple@nvidia.com>
+Subject: mm: Add selftests for migration entries
+
+Add some basic migration tests and in particular tests that will
+stress both the pte and pmd migration entry wait paths.
+
+Link: https://lkml.kernel.org/r/20220324014349.229253-1-apopple@nvidia.com
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Shuah Khan <shuah@kernel.org>

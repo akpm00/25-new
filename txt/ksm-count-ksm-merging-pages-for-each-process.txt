@@ -1,0 +1,31 @@
+From: xu xin <xu.xin16@zte.com.cn>
+Subject: ksm: count ksm merging pages for each process
+
+As current KSM only counts the number of KSM merging pages(e.g. 
+ksm_pages_sharing and ksm_pages_shared) of the whole system, we cannot see
+the more fine-grained KSM merging, for the upper application optimization,
+the merging area cannot be set easily according to the KSM page merging
+probability of each process.  Therefore, it is necessary to add extra
+statistical means so that the upper level users can know the detailed KSM
+merging information of each process.
+
+We add a new proc file named as ksm_merging_pages under /proc/<pid>/ to
+indicate the involved ksm merging pages of this process.
+
+Link: https://lkml.kernel.org/r/20220325082318.2352853-1-xu.xin16@zte.com.cn
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Ohhoon Kwon <ohoono.kwon@samsung.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: Zeal Robot <zealci@zte.com.cn>
