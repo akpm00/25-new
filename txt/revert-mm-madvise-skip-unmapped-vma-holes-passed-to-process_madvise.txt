@@ -1,0 +1,22 @@
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: Revert "mm: madvise: skip unmapped vma holes passed to process_madvise"
+
+This reverts commit 08095d6310a7 ("mm: madvise: skip unmapped vma holes
+passed to process_madvise") as process_madvise() fails to return the exact
+processed bytes in other cases too.  As an example: if process_madvise()
+hits mlocked pages after processing some initial bytes passed in [start,
+end), it just returns EINVAL although some bytes are processed.  Thus
+making an exception only for ENOMEM is partially fixing the problem of
+returning the proper advised bytes.
+
+Thus revert this patch and return proper bytes advised.
+
+Link: https://lkml.kernel.org/r/e73da1304a88b6a8a11907045117cccf4c2b8374.1648046642.git.quic_charante@quicinc.com
+Fixes: 08095d6310a7ce ("mm: madvise: skip unmapped vma holes passed to process_madvise")
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: <stable@vger.kernel.org>

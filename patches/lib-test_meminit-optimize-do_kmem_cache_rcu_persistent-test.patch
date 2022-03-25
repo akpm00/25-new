@@ -1,0 +1,63 @@
+From: Xiaoke Wang <xkernel.wang@foxmail.com>
+Subject: lib/test_meminit: optimize do_kmem_cache_rcu_persistent() test
+
+To make the test more robust, there are the following changes:
+1. add a check for the return value of kmem_cache_alloc().
+2. properly release the object `buf` on several error paths.
+3. release the objects of `used_objects` if we never hit `saved_ptr`.
+4. destroy the created cache by default.
+
+Link: https://lkml.kernel.org/r/tencent_7CB95F1C3914BCE1CA4A61FF7C20E7CCB108@qq.com
+Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/test_meminit.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+--- a/lib/test_meminit.c~lib-test_meminit-optimize-do_kmem_cache_rcu_persistent-test
++++ a/lib/test_meminit.c
+@@ -279,13 +279,18 @@ static int __init do_kmem_cache_rcu_pers
+ 	c = kmem_cache_create("test_cache", size, size, SLAB_TYPESAFE_BY_RCU,
+ 			      NULL);
+ 	buf = kmem_cache_alloc(c, GFP_KERNEL);
++	if (!buf)
++		goto out;
+ 	saved_ptr = buf;
+ 	fill_with_garbage(buf, size);
+ 	buf_contents = kmalloc(size, GFP_KERNEL);
+-	if (!buf_contents)
++	if (!buf_contents) {
++		kmem_cache_free(c, buf);
+ 		goto out;
++	}
+ 	used_objects = kmalloc_array(maxiter, sizeof(void *), GFP_KERNEL);
+ 	if (!used_objects) {
++		kmem_cache_free(c, buf);
+ 		kfree(buf_contents);
+ 		goto out;
+ 	}
+@@ -306,11 +311,14 @@ static int __init do_kmem_cache_rcu_pers
+ 		}
+ 	}
+ 
++	for (iter = 0; iter < maxiter; iter++)
++		kmem_cache_free(c, used_objects[iter]);
++
+ free_out:
+-	kmem_cache_destroy(c);
+ 	kfree(buf_contents);
+ 	kfree(used_objects);
+ out:
++	kmem_cache_destroy(c);
+ 	*total_failures += fail;
+ 	return 1;
+ }
+_

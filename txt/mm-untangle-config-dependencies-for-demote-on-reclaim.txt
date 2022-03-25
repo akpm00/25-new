@@ -1,0 +1,17 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm: untangle config dependencies for demote-on-reclaim
+
+At the time demote-on-reclaim was introduced, it was tied to
+CONFIG_HOTPLUG_CPU + CONFIG_MIGRATE, but that is not really accurate.
+
+The only two things we need to depend on are CONFIG_NUMA + CONFIG_MIGRATE,
+so clean this up.  Furthermore, we only register the hotplug memory
+notifier when the system has CONFIG_MEMORY_HOTPLUG.
+
+Link: https://lkml.kernel.org/r/20220322224016.4574-1-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Abhishek Goel <huntbag@linux.vnet.ibm.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>

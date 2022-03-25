@@ -191,6 +191,12 @@ memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
+#m/madvise
+revert-mm-madvise-skip-unmapped-vma-holes-passed-to-process_madvise.patch
+#
+#ofs2
+ocfs2-fix-crash-when-mount-with-quota-enabled.patch
+#
 #mm/pagealloc
 #mm-fix-panic-in-__alloc_pages.patch: more acks? https://lkml.kernel.org/r/2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com
 #
@@ -316,6 +322,8 @@ ksm-count-ksm-merging-pages-for-each-process-fix.patch
 #mm/page-poison
 #mm/percpu
 #mm/vmstat
+mm-untangle-config-dependencies-for-demote-on-reclaim.patch
+#
 #mm/balloon-compaction
 #mm/mmap
 #mm/madvise
@@ -696,6 +704,8 @@ get_maintainer-honor-mailmap-for-in-file-emails.patch
 #NEXT_PATCHES_START leds
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START lib
+lib-test_meminit-optimize-do_kmem_cache_rcu_persistent-test.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END

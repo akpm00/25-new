@@ -1,0 +1,18 @@
+From: Xiaoke Wang <xkernel.wang@foxmail.com>
+Subject: lib/test_meminit: optimize do_kmem_cache_rcu_persistent() test
+
+To make the test more robust, there are the following changes:
+1. add a check for the return value of kmem_cache_alloc().
+2. properly release the object `buf` on several error paths.
+3. release the objects of `used_objects` if we never hit `saved_ptr`.
+4. destroy the created cache by default.
+
+Link: https://lkml.kernel.org/r/tencent_7CB95F1C3914BCE1CA4A61FF7C20E7CCB108@qq.com
+Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
