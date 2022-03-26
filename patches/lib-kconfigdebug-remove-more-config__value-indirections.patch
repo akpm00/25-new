@@ -1,0 +1,94 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: lib/Kconfig.debug: remove more CONFIG_..._VALUE indirections
+
+As in "kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection",
+use the IS_ENABLED() helper rather than having a hidden config option.
+
+Link: https://lkml.kernel.org/r/20220321121301.1389693-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/hung_task.c |    2 +-
+ kernel/watchdog.c  |    4 ++--
+ lib/Kconfig.debug  |   21 ---------------------
+ 3 files changed, 3 insertions(+), 24 deletions(-)
+
+--- a/kernel/hung_task.c~lib-kconfigdebug-remove-more-config__value-indirections
++++ a/kernel/hung_task.c
+@@ -73,7 +73,7 @@ static unsigned int __read_mostly sysctl
+  * hung task is detected:
+  */
+ unsigned int __read_mostly sysctl_hung_task_panic =
+-				CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE;
++				IS_ENABLED(CONFIG_BOOTPARAM_HUNG_TASK_PANIC);
+ 
+ static int
+ hung_task_panic(struct notifier_block *this, unsigned long event, void *ptr)
+--- a/kernel/watchdog.c~lib-kconfigdebug-remove-more-config__value-indirections
++++ a/kernel/watchdog.c
+@@ -57,7 +57,7 @@ int __read_mostly sysctl_hardlockup_all_
+  * Should we panic when a soft-lockup or hard-lockup occurs:
+  */
+ unsigned int __read_mostly hardlockup_panic =
+-			CONFIG_BOOTPARAM_HARDLOCKUP_PANIC_VALUE;
++			IS_ENABLED(CONFIG_BOOTPARAM_HARDLOCKUP_PANIC);
+ /*
+  * We may not want to enable hard lockup detection by default in all cases,
+  * for example when running the kernel as a guest on a hypervisor. In these
+@@ -168,7 +168,7 @@ static struct cpumask watchdog_allowed_m
+ 
+ /* Global variables, exported for sysctl */
+ unsigned int __read_mostly softlockup_panic =
+-			CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE;
++			IS_ENABLED(CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC);
+ 
+ static bool softlockup_initialized __read_mostly;
+ static u64 __read_mostly sample_period;
+--- a/lib/Kconfig.debug~lib-kconfigdebug-remove-more-config__value-indirections
++++ a/lib/Kconfig.debug
+@@ -1071,13 +1071,6 @@ config BOOTPARAM_SOFTLOCKUP_PANIC
+ 
+ 	  Say N if unsure.
+ 
+-config BOOTPARAM_SOFTLOCKUP_PANIC_VALUE
+-	int
+-	depends on SOFTLOCKUP_DETECTOR
+-	range 0 1
+-	default 0 if !BOOTPARAM_SOFTLOCKUP_PANIC
+-	default 1 if BOOTPARAM_SOFTLOCKUP_PANIC
+-
+ config HARDLOCKUP_DETECTOR_PERF
+ 	bool
+ 	select SOFTLOCKUP_DETECTOR
+@@ -1119,13 +1112,6 @@ config BOOTPARAM_HARDLOCKUP_PANIC
+ 
+ 	  Say N if unsure.
+ 
+-config BOOTPARAM_HARDLOCKUP_PANIC_VALUE
+-	int
+-	depends on HARDLOCKUP_DETECTOR
+-	range 0 1
+-	default 0 if !BOOTPARAM_HARDLOCKUP_PANIC
+-	default 1 if BOOTPARAM_HARDLOCKUP_PANIC
+-
+ config DETECT_HUNG_TASK
+ 	bool "Detect Hung Tasks"
+ 	depends on DEBUG_KERNEL
+@@ -1173,13 +1159,6 @@ config BOOTPARAM_HUNG_TASK_PANIC
+ 
+ 	  Say N if unsure.
+ 
+-config BOOTPARAM_HUNG_TASK_PANIC_VALUE
+-	int
+-	depends on DETECT_HUNG_TASK
+-	range 0 1
+-	default 0 if !BOOTPARAM_HUNG_TASK_PANIC
+-	default 1 if BOOTPARAM_HUNG_TASK_PANIC
+-
+ config WQ_WATCHDOG
+ 	bool "Detect Workqueue Stalls"
+ 	depends on DEBUG_KERNEL
+_

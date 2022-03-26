@@ -1,0 +1,21 @@
+From: Jakob Koschel <jakobkoschel@gmail.com>
+Subject: rapidio: remove unnecessary use of list iterator
+
+req->map is set in the valid case and always equals 'map' if the break was
+hit.  It therefore is unnecessary to use the list iterator variable and
+the use of 'map' can be replaced with req->map.
+
+This is done in preparation to limit the scope of a list iterator to the
+list traversal loop [1].
+
+Link: https://lore.kernel.org/all/YhdfEIwI4EdtHdym@kroah.com/
+Link: https://lkml.kernel.org/r/20220319203344.2547702-1-jakobkoschel@gmail.com
+Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Matt Porter <mporter@kernel.crashing.org>
+Cc: Alexandre Bounine <alex.bou9@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+Cc: "Bos, H.J." <h.j.bos@vu.nl>

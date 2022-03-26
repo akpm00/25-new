@@ -1,0 +1,20 @@
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: mm/munlock: protect the per-CPU pagevec by a local_lock_t
+
+The access to mlock_pvec is protected by disabling preemption via
+get_cpu_var() or implicit by having preemption disabled by the caller (in
+mlock_page_drain() case).  This breaks on PREEMPT_RT since
+folio_lruvec_lock_irq() acquires a sleeping lock in this section.
+
+Create struct mlock_pvec which consits of the local_lock_t and the
+pagevec.  Acquire the local_lock() before accessing the per-CPU pagevec. 
+Replace mlock_page_drain() with a _local() version which is invoked on the
+local CPU and acquires the local_lock_t and a _remote() version which uses
+the pagevec from a remote CPU which offline.
+
+Link: https://lkml.kernel.org/r/YjizWi9IY0mpvIfb@linutronix.de
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>

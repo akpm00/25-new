@@ -1,0 +1,47 @@
+From: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Subject: pipe: make poll_usage boolean and annotate its access
+
+Patch series "Fix data-races around epoll reported by KCSAN."
+
+This series suppresses a false positive KCSAN's message and fixes a real
+data-race.
+
+
+This patch (of 2):
+
+pipe_poll() runs locklessly and assigns 1 to poll_usage.  Once poll_usage
+is set to 1, it never changes in other places.  However, concurrent writes
+of a value trigger KCSAN, so let's make KCSAN happy.
+
+BUG: KCSAN: data-race in pipe_poll / pipe_poll
+
+write to 0xffff8880042f6678 of 4 bytes by task 174 on cpu 3:
+ pipe_poll (fs/pipe.c:656)
+ ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+ do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+ __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+ do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+ entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+
+write to 0xffff8880042f6678 of 4 bytes by task 177 on cpu 1:
+ pipe_poll (fs/pipe.c:656)
+ ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+ do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+ __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+ do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+ entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 177 Comm: epoll_race Not tainted 5.17.0-58927-gf443e374ae13 #6
+Hardware name: Red Hat KVM, BIOS 1.11.0-2.amzn2 04/01/2014
+
+Link: https://lkml.kernel.org/r/20220322002653.33865-1-kuniyu@amazon.co.jp
+Link: https://lkml.kernel.org/r/20220322002653.33865-2-kuniyu@amazon.co.jp
+Fixes: 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal loads")
+Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc: Alexander Duyck <alexander.h.duyck@intel.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>
+Cc: "Soheil Hassas Yeganeh" <soheil@google.com>
+Cc: "Sridhar Samudrala" <sridhar.samudrala@intel.com>

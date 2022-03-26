@@ -1,0 +1,10 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: lib/Kconfig.debug: remove more CONFIG_..._VALUE indirections
+
+As in "kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection",
+use the IS_ENABLED() helper rather than having a hidden config option.
+
+Link: https://lkml.kernel.org/r/20220321121301.1389693-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>

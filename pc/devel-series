@@ -20,7 +20,10 @@ revert-mm-madvise-skip-unmapped-vma-holes-passed-to-process_madvise.patch
 #ofs2
 ocfs2-fix-crash-when-mount-with-quota-enabled.patch
 #
-#mm/mempolicy
+#nilfs2
+nilfs2-fix-lockdep-warnings-in-page-operations-for-btree-nodes.patch
+nilfs2-fix-lockdep-warnings-during-disk-space-reclamation.patch
+nilfs2-get-rid-of-nilfs_mapping_init.patch
 #
 #
 #
@@ -42,13 +45,14 @@ userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #mm/pagealloc
 #mm-page_alloc-add-scheduling-point-to-free_unref_page_list.patch: -stable?
 #
+#mm/zram
+mm-fix-unexpected-zeroed-page-mapping-with-zram-swap.patch
+#
+#mm/compaction
+mm-compaction-fix-compiler-warning-when-config_compaction=n.patch
+#
 #mm/hugetlb
-#hugetlb-do-not-demote-poisoned-hugetlb-pages.patch: linmiaohe@huawei.com issue
 hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
-#
-#kconfig
-#
-#ocfs2
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -123,6 +127,8 @@ mm-discard-__gfp_atomic.patch
 mm-remove-unnecessary-void-conversions.patch
 #
 #mm/mlock
+mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t.patch
+#
 #mm-mlock-fix-two-bugs-in-user_shm_lock.patch: acks?
 mm-mlock-fix-two-bugs-in-user_shm_lock.patch
 #
@@ -507,6 +513,9 @@ ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
 #NEXT_PATCHES_START power-management
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START procfs
+proc-fix-dentry-inode-overinstantiating-under-proc-pid-net.patch
+proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
 #proc-sysctl-make-protected_-world-readable.patch: mcgrof request
@@ -555,6 +564,8 @@ get_maintainer-honor-mailmap-for-in-file-emails.patch
 #NEXT_PATCHES_START lib
 lib-test_meminit-optimize-do_kmem_cache_rcu_persistent-test.patch
 #
+lib-kconfigdebug-remove-more-config__value-indirections.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END
@@ -588,6 +599,9 @@ lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch
 #NEXT_PATCHES_START efs
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START epoll
+pipe-make-poll_usage-boolean-and-annotate-its-access.patch
+list-fix-a-data-race-around-ep-rdllist.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START binfmt
 #NEXT_PATCHES_END
@@ -733,6 +747,8 @@ init-mainc-silence-some-wunused-parameter-warnings.patch
 #NEXT_PATCHES_START partitions
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START rapidio
+rapidio-remove-unnecessary-use-of-list-iterator.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START keys
 #NEXT_PATCHES_END

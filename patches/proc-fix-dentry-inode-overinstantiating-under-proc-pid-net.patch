@@ -1,0 +1,49 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: proc: fix dentry/inode overinstantiating under /proc/${pid}/net
+
+When a process exits, /proc/${pid}, and /proc/${pid}/net dentries are
+flushed.  However some leaf dentries like /proc/${pid}/net/arp_cache
+aren't.  That's because respective PDEs have proc_misc_d_revalidate() hook
+which returns 1 and leaves dentries/inodes in the LRU.
+
+Force revalidation/lookup on everything under /proc/${pid}/net by
+inheriting proc_net_dentry_ops.
+
+Link: https://lkml.kernel.org/r/YjdVHgildbWO7diJ@localhost.localdomain
+Fixes: c6c75deda813 ("proc: fix lookup in /proc/net subdirectories after setns(2)")
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Reported-by: hui li <juanfengpy@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/generic.c  |    4 ++++
+ fs/proc/proc_net.c |    3 +++
+ 2 files changed, 7 insertions(+)
+
+--- a/fs/proc/generic.c~proc-fix-dentry-inode-overinstantiating-under-proc-pid-net
++++ a/fs/proc/generic.c
+@@ -448,6 +448,10 @@ static struct proc_dir_entry *__proc_cre
+ 	proc_set_user(ent, (*parent)->uid, (*parent)->gid);
+ 
+ 	ent->proc_dops = &proc_misc_dentry_ops;
++	/* Revalidate everything under /proc/${pid}/net */
++	if ((*parent)->proc_dops == &proc_net_dentry_ops) {
++		pde_force_lookup(ent);
++	}
+ 
+ out:
+ 	return ent;
+--- a/fs/proc/proc_net.c~proc-fix-dentry-inode-overinstantiating-under-proc-pid-net
++++ a/fs/proc/proc_net.c
+@@ -376,6 +376,9 @@ static __net_init int proc_net_ns_init(s
+ 
+ 	proc_set_user(netd, uid, gid);
+ 
++	/* Seed dentry revalidation for /proc/${pid}/net */
++	pde_force_lookup(netd);
++
+ 	err = -EEXIST;
+ 	net_statd = proc_net_mkdir(net, "stat", netd);
+ 	if (!net_statd)
+_

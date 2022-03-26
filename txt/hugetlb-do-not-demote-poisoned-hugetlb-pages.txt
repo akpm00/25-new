@@ -18,4 +18,5 @@ Check for poison before attempting to demote a hugetlb page.  Also, return
 Link: https://lkml.kernel.org/r/20220307215707.50916-1-mike.kravetz@oracle.com
 Fixes: 8531fc6f52f5 ("hugetlb: add hugetlb demote page support")
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: <stable@vger.kernel.org>

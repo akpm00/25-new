@@ -1,0 +1,20 @@
+From: Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: mm: compaction: fix compiler warning when CONFIG_COMPACTION=n
+
+The below warning is reported when CONFIG_COMPACTION=n:
+
+   mm/compaction.c:56:27: warning: 'HPAGE_FRAG_CHECK_INTERVAL_MSEC'
+defined but not used [-Wunused-const-variable=]
+      56 | static const unsigned int HPAGE_FRAG_CHECK_INTERVAL_MSEC =
+500;
+         |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Fix it by moving 'HPAGE_FRAG_CHECK_INTERVAL_MSEC' under
+CONFIG_COMPACTION defconfig. Also since this is just a 'static const
+int' type, use #define for it.
+
+Link: https://lkml.kernel.org/r/1647608518-20924-1-git-send-email-quic_charante@quicinc.com
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Nitin Gupta <nigupta@nvidia.com>

@@ -1,0 +1,11 @@
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Subject: nilfs2: get rid of nilfs_mapping_init()
+
+After applying the lockdep warning fixes, nilfs_mapping_init() is no
+longer used, so delete it.
+
+Link: https://lkml.kernel.org/r/1647867427-30498-4-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hao Sun <sunhao.th@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>

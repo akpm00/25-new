@@ -1,0 +1,42 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes
+
+WARNING: braces {} are not necessary for single statement blocks
+#31: FILE: fs/proc/generic.c:452:
++	if ((*parent)->proc_dops == &proc_net_dentry_ops) {
++		pde_force_lookup(ent);
++	}
+
+total: 0 errors, 1 warnings, 19 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./patches/proc-fix-dentry-inode-overinstantiating-under-proc-pid-net.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Please run checkpatch prior to sending patches
+
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/generic.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/fs/proc/generic.c~proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes
++++ a/fs/proc/generic.c
+@@ -449,9 +449,8 @@ static struct proc_dir_entry *__proc_cre
+ 
+ 	ent->proc_dops = &proc_misc_dentry_ops;
+ 	/* Revalidate everything under /proc/${pid}/net */
+-	if ((*parent)->proc_dops == &proc_net_dentry_ops) {
++	if ((*parent)->proc_dops == &proc_net_dentry_ops)
+ 		pde_force_lookup(ent);
+-	}
+ 
+ out:
+ 	return ent;
+_

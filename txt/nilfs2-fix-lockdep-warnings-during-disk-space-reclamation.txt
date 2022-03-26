@@ -1,0 +1,33 @@
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Subject: nilfs2: fix lockdep warnings during disk space reclamation
+
+During disk space reclamation, nilfs2 still emits the following lockdep
+warning due to page/folio operations on shadowed page caches that nilfs2
+uses to get a snapshot of DAT file in memory:
+
+ WARNING: CPU: 0 PID: 2643 at include/linux/backing-dev.h:272 __folio_mark_dirty+0x645/0x670
+ ...
+ RIP: 0010:__folio_mark_dirty+0x645/0x670
+ ...
+ Call Trace:
+  <TASK>
+  filemap_dirty_folio+0x74/0xd0
+  __set_page_dirty_nobuffers+0x85/0xb0
+  nilfs_copy_dirty_pages+0x288/0x510 [nilfs2]
+  nilfs_mdt_save_to_shadow_map+0x50/0xe0 [nilfs2]
+  nilfs_clean_segments+0xee/0x5d0 [nilfs2]
+  nilfs_ioctl_clean_segments.isra.19+0xb08/0xf40 [nilfs2]
+  nilfs_ioctl+0xc52/0xfb0 [nilfs2]
+  __x64_sys_ioctl+0x11d/0x170
+  do_syscall_64+0x3a/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+This fixes the remaining warning by using inode objects to hold those
+page caches.
+
+Link: https://lkml.kernel.org/r/1647867427-30498-3-git-send-email-konishi.ryusuke@gmail.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hao Sun <sunhao.th@gmail.com>

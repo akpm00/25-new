@@ -1,0 +1,72 @@
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Subject: nilfs2: fix lockdep warnings in page operations for btree nodes
+
+Patch series "nilfs2 lockdep warning fixes".
+
+The first two are to resolve the lockdep warning issue, and the last one
+is the accompanying cleanup and low priority.
+
+Based on your comment, this series solves the issue by separating inode
+object as needed.  Since I was worried about the impact of the object
+composition changes, I tested the series carefully not to cause
+regressions especially for delicate functions such like disk space
+reclamation and snapshots.
+
+
+This patch (of 3):
+
+If CONFIG_LOCKDEP is enabled, nilfs2 hits lockdep warnings at
+inode_to_wb() during page/folio operations for btree nodes:
+
+ WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 inode_to_wb include/linux/backing-dev.h:269 [inline]
+ WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 folio_account_dirtied mm/page-writeback.c:2460 [inline]
+ WARNING: CPU: 0 PID: 6575 at include/linux/backing-dev.h:269 __folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
+ Modules linked in:
+ ...
+ RIP: 0010:inode_to_wb include/linux/backing-dev.h:269 [inline]
+ RIP: 0010:folio_account_dirtied mm/page-writeback.c:2460 [inline]
+ RIP: 0010:__folio_mark_dirty+0xa7c/0xe30 mm/page-writeback.c:2509
+ ...
+ Call Trace:
+  <TASK>
+  __set_page_dirty include/linux/pagemap.h:834 [inline]
+  mark_buffer_dirty+0x4e6/0x650 fs/buffer.c:1145
+  nilfs_btree_propagate_p fs/nilfs2/btree.c:1889 [inline]
+  nilfs_btree_propagate+0x4ae/0xea0 fs/nilfs2/btree.c:2085
+  nilfs_bmap_propagate+0x73/0x170 fs/nilfs2/bmap.c:337
+  nilfs_collect_dat_data+0x45/0xd0 fs/nilfs2/segment.c:625
+  nilfs_segctor_apply_buffers+0x14a/0x470 fs/nilfs2/segment.c:1009
+  nilfs_segctor_scan_file+0x47a/0x700 fs/nilfs2/segment.c:1048
+  nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1224 [inline]
+  nilfs_segctor_collect fs/nilfs2/segment.c:1494 [inline]
+  nilfs_segctor_do_construct+0x14f3/0x6c60 fs/nilfs2/segment.c:2036
+  nilfs_segctor_construct+0x7a7/0xb30 fs/nilfs2/segment.c:2372
+  nilfs_segctor_thread_construct fs/nilfs2/segment.c:2480 [inline]
+  nilfs_segctor_thread+0x3c3/0xf90 fs/nilfs2/segment.c:2563
+  kthread+0x405/0x4f0 kernel/kthread.c:327
+  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+  </TASK>
+
+This is because nilfs2 uses two page caches for each inode and
+inode->i_mapping never points to one of them, the btree node cache.  This
+causes inode_to_wb(inode) to refer to a different page cache than the
+caller page/folio operations such like __folio_start_writeback(),
+__folio_end_writeback(), or __folio_mark_dirty() acquired the lock.
+
+This patch resolves the issue by allocating and using an additional inode
+to hold the page cache of btree nodes.  The inode is attached one-to-one
+to the traditional nilfs2 inode if it requires a block mapping with
+b-tree.  This setup change is in memory only and does not affect the disk
+format.
+
+Link: https://lkml.kernel.org/r/1647867427-30498-1-git-send-email-konishi.ryusuke@gmail.com
+Link: https://lkml.kernel.org/r/1647867427-30498-2-git-send-email-konishi.ryusuke@gmail.com
+Link: https://lore.kernel.org/r/YXrYvIo8YRnAOJCj@casper.infradead.org
+Link: https://lore.kernel.org/r/9a20b33d-b38f-b4a2-4742-c1eb5b8e4d6c@redhat.com
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Reported-by: syzbot+0d5b462a6f07447991b3@syzkaller.appspotmail.com
+Reported-by: syzbot+34ef28bb2aeb28724aa0@syzkaller.appspotmail.com
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+Reported-by: David Hildenbrand <david@redhat.com>
+Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>
