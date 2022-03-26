@@ -1,0 +1,26 @@
+From: Haowen Bai <baihaowen@meizu.com>
+Subject: kernel: pid_namespace: use NULL instead of using plain integer as pointer
+
+This fixes the following sparse warnings:
+kernel/pid_namespace.c:55:77: warning: Using plain integer as NULL pointer
+
+Link: https://lkml.kernel.org/r/1647944288-2806-1-git-send-email-baihaowen@meizu.com
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/pid_namespace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/kernel/pid_namespace.c~kernel-pid_namespace-use-null-instead-of-using-plain-integer-as-pointer
++++ a/kernel/pid_namespace.c
+@@ -52,7 +52,7 @@ static struct kmem_cache *create_pid_cac
+ 	/* Name collision forces to do allocation under mutex. */
+ 	if (!*pkc)
+ 		*pkc = kmem_cache_create(name, len, 0,
+-					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, 0);
++					 SLAB_HWCACHE_ALIGN | SLAB_ACCOUNT, NULL);
+ 	mutex_unlock(&pid_caches_mutex);
+ 	/* current can fail, but someone else can succeed. */
+ 	return READ_ONCE(*pkc);
+_

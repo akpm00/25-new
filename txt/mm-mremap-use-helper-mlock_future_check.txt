@@ -1,0 +1,8 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mremap: use helper mlock_future_check()
+
+Use helper mlock_future_check() to check whether it's safe to resize the
+locked_vm to simplify the code.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220322112004.27380-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>

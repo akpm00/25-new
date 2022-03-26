@@ -1,0 +1,11 @@
+From: Chen Wandun <chenwandun@huawei.com>
+Subject: mm/page_alloc: simplify update of pgdat in wake_all_kswapds
+
+There is no need to update last_pgdat for each zone, only update
+last_pgdat when iterating the first zone of a node.
+
+Link: https://lkml.kernel.org/r/20220322115635.2708989-1-chenwandun@huawei.com
+Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Johannes Weiner <hannes@cmpxchg.org>

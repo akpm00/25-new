@@ -1,0 +1,20 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mlock: fix two bugs in user_shm_lock()
+
+user_shm_lock forgets to set allowed to 0 when get_ucounts fails.  So the
+later user_shm_unlock might do the extra dec_rlimit_ucounts.  Also in the
+RLIM_INFINITY case, user_shm_lock will success regardless of the value of
+memlock where memblock == LONG_MAX && !capable(CAP_IPC_LOCK) should fail. 
+Fix all of these by changing the code to leave lock_limit at ULONG_MAX aka
+RLIM_INFINITY, leave "allowed" initialized to 0 and remove the special
+case of RLIM_INFINITY as nothing can be greater than ULONG_MAX.
+
+Credit goes to Eric W.  Biederman for proposing simplifying the code and
+thus catching the later bug.
+
+Link: https://lkml.kernel.org/r/20220322080918.59861-1-linmiaohe@huawei.com
+Fixes: d7c9e99aee48 ("Reimplement RLIMIT_MEMLOCK on top of ucounts")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Alexey Gladkov <legion@kernel.org>

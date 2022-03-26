@@ -1,0 +1,9 @@
+From: liqiong <liqiong@nfschina.com>
+Subject: mm/memory-failure.c: remove unnecessary (void*) conversions
+
+No need cast (void*) to (struct hwp_walk*).
+
+Link: https://lkml.kernel.org/r/20220322142826.25939-1-liqiong@nfschina.com
+Signed-off-by: liqiong <liqiong@nfschina.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>

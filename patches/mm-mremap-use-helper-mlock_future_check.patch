@@ -1,0 +1,34 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mremap: use helper mlock_future_check()
+
+Use helper mlock_future_check() to check whether it's safe to resize the
+locked_vm to simplify the code.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220322112004.27380-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mremap.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
+--- a/mm/mremap.c~mm-mremap-use-helper-mlock_future_check
++++ a/mm/mremap.c
+@@ -763,14 +763,8 @@ static struct vm_area_struct *vma_to_res
+ 	if (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP))
+ 		return ERR_PTR(-EFAULT);
+ 
+-	if (vma->vm_flags & VM_LOCKED) {
+-		unsigned long locked, lock_limit;
+-		locked = mm->locked_vm << PAGE_SHIFT;
+-		lock_limit = rlimit(RLIMIT_MEMLOCK);
+-		locked += new_len - old_len;
+-		if (locked > lock_limit && !capable(CAP_IPC_LOCK))
+-			return ERR_PTR(-EAGAIN);
+-	}
++	if (mlock_future_check(mm, vma->vm_flags, new_len - old_len))
++		return ERR_PTR(-EAGAIN);
+ 
+ 	if (!may_expand_vm(mm, vma->vm_flags,
+ 				(new_len - old_len) >> PAGE_SHIFT))
+_

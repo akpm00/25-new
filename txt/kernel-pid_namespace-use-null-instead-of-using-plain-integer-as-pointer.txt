@@ -1,0 +1,8 @@
+From: Haowen Bai <baihaowen@meizu.com>
+Subject: kernel: pid_namespace: use NULL instead of using plain integer as pointer
+
+This fixes the following sparse warnings:
+kernel/pid_namespace.c:55:77: warning: Using plain integer as NULL pointer
+
+Link: https://lkml.kernel.org/r/1647944288-2806-1-git-send-email-baihaowen@meizu.com
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>

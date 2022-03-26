@@ -1,0 +1,36 @@
+From: liqiong <liqiong@nfschina.com>
+Subject: mm/memory-failure.c: remove unnecessary (void*) conversions
+
+No need cast (void*) to (struct hwp_walk*).
+
+Link: https://lkml.kernel.org/r/20220322142826.25939-1-liqiong@nfschina.com
+Signed-off-by: liqiong <liqiong@nfschina.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/memory-failure.c~mm-remove-unnecessary-void-conversions
++++ a/mm/memory-failure.c
+@@ -622,7 +622,7 @@ static int check_hwpoisoned_pmd_entry(pm
+ static int hwpoison_pte_range(pmd_t *pmdp, unsigned long addr,
+ 			      unsigned long end, struct mm_walk *walk)
+ {
+-	struct hwp_walk *hwp = (struct hwp_walk *)walk->private;
++	struct hwp_walk *hwp = walk->private;
+ 	int ret = 0;
+ 	pte_t *ptep, *mapped_pte;
+ 	spinlock_t *ptl;
+@@ -656,7 +656,7 @@ static int hwpoison_hugetlb_range(pte_t
+ 			    unsigned long addr, unsigned long end,
+ 			    struct mm_walk *walk)
+ {
+-	struct hwp_walk *hwp = (struct hwp_walk *)walk->private;
++	struct hwp_walk *hwp = walk->private;
+ 	pte_t pte = huge_ptep_get(ptep);
+ 	struct hstate *h = hstate_vma(walk->vma);
+ 
+_

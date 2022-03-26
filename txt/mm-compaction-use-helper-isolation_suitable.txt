@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: use helper isolation_suitable()
+
+Use helper isolation_suitable() to check whether page is suitable to
+isolate to simplify the code.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220322110750.60311-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
