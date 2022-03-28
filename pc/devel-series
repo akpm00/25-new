@@ -941,7 +941,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 # next
 linux-next.patch
-linux-next-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -969,3 +968,4 @@ mutex-subsystem-synchro-test-module-fix.patch
 kernel-forkc-export-kernel_thread-to-modules.patch
 workaround-for-a-pci-restoring-bug.patch
 #
+#[obsolete]linux-next-rejects.patch
