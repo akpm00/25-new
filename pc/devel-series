@@ -25,6 +25,25 @@ nilfs2-fix-lockdep-warnings-in-page-operations-for-btree-nodes.patch
 nilfs2-fix-lockdep-warnings-during-disk-space-reclamation.patch
 nilfs2-get-rid-of-nilfs_mapping_init.patch
 #
+#mm/munlock
+mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
+#
+#mm/mfence
+mm-kfence-fix-objcgs-vector-allocation.patch
+#
+#
+#mailmap
+mailmap-update-kirills-email.patch
+#
+#mm/memory-failure
+mmhwpoison-unmap-poisoned-page-before-invalidation.patch
+#
+#mm/kasan
+mm-kasan-fix-__gfp_bits_shift-definition-breaking-lockdep.patch
+#
+#mm/debug
+tools-vm-page_owner_sortc-remove-c-option.patch
+doc-vm-page_ownerrst-remove-content-related-to-c-option.patch
 #
 #
 #
@@ -88,11 +107,18 @@ kasan-use-stack_trace_save_shadow.patch
 #mm/gup
 #mm/swap
 #mm/shmem
+mm-shmem-make-shmem_init-return-void.patch
+mm-shmem-make-shmem_init-return-void-fix.patch
+#
 #mm/frontswap
 #mm/memremap
 #mm/memcg
+mm-memcg-remove-unneeded-nr_scanned.patch
+#
 #mm/selftests
 #mm/pagemap
+mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
+#
 #mm/mprotect
 #mm/mremap
 mm-mremap-use-helper-mlock_future_check.patch
@@ -116,9 +142,8 @@ documentation-sysctl-document-page_lock_unfairness.patch
 #mm-page_alloc-simplify-update-of-pgdat-in-wake_all_kswapds.patch: acks?
 mm-page_alloc-simplify-update-of-pgdat-in-wake_all_kswapds.patch
 #
-#mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch+1: acks?
+#mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch: acks?
 mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch
-mm-page_alloc-add-penalty-to-local_node.patch
 #
 #mm-discard-__gfp_atomic.patch: check review
 mm-discard-__gfp_atomic.patch
@@ -136,6 +161,9 @@ mm-mlock-fix-two-bugs-in-user_shm_lock.patch
 #mm/dax
 #mm/userfaultfd
 #mm/vmscan
+mm-vmscan-reclaim-only-affects-managed_zones.patch
+mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch
+#
 #mm/tools
 #mm/proc
 #mm/z3fold
@@ -149,7 +177,6 @@ mm-compaction-use-helper-isolation_suitable.patch
 #
 #mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch: bloat!
 mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
-mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
 #
 #mm/mempool
 #mm/memblock
@@ -197,6 +224,7 @@ mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
 #mm/kfence
 #mm/hmm
 #mm/damon
+damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
 #
 # mmend
 #
@@ -311,6 +339,11 @@ kernel-hung_taskc-monitor-killed-tasks.patch
 #NEXT_PATCHES_START ntp
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ia64
+ia64-fix-typos-in-comments.patch
+ia64-ptrace-fix-typos-in-comments.patch
+#
+ia64-replace-comments-with-c99-initializers.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ieee1394
 #NEXT_PATCHES_END
@@ -941,6 +974,7 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 # next
 linux-next.patch
+linux-next-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -969,4 +1003,5 @@ kernel-forkc-export-kernel_thread-to-modules.patch
 workaround-for-a-pci-restoring-bug.patch
 #
 #[obsolete]linux-next-rejects.patch
-linux-next-rejects.patch
+#[withdrawn]mm-page_alloc-add-penalty-to-local_node.patch
+#[folded-merged]mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch

@@ -1,0 +1,10 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: shmem: make shmem_init return void
+
+The return value of shmem_init is never used.  So we can make it return
+void now.
+
+Link: https://lkml.kernel.org/r/20220328112707.22217-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Hugh Dickins <hughd@google.com>

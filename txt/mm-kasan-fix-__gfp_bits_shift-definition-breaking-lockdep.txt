@@ -1,0 +1,29 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: mm, kasan: fix __GFP_BITS_SHIFT definition breaking LOCKDEP
+
+KASAN changes that added new GFP flags mistakenly updated __GFP_BITS_SHIFT
+as the total number of GFP bits instead of as a shift used to define
+__GFP_BITS_MASK.
+
+This broke LOCKDEP, as __GFP_BITS_MASK now gets the 25th bit enabled
+instead of the 28th for __GFP_NOLOCKDEP.
+
+Update __GFP_BITS_SHIFT to always count KASAN GFP bits.
+
+In the future, we could handle all combinations of KASAN and LOCKDEP to
+occupy as few bits as possible.  For now, we have enough GFP bits to be
+inefficient in this quick fix.
+
+Link: https://lkml.kernel.org/r/462ff52742a1fcc95a69778685737f723ee4dfb3.1648400273.git.andreyknvl@google.com
+Fixes: 9353ffa6e9e9 ("kasan, page_alloc: allow skipping memory init for HW_TAGS")
+Fixes: 53ae233c30a6 ("kasan, page_alloc: allow skipping unpoisoning for HW_TAGS")
+Fixes: f49d9c5bb15c ("kasan, mm: only define ___GFP_SKIP_KASAN_POISON with HW_TAGS")
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Matthew Wilcox <willy@infradead.org>

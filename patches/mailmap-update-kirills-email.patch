@@ -1,0 +1,24 @@
+From: Kirill Tkhai <kirill.tkhai@openvz.org>
+Subject: mailmap: update Kirill's email
+
+My new email address is kirill.tkhai@openvz.org.
+
+Link: https://lkml.kernel.org/r/164846762354.278960.13129571556274098855.stgit@pro
+Signed-off-by: Kirill Tkhai <kirill.tkhai@openvz.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ .mailmap |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/.mailmap~mailmap-update-kirills-email
++++ a/.mailmap
+@@ -212,6 +212,7 @@ Kees Cook <keescook@chromium.org> <kees@
+ Keith Busch <kbusch@kernel.org> <keith.busch@intel.com>
+ Keith Busch <kbusch@kernel.org> <keith.busch@linux.intel.com>
+ Kenneth W Chen <kenneth.w.chen@intel.com>
++Kirill Tkhai <kirill.tkhai@openvz.org> <ktkhai@virtuozzo.com>
+ Konstantin Khlebnikov <koct9i@gmail.com> <khlebnikov@yandex-team.ru>
+ Konstantin Khlebnikov <koct9i@gmail.com> <k.khlebnikov@samsung.com>
+ Koushik <raghavendra.koushik@neterion.com>
+_

@@ -1,0 +1,45 @@
+From: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Subject: doc/vm/page_owner.rst: remove content related to -c option
+
+-c option has been removed from page_owner_sort.c.
+
+Remove the usage of -c option from Documentation.
+
+This work is coauthored by
+        Shenghong Han
+        Yixuan Cao
+        Chongxi Zhao
+        Jiajian Ye
+        Yuhong Feng
+        Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220326085920.1470081-2-zhangyinan2019@email.szu.edu.cn
+Signed-off-by: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/vm/page_owner.rst |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/Documentation/vm/page_owner.rst~doc-vm-page_ownerrst-remove-content-related-to-c-option
++++ a/Documentation/vm/page_owner.rst
+@@ -125,7 +125,6 @@ Usage
+    additional function:
+ 
+ 	Cull:
+-		-c		Cull by comparing stacktrace instead of total block.
+ 		--cull <rules>
+ 				Specify culling rules.Culling syntax is key[,key[,...]].Choose a
+ 				multi-letter key from the **STANDARD FORMAT SPECIFIERS** section.
+_

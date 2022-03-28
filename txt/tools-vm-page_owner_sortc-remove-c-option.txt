@@ -1,0 +1,30 @@
+From: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: remove -c option
+
+-c option is used to cull by stacktrace.  Now, --cull option has been
+Added in page_owner_sort.c.  Culling by stacktrace is one of the function
+of "--cull".  No need to set an extra parameter.  So remove -c option.
+
+Remove parsing of -c when parse parameter and remove "-c" from usage.
+
+This work is coauthored by
+        Shenghong Han
+        Yixuan Cao
+        Chongxi Zhao
+        Jiajian Ye
+        Yuhong Feng
+        Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220326085920.1470081-1-zhangyinan2019@email.szu.edu.cn
+Signed-off-by: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Tang Bin <tangbin@cmss.chinamobile.com>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Cc: Zhenliang Wei <weizhenliang@huawei.com>

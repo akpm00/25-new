@@ -1,0 +1,7 @@
+From: Kirill Tkhai <kirill.tkhai@openvz.org>
+Subject: mailmap: update Kirill's email
+
+My new email address is kirill.tkhai@openvz.org.
+
+Link: https://lkml.kernel.org/r/164846762354.278960.13129571556274098855.stgit@pro
+Signed-off-by: Kirill Tkhai <kirill.tkhai@openvz.org>

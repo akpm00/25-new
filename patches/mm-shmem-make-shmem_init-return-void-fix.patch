@@ -1,0 +1,26 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-shmem-make-shmem_init-return-void-fix
+
+remove `return;' from void-returning function, per Muchun Song
+
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shmem.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/mm/shmem.c~mm-shmem-make-shmem_init-return-void-fix
++++ a/mm/shmem.c
+@@ -3994,8 +3994,6 @@ void __init shmem_init(void)
+ 
+ 	shm_mnt = kern_mount(&shmem_fs_type);
+ 	BUG_ON(IS_ERR(shm_mnt));
+-
+-	return;
+ }
+ 
+ int shmem_unuse(unsigned int type)
+_

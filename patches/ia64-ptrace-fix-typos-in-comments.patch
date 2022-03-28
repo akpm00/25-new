@@ -1,0 +1,26 @@
+From: Julia Lawall <Julia.Lawall@inria.fr>
+Subject: ia64: ptrace: fix typos in comments
+
+Various spelling mistakes in comments.
+Detected with the help of Coccinelle.
+
+Link: https://lkml.kernel.org/r/20220318103729.157574-23-Julia.Lawall@inria.fr
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/ia64/kernel/ptrace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/ia64/kernel/ptrace.c~ia64-ptrace-fix-typos-in-comments
++++ a/arch/ia64/kernel/ptrace.c
+@@ -2025,7 +2025,7 @@ static void syscall_get_args_cb(struct u
+ 	 * - epsinstruction: cfm is set by br.call
+ 	 *   locals don't exist.
+ 	 *
+-	 * For both cases argguments are reachable in cfm.sof - cfm.sol.
++	 * For both cases arguments are reachable in cfm.sof - cfm.sol.
+ 	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
+ 	 */
+ 	cfm = pt->cr_ifs;
+_

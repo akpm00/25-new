@@ -1,0 +1,42 @@
+From: Xiaomeng Tong <xiam0nd.tong@gmail.com>
+Subject: damon: vaddr-test: tweak code to make the logic clearer
+
+Move these two lines into the damon_for_each_region loop, it is always for
+testing the last region.  And also avoid to use a list iterator 'r'
+outside the loop which is considered harmful[1].
+
+[1]:  https://lkml.org/lkml/2022/2/17/1032
+
+Link: https://lkml.kernel.org/r/20220328115252.31675-1-xiam0nd.tong@gmail.com
+Signed-off-by: Xiaomeng Tong <xiam0nd.tong@gmail.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>
+Cc: SeongJae Park <sj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/damon/vaddr-test.h |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+--- a/mm/damon/vaddr-test.h~damon-vaddr-test-tweak-code-to-make-the-logic-clearer
++++ a/mm/damon/vaddr-test.h
+@@ -281,14 +281,16 @@ static void damon_test_split_evenly_succ
+ 	KUNIT_EXPECT_EQ(test, damon_nr_regions(t), nr_pieces);
+ 
+ 	damon_for_each_region(r, t) {
+-		if (i == nr_pieces - 1)
++		if (i == nr_pieces - 1) {
++			KUNIT_EXPECT_EQ(test,
++				r->ar.start, start + i * expected_width);
++			KUNIT_EXPECT_EQ(test, r->ar.end, end);
+ 			break;
++		}
+ 		KUNIT_EXPECT_EQ(test,
+ 				r->ar.start, start + i++ * expected_width);
+ 		KUNIT_EXPECT_EQ(test, r->ar.end, start + i * expected_width);
+ 	}
+-	KUNIT_EXPECT_EQ(test, r->ar.start, start + i * expected_width);
+-	KUNIT_EXPECT_EQ(test, r->ar.end, end);
+ 	damon_free_target(t);
+ }
+ 
+_

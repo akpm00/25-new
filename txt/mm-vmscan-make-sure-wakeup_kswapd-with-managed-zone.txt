@@ -1,0 +1,21 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: make sure wakeup_kswapd with managed zone
+
+wakeup_kswapd() only wake up kswapd when the zone is managed.
+
+For two callers of wakeup_kswapd(), they are node perspective.
+
+  * wake_all_kswapds
+  * numamigrate_isolate_page
+
+If we picked up a !managed zone, this is not we expected.
+
+This patch makes sure we pick up a managed zone for wakeup_kswapd().
+
+Link: https://lkml.kernel.org/r/20220327024101.10378-2-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Oscar Salvador <osalvador@suse.de>

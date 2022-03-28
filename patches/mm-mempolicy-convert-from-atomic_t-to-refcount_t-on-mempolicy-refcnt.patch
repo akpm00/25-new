@@ -4,6 +4,7 @@ Subject: mm/mempolicy: convert from atomic_t to refcount_t on mempolicy->refcnt
 refcount_t type and corresponding API can protect refcounters from
 accidental underflow and overflow and further use-after-free situations.
 
+[akpm@linux-foundation.org: fix warnings]
 Link: https://lkml.kernel.org/r/1626683671-64407-1-git-send-email-xiyuyang19@fudan.edu.cn
 Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
@@ -17,8 +18,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  include/linux/mempolicy.h |    5 +++--
- mm/mempolicy.c            |    8 ++++----
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ mm/mempolicy.c            |   12 ++++++------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
 --- a/include/linux/mempolicy.h~mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt
 +++ a/include/linux/mempolicy.h
@@ -50,6 +51,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern bool __mpol_equal(struct mempolicy *a, struct mempolicy *b);
 --- a/mm/mempolicy.c~mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt
 +++ a/mm/mempolicy.c
+@@ -123,7 +123,7 @@ enum zone_type policy_zone = 0;
+  * run-time system-wide default policy => local allocation
+  */
+ static struct mempolicy default_policy = {
+-	.refcnt = ATOMIC_INIT(1), /* never free it */
++	.refcnt = { ATOMIC_INIT(1), }, /* never free it */
+ 	.mode = MPOL_LOCAL,
+ };
+ 
 @@ -295,7 +295,7 @@ static struct mempolicy *mpol_new(unsign
  	policy = kmem_cache_alloc(policy_cache, GFP_KERNEL);
  	if (!policy)
@@ -86,4 +96,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				sp_node_init(n_new, end, n->end, mpol_new);
  				n->end = start;
  				sp_insert(sp, n_new);
+@@ -2891,7 +2891,7 @@ void __init numa_policy_init(void)
+ 
+ 	for_each_node(nid) {
+ 		preferred_node_policy[nid] = (struct mempolicy) {
+-			.refcnt = ATOMIC_INIT(1),
++			.refcnt = { ATOMIC_INIT(1), },
+ 			.mode = MPOL_PREFERRED,
+ 			.flags = MPOL_F_MOF | MPOL_F_MORON,
+ 			.nodes = nodemask_of_node(nid),
 _

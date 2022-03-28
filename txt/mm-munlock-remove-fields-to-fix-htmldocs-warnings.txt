@@ -1,0 +1,21 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: mm/munlock: remove fields to fix htmldocs warnings
+
+Stephen reports that 'make htmldocs' currently issues two warnings:
+
+include/linux/mm_types.h:275: warning: Function parameter or member
+'__filler' not described in 'folio'
+include/linux/mm_types.h:275: warning: Function parameter or member
+'mlock_count' not described in 'folio'
+
+Certainly __filler doesn't want documenting there, and all but one use of
+mlock_count is through page->mlock_count at present: so I think it's best
+just to remove them both from struct folio for now, and sort out the right
+way to document folio->mlock_count once that is the one true way.
+
+Link: https://lkml.kernel.org/r/d2c8f66d-be8e-7c91-b0c8-b2f7ffb08bec@google.com
+Fixes: 07ca76067308 ("mm/munlock: maintain page->mlock_count while unevictable")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

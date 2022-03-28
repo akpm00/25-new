@@ -1,0 +1,8 @@
+From: Julia Lawall <Julia.Lawall@inria.fr>
+Subject: ia64: fix typos in comments
+
+Various spelling mistakes in comments.
+Detected with the help of Coccinelle.
+
+Link: https://lkml.kernel.org/r/20220318103729.157574-1-Julia.Lawall@inria.fr
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>

@@ -1,0 +1,8 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-shmem-make-shmem_init-return-void-fix
+
+remove `return;' from void-returning function, per Muchun Song
+
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Muchun Song <songmuchun@bytedance.com>

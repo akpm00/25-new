@@ -1,0 +1,43 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: reclaim only affects managed_zones
+
+As mentioned in commit 6aa303defb74 ("mm, vmscan: only allocate and
+reclaim from zones with pages managed by the buddy allocator") , reclaim
+only affects managed_zones.
+
+Let's adjust the code and comment accordingly.
+
+Link: https://lkml.kernel.org/r/20220327024101.10378-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-reclaim-only-affects-managed_zones
++++ a/mm/vmscan.c
+@@ -1031,7 +1031,7 @@ static bool skip_throttle_noprogress(pg_
+ 	for (i = 0; i < MAX_NR_ZONES; i++) {
+ 		struct zone *zone = pgdat->node_zones + i;
+ 
+-		if (!populated_zone(zone))
++		if (!managed_zone(zone))
+ 			continue;
+ 
+ 		reclaimable += zone_reclaimable_pages(zone);
+@@ -3912,7 +3912,7 @@ static bool pgdat_balanced(pg_data_t *pg
+ 	}
+ 
+ 	/*
+-	 * If a node has no populated zone within highest_zoneidx, it does not
++	 * If a node has no managed zone within highest_zoneidx, it does not
+ 	 * need balancing by definition. This can happen if a zone-restricted
+ 	 * allocation tries to wake a remote kswapd.
+ 	 */
+_

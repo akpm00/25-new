@@ -1,0 +1,43 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memcg: remove unneeded nr_scanned
+
+The local variable nr_scanned is unneeded as mem_cgroup_soft_reclaim
+always does *total_scanned += nr_scanned.  So we can pass total_scanned
+directly to the mem_cgroup_soft_reclaim to simplify the code and save some
+cpu cycles of adding nr_scanned to total_scanned.
+
+Link: https://lkml.kernel.org/r/20220328114144.53389-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+--- a/mm/memcontrol.c~mm-memcg-remove-unneeded-nr_scanned
++++ a/mm/memcontrol.c
+@@ -3387,7 +3387,6 @@ unsigned long mem_cgroup_soft_limit_recl
+ 	int loop = 0;
+ 	struct mem_cgroup_tree_per_node *mctz;
+ 	unsigned long excess;
+-	unsigned long nr_scanned;
+ 
+ 	if (order > 0)
+ 		return 0;
+@@ -3415,11 +3414,9 @@ unsigned long mem_cgroup_soft_limit_recl
+ 		if (!mz)
+ 			break;
+ 
+-		nr_scanned = 0;
+ 		reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
+-						    gfp_mask, &nr_scanned);
++						    gfp_mask, total_scanned);
+ 		nr_reclaimed += reclaimed;
+-		*total_scanned += nr_scanned;
+ 		spin_lock_irq(&mctz->lock);
+ 		__mem_cgroup_remove_exceeded(mz, mctz);
+ 
+_

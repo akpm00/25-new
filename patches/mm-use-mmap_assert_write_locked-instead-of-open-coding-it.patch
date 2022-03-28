@@ -1,0 +1,35 @@
+From: Rolf Eike Beer <eb@emlix.com>
+Subject: mm/mmap.c: use mmap_assert_write_locked() instead of open coding it
+
+In case the lock is actually not held at this point this also avoids a
+stale lock reference if built with NDEBUG.
+
+Link: https://lkml.kernel.org/r/5827758.TJ1SttVevJ@mobilepool36.emlix.com
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mmap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/mmap.c~mm-use-mmap_assert_write_locked-instead-of-open-coding-it
++++ a/mm/mmap.c
+@@ -3561,7 +3561,7 @@ int mm_take_all_locks(struct mm_struct *
+ 	struct vm_area_struct *vma;
+ 	struct anon_vma_chain *avc;
+ 
+-	BUG_ON(mmap_read_trylock(mm));
++	mmap_assert_write_locked(mm);
+ 
+ 	mutex_lock(&mm_all_locks_mutex);
+ 
+@@ -3641,7 +3641,7 @@ void mm_drop_all_locks(struct mm_struct
+ 	struct vm_area_struct *vma;
+ 	struct anon_vma_chain *avc;
+ 
+-	BUG_ON(mmap_read_trylock(mm));
++	mmap_assert_write_locked(mm);
+ 	BUG_ON(!mutex_is_locked(&mm_all_locks_mutex));
+ 
+ 	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+_

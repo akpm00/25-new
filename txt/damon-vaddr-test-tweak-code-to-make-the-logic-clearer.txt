@@ -1,0 +1,12 @@
+From: Xiaomeng Tong <xiam0nd.tong@gmail.com>
+Subject: damon: vaddr-test: tweak code to make the logic clearer
+
+Move these two lines into the damon_for_each_region loop, it is always for
+testing the last region.  And also avoid to use a list iterator 'r'
+outside the loop which is considered harmful[1].
+
+[1]:  https://lkml.org/lkml/2022/2/17/1032
+
+Link: https://lkml.kernel.org/r/20220328115252.31675-1-xiam0nd.tong@gmail.com
+Signed-off-by: Xiaomeng Tong <xiam0nd.tong@gmail.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>

@@ -1,0 +1,8 @@
+From: Benjamin Stürz <benni@stuerz.xyz>
+Subject: ia64: Replace comments with C99 initializers
+
+This replaces comments with C99's designated initializers because the
+kernel supports them now.
+
+Link: https://lkml.kernel.org/r/20220326165909.506926-3-benni@stuerz.xyz
+Signed-off-by: Benjamin Stürz <benni@stuerz.xyz>
