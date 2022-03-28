@@ -969,3 +969,4 @@ kernel-forkc-export-kernel_thread-to-modules.patch
 workaround-for-a-pci-restoring-bug.patch
 #
 #[obsolete]linux-next-rejects.patch
+linux-next-rejects.patch
