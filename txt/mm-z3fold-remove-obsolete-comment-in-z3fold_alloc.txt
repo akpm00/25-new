@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove obsolete comment in z3fold_alloc
+
+The highmem pages are supported since commit f1549cb5ab2b ("mm/z3fold.c:
+allow __GFP_HIGHMEM in z3fold_alloc").  Remove the residual comment.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>

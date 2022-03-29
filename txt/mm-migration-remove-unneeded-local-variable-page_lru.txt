@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/migration: remove unneeded local variable page_lru
+
+We can use page_is_file_lru() directly to help account the isolated pages
+to simplify the code a bit.
+
+Link: https://lkml.kernel.org/r/20220318111709.60311-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Zi Yan <ziy@nvidia.com>

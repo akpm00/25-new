@@ -1,0 +1,28 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove obsolete comment in z3fold_alloc
+
+The highmem pages are supported since commit f1549cb5ab2b ("mm/z3fold.c:
+allow __GFP_HIGHMEM in z3fold_alloc").  Remove the residual comment.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-obsolete-comment-in-z3fold_alloc
++++ a/mm/z3fold.c
+@@ -1064,9 +1064,6 @@ static void z3fold_destroy_pool(struct z
+  * performed first. If no suitable free region is found, then a new page is
+  * allocated and added to the pool to satisfy the request.
+  *
+- * gfp should not set __GFP_HIGHMEM as highmem pages cannot be used
+- * as z3fold pool pages.
+- *
+  * Return: 0 if success and handle is set, otherwise -EINVAL if the size or
+  * gfp arguments are invalid or -ENOMEM if the pool was unable to allocate
+  * a new page.
+_

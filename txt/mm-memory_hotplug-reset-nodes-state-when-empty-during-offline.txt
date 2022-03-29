@@ -1,0 +1,33 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm/memory_hotplug: reset node's state when empty during offline
+
+All possible nodes are now pre-allocated at boot time by
+free_area_init()-> free_area_init_node(), and those which are to be
+hot-plugged are initialized later on by
+hotadd_init_pgdat()->free_area_init_core_hotplug() when they become
+online.
+
+free_area_init_core_hotplug() calls pgdat_init_internals() and
+zone_init_internals() to initialize some internal data structures and
+zeroes a few pgdat fields.
+
+But we do already call pgdat_init_internals() and zone_init_internals()
+for all possible nodes back in free_area_init_core(), and pgdat fields are
+already zeroed because the pre-allocation memsets with 0s the structure,
+meaning we do not need to repeat the process when the node becomes online.
+
+So initialize it only once when booting, and make sure to reset the fields
+we care about to 0 when the node goes empty.  The only thing we need to
+check for is to allocate per_cpu_nodestats struct the very first time this
+node goes online.
+
+node_reset_state() is the function in charge of resetting pgdat's fields,
+and it is called when offline_pages() detects that the node becomes empty
+worth of memory.
+
+Link: https://lkml.kernel.org/r/20220307150725.6810-3-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>

@@ -1,0 +1,43 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove unneeded page_mapcount_reset and ClearPagePrivate
+
+Page->page_type and PagePrivate are not used in z3fold.  We should remove
+these confusing unneeded operations.  The z3fold do these here is due to
+referring to zsmalloc's migration code which does need these operations.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-unneeded-page_mapcount_reset-and-clearpageprivate
++++ a/mm/z3fold.c
+@@ -420,7 +420,6 @@ static void free_z3fold_page(struct page
+ 		__ClearPageMovable(page);
+ 		unlock_page(page);
+ 	}
+-	ClearPagePrivate(page);
+ 	__free_page(page);
+ }
+ 
+@@ -1635,7 +1634,6 @@ static int z3fold_page_migrate(struct ad
+ 	INIT_LIST_HEAD(&new_zhdr->buddy);
+ 	new_mapping = page_mapping(page);
+ 	__ClearPageMovable(page);
+-	ClearPagePrivate(page);
+ 
+ 	get_page(newpage);
+ 	z3fold_page_lock(new_zhdr);
+@@ -1655,7 +1653,6 @@ static int z3fold_page_migrate(struct ad
+ 
+ 	queue_work_on(new_zhdr->cpu, pool->compact_wq, &new_zhdr->work);
+ 
+-	page_mapcount_reset(page);
+ 	clear_bit(PAGE_CLAIMED, &page->private);
+ 	put_page(page);
+ 	return 0;
+_

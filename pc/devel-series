@@ -25,8 +25,11 @@ nilfs2-fix-lockdep-warnings-in-page-operations-for-btree-nodes.patch
 nilfs2-fix-lockdep-warnings-during-disk-space-reclamation.patch
 nilfs2-get-rid-of-nilfs_mapping_init.patch
 #
-#mm/munlock
+#mm/mlock
+#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
+#
+mm-munlock-add-lru_add_drain-to-fix-memcg_stat_test.patch
 #
 #mm/mfence
 mm-kfence-fix-objcgs-vector-allocation.patch
@@ -45,6 +48,8 @@ mm-kasan-fix-__gfp_bits_shift-definition-breaking-lockdep.patch
 tools-vm-page_owner_sortc-remove-c-option.patch
 doc-vm-page_ownerrst-remove-content-related-to-c-option.patch
 #
+#mm/kmemleak
+mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 #
 #
 #
@@ -115,9 +120,13 @@ mm-shmem-make-shmem_init-return-void-fix.patch
 #mm/memcg
 mm-memcg-remove-unneeded-nr_scanned.patch
 #
+mm-memcg-mz-already-removed-from-rb_tree-if-not-null.patch
+#
 #mm/selftests
 #mm/pagemap
 mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
+#
+mm-mmu_gather-limit-free-batch-count-and-add-schedule-point-in-tlb_batch_pages_flush.patch
 #
 #mm/mprotect
 #mm/mremap
@@ -158,15 +167,30 @@ mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t.patch
 mm-mlock-fix-two-bugs-in-user_shm_lock.patch
 #
 #mm/hugetlb
+#mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?
+mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
+#
 #mm/dax
 #mm/userfaultfd
 #mm/vmscan
 mm-vmscan-reclaim-only-affects-managed_zones.patch
+#mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch: TBU
 mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch
+#
+mm-vmscan-sc-reclaim_idx-must-be-a-valid-zone-index.patch
 #
 #mm/tools
 #mm/proc
 #mm/z3fold
+mm-z3fold-declare-z3fold_mount-with-__init.patch
+mm-z3fold-remove-obsolete-comment-in-z3fold_alloc.patch
+mm-z3fold-minor-clean-up-for-z3fold_free.patch
+mm-z3fold-remove-unneeded-page_mapcount_reset-and-clearpageprivate.patch
+mm-z3fold-remove-confusing-local-variable-l-reassignment.patch
+mm-z3fold-move-decrement-of-pool-pages_nr-into-__release_z3fold_page.patch
+mm-z3fold-remove-redundant-list_del_init-of-zhdr-buddy-in-z3fold_free.patch
+mm-z3fold-remove-unneeded-page_headless-check-in-free_handle.patch
+#
 #mm/zbud
 #mm/ras
 #mm/compaction
@@ -176,7 +200,6 @@ mm-compaction-use-helper-isolation_suitable.patch
 #mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch: https://lkml.kernel.org/r/Yi9w7TCYbj+OLGXJ@dhcp22.suse.cz
 #
 #mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch: bloat!
-mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
 #
 #mm/mempool
 #mm/memblock
@@ -184,6 +207,18 @@ mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
 #mm/hugetlbfs
 #mm/migration
 mm-add-selftests-for-migration-entries.patch
+#
+mm-migration-remove-unneeded-local-variable-mapping_locked.patch
+mm-migration-remove-unneeded-out-label.patch
+mm-migration-remove-unneeded-local-variable-page_lru.patch
+mm-migration-fix-the-confusing-pagetranshuge-check.patch
+mm-migration-use-helper-function-vma_lookup-in-add_page_for_migration.patch
+mm-migration-use-helper-macro-min-in-do_pages_stat.patch
+mm-migration-avoid-unneeded-nodemask_t-initialization.patch
+mm-migration-remove-some-duplicated-codes-in-migrate_pages.patch
+mm-migration-fix-potential-page-refcounts-leak-in-migrate_pages.patch
+mm-migration-fix-potential-invalid-node-access-for-reclaim-based-migration.patch
+mm-migration-fix-possible-do_pages_stat_array-racing-with-memory-offline.patch
 #
 #mm/kmap
 #mm/thp
@@ -208,9 +243,21 @@ mm-untangle-config-dependencies-for-demote-on-reclaim.patch
 #mm/virtio
 #mm/util
 #mm/memory-hotplug
+mm-page_alloc-do-not-calculate-nodes-total-pages-and-memmap-pages-when-empty.patch
+mm-memory_hotplug-reset-nodes-state-when-empty-during-offline.patch
+mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node.patch
+mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes.patch
+#
 #mm/rmap
 #mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch: bloat!
 mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
+#
+mm-rmap-fix-cache-flush-on-thp-pages.patch
+dax-fix-cache-flush-on-pmd-mapped-pages.patch
+mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
+mm-pvmw-add-support-for-walking-devmap-pages.patch
+dax-fix-missing-writeprotect-the-pte-entry.patch
+mm-simplify-follow_invalidate_pte.patch
 #
 #mm/zswap
 #mm/zsmalloc
@@ -219,6 +266,8 @@ mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
 #mm/highmem
 #mm/support
 #mm/zram
+zram-add-a-huge_idle-writeback-mode.patch
+#
 #mm/cleanups
 #mm/secretmem
 #mm/kfence
@@ -599,6 +648,9 @@ lib-test_meminit-optimize-do_kmem_cache_rcu_persistent-test.patch
 #
 lib-kconfigdebug-remove-more-config__value-indirections.patch
 #
+lib-test_stringc-add-strspn-and-strcspn-tests.patch
+lib-stringc-simplify-strspn.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END
@@ -718,6 +770,8 @@ init-mainc-silence-some-wunused-parameter-warnings.patch
 #NEXT_PATCHES_START hppfs
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START fat
+fatfs-remove-redundant-judgment.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START quota
 #NEXT_PATCHES_END
@@ -1005,3 +1059,4 @@ workaround-for-a-pci-restoring-bug.patch
 #[obsolete]linux-next-rejects.patch
 #[withdrawn]mm-page_alloc-add-penalty-to-local_node.patch
 #[folded-merged]mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
+#[nacked]mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch

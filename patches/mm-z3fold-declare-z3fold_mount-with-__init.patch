@@ -1,0 +1,37 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: declare z3fold_mount with __init
+
+Patch series "A few cleanup patches for z3fold", v2.
+
+This series contains a few patches to simplify the code, remove unneeded
+code, fix obsolete comment and so on.  More details can be found in the
+respective changelogs.
+
+
+This patch (of 8):
+
+z3fold_mount is only called during init.  So we should declare it with
+__init.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220308134311.59086-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/z3fold.c~mm-z3fold-declare-z3fold_mount-with-__init
++++ a/mm/z3fold.c
+@@ -345,7 +345,7 @@ static struct file_system_type z3fold_fs
+ };
+ 
+ static struct vfsmount *z3fold_mnt;
+-static int z3fold_mount(void)
++static int __init z3fold_mount(void)
+ {
+ 	int ret = 0;
+ 
+_

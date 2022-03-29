@@ -1,0 +1,14 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: mz already removed from rb_tree if not NULL
+
+When mz is not NULL, it means mz can either come from
+mem_cgroup_largest_soft_limit_node or
+__mem_cgroup_largest_soft_limit_node.  And both of them have removed this
+node by __mem_cgroup_remove_exceeded().
+
+Not necessary to call __mem_cgroup_remove_exceeded() again.
+
+[mhocko@suse.com: refine changelog]
+Link: https://lkml.kernel.org/r/20220314233030.12334-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Acked-by: Michal Hocko <mhocko@suse.com>

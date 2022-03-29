@@ -1,0 +1,28 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove redundant list_del_init of zhdr->buddy in z3fold_free
+
+do_compact_page() will do list_del_init(&zhdr->buddy) for us.  Remove this
+extra one to save some possible cpu cycles.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-redundant-list_del_init-of-zhdr-buddy-in-z3fold_free
++++ a/mm/z3fold.c
+@@ -1244,9 +1244,6 @@ static void z3fold_free(struct z3fold_po
+ 		return;
+ 	}
+ 	if (zhdr->cpu < 0 || !cpu_online(zhdr->cpu)) {
+-		spin_lock(&pool->lock);
+-		list_del_init(&zhdr->buddy);
+-		spin_unlock(&pool->lock);
+ 		zhdr->cpu = -1;
+ 		kref_get(&zhdr->refcount);
+ 		clear_bit(PAGE_CLAIMED, &page->private);
+_

@@ -1,0 +1,9 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove redundant list_del_init of zhdr->buddy in z3fold_free
+
+do_compact_page() will do list_del_init(&zhdr->buddy) for us.  Remove this
+extra one to save some possible cpu cycles.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>

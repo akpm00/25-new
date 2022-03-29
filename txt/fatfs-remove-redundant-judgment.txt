@@ -1,0 +1,10 @@
+From: Yubo Feng <fengyubo3@huawei.com>
+Subject: fatfs: remove redundant judgment
+
+iput() has already judged the incoming parameter, so there is no need to
+repeat outside.
+
+Link: https://lkml.kernel.org/r/1648265418-76563-1-git-send-email-fengyubo3@huawei.com
+Signed-off-by: Yubo Feng <fengyubo3@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>

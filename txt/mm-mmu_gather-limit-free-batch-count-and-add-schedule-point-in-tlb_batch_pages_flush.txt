@@ -1,0 +1,44 @@
+From: Jianxing Wang <wangjianxing@loongson.cn>
+Subject: mm/mmu_gather: limit free batch count and add schedule point in tlb_batch_pages_flush
+
+free a large list of pages maybe cause rcu_sched starved on
+non-preemptible kernels.  howerver free_unref_page_list maybe can't
+cond_resched as it maybe called in interrupt or atomic context, especially
+can't detect atomic context in CONFIG_PREEMPTION=n.
+
+The issue is detected in guest with kvm cpu 200% overcommit, however I
+didn't see the warning in the host with the same application.  I'm sure
+that the patch is needed for guest kernel, but no sure for host.
+
+To reproduce, set up two virtual machines in one host machine, per vm has
+the same number cpu and half memory of host.  the run ltpstress.sh in per
+vm, then will see rcu stall warning.kernel is preempt disabled, append
+kernel command 'preempt=none' if enable dynamic preempt .  It could
+detected in loongson machine(32 core, 128G mem) and ProLiant DL380
+Gen9(x86 E5-2680, 28 core, 64G mem)
+
+tlb flush batch count depends on PAGE_SIZE, it's too large if PAGE_SIZE >
+4K, here limit free batch count with 512.  And add schedule point in
+tlb_batch_pages_flush.
+
+rcu: rcu_sched kthread starved for 5359 jiffies! g454793 f0x0
+RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=19
+[...]
+Call Trace:
+   free_unref_page_list+0x19c/0x270
+   release_pages+0x3cc/0x498
+   tlb_flush_mmu_free+0x44/0x70
+   zap_pte_range+0x450/0x738
+   unmap_page_range+0x108/0x240
+   unmap_vmas+0x74/0xf0
+   unmap_region+0xb0/0x120
+   do_munmap+0x264/0x438
+   vm_munmap+0x58/0xa0
+   sys_munmap+0x10/0x20
+   syscall_common+0x24/0x38
+
+Link: https://lkml.kernel.org/r/20220317072857.2635262-1-wangjianxing@loongson.cn
+Signed-off-by: Jianxing Wang <wangjianxing@loongson.cn>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>

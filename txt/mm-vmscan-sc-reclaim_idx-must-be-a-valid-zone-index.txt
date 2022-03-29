@@ -1,0 +1,10 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: sc->reclaim_idx must be a valid zone index
+
+lruvec_lru_size() is only used in get_scan_count(), so the only possible
+zone_idx is sc->reclaim_idx.  Since sc->reclaim_idx is ensured to be a
+valid zone idex, we can remove the extra check for zone iteration.
+
+Link: https://lkml.kernel.org/r/20220317234624.23358-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>

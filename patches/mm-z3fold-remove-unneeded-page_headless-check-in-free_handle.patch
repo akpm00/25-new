@@ -1,0 +1,28 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove unneeded PAGE_HEADLESS check in free_handle()
+
+The only caller z3fold_free() never calls free_handle() in PAGE_HEADLESS
+case.  Remove this unneeded check.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-9-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-unneeded-page_headless-check-in-free_handle
++++ a/mm/z3fold.c
+@@ -297,9 +297,6 @@ static inline void free_handle(unsigned
+ 	int i;
+ 	bool is_free;
+ 
+-	if (handle & (1 << PAGE_HEADLESS))
+-		return;
+-
+ 	if (WARN_ON(*(unsigned long *)handle == 0))
+ 		return;
+ 
+_

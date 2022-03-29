@@ -1,0 +1,28 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm/memory_hotplug: refactor hotadd_init_pgdat and try_online_node
+
+Since we pre-allocate all nodes now, hotadd_init_pgdat() does not need to
+return a pgdat struct, as that was meant for __try_online_node() to check
+whether the node was successfully allocated.
+
+Also get rid of the __ref as all functions hotadd_init_pgdat() calls fall
+within the same section.
+
+Also try to make more clear the return codes from __try_online_node(). 
+__try_online_node() can return either 0, 1 or -errno (the latter not
+really as the BUG_ON() would catch it before we return) but depending on
+the caller that has different meanings.
+
+For add_memory_resource(), when __try_online_node() returns non-zero, it
+means that the node was already allocated and it does not need to bring it
+up.  It is fine not to check for -errno values because we do not get to
+call register_one_node() when !set_node_online.  For those who call
+try_online_node(), so set_node_online is true, a value other than zero
+means a failure (e.g: cpu_up() or find_and_online_cpu_nid()).
+
+Link: https://lkml.kernel.org/r/20220307150725.6810-4-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>

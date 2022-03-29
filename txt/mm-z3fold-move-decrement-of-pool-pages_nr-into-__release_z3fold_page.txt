@@ -1,0 +1,19 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: move decrement of pool->pages_nr into __release_z3fold_page()
+
+The z3fold will always do atomic64_dec(&pool->pages_nr) when the
+__release_z3fold_page() is called.  Thus we can move decrement of
+pool->pages_nr into __release_z3fold_page() to simplify the code.
+
+Also we can reduce the size of z3fold.o ~1k.
+
+Without this patch:
+   text	   data	    bss	    dec	    hex	filename
+  15444	   1376	      8	  16828	   41bc	mm/z3fold.o
+With this patch:
+   text	   data	    bss	    dec	    hex	filename
+  15044	   1248	      8	  16300	   3fac	mm/z3fold.o
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-7-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

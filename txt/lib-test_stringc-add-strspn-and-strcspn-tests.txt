@@ -1,0 +1,8 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: lib/test_string.c: add strspn and strcspn tests
+
+Before refactoring strspn() and strcspn(), add some simple test cases.
+
+Link: https://lkml.kernel.org/r/20220328224119.3003834-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andy@kernel.org>

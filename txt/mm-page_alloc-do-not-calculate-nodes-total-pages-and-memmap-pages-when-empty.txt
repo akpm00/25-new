@@ -1,0 +1,23 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm/page_alloc: do not calculate node's total pages and memmap pages when empty
+
+Patch series "A minor hotplug refactoring".
+
+
+This patch (of 3):
+
+free_area_init_node() calls calculate_node_totalpages() and
+free_area_init_core().  The former to get node's {spanned,present}_pages,
+and the latter to calculate, among other things, how many pages per zone
+we spent on memmap_pages, which is used to subtract zone's free pages.
+
+On memoryless nodes, it is pointless to perform such a bunch of work, so
+make sure we skip the calculations when having a node or empty zone.
+
+Link: https://lkml.kernel.org/r/20220307150725.6810-1-osalvador@suse.de
+Link: https://lkml.kernel.org/r/20220307150725.6810-2-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>

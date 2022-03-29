@@ -1,0 +1,32 @@
+From: Yubo Feng <fengyubo3@huawei.com>
+Subject: fatfs: remove redundant judgment
+
+iput() has already judged the incoming parameter, so there is no need to
+repeat outside.
+
+Link: https://lkml.kernel.org/r/1648265418-76563-1-git-send-email-fengyubo3@huawei.com
+Signed-off-by: Yubo Feng <fengyubo3@huawei.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/fat/inode.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+--- a/fs/fat/inode.c~fatfs-remove-redundant-judgment
++++ a/fs/fat/inode.c
+@@ -1889,10 +1889,8 @@ out_invalid:
+ 		fat_msg(sb, KERN_INFO, "Can't find a valid FAT filesystem");
+ 
+ out_fail:
+-	if (fsinfo_inode)
+-		iput(fsinfo_inode);
+-	if (fat_inode)
+-		iput(fat_inode);
++	iput(fsinfo_inode);
++	iput(fat_inode);
+ 	unload_nls(sbi->nls_io);
+ 	unload_nls(sbi->nls_disk);
+ 	fat_reset_iocharset(&sbi->options);
+_

@@ -1,0 +1,28 @@
+From: Brian Geffon <bgeffon@google.com>
+Subject: zram: add a huge_idle writeback mode
+
+Today it's only possible to write back as a page, idle, or huge.  A user
+might want to writeback pages which are huge and idle first as these idle
+pages do not require decompression and make a good first pass for
+writeback.
+
+Idle writeback specifically has the advantage that a refault is unlikely
+given that the page has been swapped for some amount of time without being
+refaulted.
+
+Huge writeback has the advantage that you're guaranteed to get the maximum
+benefit from a single page writeback, that is, you're reclaiming one full
+page of memory.  Pages which are compressed in zram being written back
+result in some benefit which is always less than a page size because of
+the fact that it was compressed.
+
+The primary use of this is for minimizing refaults in situations where the
+device has to be sensitive to storage endurance.  On ChromeOS we have
+devices with slow eMMC and repeated writes and refaults can negatively
+affect performance and endurance.
+
+Link: https://lkml.kernel.org/r/20220322215821.1196994-1-bgeffon@google.com
+Signed-off-by: Brian Geffon <bgeffon@google.com>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Nitin Gupta <ngupta@vflare.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>

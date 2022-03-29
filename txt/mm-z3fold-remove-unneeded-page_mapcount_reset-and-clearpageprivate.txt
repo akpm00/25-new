@@ -1,0 +1,10 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove unneeded page_mapcount_reset and ClearPagePrivate
+
+Page->page_type and PagePrivate are not used in z3fold.  We should remove
+these confusing unneeded operations.  The z3fold do these here is due to
+referring to zsmalloc's migration code which does need these operations.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>

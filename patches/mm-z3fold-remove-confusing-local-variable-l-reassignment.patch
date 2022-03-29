@@ -1,0 +1,26 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove confusing local variable l reassignment
+
+The local variable l holds the address of unbuddied[i] which won't change
+after we take the pool lock.  Remove it to avoid confusion.
+
+Link: https://lkml.kernel.org/r/20220308134311.59086-6-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-confusing-local-variable-l-reassignment
++++ a/mm/z3fold.c
+@@ -876,7 +876,6 @@ lookup:
+ 
+ 		/* Re-check under lock. */
+ 		spin_lock(&pool->lock);
+-		l = &unbuddied[i];
+ 		if (unlikely(zhdr != list_first_entry(READ_ONCE(l),
+ 						struct z3fold_header, buddy)) ||
+ 		    !z3fold_page_trylock(zhdr)) {
+_

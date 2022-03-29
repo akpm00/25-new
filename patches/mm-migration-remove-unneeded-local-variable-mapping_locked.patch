@@ -1,0 +1,60 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/migration: remove unneeded local variable mapping_locked
+
+Patch series "A few cleanup and fixup patches for migration", v2.
+
+This series contains a few patches to remove unneeded variables, jump
+label and use helper to simplify the code.  Also we fix some bugs such as
+page refcounts leak , invalid node access and so on.  More details can be
+found in the respective changelogs.
+
+
+This patch (of 11):
+
+When mapping_locked is true, TTU_RMAP_LOCKED is always set to ttu.  We can
+check ttu instead so mapping_locked can be removed.  And ttu is either 0
+or TTU_RMAP_LOCKED now.  Change '|=' to '=' to reflect this.
+
+Link: https://lkml.kernel.org/r/20220318111709.60311-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220318111709.60311-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+--- a/mm/migrate.c~mm-migration-remove-unneeded-local-variable-mapping_locked
++++ a/mm/migrate.c
+@@ -1230,7 +1230,6 @@ static int unmap_and_move_huge_page(new_
+ 		goto put_anon;
+ 
+ 	if (page_mapped(hpage)) {
+-		bool mapping_locked = false;
+ 		enum ttu_flags ttu = 0;
+ 
+ 		if (!PageAnon(hpage)) {
+@@ -1244,14 +1243,13 @@ static int unmap_and_move_huge_page(new_
+ 			if (unlikely(!mapping))
+ 				goto unlock_put_anon;
+ 
+-			mapping_locked = true;
+-			ttu |= TTU_RMAP_LOCKED;
++			ttu = TTU_RMAP_LOCKED;
+ 		}
+ 
+ 		try_to_migrate(src, ttu);
+ 		page_was_mapped = 1;
+ 
+-		if (mapping_locked)
++		if (ttu & TTU_RMAP_LOCKED)
+ 			i_mmap_unlock_write(mapping);
+ 	}
+ 
+_

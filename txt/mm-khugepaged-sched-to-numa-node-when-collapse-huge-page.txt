@@ -1,0 +1,18 @@
+From: Bibo Mao <maobibo@loongson.cn>
+Subject: mm/khugepaged: sched to numa node when collapse huge page
+
+Collapsing a huge page will copy huge page from general small pages, dest
+node is calculated from most one of source pages, however THP daemon is
+not scheduled on dest node.  The performance may be poor since huge page
+copying across nodes, also cache is not used for target node.  With this
+patch, khugepaged daemon switches to the same numa node with huge page. 
+It saves copying time and makes use of local cache better.
+
+With this patch, specint 2006 base performance is improved with 6% on
+Loongson 3C5000L platform with 32 cores and 8 numa nodes.
+
+Link: https://lkml.kernel.org/r/20220317065024.2635069-1-maobibo@loongson.cn
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

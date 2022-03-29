@@ -1,0 +1,64 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: lib/test_string.c: add strspn and strcspn tests
+
+Before refactoring strspn() and strcspn(), add some simple test cases.
+
+Link: https://lkml.kernel.org/r/20220328224119.3003834-1-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andy@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/test_string.c |   33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+--- a/lib/test_string.c~lib-test_stringc-add-strspn-and-strcspn-tests
++++ a/lib/test_string.c
+@@ -179,6 +179,34 @@ static __init int strnchr_selftest(void)
+ 	return 0;
+ }
+ 
++static __init int strspn_selftest(void)
++{
++	static const struct strspn_test {
++		const char str[16];
++		const char accept[16];
++		const char reject[16];
++		unsigned a;
++		unsigned r;
++	} tests[] __initconst = {
++		{ "foobar", "", "", 0, 6 },
++		{ "abba", "abc", "ABBA", 4, 4 },
++		{ "abba", "a", "b", 1, 1 },
++		{ "", "abc", "abc", 0, 0},
++	};
++	const struct strspn_test *s = tests;
++	size_t i, res;
++
++	for (i = 0; i < ARRAY_SIZE(tests); ++i, ++s) {
++		res = strspn(s->str, s->accept);
++		if (res != s->a)
++			return 0x100 + 2*i;
++		res = strcspn(s->str, s->reject);
++		if (res != s->r)
++			return 0x100 + 2*i + 1;
++	}
++	return 0;
++}
++
+ static __exit void string_selftest_remove(void)
+ {
+ }
+@@ -212,6 +240,11 @@ static __init int string_selftest_init(v
+ 	if (subtest)
+ 		goto fail;
+ 
++	test = 6;
++	subtest = strspn_selftest();
++	if (subtest)
++		goto fail;
++
+ 	pr_info("String selftests succeeded\n");
+ 	return 0;
+ fail:
+_

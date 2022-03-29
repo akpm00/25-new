@@ -1,0 +1,16 @@
+From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: lib/string.c: simplify str[c]spn
+
+Use strchr(), which makes them a lot shorter, and more obviously symmetric
+in their treatment of accept/reject.  It also saves a little bit of .text;
+bloat-o-meter for an arm build says
+
+Function                                     old     new   delta
+strcspn                                       92      76     -16
+strspn                                       108      76     -32
+
+While here, also remove a stray empty line before EXPORT_SYMBOL().
+
+Link: https://lkml.kernel.org/r/20220328224119.3003834-2-linux@rasmusvillemoes.dk
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andy@kernel.org>

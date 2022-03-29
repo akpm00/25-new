@@ -1,0 +1,102 @@
+From: Oscar Salvador <osalvador@suse.de>
+Subject: mm/memory_hotplug: refactor hotadd_init_pgdat and try_online_node
+
+Since we pre-allocate all nodes now, hotadd_init_pgdat() does not need to
+return a pgdat struct, as that was meant for __try_online_node() to check
+whether the node was successfully allocated.
+
+Also get rid of the __ref as all functions hotadd_init_pgdat() calls fall
+within the same section.
+
+Also try to make more clear the return codes from __try_online_node(). 
+__try_online_node() can return either 0, 1 or -errno (the latter not
+really as the BUG_ON() would catch it before we return) but depending on
+the caller that has different meanings.
+
+For add_memory_resource(), when __try_online_node() returns non-zero, it
+means that the node was already allocated and it does not need to bring it
+up.  It is fine not to check for -errno values because we do not get to
+call register_one_node() when !set_node_online.  For those who call
+try_online_node(), so set_node_online is true, a value other than zero
+means a failure (e.g: cpu_up() or find_and_online_cpu_nid()).
+
+Link: https://lkml.kernel.org/r/20220307150725.6810-4-osalvador@suse.de
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory_hotplug.c |   37 +++++++++++++++----------------------
+ 1 file changed, 15 insertions(+), 22 deletions(-)
+
+--- a/mm/memory_hotplug.c~mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node
++++ a/mm/memory_hotplug.c
+@@ -1155,8 +1155,7 @@ static void reset_node_present_pages(pg_
+ 	pgdat->node_present_pages = 0;
+ }
+ 
+-/* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
+-static pg_data_t __ref *hotadd_init_pgdat(int nid)
++static void hotadd_init_pgdat(int nid)
+ {
+ 	struct pglist_data *pgdat = NODE_DATA(nid);
+ 
+@@ -1176,8 +1175,6 @@ static pg_data_t __ref *hotadd_init_pgda
+ 	 * to access not-initialized zonelist, build here.
+ 	 */
+ 	build_all_zonelists(pgdat);
+-
+-	return pgdat;
+ }
+ 
+ /*
+@@ -1187,31 +1184,27 @@ static pg_data_t __ref *hotadd_init_pgda
+  * called by cpu_up() to online a node without onlined memory.
+  *
+  * Returns:
+- * 1 -> a new node has been allocated
+- * 0 -> the node is already online
+- * -ENOMEM -> the node could not be allocated
++ * 1 -> The node has been initialized.
++ * 0 -> Either the node was already online, or we succesfully registered a new
++ *      one.
++ * -errno -> register_one_node() failed.
+  */
+ static int __try_online_node(int nid, bool set_node_online)
+ {
+-	pg_data_t *pgdat;
+-	int ret = 1;
++	int ret;
+ 
+ 	if (node_online(nid))
+ 		return 0;
+ 
+-	pgdat = hotadd_init_pgdat(nid);
+-	if (!pgdat) {
+-		pr_err("Cannot online node %d due to NULL pgdat\n", nid);
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	if (set_node_online) {
+-		node_set_online(nid);
+-		ret = register_one_node(nid);
+-		BUG_ON(ret);
+-	}
+-out:
++	hotadd_init_pgdat(nid);
++
++	if (!set_node_online)
++		return 1;
++
++	node_set_online(nid);
++	ret = register_one_node(nid);
++	BUG_ON(ret);
++
+ 	return ret;
+ }
+ 
+_
