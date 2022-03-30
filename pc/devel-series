@@ -164,7 +164,6 @@ mm-remove-unnecessary-void-conversions.patch
 mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t.patch
 #
 #mm-mlock-fix-two-bugs-in-user_shm_lock.patch: acks?
-mm-mlock-fix-two-bugs-in-user_shm_lock.patch
 #
 #mm/hugetlb
 #mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?
@@ -1060,3 +1059,4 @@ workaround-for-a-pci-restoring-bug.patch
 #[withdrawn]mm-page_alloc-add-penalty-to-local_node.patch
 #[folded-merged]mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt-fix.patch
 #[nacked]mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch
+#[merged]mm-mlock-fix-two-bugs-in-user_shm_lock.patch
