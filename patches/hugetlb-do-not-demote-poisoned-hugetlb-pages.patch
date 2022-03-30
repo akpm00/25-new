@@ -18,6 +18,7 @@ Check for poison before attempting to demote a hugetlb page.  Also, return
 Link: https://lkml.kernel.org/r/20220307215707.50916-1-mike.kravetz@oracle.com
 Fixes: 8531fc6f52f5 ("hugetlb: add hugetlb demote page support")
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
@@ -27,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~hugetlb-do-not-demote-poisoned-hugetlb-pages
 +++ a/mm/hugetlb.c
-@@ -3469,7 +3469,6 @@ static int demote_pool_huge_page(struct
+@@ -3475,7 +3475,6 @@ static int demote_pool_huge_page(struct
  {
  	int nr_nodes, node;
  	struct page *page;
@@ -35,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	lockdep_assert_held(&hugetlb_lock);
  
-@@ -3480,15 +3479,19 @@ static int demote_pool_huge_page(struct
+@@ -3486,15 +3485,19 @@ static int demote_pool_huge_page(struct
  	}
  
  	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {

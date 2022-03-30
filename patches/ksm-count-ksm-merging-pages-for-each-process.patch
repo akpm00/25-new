@@ -39,7 +39,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/proc/base.c~ksm-count-ksm-merging-pages-for-each-process
 +++ a/fs/proc/base.c
-@@ -3155,6 +3155,22 @@ static int proc_pid_patch_state(struct s
+@@ -3154,6 +3154,22 @@ static int proc_pid_patch_state(struct s
  }
  #endif /* CONFIG_LIVEPATCH */
  
@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_STACKLEAK_METRICS
  static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
  				struct pid *pid, struct task_struct *task)
-@@ -3286,6 +3302,9 @@ static const struct pid_entry tgid_base_
+@@ -3285,6 +3301,9 @@ static const struct pid_entry tgid_base_
  #ifdef CONFIG_SECCOMP_CACHE_DEBUG
  	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
  #endif
@@ -72,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  };
  
  static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
-@@ -3619,6 +3638,9 @@ static const struct pid_entry tid_base_s
+@@ -3618,6 +3637,9 @@ static const struct pid_entry tid_base_s
  #ifdef CONFIG_SECCOMP_CACHE_DEBUG
  	ONE("seccomp_cache", S_IRUSR, proc_pid_seccomp_cache),
  #endif
@@ -84,7 +84,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int proc_tid_base_readdir(struct file *file, struct dir_context *ctx)
 --- a/include/linux/mm_types.h~ksm-count-ksm-merging-pages-for-each-process
 +++ a/include/linux/mm_types.h
-@@ -655,6 +655,14 @@ struct mm_struct {
+@@ -649,6 +649,14 @@ struct mm_struct {
  #ifdef CONFIG_IOMMU_SVA
  		u32 pasid;
  #endif

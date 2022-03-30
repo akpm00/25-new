@@ -20,6 +20,7 @@ cause do_read_fault to return before calling finish_fault.
 
 Link: https://lkml.kernel.org/r/20220325161428.5068d97e@imladris.surriel.com
 Fixes: e53ac7374e64 ("mm: invalidate hwpoison page cache page in fault path")
+Signed-off-by: Rik van Riel <riel@surriel.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Tested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Oscar Salvador <osalvador@suse.de>

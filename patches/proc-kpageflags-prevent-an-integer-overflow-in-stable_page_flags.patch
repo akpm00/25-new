@@ -24,7 +24,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/proc/page.c~proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags
 +++ a/fs/proc/page.c
-@@ -115,7 +115,7 @@ u64 stable_page_flags(struct page *page)
+@@ -116,7 +116,7 @@ u64 stable_page_flags(struct page *page)
  	 * it differentiates a memory hole from a page with no flags
  	 */
  	if (!page)
@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	k = page->flags;
  	u = 0;
-@@ -127,22 +127,22 @@ u64 stable_page_flags(struct page *page)
+@@ -128,22 +128,22 @@ u64 stable_page_flags(struct page *page)
  	 * simple test in page_mapped() is not enough.
  	 */
  	if (!PageSlab(page) && page_mapped(page))
@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * PageTransCompound can be true for non-huge compound pages (slab
  	 * pages or pages allocated by drivers with __GFP_COMP) because it
-@@ -153,14 +153,13 @@ u64 stable_page_flags(struct page *page)
+@@ -154,14 +154,13 @@ u64 stable_page_flags(struct page *page)
  		struct page *head = compound_head(page);
  
  		if (PageLRU(head) || PageAnon(head))
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * Caveats on high order pages: page->_refcount will only be set
-@@ -168,23 +167,23 @@ u64 stable_page_flags(struct page *page)
+@@ -169,23 +168,23 @@ u64 stable_page_flags(struct page *page)
  	 * SLOB won't set PG_slab at all on compound pages.
  	 */
  	if (PageBuddy(page))
@@ -111,7 +111,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	u |= kpf_copy_bit(k, KPF_ERROR,		PG_error);
  	u |= kpf_copy_bit(k, KPF_DIRTY,		PG_dirty);
-@@ -197,7 +196,7 @@ u64 stable_page_flags(struct page *page)
+@@ -198,7 +197,7 @@ u64 stable_page_flags(struct page *page)
  	u |= kpf_copy_bit(k, KPF_RECLAIM,	PG_reclaim);
  
  	if (PageSwapCache(page))

@@ -30,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/buffer.c~info-task-hung-in-generic_file_write_iter
 +++ a/fs/buffer.c
-@@ -956,10 +956,20 @@ grow_dev_page(struct block_device *bdev,
+@@ -953,10 +953,20 @@ grow_dev_page(struct block_device *bdev,
  			end_block = init_page_buffers(page, bdev,
  						(sector_t)index << sizebits,
  						size);
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	/*
-@@ -979,6 +989,9 @@ grow_dev_page(struct block_device *bdev,
+@@ -976,6 +986,9 @@ grow_dev_page(struct block_device *bdev,
  	spin_unlock(&inode->i_mapping->private_lock);
  done:
  	ret = (block < end_block) ? 1 : -ENXIO;
@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  failed:
  	unlock_page(page);
  	put_page(page);
-@@ -1030,6 +1043,12 @@ __getblk_slow(struct block_device *bdev,
+@@ -1027,6 +1040,12 @@ __getblk_slow(struct block_device *bdev,
  		return NULL;
  	}
  
@@ -75,7 +75,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	for (;;) {
  		struct buffer_head *bh;
  		int ret;
-@@ -1041,6 +1060,18 @@ __getblk_slow(struct block_device *bdev,
+@@ -1038,6 +1057,18 @@ __getblk_slow(struct block_device *bdev,
  		ret = grow_buffers(bdev, block, size, gfp);
  		if (ret < 0)
  			return NULL;
@@ -94,7 +94,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  }
  
-@@ -3194,6 +3225,11 @@ EXPORT_SYMBOL(sync_dirty_buffer);
+@@ -3183,6 +3214,11 @@ EXPORT_SYMBOL(sync_dirty_buffer);
   */
  static inline int buffer_busy(struct buffer_head *bh)
  {
@@ -106,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return atomic_read(&bh->b_count) |
  		(bh->b_state & ((1 << BH_Dirty) | (1 << BH_Lock)));
  }
-@@ -3232,11 +3268,18 @@ int try_to_free_buffers(struct page *pag
+@@ -3221,11 +3257,18 @@ int try_to_free_buffers(struct page *pag
  	int ret = 0;
  
  	BUG_ON(!PageLocked(page));
@@ -126,7 +126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto out;
  	}
  
-@@ -3260,6 +3303,9 @@ int try_to_free_buffers(struct page *pag
+@@ -3249,6 +3292,9 @@ int try_to_free_buffers(struct page *pag
  	if (ret)
  		cancel_dirty_page(page);
  	spin_unlock(&mapping->private_lock);
@@ -138,7 +138,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct buffer_head *bh = buffers_to_free;
 --- a/include/linux/sched.h~info-task-hung-in-generic_file_write_iter
 +++ a/include/linux/sched.h
-@@ -1492,6 +1492,13 @@ struct task_struct {
+@@ -1501,6 +1501,13 @@ struct task_struct {
  	struct callback_head		l1d_flush_kill;
  #endif
  
@@ -154,7 +154,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * they are included in the randomized portion of task_struct.
 --- a/lib/Kconfig.debug~info-task-hung-in-generic_file_write_iter
 +++ a/lib/Kconfig.debug
-@@ -1789,6 +1789,12 @@ config IO_STRICT_DEVMEM
+@@ -1840,6 +1840,12 @@ config IO_STRICT_DEVMEM
  
  menu "$(SRCARCH) Debugging"
  

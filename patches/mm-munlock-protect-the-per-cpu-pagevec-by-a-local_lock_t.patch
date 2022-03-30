@@ -180,7 +180,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
 --- a/mm/page_alloc.c~mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t
 +++ a/mm/page_alloc.c
-@@ -8356,6 +8356,7 @@ static int page_alloc_cpu_dead(unsigned
+@@ -8355,6 +8355,7 @@ static int page_alloc_cpu_dead(unsigned
  	struct zone *zone;
  
  	lru_add_drain_cpu(cpu);

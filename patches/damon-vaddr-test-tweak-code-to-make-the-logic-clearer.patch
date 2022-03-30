@@ -10,7 +10,6 @@ outside the loop which is considered harmful[1].
 Link: https://lkml.kernel.org/r/20220328115252.31675-1-xiam0nd.tong@gmail.com
 Signed-off-by: Xiaomeng Tong <xiam0nd.tong@gmail.com>
 Reviewed-by: SeongJae Park <sj@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

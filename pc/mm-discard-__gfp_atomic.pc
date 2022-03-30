@@ -5,6 +5,5 @@ include/trace/events/mmflags.h
 lib/test_printf.c
 mm/internal.h
 mm/page_alloc.c
-tools/perf/builtin-kmem.c
-tools/testing/radix-tree/linux/gfp.h
 tools/include/linux/gfp.h
+tools/perf/builtin-kmem.c

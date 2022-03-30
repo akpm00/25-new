@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/buffer.c~info-task-hung-in-generic_file_write-fix
 +++ a/fs/buffer.c
-@@ -1064,9 +1064,15 @@ __getblk_slow(struct block_device *bdev,
+@@ -1061,9 +1061,15 @@ __getblk_slow(struct block_device *bdev,
  #ifdef CONFIG_DEBUG_AID_FOR_SYZBOT
  		if (!time_after(jiffies, current->getblk_stamp + 3 * HZ))
  			continue;

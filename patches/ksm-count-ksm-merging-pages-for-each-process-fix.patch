@@ -25,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm_types.h~ksm-count-ksm-merging-pages-for-each-process-fix
 +++ a/include/linux/mm_types.h
-@@ -658,8 +658,8 @@ struct mm_struct {
+@@ -652,8 +652,8 @@ struct mm_struct {
  
  #ifdef CONFIG_KSM
  		/*

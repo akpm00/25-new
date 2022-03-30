@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
 --- a/mm/memcontrol.c~memcg-sync-flush-only-if-periodic-flush-is-delayed
 +++ a/mm/memcontrol.c
-@@ -586,6 +586,9 @@ static DECLARE_DEFERRABLE_WORK(stats_flu
+@@ -587,6 +587,9 @@ static DECLARE_DEFERRABLE_WORK(stats_flu
  static DEFINE_SPINLOCK(stats_flush_lock);
  static DEFINE_PER_CPU(unsigned int, stats_updates);
  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  /*
   * Accessors to ensure that preemption is disabled on PREEMPT_RT because it can
-@@ -636,6 +639,7 @@ static void __mem_cgroup_flush_stats(voi
+@@ -637,6 +640,7 @@ static void __mem_cgroup_flush_stats(voi
  	if (!spin_trylock_irqsave(&stats_flush_lock, flag))
  		return;
  
@@ -89,7 +89,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	cgroup_rstat_flush_irqsafe(root_mem_cgroup->css.cgroup);
  	atomic_set(&stats_flush_threshold, 0);
  	spin_unlock_irqrestore(&stats_flush_lock, flag);
-@@ -647,10 +651,16 @@ void mem_cgroup_flush_stats(void)
+@@ -648,10 +652,16 @@ void mem_cgroup_flush_stats(void)
  		__mem_cgroup_flush_stats();
  }
  
@@ -109,7 +109,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /**
 --- a/mm/workingset.c~memcg-sync-flush-only-if-periodic-flush-is-delayed
 +++ a/mm/workingset.c
-@@ -354,7 +354,7 @@ void workingset_refault(struct folio *fo
+@@ -355,7 +355,7 @@ void workingset_refault(struct folio *fo
  
  	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
  
