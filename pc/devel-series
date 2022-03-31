@@ -56,7 +56,6 @@ doc-vm-page_ownerrst-remove-content-related-to-c-option.patch
 mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 #
 #mm/sparsemem
-mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
 #
 #mm/damon
 mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
@@ -128,7 +127,6 @@ kasan-use-stack_trace_save_shadow.patch
 #mm/msync
 #mm/fadvise
 #mm/gup
-selftest-vm-clarify-error-statement-in-gup_test.patch
 #
 mm-rmap-fix-missing-swap_free-in-try_to_unmap-after-arch_unmap_one-failed.patch
 mm-hugetlb-take-src_mm-write_protect_seq-in-copy_hugetlb_page_range.patch
@@ -1134,3 +1132,5 @@ kselftest-vm-override-targets-from-arguments.patch
 #[nacked]releasing-resources-with-children.patch
 #[nacked]kernel-forkc-export-kernel_thread-to-modules.patch
 #[nacked]workaround-for-a-pci-restoring-bug.patch
+#[to-be-updated]selftest-vm-clarify-error-statement-in-gup_test.patch
+#[to-be-updated]mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
