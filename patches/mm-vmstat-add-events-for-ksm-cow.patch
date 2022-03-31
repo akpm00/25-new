@@ -1,0 +1,97 @@
+From: Yang Yang <yang.yang29@zte.com.cn>
+Subject: mm/vmstat: add events for ksm cow
+
+Users may use ksm by calling madvise(, , MADV_MERGEABLE) when they want to
+save memory, it's a tradeoff by suffering delay on ksm cow.  Users can get
+to know how much memory ksm saved by reading
+/sys/kernel/mm/ksm/pages_sharing, but they don't know what's the costs of
+ksm cow, and this is important of some delay sensitive tasks.
+
+So add ksm cow events to help users evaluate whether or how to use ksm. 
+Also update Documentation/admin-guide/mm/ksm.rst with new added events.
+
+Link: https://lkml.kernel.org/r/20220331035616.2390805-1-yang.yang29@zte.com.cn
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+Reviewed-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Saravanan D <saravanand@fb.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/admin-guide/mm/ksm.rst |   18 ++++++++++++++++++
+ include/linux/vm_event_item.h        |    3 +++
+ mm/memory.c                          |    4 ++++
+ mm/vmstat.c                          |    3 +++
+ 4 files changed, 28 insertions(+)
+
+--- a/Documentation/admin-guide/mm/ksm.rst~mm-vmstat-add-events-for-ksm-cow
++++ a/Documentation/admin-guide/mm/ksm.rst
+@@ -184,6 +184,24 @@ The maximum possible ``pages_sharing/pag
+ ``max_page_sharing`` tunable. To increase the ratio ``max_page_sharing`` must
+ be increased accordingly.
+ 
++Monitoring KSM events
++=====================
++
++There are some counters in /proc/vmstat that may be used to monitor KSM events.
++KSM might help save memory, it's a tradeoff by may suffering delay on KSM COW
++or on swapping in copy. Those events could help users evaluate whether or how
++to use KSM. For example, if cow_ksm increases too fast, user may decrease the
++range of madvise(, , MADV_MERGEABLE).
++
++cow_ksm
++	is incremented every time a KSM page triggers copy on write (COW)
++	when users try to write to a KSM page, we have to make a copy.
++
++ksm_swpin_copy
++	is incremented every time a KSM page is copied when swapping in
++	note that KSM page might be copied when swapping in because do_swap_page()
++	cannot do all the locking needed to reconstitute a cross-anon_vma KSM page.
++
+ --
+ Izik Eidus,
+ Hugh Dickins, 17 Nov 2009
+--- a/include/linux/vm_event_item.h~mm-vmstat-add-events-for-ksm-cow
++++ a/include/linux/vm_event_item.h
+@@ -133,6 +133,9 @@ enum vm_event_item { PGPGIN, PGPGOUT, PS
+ 		KSM_SWPIN_COPY,
+ #endif
+ #endif
++#ifdef CONFIG_KSM
++		COW_KSM,
++#endif
+ #ifdef CONFIG_X86
+ 		DIRECT_MAP_LEVEL2_SPLIT,
+ 		DIRECT_MAP_LEVEL3_SPLIT,
+--- a/mm/memory.c~mm-vmstat-add-events-for-ksm-cow
++++ a/mm/memory.c
+@@ -3332,6 +3332,10 @@ copy:
+ 	get_page(vmf->page);
+ 
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
++#ifdef CONFIG_KSM
++	if (PageKsm(vmf->page))
++		count_vm_event(COW_KSM);
++#endif
+ 	return wp_page_copy(vmf);
+ }
+ 
+--- a/mm/vmstat.c~mm-vmstat-add-events-for-ksm-cow
++++ a/mm/vmstat.c
+@@ -1393,6 +1393,9 @@ const char * const vmstat_text[] = {
+ 	"ksm_swpin_copy",
+ #endif
+ #endif
++#ifdef CONFIG_KSM
++	"cow_ksm",
++#endif
+ #ifdef CONFIG_X86
+ 	"direct_map_level2_splits",
+ 	"direct_map_level3_splits",
+_

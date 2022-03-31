@@ -23,7 +23,7 @@ Fixes: e53ac7374e64 ("mm: invalidate hwpoison page cache page in fault path")
 Signed-off-by: Rik van Riel <riel@surriel.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Tested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Oscar Salvador <osalvador@suse.de>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: <stable@vger.kernel.org>

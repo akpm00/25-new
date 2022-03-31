@@ -1,0 +1,6 @@
+include/linux/page-flags.h
+mm/hugetlb.c
+mm/memory.c
+mm/memremap.c
+mm/swapfile.c
+tools/vm/page-types.c

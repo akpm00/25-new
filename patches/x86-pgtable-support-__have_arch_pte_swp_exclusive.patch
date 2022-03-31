@@ -1,0 +1,111 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: x86/pgtable: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+
+Let's use bit 3 to remember PG_anon_exclusive in swap ptes.
+
+Link: https://lkml.kernel.org/r/20220329164329.208407-4-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Don Dutile <ddutile@redhat.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Liang Zhang <zhangliang5@huawei.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Oded Gabbay <oded.gabbay@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Pedro Demarchi Gomes <pedrodemargomes@gmail.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/x86/include/asm/pgtable.h       |   16 ++++++++++++++++
+ arch/x86/include/asm/pgtable_64.h    |    4 +++-
+ arch/x86/include/asm/pgtable_types.h |    5 +++++
+ 3 files changed, 24 insertions(+), 1 deletion(-)
+
+--- a/arch/x86/include/asm/pgtable_64.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
++++ a/arch/x86/include/asm/pgtable_64.h
+@@ -186,7 +186,7 @@ static inline void native_pgd_clear(pgd_
+  *
+  * |     ...            | 11| 10|  9|8|7|6|5| 4| 3|2| 1|0| <- bit number
+  * |     ...            |SW3|SW2|SW1|G|L|D|A|CD|WT|U| W|P| <- bit names
+- * | TYPE (59-63) | ~OFFSET (9-58)  |0|0|X|X| X| X|F|SD|0| <- swp entry
++ * | TYPE (59-63) | ~OFFSET (9-58)  |0|0|X|X| X| E|F|SD|0| <- swp entry
+  *
+  * G (8) is aliased and used as a PROT_NONE indicator for
+  * !present ptes.  We need to start storing swap entries above
+@@ -203,6 +203,8 @@ static inline void native_pgd_clear(pgd_
+  * F (2) in swp entry is used to record when a pagetable is
+  * writeprotected by userfaultfd WP support.
+  *
++ * E (3) in swp entry is used to rememeber PG_anon_exclusive.
++ *
+  * Bit 7 in swp entry should be 0 because pmd_present checks not only P,
+  * but also L and G.
+  *
+--- a/arch/x86/include/asm/pgtable.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
++++ a/arch/x86/include/asm/pgtable.h
+@@ -1292,6 +1292,22 @@ static inline void update_mmu_cache_pud(
+ {
+ }
+ 
++#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
++static inline pte_t pte_swp_mkexclusive(pte_t pte)
++{
++	return pte_set_flags(pte, _PAGE_SWP_EXCLUSIVE);
++}
++
++static inline int pte_swp_exclusive(pte_t pte)
++{
++	return pte_flags(pte) & _PAGE_SWP_EXCLUSIVE;
++}
++
++static inline pte_t pte_swp_clear_exclusive(pte_t pte)
++{
++	return pte_clear_flags(pte, _PAGE_SWP_EXCLUSIVE);
++}
++
+ #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
+ static inline pte_t pte_swp_mksoft_dirty(pte_t pte)
+ {
+--- a/arch/x86/include/asm/pgtable_types.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
++++ a/arch/x86/include/asm/pgtable_types.h
+@@ -84,6 +84,11 @@
+ #endif
+ 
+ /*
++ * We borrow bit 3 to remember PG_anon_exclusive.
++ */
++#define _PAGE_SWP_EXCLUSIVE	_PAGE_PWT
++
++/*
+  * Tracking soft dirty bit when a page goes to a swap is tricky.
+  * We need a bit which can be stored in pte _and_ not conflict
+  * with swap entry format. On x86 bits 1-4 are *not* involved
+_

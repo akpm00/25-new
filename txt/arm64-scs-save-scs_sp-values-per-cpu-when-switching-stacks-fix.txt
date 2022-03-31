@@ -1,0 +1,8 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix up for "arm64, scs: save scs_sp values per-cpu when switching stacks"
+
+arch/arm64/kernel/irq.c needs asm/scs.h
+
+Link: https://lkml.kernel.org/r/20220331141858.46b4df12@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrey Konovalov <andreyknvl@google.com>

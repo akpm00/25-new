@@ -1,0 +1,25 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix up for "arm64, scs: save scs_sp values per-cpu when switching stacks"
+
+arch/arm64/kernel/irq.c needs asm/scs.h
+
+Link: https://lkml.kernel.org/r/20220331141858.46b4df12@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/kernel/irq.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/arm64/kernel/irq.c~arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks-fix
++++ a/arch/arm64/kernel/irq.c
+@@ -22,6 +22,7 @@
+ #include <linux/vmalloc.h>
+ #include <asm/daifflags.h>
+ #include <asm/vmap_stack.h>
++#include <asm/scs.h>
+ 
+ /* Only access this in an NMI enter/exit */
+ DEFINE_PER_CPU(struct nmi_ctx, nmi_contexts);
+_
