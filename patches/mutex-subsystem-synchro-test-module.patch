@@ -421,7 +421,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&sp_comp[N], 0);
++	kthread_complete_and_exit(&sp_comp[N], 0);
 +}
 +
 +static int mutexer(void *arg)
@@ -442,7 +442,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&mx_comp[N], 0);
++	kthread_complete_and_exit(&mx_comp[N], 0);
 +}
 +
 +static int semaphorer(void *arg)
@@ -463,7 +463,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&sm_comp[N], 0);
++	kthread_complete_and_exit(&sm_comp[N], 0);
 +}
 +
 +static int reader(void *arg)
@@ -486,7 +486,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&rd_comp[N], 0);
++	kthread_complete_and_exit(&rd_comp[N], 0);
 +}
 +
 +static int writer(void *arg)
@@ -509,7 +509,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&wr_comp[N], 0);
++	kthread_complete_and_exit(&wr_comp[N], 0);
 +}
 +
 +static int downgrader(void *arg)
@@ -537,7 +537,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	if (verbose >= 2)
 +		printk("%s: done\n", current->comm);
-+	complete_and_exit(&dg_comp[N], 0);
++	kthread_complete_and_exit(&dg_comp[N], 0);
 +}
 +
 +static void stop_test(struct timer_list *t)
