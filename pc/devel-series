@@ -1137,3 +1137,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftest-vm-clarify-error-statement-in-gup_test.patch
 #[to-be-updated]mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
 b.patch
+c.patch
