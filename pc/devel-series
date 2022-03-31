@@ -1136,3 +1136,5 @@ kselftest-vm-override-targets-from-arguments.patch
 #[nacked]workaround-for-a-pci-restoring-bug.patch
 #[to-be-updated]selftest-vm-clarify-error-statement-in-gup_test.patch
 #[to-be-updated]mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
+a.patch
+b.patch
