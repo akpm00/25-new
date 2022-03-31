@@ -1118,10 +1118,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #NEXT_PATCHES_END
 # maybe-merge-one-day
 #
-make-sure-nobodys-leaking-resources.patch
-releasing-resources-with-children.patch
-kernel-forkc-export-kernel_thread-to-modules.patch
-workaround-for-a-pci-restoring-bug.patch
 #
 #[obsolete]linux-next-rejects.patch
 #[withdrawn]mm-page_alloc-add-penalty-to-local_node.patch
@@ -1131,3 +1127,7 @@ workaround-for-a-pci-restoring-bug.patch
 #[nacked]mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch
 #[folded-merged]mutex-subsystem-synchro-test-module-fix.patch
 #[nacked]mutex-subsystem-synchro-test-module.patch
+#[nacked]make-sure-nobodys-leaking-resources.patch
+#[nacked]releasing-resources-with-children.patch
+#[nacked]kernel-forkc-export-kernel_thread-to-modules.patch
+#[nacked]workaround-for-a-pci-restoring-bug.patch
