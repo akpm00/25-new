@@ -1,0 +1,25 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix
+
+fix comment, per hch
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/internal.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/internal.h~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix
++++ a/mm/internal.h
+@@ -462,7 +462,7 @@ void mlock_page_drain_remote(int cpu);
+ extern pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma);
+ 
+ /*
+- * * Return the start of user virtual address at the specific offset within
++ * Return the start of user virtual address at the specific offset within
+  * a vma.
+  */
+ static inline unsigned long
+_

@@ -1,0 +1,9 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: dax-fix-missing-writeprotect-the-pte-entry-v6
+
+fold dax_entry_mkclean() into dax_writeback_one()
+
+Link: https://lkml.kernel.org/r/20220329134853.68403-6-songmuchun@bytedance.com
+Fixes: 4b4bb46d00b3 ("dax: clear dirty entry tags on cache flush")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

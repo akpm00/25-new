@@ -1,0 +1,65 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: dax-fix-missing-writeprotect-the-pte-entry-v6
+
+fold dax_entry_mkclean() into dax_writeback_one()
+
+Link: https://lkml.kernel.org/r/20220329134853.68403-6-songmuchun@bytedance.com
+Fixes: 4b4bb46d00b3 ("dax: clear dirty entry tags on cache flush")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/dax.c |   28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
+
+--- a/fs/dax.c~dax-fix-missing-writeprotect-the-pte-entry-v6
++++ a/fs/dax.c
+@@ -790,26 +790,12 @@ static void *dax_insert_entry(struct xa_
+ 	return entry;
+ }
+ 
+-/* Walk all mappings of a given index of a file and writeprotect them */
+-static void dax_entry_mkclean(struct address_space *mapping, unsigned long pfn,
+-			      unsigned long npfn, pgoff_t start)
+-{
+-	struct vm_area_struct *vma;
+-	pgoff_t end = start + npfn - 1;
+-
+-	i_mmap_lock_read(mapping);
+-	vma_interval_tree_foreach(vma, &mapping->i_mmap, start, end) {
+-		pfn_mkclean_range(pfn, npfn, start, vma);
+-		cond_resched();
+-	}
+-	i_mmap_unlock_read(mapping);
+-}
+-
+ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
+ 		struct address_space *mapping, void *entry)
+ {
+-	unsigned long pfn, index, count;
++	unsigned long pfn, index, count, end;
+ 	long ret = 0;
++	struct vm_area_struct *vma;
+ 
+ 	/*
+ 	 * A page got tagged dirty in DAX mapping? Something is seriously
+@@ -867,8 +853,16 @@ static int dax_writeback_one(struct xa_s
+ 	pfn = dax_to_pfn(entry);
+ 	count = 1UL << dax_entry_order(entry);
+ 	index = xas->xa_index & ~(count - 1);
++	end = index + count - 1;
++
++	/* Walk all mappings of a given index of a file and writeprotect them */
++	i_mmap_lock_read(mapping);
++	vma_interval_tree_foreach(vma, &mapping->i_mmap, index, end) {
++		pfn_mkclean_range(pfn, count, index, vma);
++		cond_resched();
++	}
++	i_mmap_unlock_read(mapping);
+ 
+-	dax_entry_mkclean(mapping, pfn, count, index);
+ 	dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
+ 	/*
+ 	 * After we have flushed the cache, we can clear the dirty tag. There
+_

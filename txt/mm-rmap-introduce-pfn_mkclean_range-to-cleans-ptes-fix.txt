@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix
+
+fix comment, per hch
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Muchun Song <songmuchun@bytedance.com>

@@ -315,8 +315,10 @@ mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixe
 mm-rmap-fix-cache-flush-on-thp-pages.patch
 dax-fix-cache-flush-on-pmd-mapped-pages.patch
 mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
+mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix.patch
 mm-pvmw-add-support-for-walking-devmap-pages.patch
 dax-fix-missing-writeprotect-the-pte-entry.patch
+dax-fix-missing-writeprotect-the-pte-entry-v6.patch
 mm-simplify-follow_invalidate_pte.patch
 #
 #mm/zswap

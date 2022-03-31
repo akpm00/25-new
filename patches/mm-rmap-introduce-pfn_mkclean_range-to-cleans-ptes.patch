@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/rmap.h~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes
 +++ a/include/linux/rmap.h
-@@ -263,6 +263,9 @@ unsigned long page_address_in_vma(struct
+@@ -361,6 +361,9 @@ unsigned long page_address_in_vma(struct
   */
  int folio_mkclean(struct folio *);
  
