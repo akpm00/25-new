@@ -1,36 +1,37 @@
 From: Muchun Song <songmuchun@bytedance.com>
 Subject: mm: rmap: fix cache flush on THP pages
 
-Patch series "Fix some bugs related to rmap and dax", v4.
+Patch series "Fix some bugs related to ramp and dax", v5.
 
-Patches 1-2 fix a cache flush bug.  Because subsequent patches depend on
-those changes, they are placed in this series.  Patches 3-4 are
-preparation for fixing a dax bug in patch 5.  Patch 6 is a code cleanup
-since the previous patch removed the usage of follow_invalidate_pte().
+Patch 1-2 fixes a cache flush bug, because subsequent patches depend on
+those on those changes, there are placed in this series.  Patch 3-4 are
+preparation for fixing a dax bug in patch 5.  Patch 6 is code cleanup
+since the previous patch remove the usage of follow_invalidate_pte().
 
 
 This patch (of 6):
 
-The flush_cache_page() only remove a PAGE_SIZE sized range from the cache.
+flush_cache_page() only removes a PAGE_SIZE sized range from the cache. 
 However, it does not cover the full pages in a THP except a head page. 
 Replace it with flush_cache_range() to fix this issue.  At least, no
 problems were found due to this.  Maybe because the architectures that
 have virtual indexed caches is less.
 
-Link: https://lkml.kernel.org/r/20220302082718.32268-1-songmuchun@bytedance.com
-Link: https://lkml.kernel.org/r/20220302082718.32268-2-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220318074529.5261-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220318074529.5261-2-songmuchun@bytedance.com
 Fixes: f27176cfc363 ("mm: convert page_mkclean_one() to use page_vma_mapped_walk()")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Jan Kara <jack@suse.cz>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alistair Popple <apopple@nvidia.com>
 Cc: Ralph Campbell <rcampbell@nvidia.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Ross Zwisler <zwisler@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>
 Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

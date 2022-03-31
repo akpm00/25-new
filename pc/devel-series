@@ -48,7 +48,9 @@ mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
 #m/secretmem
+#mm-secretmem-fix-panic-when-growing-a-memfd_secret.patch: willy comment
 mm-secretmem-fix-panic-when-growing-a-memfd_secret.patch
+mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
 #
 #mailmap
 mailmap-update-vasily-averins-email-address.patch
@@ -312,14 +314,6 @@ mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixe
 #mm/rmap
 #mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch: bloat!
 #
-mm-rmap-fix-cache-flush-on-thp-pages.patch
-dax-fix-cache-flush-on-pmd-mapped-pages.patch
-mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
-mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix.patch
-mm-pvmw-add-support-for-walking-devmap-pages.patch
-dax-fix-missing-writeprotect-the-pte-entry.patch
-dax-fix-missing-writeprotect-the-pte-entry-v6.patch
-mm-simplify-follow_invalidate_pte.patch
 #
 #mm/zswap
 #mm/zsmalloc
@@ -1137,3 +1131,11 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftest-vm-clarify-error-statement-in-gup_test.patch
 #[to-be-updated]mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
 b.patch
+#[failures]mm-rmap-fix-cache-flush-on-thp-pages.patch
+#[failures]dax-fix-cache-flush-on-pmd-mapped-pages.patch
+#[failures]mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
+#[failures]mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes-fix.patch
+#[failures]mm-pvmw-add-support-for-walking-devmap-pages.patch
+#[failures]dax-fix-missing-writeprotect-the-pte-entry.patch
+#[failures]dax-fix-missing-writeprotect-the-pte-entry-v6.patch
+#[failures]mm-simplify-follow_invalidate_pte.patch
