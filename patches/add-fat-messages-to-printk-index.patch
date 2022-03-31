@@ -1,0 +1,79 @@
+From: Jonathan Lassoff <jof@thejof.com>
+Subject: fatfs: add FAT messages to printk index
+
+In order for end users to quickly react to new issues that come up in
+production, it is proving useful to leverage the printk indexing system. 
+This printk index enables kernel developers to use calls to printk() with
+changeable ad-hoc format strings (as they always have; no change of
+expectations), while enabling end users to examine format strings to
+detect changes.
+
+Since end users are using regular expressions to match messages printed
+through printk(), being able to detect changes in chosen format strings
+from release to release provides a useful signal to review
+printk()-matching regular expressions for any necessary updates.
+
+So that detailed FAT messages are captured by this printk index, this
+patch wraps fat_msg with a macro.
+
+Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
+Signed-off-by: Jonathan Lassoff <jof@thejof.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/fat/fat.h  |    9 ++++++++-
+ fs/fat/misc.c |   14 ++++++++++----
+ 2 files changed, 18 insertions(+), 5 deletions(-)
+
+--- a/fs/fat/fat.h~add-fat-messages-to-printk-index
++++ a/fs/fat/fat.h
+@@ -433,8 +433,15 @@ void __fat_fs_error(struct super_block *
+ 	__fat_fs_error(sb, 1, fmt , ## args)
+ #define fat_fs_error_ratelimit(sb, fmt, args...) \
+ 	__fat_fs_error(sb, __ratelimit(&MSDOS_SB(sb)->ratelimit), fmt , ## args)
++
++#define FAT_PRINTK_PREFIX "%sFAT-fs (%s): "
++#define fat_msg(sb, level, fmt, args...)				\
++do {									\
++	printk_index_subsys_emit(FAT_PRINTK_PREFIX, level, fmt, ##args);\
++	_fat_msg(sb, level, fmt, ##args);				\
++} while(0)
+ __printf(3, 4) __cold
+-void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...);
++void _fat_msg(struct super_block *sb, const char *level, const char *fmt, ...);
+ #define fat_msg_ratelimit(sb, level, fmt, args...)	\
+ 	do {	\
+ 			if (__ratelimit(&MSDOS_SB(sb)->ratelimit))	\
+--- a/fs/fat/misc.c~add-fat-messages-to-printk-index
++++ a/fs/fat/misc.c
+@@ -42,10 +42,16 @@ void __fat_fs_error(struct super_block *
+ EXPORT_SYMBOL_GPL(__fat_fs_error);
+ 
+ /**
+- * fat_msg() - print preformated FAT specific messages. Every thing what is
+- * not fat_fs_error() should be fat_msg().
++ * _fat_msg() - Print a preformatted FAT message based on a superblock.
++ * @sb: A pointer to a &struct super_block
++ * @level: A Kernel printk level constant
++ * @fmt: The printf-style format string to print.
++ *
++ * Everything that is not fat_fs_error() should be fat_msg().
++ *
++ * fat_msg() wraps _fat_msg() for printk indexing.
+  */
+-void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...)
++void _fat_msg(struct super_block *sb, const char *level, const char *fmt, ...)
+ {
+ 	struct va_format vaf;
+ 	va_list args;
+@@ -53,7 +59,7 @@ void fat_msg(struct super_block *sb, con
+ 	va_start(args, fmt);
+ 	vaf.fmt = fmt;
+ 	vaf.va = &args;
+-	printk("%sFAT-fs (%s): %pV\n", level, sb->s_id, &vaf);
++	_printk(FAT_PRINTK_PREFIX "%pV\n", level, sb->s_id, &vaf);
+ 	va_end(args);
+ }
+ 
+_

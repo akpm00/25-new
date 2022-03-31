@@ -1,0 +1,56 @@
+From: "Dr. Thomas Orgis" <thomas.orgis@uni-hamburg.de>
+Subject: taskstats: version 12 with thread group and exe info
+
+The task exit struct needs some crucial information to be able to provide
+an enhanced version of process and thread accounting.  This change
+provides:
+
+1. ac_tgid in additon to ac_pid
+2. thread group execution walltime in ac_tgetime
+3. flag AGROUP in ac_flag to indicate the last task
+   in a thread group / process
+4. device ID and inode of task's /proc/self/exe in
+   ac_exe_dev and ac_exe_inode
+5. tools/accounting/procacct as demonstrator
+
+When a task exits, taskstats are reported to userspace including the
+task's pid and ppid, but without the id of the thread group this task is
+part of.  Without the tgid, the stats of single tasks cannot be correlated
+to each other as a thread group (process).
+
+The taskstats documentation suggests that on process exit a data set
+consisting of accumulated stats for the whole group is produced.  But such
+an additional set of stats is only produced for actually multithreaded
+processes, not groups that had only one thread, and also those stats only
+contain data about delay accounting and not the more basic information
+about CPU and memory resource usage.  Adding the AGROP flag to be set when
+the last task of a group exited enables determination of process end also
+for single-threaded processes.
+
+My applicaton basically does enhanced process accounting with summed
+cputime, biggest maxrss, tasks per process.  The data is not available
+with the traditional BSD process accounting (which is not designed to be
+extensible) and the taskstats interface allows more efficient on-the-fly
+grouping and summing of the stats, anyway, without intermediate disk
+writes.
+
+Furthermore, I do carry statistics on which exact program binary is used
+how often with associated resources, getting a picture on how important
+which parts of a collection of installed scientific software in different
+versions are, and how well they put load on the machine.  This is enabled
+by providing information on /proc/self/exe for each task.  I assume the
+two 64-bit fields for device ID and inode are more appropriate than the
+possibly large resolved path to keep the data volume down.
+
+Add the tgid to the stats to complete task identification, the flag AGROUP
+to mark the last task of a group, the group wallclock time, and
+inode-based identification of the associated executable file.
+
+Add tools/accounting/procacct.c as a simplified fork of getdelays.c
+to demonstrate process and thread accounting.
+
+Link: https://lkml.kernel.org/r/20220331004106.64e5616b@plasteblaster
+Signed-off-by: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
+Reviewed-by: Ismael Luceno <ismael@iodev.co.uk>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>

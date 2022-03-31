@@ -1,0 +1,26 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: add-fat-messages-to-printk-index-checkpatch-fixes
+
+WARNING: 'changable' may be misspelled - perhaps 'changeable'?
+#7: 
+changable ad-hoc format strings (as they always have; no change of
+^^^^^^^^^
+
+ERROR: space required before the open parenthesis '('
+#41: FILE: fs/fat/fat.h:442:
++} while(0)
+
+total: 1 errors, 1 warnings, 43 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./patches/add-fat-messages-to-printk-index.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Please run checkpatch prior to sending patches
+
+Cc: Jonathan Lassoff <jof@thejof.com>
+Cc: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>

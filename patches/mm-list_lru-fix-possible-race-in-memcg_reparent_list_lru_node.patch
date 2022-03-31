@@ -1,0 +1,99 @@
+From: Waiman Long <longman@redhat.com>
+Subject: mm/list_lru: fix possible race in memcg_reparent_list_lru_node()
+
+Muchun Song found out there could be a race between list_lru_add() and
+memcg_reparent_list_lru_node() causing the later function to miss
+reparenting of a lru entry as shown below:
+
+CPU0:                           CPU1:
+list_lru_add()
+    spin_lock(&nlru->lock)
+    l = list_lru_from_kmem(memcg)
+                                memcg_reparent_objcgs(memcg)
+                                memcg_reparent_list_lrus(memcg)
+                                    memcg_reparent_list_lru()
+                                        memcg_reparent_list_lru_node()
+                                            if (!READ_ONCE(nlru->nr_items))
+                                                // Miss reparenting
+                                                return
+    // Assume 0->1
+    l->nr_items++
+    // Assume 0->1
+    nlru->nr_items++
+
+Though it is not likely that a list_lru_node that has 0 item suddenly has
+a newly added lru entry at the end of its life.  The race is still
+theoretically possible.
+
+With the lock/unlock pair used within the percpu_ref_kill() which is the
+last function call of memcg_reparent_objcgs(), any read issued in
+memcg_reparent_list_lru_node() will not be reordered before the
+reparenting of objcgs.
+
+Adding a !spin_is_locked()/smp_rmb()/!READ_ONCE(nlru->nr_items) check to
+ensure that either the reading of nr_items is valid or the racing
+list_lru_add() will see the reparented objcg.
+
+Link: https://lkml.kernel.org/r/20220330172646.2687555-1-longman@redhat.com
+Fixes: 405cc51fc104 ("mm/list_lru: optimize memcg_reparent_list_lru_node()")
+Reported-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/list_lru.c |   31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
+
+--- a/mm/list_lru.c~mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node
++++ a/mm/list_lru.c
+@@ -395,10 +395,33 @@ static void memcg_reparent_list_lru_node
+ 	struct list_lru_one *src, *dst;
+ 
+ 	/*
+-	 * If there is no lru entry in this nlru, we can skip it immediately.
++	 * With the lock/unlock pair used within the percpu_ref_kill()
++	 * which is the last function call of memcg_reparent_objcgs(), any
++	 * read issued here will not be reordered before the reparenting
++	 * of objcgs.
++	 *
++	 * Assuming a racing list_lru_add():
++	 * list_lru_add()
++	 *				<- memcg_reparent_list_lru_node()
++	 *   spin_lock(&nlru->lock)
++	 *   l = list_lru_from_kmem(memcg)
++	 *   nlru->nr_items++
++	 *   spin_unlock(&nlru->lock)
++	 *				<- memcg_reparent_list_lru_node()
++	 *
++	 * The !spin_is_locked(&nlru->lock) check is true means it is
++	 * either before the spin_lock() or after the spin_unlock(). In the
++	 * former case, list_lru_add() will see the reparented objcg and so
++	 * won't touch the lru to be reparented. In the later case, it will
++	 * see the updated nr_items. So we can use the optimization that if
++	 * there is no lru entry in this nlru, skip it immediately.
+ 	 */
+-	if (!READ_ONCE(nlru->nr_items))
+-		return;
++	if (!spin_is_locked(&nlru->lock)) {
++		/* nr_items read must be ordered after nlru->lock */
++		smp_rmb();
++		if (!READ_ONCE(nlru->nr_items))
++			return;
++	}
+ 
+ 	/*
+ 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+@@ -407,7 +430,7 @@ static void memcg_reparent_list_lru_node
+ 	spin_lock_irq(&nlru->lock);
+ 
+ 	src = list_lru_from_memcg_idx(lru, nid, src_idx);
+-	if (!src)
++	if (!src || !src->nr_items)
+ 		goto out;
+ 	dst = list_lru_from_memcg_idx(lru, nid, dst_idx);
+ 
+_

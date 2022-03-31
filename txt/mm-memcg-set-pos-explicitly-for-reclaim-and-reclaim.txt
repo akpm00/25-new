@@ -1,0 +1,11 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: set pos explicitly for reclaim and !reclaim
+
+During mem_cgroup_iter, there are two ways to get iteration position:
+reclaim vs non-reclaim mode.
+
+Let's do it explicitly for reclaim vs non-reclaim mode.
+
+Link: https://lkml.kernel.org/r/20220330234719.18340-3-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>

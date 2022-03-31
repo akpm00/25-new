@@ -1,0 +1,29 @@
+From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: selftest/vm: clarify error statement in gup_test
+
+Print two possible reasons /sys/kernel/debug/gup_test cannot be opened to
+help users of this test diagnose failures.
+
+Link: https://lkml.kernel.org/r/20220330215257.112029-1-sidhartha.kumar@oracle.com
+Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/vm/gup_test.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/tools/testing/selftests/vm/gup_test.c~selftest-vm-clarify-error-statement-in-gup_test
++++ a/tools/testing/selftests/vm/gup_test.c
+@@ -206,7 +206,9 @@ int main(int argc, char **argv)
+ 
+ 	gup_fd = open("/sys/kernel/debug/gup_test", O_RDWR);
+ 	if (gup_fd == -1) {
+-		perror("open");
++		perror("failed to open /sys/kernel/debug/gup_test");
++		printf("check if CONFIG_GUP_TEST is enabled in kernel config\n");
++		printf("check if debugfs is mounted at /sys/kernel/debug\n");
+ 		exit(1);
+ 	}
+ 
+_

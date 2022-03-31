@@ -1,0 +1,22 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: set memcg after css verified and got reference
+
+Patch series "mm/memcg: some cleanup for mem_cgroup_iter()", v2.
+
+No functional change, try to make it more readable.
+
+
+This patch (of 3):
+
+Instead of resetting memcg when css is either not verified or not got
+reference, we can set it after these process.
+
+No functional change, just simplified the code a little.
+
+Link: https://lkml.kernel.org/r/20220330234719.18340-1-richard.weiyang@gmail.com
+Link: https://lkml.kernel.org/r/20220330234719.18340-2-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Shakeel Butt <shakeelb@google.com>

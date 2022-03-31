@@ -1,0 +1,21 @@
+From: Jonathan Lassoff <jof@thejof.com>
+Subject: fatfs: add FAT messages to printk index
+
+In order for end users to quickly react to new issues that come up in
+production, it is proving useful to leverage the printk indexing system. 
+This printk index enables kernel developers to use calls to printk() with
+changeable ad-hoc format strings (as they always have; no change of
+expectations), while enabling end users to examine format strings to
+detect changes.
+
+Since end users are using regular expressions to match messages printed
+through printk(), being able to detect changes in chosen format strings
+from release to release provides a useful signal to review
+printk()-matching regular expressions for any necessary updates.
+
+So that detailed FAT messages are captured by this printk index, this
+patch wraps fat_msg with a macro.
+
+Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
+Signed-off-by: Jonathan Lassoff <jof@thejof.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
