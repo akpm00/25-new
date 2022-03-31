@@ -1,0 +1,27 @@
+From: NeilBrown <neilb@suse.de>
+Subject: VFS: Add FMODE_CAN_ODIRECT file flag
+
+Currently various places test if direct IO is possible on a file by
+checking for the existence of the direct_IO address space operation.
+This is a poor choice, as the direct_IO operation may not be used - it is
+only used if the generic_file_*_iter functions are called for direct IO
+and some filesystems - particularly NFS - don't do this.
+
+Instead, introduce a new f_mode flag: FMODE_CAN_ODIRECT and change the
+various places to check this (avoiding pointer dereferences).
+do_dentry_open() will set this flag if ->direct_IO is present, so
+filesystems do not need to be changed.
+
+NFS *is* changed, to set the flag explicitly and discard the direct_IO
+entry in the address_space_operations for files.
+
+Other filesystems which currently use noop_direct_IO could usefully be
+changed to set this flag instead.
+
+Link: https://lkml.kernel.org/r/164859778128.29473.15189737957277399416.stgit@noble.brown
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

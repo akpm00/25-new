@@ -58,6 +58,10 @@ mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 #mm/sparsemem
 mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
 #
+#mm/damon
+mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
+#
+#
 #
 #
 #
@@ -120,6 +124,17 @@ kasan-use-stack_trace_save_shadow.patch
 selftest-vm-clarify-error-statement-in-gup_test.patch
 #
 #mm/swap
+mm-create-new-mm-swaph-header-file.patch
+mm-drop-swap_dirty_folio.patch
+mm-move-responsibility-for-setting-swp_fs_ops-to-swap_activate.patch
+mm-reclaim-mustnt-enter-fs-for-swp_fs_ops-swap-space.patch
+mm-introduce-swap_rw-and-use-it-for-reads-from-swp_fs_ops-swap-space.patch
+mm-perform-async-writes-to-swp_fs_ops-swap-space-using-swap_rw.patch
+doc-update-documentation-for-swap_activate-and-swap_rw.patch
+mm-submit-multipage-reads-for-swp_fs_ops-swap-space.patch
+mm-submit-multipage-write-for-swp_fs_ops-swap-space.patch
+vfs-add-fmode_can_odirect-file-flag.patch
+#
 #mm/shmem
 mm-shmem-make-shmem_init-return-void.patch
 mm-shmem-make-shmem_init-return-void-fix.patch
@@ -787,6 +802,8 @@ fatfs-remove-redundant-judgment.patch
 add-fat-messages-to-printk-index.patch
 add-fat-messages-to-printk-index-checkpatch-fixes.patch
 #
+fat-add-ratelimit-to-fat_ent_bread.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START quota
 #NEXT_PATCHES_END
@@ -855,6 +872,7 @@ rapidio-remove-unnecessary-use-of-list-iterator.patch
 #NEXT_PATCHES_START keys
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START pids
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START pidns
 #NEXT_PATCHES_END

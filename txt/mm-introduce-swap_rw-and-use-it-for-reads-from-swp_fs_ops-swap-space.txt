@@ -1,0 +1,38 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: introduce ->swap_rw and use it for reads from SWP_FS_OPS swap-space
+
+swap currently uses ->readpage to read swap pages.  This can only request
+one page at a time from the filesystem, which is not most efficient.
+
+swap uses ->direct_IO for writes which while this is adequate is an
+inappropriate over-loading.  ->direct_IO may need to had handle allocate
+space for holes or other details that are not relevant for swap.
+
+So this patch introduces a new address_space operation: ->swap_rw.  In
+this patch it is used for reads, and a subsequent patch will switch writes
+to use it.
+
+No filesystem yet supports ->swap_rw, but that is not a problem because
+no filesystem actually works with filesystem-based swap.
+Only two filesystems set SWP_FS_OPS:
+- cifs sets the flag, but ->direct_IO always fails so swap cannot work.
+- nfs sets the flag, but ->direct_IO calls generic_write_checks()
+  which has failed on swap files for several releases.
+
+To ensure that a NULL ->swap_rw isn't called, ->activate_swap() for both
+NFS and cifs are changed to fail if ->swap_rw is not set.  This can be
+removed if/when the function is added.
+
+Future patches will restore swap-over-NFS functionality.
+
+To submit an async read with ->swap_rw() we need to allocate a structure
+to hold the kiocb and other details.  swap_readpage() cannot handle
+transient failure, so we create a mempool to provide the structures.
+
+Link: https://lkml.kernel.org/r/164859778125.29473.13430559328221330589.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

@@ -1,0 +1,10 @@
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Subject: fat: add ratelimit to fat*_ent_bread()
+
+fat*_ent_bread() can be the cause of too many report on I/O error path. 
+So use fat_msg_ratelimit() instead.
+
+Link: https://lkml.kernel.org/r/87bkxogfeq.fsf@mail.parknet.co.jp
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Reported-by: qianfan <qianfanguijin@163.com>
+Tested-by: qianfan <qianfanguijin@163.com>

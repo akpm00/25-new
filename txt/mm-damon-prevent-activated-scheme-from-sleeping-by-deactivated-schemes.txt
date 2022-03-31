@@ -1,0 +1,21 @@
+From: Jonghyeon Kim <tome01@ajou.ac.kr>
+Subject: mm/damon: prevent activated scheme from sleeping by deactivated schemes
+
+In the DAMON, the minimum wait time of the schemes decides whether the
+kernel wakes up 'kdamon_fn()'.  But since the minimum wait time is
+initialized to zero, there are corner cases against the original
+objective.
+
+For example, if we have several schemes for one target, and if the wait
+time of the first scheme is zero, the minimum wait time will set zero,
+which means 'kdamond_fn()' should wake up to apply this scheme.  However,
+in the following scheme, wait time can be set to non-zero.  Thus, the
+mininum wait time will be set to non-zero, which can cause sleeping this
+interval for 'kdamon_fn()' due to one deactivated last scheme.
+
+This commit prevents making DAMON monitoring inactive state due to other
+deactivated schemes.
+
+Link: https://lkml.kernel.org/r/20220330105302.32114-1-tome01@ajou.ac.kr
+Signed-off-by: Jonghyeon Kim <tome01@ajou.ac.kr>
+Reviewed-by: SeongJae Park <sj@kernel.org>

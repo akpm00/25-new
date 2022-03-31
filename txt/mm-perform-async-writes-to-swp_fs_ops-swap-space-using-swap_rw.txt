@@ -1,0 +1,17 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: perform async writes to SWP_FS_OPS swap-space using ->swap_rw
+
+This patch switches swap-out to SWP_FS_OPS swap-spaces to use ->swap_rw
+and makes the writes asynchronous, like they are for other swap spaces.
+
+To make it async we need to allocate the kiocb struct from a mempool. 
+This may block, but won't block as long as waiting for the write to
+complete.  At most it will wait for some previous swap IO to complete.
+
+Link: https://lkml.kernel.org/r/164859778126.29473.12399585304843922231.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

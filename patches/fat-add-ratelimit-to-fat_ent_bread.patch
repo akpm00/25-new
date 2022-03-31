@@ -1,0 +1,40 @@
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Subject: fat: add ratelimit to fat*_ent_bread()
+
+fat*_ent_bread() can be the cause of too many report on I/O error path. 
+So use fat_msg_ratelimit() instead.
+
+Link: https://lkml.kernel.org/r/87bkxogfeq.fsf@mail.parknet.co.jp
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Reported-by: qianfan <qianfanguijin@163.com>
+Tested-by: qianfan <qianfanguijin@163.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/fat/fatent.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+--- a/fs/fat/fatent.c~fat-add-ratelimit-to-fat_ent_bread
++++ a/fs/fat/fatent.c
+@@ -94,7 +94,8 @@ static int fat12_ent_bread(struct super_
+ err_brelse:
+ 	brelse(bhs[0]);
+ err:
+-	fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)", (llu)blocknr);
++	fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
++			  (llu)blocknr);
+ 	return -EIO;
+ }
+ 
+@@ -107,8 +108,8 @@ static int fat_ent_bread(struct super_bl
+ 	fatent->fat_inode = MSDOS_SB(sb)->fat_inode;
+ 	fatent->bhs[0] = sb_bread(sb, blocknr);
+ 	if (!fatent->bhs[0]) {
+-		fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
+-		       (llu)blocknr);
++		fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
++				  (llu)blocknr);
+ 		return -EIO;
+ 	}
+ 	fatent->nr_bhs = 1;
+_

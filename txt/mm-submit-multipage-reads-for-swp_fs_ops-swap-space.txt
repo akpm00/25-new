@@ -1,0 +1,24 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: submit multipage reads for SWP_FS_OPS swap-space
+
+swap_readpage() is given one page at a time, but may be called repeatedly
+in succession.
+
+For block-device swap-space, the blk_plug functionality allows the
+multiple pages to be combined together at lower layers.  That cannot be
+used for SWP_FS_OPS as blk_plug may not exist - it is only active when
+CONFIG_BLOCK=y.  Consequently all swap reads over NFS are single page
+reads.
+
+With this patch we pass in a pointer-to-pointer when swap_readpage can
+store state between calls - much like the effect of blk_plug.  After
+calling swap_readpage() some number of times, the state will be passed to
+swap_read_unplug() which can submit the combined request.
+
+Link: https://lkml.kernel.org/r/164859778127.29473.14059420492644907783.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

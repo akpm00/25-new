@@ -1,0 +1,28 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: move responsibility for setting SWP_FS_OPS to ->swap_activate
+
+If a filesystem wishes to handle all swap IO itself (via ->direct_IO and
+->readpage), rather than just providing devices addresses for
+submit_bio(), SWP_FS_OPS must be set.
+
+Currently the protocol for setting this it to have ->swap_activate return
+zero.  In that case SWP_FS_OPS is set, and add_swap_extent() is called for
+the entire file.
+
+This is a little clumsy as different return values for ->swap_activate
+have quite different meanings, and it makes it hard to search for which
+filesystems require SWP_FS_OPS to be set.
+
+So remove the special meaning of a zero return, and require the filesystem
+to set SWP_FS_OPS if it so desires, and to always call add_swap_extent()
+as required.
+
+Currently only NFS and CIFS return zero for add_swap_extent().
+
+Link: https://lkml.kernel.org/r/164859778123.29473.17908205846599043598.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

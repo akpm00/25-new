@@ -1,0 +1,24 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: drop swap_dirty_folio
+
+folios that are written to swap are owned by the MM subsystem - not any
+filesystem.
+
+When such a folio is passed to a filesystem to be written out to a
+swap-file, the filesystem handles the data, but the folio itself does not
+belong to the filesystem.  So calling the filesystem's ->dirty_folio()
+address_space operation makes no sense.  This is for folios in the given
+address space, and a folio to be written to swap does not exist in the
+given address space.
+
+So drop swap_dirty_folio() which calls the address-space's
+->dirty_folio(), and always use noop_dirty_folio(), which is appropriate
+for folios being swapped out.
+
+Link: https://lkml.kernel.org/r/164859778123.29473.6900942583784889976.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

@@ -1,0 +1,36 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: create new mm/swap.h header file.
+
+Patch series "MM changes to improve swap-over-NFS support".
+
+Assorted improvements for swap-via-filesystem.
+
+This is a resend of these patches, rebased on current HEAD.  The only
+substantial changes is that swap_dirty_folio has replaced
+swap_set_page_dirty.
+
+Currently swap-via-fs (SWP_FS_OPS) doesn't work for any filesystem.  It
+has previously worked for NFS but that broke a few releases back.  This
+series changes to use a new ->swap_rw rather than ->readpage and
+->direct_IO.  It also makes other improvements.
+
+There is a companion series already in linux-next which fixes various
+issues with NFS.  Once both series land, a final patch is needed which
+changes NFS over to use ->swap_rw.
+
+
+This patch (of 10):
+
+Many functions declared in include/linux/swap.h are only used within mm/
+
+Create a new "mm/swap.h" and move some of these declarations there.
+Remove the redundant 'extern' from the function declarations.
+
+Link: https://lkml.kernel.org/r/164859751830.29473.5309689752169286816.stgit@noble.brown
+Link: https://lkml.kernel.org/r/164859778120.29473.11725907882296224053.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
