@@ -180,7 +180,6 @@ mm-memcg-set-pos-explicitly-for-reclaim-and-reclaim.patch
 mm-memcg-move-generation-assignment-and-comparison-together.patch
 #
 #mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node.patch: ick
-mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node.patch
 #
 #mm/selftests
 #mm/pagemap
@@ -226,6 +225,9 @@ mm-remove-unnecessary-void-conversions.patch
 mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
 #
 hugetlb-remove-use-of-list-iterator-variable-after-loop.patch
+#
+mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap.patch
+arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64.patch
 #
 #mm/dax
 #mm/userfaultfd
@@ -1150,3 +1152,4 @@ b.patch
 #[to-be-updated]arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks.patch
 #[to-be-updated]arm64-implement-stack_trace_save_shadow.patch
 #[to-be-updated]kasan-use-stack_trace_save_shadow.patch
+#[nacked]mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node.patch

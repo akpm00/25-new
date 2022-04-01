@@ -1,0 +1,65 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb_vmemmap: introduce ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP
+
+The feature of minimizing overhead of struct page associated with each
+HugeTLB page is implemented on x86_64, however, the infrastructure of this
+feature is already there, we could easily enable it for other
+architectures.  Introduce ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP for other
+architectures to be easily enabled.  Just select this config if they want
+to enable this feature.
+
+Link: https://lkml.kernel.org/r/20220331065640.5777-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Barry Song <baohua@kernel.org>
+Tested-by: Barry Song <baohua@kernel.org>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/x86/Kconfig |    1 +
+ fs/Kconfig       |   10 +++++++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+--- a/arch/x86/Kconfig~mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap
++++ a/arch/x86/Kconfig
+@@ -121,6 +121,7 @@ config X86
+ 	select ARCH_WANTS_NO_INSTR
+ 	select ARCH_WANT_GENERAL_HUGETLB
+ 	select ARCH_WANT_HUGE_PMD_SHARE
++	select ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP	if X86_64
+ 	select ARCH_WANT_LD_ORPHAN_WARN
+ 	select ARCH_WANTS_RT_DELAYED_SIGNALS
+ 	select ARCH_WANTS_THP_SWAP		if X86_64
+--- a/fs/Kconfig~mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap
++++ a/fs/Kconfig
+@@ -245,9 +245,17 @@ config HUGETLBFS
+ config HUGETLB_PAGE
+ 	def_bool HUGETLBFS
+ 
++#
++# Select this config option from the architecture Kconfig, if it is preferred
++# to enable the feature of minimizing overhead of struct page associated with
++# each HugeTLB page.
++#
++config ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP
++	bool
++
+ config HUGETLB_PAGE_FREE_VMEMMAP
+ 	def_bool HUGETLB_PAGE
+-	depends on X86_64
++	depends on ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP
+ 	depends on SPARSEMEM_VMEMMAP
+ 
+ config HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON
+_

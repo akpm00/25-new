@@ -1,0 +1,26 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb_vmemmap: introduce ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP
+
+The feature of minimizing overhead of struct page associated with each
+HugeTLB page is implemented on x86_64, however, the infrastructure of this
+feature is already there, we could easily enable it for other
+architectures.  Introduce ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP for other
+architectures to be easily enabled.  Just select this config if they want
+to enable this feature.
+
+Link: https://lkml.kernel.org/r/20220331065640.5777-1-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Barry Song <baohua@kernel.org>
+Tested-by: Barry Song <baohua@kernel.org>
+Cc: Bodeddula Balasubramaniam <bodeddub@amazon.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
