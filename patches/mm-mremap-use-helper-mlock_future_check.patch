@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mremap.c~mm-mremap-use-helper-mlock_future_check
 +++ a/mm/mremap.c
-@@ -763,14 +763,8 @@ static struct vm_area_struct *vma_to_res
+@@ -766,14 +766,8 @@ static struct vm_area_struct *vma_to_res
  	if (vma->vm_flags & (VM_DONTEXPAND | VM_PFNMAP))
  		return ERR_PTR(-EFAULT);
  

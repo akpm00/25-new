@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-avoid-unneeded-nodemask_t-initialization
 +++ a/mm/migrate.c
-@@ -2370,8 +2370,8 @@ out_clear:
+@@ -2382,8 +2382,8 @@ out_clear:
   */
  static void __set_migration_target_nodes(void)
  {

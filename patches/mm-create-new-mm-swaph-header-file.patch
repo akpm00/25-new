@@ -30,8 +30,8 @@ Link: https://lkml.kernel.org/r/164859751830.29473.5309689752169286816.stgit@nob
 Link: https://lkml.kernel.org/r/164859778120.29473.11725907882296224053.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
+Tested-by: David Howells <dhowells@redhat.com>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: David Howells <dhowells@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -56,7 +56,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~mm-create-new-mm-swaph-header-file
 +++ a/include/linux/swap.h
-@@ -420,62 +420,19 @@ extern void kswapd_stop(int nid);
+@@ -427,62 +427,19 @@ extern void kswapd_stop(int nid);
  
  #ifdef CONFIG_SWAP
  
@@ -119,7 +119,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* linux/mm/swapfile.c */
  extern atomic_long_t nr_swap_pages;
  extern long total_swap_pages;
-@@ -528,12 +485,6 @@ static inline void put_swap_device(struc
+@@ -535,12 +492,6 @@ static inline void put_swap_device(struc
  }
  
  #else /* CONFIG_SWAP */
@@ -132,7 +132,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
  {
  	return NULL;
-@@ -548,11 +499,6 @@ static inline void put_swap_device(struc
+@@ -555,11 +506,6 @@ static inline void put_swap_device(struc
  {
  }
  
@@ -144,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #define get_nr_swap_pages()			0L
  #define total_swap_pages			0L
  #define total_swapcache_pages()			0UL
-@@ -567,14 +513,6 @@ static inline struct address_space *swap
+@@ -574,14 +520,6 @@ static inline struct address_space *swap
  #define free_pages_and_swap_cache(pages, nr) \
  	release_pages((pages), (nr));
  
@@ -159,7 +159,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* used to sanity check ptes in zap_pte_range when CONFIG_SWAP=0 */
  #define free_swap_and_cache(e) is_pfn_swap_entry(e)
  
-@@ -600,65 +538,6 @@ static inline void put_swap_page(struct
+@@ -607,65 +545,6 @@ static inline void put_swap_page(struct
  {
  }
  

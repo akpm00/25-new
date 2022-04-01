@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-fix-the-confusing-pagetranshuge-check
 +++ a/mm/migrate.c
-@@ -1553,7 +1553,7 @@ struct page *alloc_migration_target(stru
+@@ -1565,7 +1565,7 @@ struct page *alloc_migration_target(stru
  
  	new_page = __alloc_pages(gfp_mask, order, nid, mtc->nmask);
  

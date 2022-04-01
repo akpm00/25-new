@@ -86,7 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif /* _LINUX_MIGRATE_H */
 --- a/mm/migrate.c~mm-untangle-config-dependencies-for-demote-on-reclaim
 +++ a/mm/migrate.c
-@@ -2134,7 +2134,6 @@ out:
+@@ -2146,7 +2146,6 @@ out:
  	return 0;
  }
  #endif /* CONFIG_NUMA_BALANCING */
@@ -94,7 +94,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  /*
   * node_demotion[] example:
-@@ -2268,7 +2267,6 @@ out:
+@@ -2280,7 +2279,6 @@ out:
  	return target;
  }
  
@@ -102,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* Disable reclaim-based migration. */
  static void __disable_all_migrate_targets(void)
  {
-@@ -2461,6 +2459,7 @@ void set_migration_target_nodes(void)
+@@ -2473,6 +2471,7 @@ void set_migration_target_nodes(void)
   * __set_migration_target_nodes() can be used as opposed to
   * set_migration_target_nodes().
   */
@@ -110,7 +110,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
  						 unsigned long action, void *_arg)
  {
-@@ -2506,6 +2505,7 @@ static int __meminit migrate_on_reclaim_
+@@ -2518,6 +2517,7 @@ static int __meminit migrate_on_reclaim_
  
  	return notifier_from_errno(0);
  }
@@ -118,7 +118,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  void __init migrate_on_reclaim_init(void)
  {
-@@ -2513,8 +2513,9 @@ void __init migrate_on_reclaim_init(void
+@@ -2525,8 +2525,9 @@ void __init migrate_on_reclaim_init(void
  				sizeof(struct demotion_nodes),
  				GFP_KERNEL);
  	WARN_ON(!node_demotion);
@@ -129,7 +129,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * At this point, all numa nodes with memory/CPus have their state
  	 * properly set, so we can build the demotion order now.
-@@ -2525,7 +2526,6 @@ void __init migrate_on_reclaim_init(void
+@@ -2537,7 +2538,6 @@ void __init migrate_on_reclaim_init(void
  	set_migration_target_nodes();
  	cpus_read_unlock();
  }
@@ -137,7 +137,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  bool numa_demotion_enabled = false;
  
-@@ -2586,4 +2586,5 @@ delete_obj:
+@@ -2598,4 +2598,5 @@ delete_obj:
  	return err;
  }
  subsys_initcall(numa_init_sysfs);
@@ -146,7 +146,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +#endif /* CONFIG_NUMA */
 --- a/mm/vmstat.c~mm-untangle-config-dependencies-for-demote-on-reclaim
 +++ a/mm/vmstat.c
-@@ -2111,9 +2111,7 @@ void __init init_mm_internals(void)
+@@ -2114,9 +2114,7 @@ void __init init_mm_internals(void)
  
  	start_shepherd_timer();
  #endif

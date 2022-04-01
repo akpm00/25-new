@@ -54,7 +54,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		rmap_item->mm->ksm_merging_pages--;
  
  		VM_BUG_ON(stable_node->rmap_hlist_len <= 0);
-@@ -2016,7 +2014,6 @@ static void stable_tree_append(struct rm
+@@ -2027,7 +2025,6 @@ static void stable_tree_append(struct rm
  	else
  		ksm_pages_shared++;
  

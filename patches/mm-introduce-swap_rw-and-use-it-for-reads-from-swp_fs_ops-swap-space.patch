@@ -32,7 +32,7 @@ transient failure, so we create a mempool to provide the structures.
 Link: https://lkml.kernel.org/r/164859778125.29473.13430559328221330589.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
+Tested-by: David Howells <dhowells@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
@@ -176,7 +176,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/swapfile.c~mm-introduce-swap_rw-and-use-it-for-reads-from-swp_fs_ops-swap-space
 +++ a/mm/swapfile.c
-@@ -2247,6 +2247,11 @@ static int setup_swap_extents(struct swa
+@@ -2262,6 +2262,11 @@ static int setup_swap_extents(struct swa
  		if (ret < 0)
  			return ret;
  		sis->flags |= SWP_ACTIVATED;

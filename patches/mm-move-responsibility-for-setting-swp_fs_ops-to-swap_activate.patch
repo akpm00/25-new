@@ -22,7 +22,7 @@ Currently only NFS and CIFS return zero for add_swap_extent().
 Link: https://lkml.kernel.org/r/164859778123.29473.17908205846599043598.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
+Tested-by: David Howells <dhowells@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
@@ -84,7 +84,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void nfs_swap_deactivate(struct file *file)
 --- a/include/linux/swap.h~mm-move-responsibility-for-setting-swp_fs_ops-to-swap_activate
 +++ a/include/linux/swap.h
-@@ -570,6 +570,12 @@ static inline swp_entry_t get_swap_page(
+@@ -577,6 +577,12 @@ static inline swp_entry_t get_swap_page(
  	return entry;
  }
  
@@ -99,7 +99,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_THP_SWAP
 --- a/mm/swapfile.c~mm-move-responsibility-for-setting-swp_fs_ops-to-swap_activate
 +++ a/mm/swapfile.c
-@@ -2244,13 +2244,9 @@ static int setup_swap_extents(struct swa
+@@ -2259,13 +2259,9 @@ static int setup_swap_extents(struct swa
  
  	if (mapping->a_ops->swap_activate) {
  		ret = mapping->a_ops->swap_activate(sis, swap_file, span);

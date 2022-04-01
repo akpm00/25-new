@@ -18,7 +18,7 @@ swap_read_unplug() which can submit the combined request.
 Link: https://lkml.kernel.org/r/164859778127.29473.14059420492644907783.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
+Tested-by: David Howells <dhowells@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/mm/memory.c~mm-submit-multipage-reads-for-swp_fs_ops-swap-space
 +++ a/mm/memory.c
-@@ -3586,7 +3586,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3629,7 +3629,7 @@ vm_fault_t do_swap_page(struct vm_fault
  
  				/* To provide entry to swap_readpage() */
  				set_page_private(page, entry.val);

@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-remove-some-duplicated-codes-in-migrate_pages
 +++ a/mm/migrate.c
-@@ -1410,14 +1410,11 @@ retry:
+@@ -1422,14 +1422,11 @@ retry:
  						nr_thp_split++;
  						goto retry;
  					}
@@ -37,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				nr_failed_pages += nr_subpages;
  				break;
  			case -ENOMEM:
-@@ -1432,28 +1429,22 @@ retry:
+@@ -1444,28 +1441,22 @@ retry:
  						nr_thp_split++;
  						goto retry;
  					}
@@ -72,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				break;
  			default:
  				/*
-@@ -1462,14 +1453,11 @@ retry:
+@@ -1474,14 +1465,11 @@ retry:
  				 * removed from migration page list and not
  				 * retried in the next outer loop.
  				 */

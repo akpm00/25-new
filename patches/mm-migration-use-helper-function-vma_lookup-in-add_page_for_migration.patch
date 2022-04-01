@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-use-helper-function-vma_lookup-in-add_page_for_migration
 +++ a/mm/migrate.c
-@@ -1606,8 +1606,8 @@ static int add_page_for_migration(struct
+@@ -1618,8 +1618,8 @@ static int add_page_for_migration(struct
  
  	mmap_read_lock(mm);
  	err = -EFAULT;

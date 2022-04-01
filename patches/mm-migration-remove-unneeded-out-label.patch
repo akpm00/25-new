@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-remove-unneeded-out-label
 +++ a/mm/migrate.c
-@@ -2016,12 +2016,9 @@ static struct page *alloc_misplaced_dst_
+@@ -2028,12 +2028,9 @@ static struct page *alloc_misplaced_dst_
  
  	newpage = alloc_pages_node(nid, (GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
  				   HPAGE_PMD_ORDER);

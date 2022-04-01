@@ -18,7 +18,7 @@ for folios being swapped out.
 Link: https://lkml.kernel.org/r/164859778123.29473.6900942583784889976.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: David Howells <dhowells@redhat.com>
+Tested-by: David Howells <dhowells@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~mm-drop-swap_dirty_folio
 +++ a/include/linux/swap.h
-@@ -420,7 +420,6 @@ extern void kswapd_stop(int nid);
+@@ -427,7 +427,6 @@ extern void kswapd_stop(int nid);
  
  #ifdef CONFIG_SWAP
  

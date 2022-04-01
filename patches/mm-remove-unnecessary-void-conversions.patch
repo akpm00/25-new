@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory-failure.c~mm-remove-unnecessary-void-conversions
 +++ a/mm/memory-failure.c
-@@ -622,7 +622,7 @@ static int check_hwpoisoned_pmd_entry(pm
+@@ -623,7 +623,7 @@ static int check_hwpoisoned_pmd_entry(pm
  static int hwpoison_pte_range(pmd_t *pmdp, unsigned long addr,
  			      unsigned long end, struct mm_walk *walk)
  {
@@ -24,7 +24,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int ret = 0;
  	pte_t *ptep, *mapped_pte;
  	spinlock_t *ptl;
-@@ -656,7 +656,7 @@ static int hwpoison_hugetlb_range(pte_t
+@@ -657,7 +657,7 @@ static int hwpoison_hugetlb_range(pte_t
  			    unsigned long addr, unsigned long end,
  			    struct mm_walk *walk)
  {

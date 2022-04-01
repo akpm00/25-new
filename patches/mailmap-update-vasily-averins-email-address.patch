@@ -13,7 +13,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/.mailmap~mailmap-update-vasily-averins-email-address
 +++ a/.mailmap
-@@ -390,6 +390,10 @@ Uwe Kleine-König <ukleinek@strlen.de>
+@@ -391,6 +391,10 @@ Uwe Kleine-König <ukleinek@strlen.de>
  Uwe Kleine-König <ukl@pengutronix.de>
  Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
  Valdis Kletnieks <Valdis.Kletnieks@vt.edu>

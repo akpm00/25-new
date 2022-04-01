@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-remove-unneeded-local-variable-mapping_locked
 +++ a/mm/migrate.c
-@@ -1230,7 +1230,6 @@ static int unmap_and_move_huge_page(new_
+@@ -1242,7 +1242,6 @@ static int unmap_and_move_huge_page(new_
  		goto put_anon;
  
  	if (page_mapped(hpage)) {
@@ -40,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		enum ttu_flags ttu = 0;
  
  		if (!PageAnon(hpage)) {
-@@ -1244,14 +1243,13 @@ static int unmap_and_move_huge_page(new_
+@@ -1256,14 +1255,13 @@ static int unmap_and_move_huge_page(new_
  			if (unlikely(!mapping))
  				goto unlock_put_anon;
  
