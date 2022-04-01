@@ -45,7 +45,6 @@ mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
 #
 #nfs
-nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -1157,3 +1156,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]arm64-implement-stack_trace_save_shadow.patch
 #[to-be-updated]kasan-use-stack_trace_save_shadow.patch
 #[nacked]mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node.patch
+#[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry..patch
+#[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry..patch
+#[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry.patch
