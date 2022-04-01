@@ -1,0 +1,13 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix
+
+reduce scope of `iter'
+
+Cc: "Bos, H.J." <h.j.bos@vu.nl>
+Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jakob Koschel <jakobkoschel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>

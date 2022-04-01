@@ -1,0 +1,16 @@
+From: Michal Orzel <michalorzel.eng@gmail.com>
+Subject: kexec: remove redundant assignments
+
+Get rid of redundant assignments which end up in values not being
+read either because they are overwritten or the function ends.
+
+Reported by clang-tidy [deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220326180948.192154-1-michalorzel.eng@gmail.com
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Michal Orzel <michalorzel.eng@gmail.com>
+

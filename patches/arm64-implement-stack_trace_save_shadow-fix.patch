@@ -1,0 +1,28 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: arm64-implement-stack_trace_save_shadow-fix
+
+add ifdefs to arch/arm64/kernel/stacktrace.c
+
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/kernel/stacktrace.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/arch/arm64/kernel/stacktrace.c~arm64-implement-stack_trace_save_shadow-fix
++++ a/arch/arm64/kernel/stacktrace.c
+@@ -213,6 +213,7 @@ noinline notrace void arch_stack_walk(st
+ 	walk_stackframe(task, &frame, consume_entry, cookie);
+ }
+ 
++#ifdef CONFIG_SHADOW_CALL_STACK
+ static const struct {
+ 	unsigned long ** __percpu saved;
+ 	unsigned long ** __percpu base;
+@@ -293,3 +294,4 @@ out:
+ 	preempt_enable();
+ 	return len;
+ }
++#endif		/* CONFIG_SHADOW_CALL_STACK */
+_

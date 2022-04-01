@@ -1,0 +1,72 @@
+From: Jakob Koschel <jakobkoschel@gmail.com>
+Subject: fs/proc/kcore.c: remove check of list iterator against head past the loop body
+
+When list_for_each_entry() completes the iteration over the whole list
+without breaking the loop, the iterator value will be a bogus pointer
+computed based on the head element.
+
+While it is safe to use the pointer to determine if it was computed based
+on the head element, either with list_entry_is_head() or &pos->member ==
+head, using the iterator variable after the loop should be avoided.
+
+In preparation to limit the scope of a list iterator to the list traversal
+loop, use a dedicated pointer to point to the found element [1].
+
+Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
+Link: https://lkml.kernel.org/r/20220331223700.902556-1-jakobkoschel@gmail.com
+Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+Cc: "Bos, H.J." <h.j.bos@vu.nl>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/kcore.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+--- a/fs/proc/kcore.c~fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body
++++ a/fs/proc/kcore.c
+@@ -316,6 +316,7 @@ read_kcore(struct file *file, char __use
+ 	size_t page_offline_frozen = 1;
+ 	size_t phdrs_len, notes_len;
+ 	struct kcore_list *m;
++	struct kcore_list *iter;
+ 	size_t tsz;
+ 	int nphdr;
+ 	unsigned long start;
+@@ -479,10 +480,13 @@ read_kcore(struct file *file, char __use
+ 		 * the previous entry, search for a matching entry.
+ 		 */
+ 		if (!m || start < m->addr || start >= m->addr + m->size) {
+-			list_for_each_entry(m, &kclist_head, list) {
+-				if (start >= m->addr &&
+-				    start < m->addr + m->size)
++			m = NULL;
++			list_for_each_entry(iter, &kclist_head, list) {
++				if (start >= iter->addr &&
++				    start < iter->addr + iter->size) {
++					m = iter;
+ 					break;
++				}
+ 			}
+ 		}
+ 
+@@ -492,12 +496,11 @@ read_kcore(struct file *file, char __use
+ 			page_offline_freeze();
+ 		}
+ 
+-		if (&m->list == &kclist_head) {
++		if (!m) {
+ 			if (clear_user(buffer, tsz)) {
+ 				ret = -EFAULT;
+ 				goto out;
+ 			}
+-			m = NULL;	/* skip the list anchor */
+ 			goto skip;
+ 		}
+ 
+_

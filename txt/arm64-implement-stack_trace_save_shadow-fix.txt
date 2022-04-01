@@ -1,0 +1,6 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: arm64-implement-stack_trace_save_shadow-fix
+
+add ifdefs to arch/arm64/kernel/stacktrace.c
+
+Cc: Andrey Konovalov <andreyknvl@google.com>

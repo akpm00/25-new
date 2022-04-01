@@ -1,0 +1,41 @@
+From: Michal Orzel <michalorzel.eng@gmail.com>
+Subject: kexec: remove redundant assignments
+
+Get rid of redundant assignments which end up in values not being
+read either because they are overwritten or the function ends.
+
+Reported by clang-tidy [deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220326180948.192154-1-michalorzel.eng@gmail.com
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Michal Orzel <michalorzel.eng@gmail.com>
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/kexec_core.c |    2 --
+ 1 file changed, 2 deletions(-)
+
+--- a/kernel/kexec_core.c~kexec-remove-redundant-assignments
++++ a/kernel/kexec_core.c
+@@ -768,7 +768,6 @@ static struct page *kimage_alloc_page(st
+ 				kimage_free_pages(old_page);
+ 				continue;
+ 			}
+-			addr = old_addr;
+ 			page = old_page;
+ 			break;
+ 		}
+@@ -788,7 +787,6 @@ static int kimage_load_normal_segment(st
+ 	unsigned char __user *buf = NULL;
+ 	unsigned char *kbuf = NULL;
+ 
+-	result = 0;
+ 	if (image->file_mode)
+ 		kbuf = segment->kbuf;
+ 	else
+_

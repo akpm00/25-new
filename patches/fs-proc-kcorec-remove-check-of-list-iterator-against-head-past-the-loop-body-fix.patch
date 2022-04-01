@@ -1,0 +1,39 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix
+
+reduce scope of `iter'
+
+Cc: "Bos, H.J." <h.j.bos@vu.nl>
+Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jakob Koschel <jakobkoschel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/kcore.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/fs/proc/kcore.c~fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix
++++ a/fs/proc/kcore.c
+@@ -316,7 +316,6 @@ read_kcore(struct file *file, char __use
+ 	size_t page_offline_frozen = 1;
+ 	size_t phdrs_len, notes_len;
+ 	struct kcore_list *m;
+-	struct kcore_list *iter;
+ 	size_t tsz;
+ 	int nphdr;
+ 	unsigned long start;
+@@ -480,6 +479,8 @@ read_kcore(struct file *file, char __use
+ 		 * the previous entry, search for a matching entry.
+ 		 */
+ 		if (!m || start < m->addr || start >= m->addr + m->size) {
++			struct kcore_list *iter;
++
+ 			m = NULL;
+ 			list_for_each_entry(iter, &kclist_head, list) {
+ 				if (start >= iter->addr &&
+_

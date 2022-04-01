@@ -9,3 +9,4 @@ Let's do it explicitly for reclaim vs non-reclaim mode.
 Link: https://lkml.kernel.org/r/20220330234719.18340-3-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>

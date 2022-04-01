@@ -1,0 +1,24 @@
+From: Jakob Koschel <jakobkoschel@gmail.com>
+Subject: fs/proc/kcore.c: remove check of list iterator against head past the loop body
+
+When list_for_each_entry() completes the iteration over the whole list
+without breaking the loop, the iterator value will be a bogus pointer
+computed based on the head element.
+
+While it is safe to use the pointer to determine if it was computed based
+on the head element, either with list_entry_is_head() or &pos->member ==
+head, using the iterator variable after the loop should be avoided.
+
+In preparation to limit the scope of a list iterator to the list traversal
+loop, use a dedicated pointer to point to the found element [1].
+
+Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
+Link: https://lkml.kernel.org/r/20220331223700.902556-1-jakobkoschel@gmail.com
+Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+Cc: "Bos, H.J." <h.j.bos@vu.nl>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
