@@ -1,0 +1,37 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/list_lru.c: revert "mm/list_lru: optimize memcg_reparent_list_lru_node()"
+
+405cc51fc1049c73 ("mm/list_lru: optimize memcg_reparent_list_lru_node()")
+has subtle races which are proving ugly to fix.  Revert the original
+optimization.  If quantitative testing indicates that we have a
+significant problem here then other implementations can be looked at.
+
+Fixes: 405cc51fc1049c73 ("mm/list_lru: optimize memcg_reparent_list_lru_node()")
+Cc: Waiman Long <longman@redhat.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/list_lru.c |    6 ------
+ 1 file changed, 6 deletions(-)
+
+--- a/mm/list_lru.c~mm-list_lruc-revert-mm-list_lru-optimize-memcg_reparent_list_lru_node
++++ a/mm/list_lru.c
+@@ -395,12 +395,6 @@ static void memcg_reparent_list_lru_node
+ 	struct list_lru_one *src, *dst;
+ 
+ 	/*
+-	 * If there is no lru entry in this nlru, we can skip it immediately.
+-	 */
+-	if (!READ_ONCE(nlru->nr_items))
+-		return;
+-
+-	/*
+ 	 * Since list_lru_{add,del} may be called under an IRQ-safe lock,
+ 	 * we have to use IRQ-safe primitives here to avoid deadlock.
+ 	 */
+_

@@ -1,11 +1,11 @@
 From: Rolf Eike Beer <eb@emlix.com>
 Subject: mm/mmap.c: use mmap_assert_write_locked() instead of open coding it
 
-In case the lock is actually not held at this point this also avoids a
-stale lock reference if built with NDEBUG.
+In case the lock is actually not held at this point.
 
 Link: https://lkml.kernel.org/r/5827758.TJ1SttVevJ@mobilepool36.emlix.com
 Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

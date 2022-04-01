@@ -1,6 +1,12 @@
 From: xu xin <xu.xin16@zte.com.cn>
 Subject: ksm: count ksm merging pages for each process
 
+Some applications or containers want to use KSM by calling madvise() to
+advise areas of address space to be MERGEABLE.  But they may not know
+which applications are more likely to cause real merges in the
+deployment.  If this patch is applied, it helps them know their
+corresponding number of merged pages, and then optimize their app code.
+
 As current KSM only counts the number of KSM merging pages(e.g. 
 ksm_pages_sharing and ksm_pages_shared) of the whole system, we cannot see
 the more fine-grained KSM merging, for the upper application optimization,
@@ -123,7 +129,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		VM_BUG_ON(stable_node->rmap_hlist_len <= 0);
  		stable_node->rmap_hlist_len--;
  
-@@ -2007,6 +2015,9 @@ static void stable_tree_append(struct rm
+@@ -2018,6 +2026,9 @@ static void stable_tree_append(struct rm
  		ksm_pages_sharing++;
  	else
  		ksm_pages_shared++;

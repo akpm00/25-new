@@ -10,13 +10,15 @@ For two callers of wakeup_kswapd(), they are node perspective.
 
 If we picked up a !managed zone, this is not we expected.
 
-This patch makes sure we pick up a managed zone for wakeup_kswapd().
+This patch makes sure we pick up a managed zone for wakeup_kswapd().  And
+it also use managed_zone in migrate_balanced_pgdat() to get the proper
+zone.
 
 Link: https://lkml.kernel.org/r/20220327024101.10378-2-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -28,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/migrate.c
-@@ -2046,7 +2046,7 @@ static int numamigrate_isolate_page(pg_d
+@@ -2058,7 +2058,7 @@ static int numamigrate_isolate_page(pg_d
  		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
  			return 0;
  		for (z = pgdat->nr_zones - 1; z >= 0; z--) {
@@ -39,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
 --- a/mm/page_alloc.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/page_alloc.c
-@@ -4674,6 +4674,8 @@ static void wake_all_kswapds(unsigned in
+@@ -4678,6 +4678,8 @@ static void wake_all_kswapds(unsigned in
  
  	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
  					ac->nodemask) {

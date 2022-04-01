@@ -11,6 +11,7 @@ Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Wei Yang <richard.weiyang@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -19,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcg-remove-unneeded-nr_scanned
 +++ a/mm/memcontrol.c
-@@ -3387,7 +3387,6 @@ unsigned long mem_cgroup_soft_limit_recl
+@@ -3388,7 +3388,6 @@ unsigned long mem_cgroup_soft_limit_recl
  	int loop = 0;
  	struct mem_cgroup_tree_per_node *mctz;
  	unsigned long excess;
@@ -27,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (order > 0)
  		return 0;
-@@ -3415,11 +3414,9 @@ unsigned long mem_cgroup_soft_limit_recl
+@@ -3416,11 +3415,9 @@ unsigned long mem_cgroup_soft_limit_recl
  		if (!mz)
  			break;
  

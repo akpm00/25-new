@@ -10,12 +10,14 @@ For two callers of wakeup_kswapd(), they are node perspective.
 
 If we picked up a !managed zone, this is not we expected.
 
-This patch makes sure we pick up a managed zone for wakeup_kswapd().
+This patch makes sure we pick up a managed zone for wakeup_kswapd().  And
+it also use managed_zone in migrate_balanced_pgdat() to get the proper
+zone.
 
 Link: https://lkml.kernel.org/r/20220327024101.10378-2-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Oscar Salvador <osalvador@suse.de>

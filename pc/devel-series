@@ -44,6 +44,8 @@ mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 #mm/damon
 mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
 #
+#nfs
+nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -59,6 +61,8 @@ mailmap-update-vasily-averins-email-address.patch
 #memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
 memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 #
+mm-list_lruc-revert-mm-list_lru-optimize-memcg_reparent_list_lru_node.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #mm/sparsemem
@@ -67,6 +71,8 @@ mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
 #mm/mremap
 mm-avoid-pointless-invalidate_range_start-end-on-mremapold_size=0.patch
 #
+#mm/mempolicy
+mm-mempolicy-fix-mpol_new-leak-in-shared_policy_replace.patch
 #
 #
 #
@@ -233,8 +239,8 @@ arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64.patch
 #mm/userfaultfd
 #mm/vmscan
 mm-vmscan-reclaim-only-affects-managed_zones.patch
-#mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch: TBU
 mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch
+mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone-v2.patch
 #
 mm-vmscan-sc-reclaim_idx-must-be-a-valid-zone-index.patch
 #
@@ -291,7 +297,6 @@ mm-migration-fix-possible-do_pages_stat_array-racing-with-memory-offline.patch
 ksm-count-ksm-merging-pages-for-each-process.patch
 ksm-count-ksm-merging-pages-for-each-process-fix.patch
 #
-#mm-vmstat-add-events-for-ksm-cow.patch: https://lkml.kernel.org/r/a4f42004-7c99-8c4e-259b-903254501529@gmail.com
 mm-vmstat-add-events-for-ksm-cow.patch
 #
 #mm/page-poison
@@ -1135,7 +1140,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #[nacked]workaround-for-a-pci-restoring-bug.patch
 #[to-be-updated]selftest-vm-clarify-error-statement-in-gup_test.patch
 #[to-be-updated]mm-sparsemem-fix-mem_section-will-never-be-null-gcc-12-warning.patch
-b.patch
 #[failures]mm-rmap-fix-cache-flush-on-thp-pages.patch
 #[failures]dax-fix-cache-flush-on-pmd-mapped-pages.patch
 #[failures]mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch

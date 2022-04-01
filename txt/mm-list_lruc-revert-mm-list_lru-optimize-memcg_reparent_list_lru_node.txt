@@ -1,0 +1,15 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/list_lru.c: revert "mm/list_lru: optimize memcg_reparent_list_lru_node()"
+
+405cc51fc1049c73 ("mm/list_lru: optimize memcg_reparent_list_lru_node()")
+has subtle races which are proving ugly to fix.  Revert the original
+optimization.  If quantitative testing indicates that we have a
+significant problem here then other implementations can be looked at.
+
+Fixes: 405cc51fc1049c73 ("mm/list_lru: optimize memcg_reparent_list_lru_node()")
+Cc: Waiman Long <longman@redhat.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Shakeel Butt <shakeelb@google.com>
