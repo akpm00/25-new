@@ -1,5 +1,0 @@
-arch/arm64/include/asm/assembler.h
-arch/arm64/include/asm/scs.h
-arch/arm64/kernel/entry.S
-arch/arm64/kernel/irq.c
-arch/arm64/kernel/sdei.c

@@ -117,10 +117,6 @@ mm.patch
 #mm/kcsan
 #mm/kmemleak
 #mm/kasan
-stacktrace-add-interface-based-on-shadow-call-stack.patch
-arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks.patch
-arm64-implement-stack_trace_save_shadow.patch
-kasan-use-stack_trace_save_shadow.patch
 #
 #mm/debug
 #
@@ -1150,3 +1146,7 @@ b.patch
 #[to-be-updated]tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
 #[folded-merged]arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks-fix.patch
 #[folded-merged]arm64-implement-stack_trace_save_shadow-fix.patch
+#[to-be-updated]stacktrace-add-interface-based-on-shadow-call-stack.patch
+#[to-be-updated]arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks.patch
+#[to-be-updated]arm64-implement-stack_trace_save_shadow.patch
+#[to-be-updated]kasan-use-stack_trace_save_shadow.patch
