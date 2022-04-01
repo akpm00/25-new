@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-create-new-mm-swaph-header-file-fix
+
+mm/memory-failure.c needs mm/swap.h
+
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

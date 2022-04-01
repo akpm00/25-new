@@ -159,6 +159,7 @@ powerpc-pgtable-support-__have_arch_pte_swp_exclusive-for-book3s.patch
 #
 #mm/swap
 mm-create-new-mm-swaph-header-file.patch
+mm-create-new-mm-swaph-header-file-fix.patch
 mm-drop-swap_dirty_folio.patch
 mm-move-responsibility-for-setting-swp_fs_ops-to-swap_activate.patch
 mm-reclaim-mustnt-enter-fs-for-swp_fs_ops-swap-space.patch
