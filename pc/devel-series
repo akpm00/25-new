@@ -119,10 +119,7 @@ mm.patch
 #mm/kasan
 stacktrace-add-interface-based-on-shadow-call-stack.patch
 arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks.patch
-arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks-fix.patch
 arm64-implement-stack_trace_save_shadow.patch
-arm64-implement-stack_trace_save_shadow-fix.patch
-#kasan-use-stack_trace_save_shadow.patch: TBU
 kasan-use-stack_trace_save_shadow.patch
 #
 #mm/debug
@@ -1149,3 +1146,7 @@ b.patch
 #[failures]dax-fix-missing-writeprotect-the-pte-entry.patch
 #[failures]dax-fix-missing-writeprotect-the-pte-entry-v6.patch
 #[failures]mm-simplify-follow_invalidate_pte.patch
+#[to-be-updated]tools-vm-page_owner_sortc-support-for-multi-value-selection-in-single-argument.patch
+#[to-be-updated]tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
+#[folded-merged]arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks-fix.patch
+#[folded-merged]arm64-implement-stack_trace_save_shadow-fix.patch

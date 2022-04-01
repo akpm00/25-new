@@ -10,6 +10,7 @@ and the per-interrupt-type ones) and copies the frames.
 Note that the frame of the interrupted function is not included into the
 stack trace, as it is not yet saved on the SCS when an interrupt happens.
 
+[akpm@linux-foundation.org: add ifdefs to arch/arm64/kernel/stacktrace.c]
 Link: https://lkml.kernel.org/r/0bb72ea8fa88ef9ae3508c23d993952a0ae6f0f9.1648049113.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Cc: Alexander Potapenko <glider@google.com>
@@ -28,8 +29,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  arch/arm64/Kconfig             |    1 
- arch/arm64/kernel/stacktrace.c |   83 +++++++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
+ arch/arm64/kernel/stacktrace.c |   85 +++++++++++++++++++++++++++++++
+ 2 files changed, 86 insertions(+)
 
 --- a/arch/arm64/Kconfig~arm64-implement-stack_trace_save_shadow
 +++ a/arch/arm64/Kconfig
@@ -55,11 +56,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <asm/stack_pointer.h>
  #include <asm/stacktrace.h>
  
-@@ -210,3 +212,84 @@ noinline notrace void arch_stack_walk(st
+@@ -210,3 +212,86 @@ noinline notrace void arch_stack_walk(st
  
  	walk_stackframe(task, &frame, consume_entry, cookie);
  }
 +
++#ifdef CONFIG_SHADOW_CALL_STACK
 +static const struct {
 +	unsigned long ** __percpu saved;
 +	unsigned long ** __percpu base;
@@ -140,4 +142,5 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	preempt_enable();
 +	return len;
 +}
++#endif		/* CONFIG_SHADOW_CALL_STACK */
 _

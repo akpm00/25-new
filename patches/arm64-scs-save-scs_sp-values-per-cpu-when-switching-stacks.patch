@@ -28,8 +28,11 @@ Also expose both the added saved SCS variables and the existing SCS base
 variables in arch/arm64/include/asm/scs.h so that the stack trace
 collection impementation can use them.
 
+[sfr@canb.auug.org.au: arch/arm64/kernel/irq.c needs asm/scs.h]
+  Link: https://lkml.kernel.org/r/20220331141858.46b4df12@canb.auug.org.au
 Link: https://lkml.kernel.org/r/f75c58b17bfaa419f84286cd174e3a08f971b779.1648049113.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -48,9 +51,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  arch/arm64/include/asm/assembler.h |   12 +++++++++++
  arch/arm64/include/asm/scs.h       |   13 +++++++++++-
  arch/arm64/kernel/entry.S          |   28 +++++++++++++++++++++++----
- arch/arm64/kernel/irq.c            |    4 ---
+ arch/arm64/kernel/irq.c            |    5 +---
  arch/arm64/kernel/sdei.c           |    5 +---
- 5 files changed, 51 insertions(+), 11 deletions(-)
+ 5 files changed, 52 insertions(+), 11 deletions(-)
 
 --- a/arch/arm64/include/asm/assembler.h~arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks
 +++ a/arch/arm64/include/asm/assembler.h
@@ -157,7 +160,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * EVENT_COMPLETE:EVENT_COMPLETE_AND_RESUME
 --- a/arch/arm64/kernel/irq.c~arm64-scs-save-scs_sp-values-per-cpu-when-switching-stacks
 +++ a/arch/arm64/kernel/irq.c
-@@ -28,11 +28,9 @@ DEFINE_PER_CPU(struct nmi_ctx, nmi_conte
+@@ -22,17 +22,16 @@
+ #include <linux/vmalloc.h>
+ #include <asm/daifflags.h>
+ #include <asm/vmap_stack.h>
++#include <asm/scs.h>
+ 
+ /* Only access this in an NMI enter/exit */
+ DEFINE_PER_CPU(struct nmi_ctx, nmi_contexts);
  
  DEFINE_PER_CPU(unsigned long *, irq_stack_ptr);
  

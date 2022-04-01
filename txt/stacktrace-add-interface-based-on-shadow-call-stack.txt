@@ -47,3 +47,4 @@ Cc: Sami Tolvanen <samitolvanen@google.com>
 Cc: Peter Collingbourne <pcc@google.com>
 Cc: Evgenii Stepanov <eugenis@google.com>
 Cc: Florian Mayer <fmayer@google.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

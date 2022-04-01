@@ -19,3 +19,4 @@ Cc: Peter Collingbourne <pcc@google.com>
 Cc: Sami Tolvanen <samitolvanen@google.com>
 Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Cc: Will Deacon <will@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

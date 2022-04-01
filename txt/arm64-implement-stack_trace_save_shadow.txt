@@ -10,6 +10,7 @@ and the per-interrupt-type ones) and copies the frames.
 Note that the frame of the interrupted function is not included into the
 stack trace, as it is not yet saved on the SCS when an interrupt happens.
 
+[akpm@linux-foundation.org: add ifdefs to arch/arm64/kernel/stacktrace.c]
 Link: https://lkml.kernel.org/r/0bb72ea8fa88ef9ae3508c23d993952a0ae6f0f9.1648049113.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Cc: Alexander Potapenko <glider@google.com>
@@ -24,3 +25,4 @@ Cc: Peter Collingbourne <pcc@google.com>
 Cc: Sami Tolvanen <samitolvanen@google.com>
 Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Cc: Will Deacon <will@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

@@ -28,8 +28,11 @@ Also expose both the added saved SCS variables and the existing SCS base
 variables in arch/arm64/include/asm/scs.h so that the stack trace
 collection impementation can use them.
 
+[sfr@canb.auug.org.au: arch/arm64/kernel/irq.c needs asm/scs.h]
+  Link: https://lkml.kernel.org/r/20220331141858.46b4df12@canb.auug.org.au
 Link: https://lkml.kernel.org/r/f75c58b17bfaa419f84286cd174e3a08f971b779.1648049113.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: Alexander Potapenko <glider@google.com>
 Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
