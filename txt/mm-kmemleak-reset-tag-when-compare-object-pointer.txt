@@ -1,5 +1,5 @@
 From: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: mm/kmemleak: Reset tag when compare object pointer
+Subject: mm/kmemleak: reset tag when compare object pointer
 
 When we use HW-tag based kasan and enable vmalloc support, we hit
 the following bug. It is due to comparison between tagged object

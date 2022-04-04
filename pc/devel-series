@@ -12,16 +12,13 @@ nilfs2-fix-lockdep-warnings-during-disk-space-reclamation.patch
 nilfs2-get-rid-of-nilfs_mapping_init.patch
 #
 #mm/mlock
-#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
-mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
-#
 mm-munlock-add-lru_add_drain-to-fix-memcg_stat_test.patch
 #
 mm-munlock-update-documentation-vm-unevictable-lrurst.patch
 #
 mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t.patch
 #
-#mm/mfence
+#mm/kfence
 mm-kfence-fix-objcgs-vector-allocation.patch
 #
 #
@@ -43,8 +40,6 @@ mm-kmemleak-reset-tag-when-compare-object-pointer.patch
 #
 #mm/damon
 mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
-#
-#nfs
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -72,6 +67,10 @@ mm-avoid-pointless-invalidate_range_start-end-on-mremapold_size=0.patch
 #
 #mm/mempolicy
 mm-mempolicy-fix-mpol_new-leak-in-shared_policy_replace.patch
+#
+#mm/mlock
+#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
+mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #
 #
