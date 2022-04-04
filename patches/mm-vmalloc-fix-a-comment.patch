@@ -1,0 +1,37 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: mm/vmalloc: fix a comment
+
+The sentence
+"but the mempolcy want to alloc memory by interleaving"
+should be rephrased with
+"but the mempolicy wants to alloc memory by interleaving"
+where "mempolicy" is a struct name.
+
+This work is coauthored by
+Yinan Zhang
+Jiajian Ye
+Shenghong Han
+Chongxi Zhao
+Yuhong Feng
+Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220401064543.4447-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmalloc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/vmalloc.c~mm-vmalloc-fix-a-comment
++++ a/mm/vmalloc.c
+@@ -2903,7 +2903,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 			/* memory allocation should consider mempolicy, we can't
+ 			 * wrongly use nearest node when nid == NUMA_NO_NODE,
+ 			 * otherwise memory may be allocated in only one node,
+-			 * but mempolcy want to alloc memory by interleaving.
++			 * but mempolicy wants to alloc memory by interleaving.
+ 			 */
+ 			if (IS_ENABLED(CONFIG_NUMA) && nid == NUMA_NO_NODE)
+ 				nr = alloc_pages_bulk_array_mempolicy(bulk_gfp,
+_

@@ -39,8 +39,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	select ARCH_WANT_HUGE_PMD_SHARE
 +	select ARCH_WANT_HUGETLB_PAGE_FREE_VMEMMAP	if X86_64
  	select ARCH_WANT_LD_ORPHAN_WARN
- 	select ARCH_WANTS_RT_DELAYED_SIGNALS
  	select ARCH_WANTS_THP_SWAP		if X86_64
+ 	select ARCH_HAS_PARANOID_L1D_FLUSH
 --- a/fs/Kconfig~mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap
 +++ a/fs/Kconfig
 @@ -245,9 +245,17 @@ config HUGETLBFS

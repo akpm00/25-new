@@ -1,0 +1,36 @@
+From: Liu Shixin <liushixin2@huawei.com>
+Subject: fs: sysv: check sbi->s_firstdatazone in complete_read_super
+
+sbi->s_firstinodezone is initialized to 2 and sbi->s_firstdatazone is read
+from sbd.  There's no guarantee that sbi->s_firstdatazone must bigger than
+sbi->s_firstinodezone.  If sbi->s_firstdatazone less than 2, the
+filesystem can still be mounted unexpetly.  At this point, sbi->s_ninodes
+flip to very large value and this filesystem is broken.  We can observe
+this by executing 'df' command.  When we execute, we will get an error
+message:
+
+	"sysv_count_free_inodes: unable to read inode table"
+
+Link: https://lkml.kernel.org/r/20220330104215.530223-1-liushixin2@huawei.com
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/sysv/super.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/fs/sysv/super.c~fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super
++++ a/fs/sysv/super.c
+@@ -312,7 +312,9 @@ static int complete_read_super(struct su
+ 	sbi->s_firstinodezone = 2;
+ 
+ 	flavour_setup[sbi->s_type](sbi, &sb->s_max_links);
+-	
++	if (sbi->s_firstdatazone < sbi->s_firstinodezone)
++		return 0;
++
+ 	sbi->s_ndatazones = sbi->s_nzones - sbi->s_firstdatazone;
+ 	sbi->s_inodes_per_block = bsize >> 6;
+ 	sbi->s_inodes_per_block_1 = (bsize >> 6)-1;
+_

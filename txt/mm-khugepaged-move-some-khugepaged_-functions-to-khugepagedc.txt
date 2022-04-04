@@ -1,0 +1,27 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: khugepaged: move some khugepaged_* functions to khugepaged.c
+
+To reuse hugepage_vma_check() for khugepaged_enter() so that we could
+remove some duplicate code.  But moving hugepage_vma_check() to
+khugepaged.h needs to include huge_mm.h in it, it seems not optimal to
+bloat khugepaged.h.
+
+And the khugepaged_* functions actually are wrappers for some non-inline
+functions, so it seems the benefits are not too much to keep them inline.
+
+So move the khugepaged_* functions to khugepaged.c, any callers just need
+to include khugepaged.h which is quite small.  For example, the following
+patches will call khugepaged_enter() in filemap page fault path for
+regular filesystems to make readonly FS THP collapse more consistent.  The
+filemap.c just needs to include khugepaged.h.
+
+Link: https://lkml.kernel.org/r/20220404200250.321455-7-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Song Liu <song@kernel.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Zi Yan <ziy@nvidia.com>

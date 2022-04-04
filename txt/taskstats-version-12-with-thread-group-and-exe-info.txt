@@ -23,9 +23,9 @@ consisting of accumulated stats for the whole group is produced.  But such
 an additional set of stats is only produced for actually multithreaded
 processes, not groups that had only one thread, and also those stats only
 contain data about delay accounting and not the more basic information
-about CPU and memory resource usage.  Adding the AGROP flag to be set when
-the last task of a group exited enables determination of process end also
-for single-threaded processes.
+about CPU and memory resource usage.  Adding the AGROUP flag to be set
+when the last task of a group exited enables determination of process end
+also for single-threaded processes.
 
 My applicaton basically does enhanced process accounting with summed
 cputime, biggest maxrss, tasks per process.  The data is not available
@@ -46,8 +46,8 @@ Add the tgid to the stats to complete task identification, the flag AGROUP
 to mark the last task of a group, the group wallclock time, and
 inode-based identification of the associated executable file.
 
-Add tools/accounting/procacct.c as a simplified fork of getdelays.c
-to demonstrate process and thread accounting.
+Add tools/accounting/procacct.c as a simplified fork of getdelays.c to
+demonstrate process and thread accounting.
 
 Link: https://lkml.kernel.org/r/20220331004106.64e5616b@plasteblaster
 Signed-off-by: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>

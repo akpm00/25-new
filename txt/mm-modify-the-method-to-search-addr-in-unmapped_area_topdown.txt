@@ -1,0 +1,28 @@
+From: lipeifeng <lipeifeng@oppo.com>
+Subject: mm: modify the method to search addr in unmapped_area_topdown
+
+The old method will firstly find the space in len(info->length +
+info->align_mask), and get address at the desired alignment.
+
+Sometime, addr would be failed if there are enough addr space in kernel by
+above method, e.g., you can't get a addr sized in 1Mbytes, align_mask
+1Mbytes successfully although there are still (2M-1)bytes space in kernel.
+
+This patch would fix thr problem above by the new method: find the space
+in info->length and judge if at the desired info->align_mask at the same
+time.
+
+Do a simple test in TIF_32BIT:
+- Try to malloc (size:1M align:2M) until allocation fails;
+- Try to malloc (size:1M align:1M) and account how to space can be
+alloced successfully.
+
+Before optimization: alloced 1.9G+ bytes.
+After  optimization: alloced 0     bytes.
+
+Link: https://lkml.kernel.org/r/20220402094550.129-1-lipeifeng@oppo.com
+Signed-off-by: lipeifeng <lipeifeng@oppo.com>
+Cc: Michel Lespinasse <michel@lespinasse.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: <zhangshiming@oppo.com>
+Cc: Barry Song <21cnbao@gmail.com>

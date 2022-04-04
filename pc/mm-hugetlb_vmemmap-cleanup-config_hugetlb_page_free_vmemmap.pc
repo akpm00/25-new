@@ -1,0 +1,14 @@
+arch/arm64/Kconfig
+arch/arm64/mm/flush.c
+arch/x86/Kconfig
+arch/x86/mm/init_64.c
+Documentation/admin-guide/kernel-parameters.txt
+Documentation/admin-guide/mm/hugetlbpage.rst
+fs/Kconfig
+include/linux/hugetlb.h
+include/linux/mm.h
+include/linux/page-flags.h
+mm/hugetlb_vmemmap.c
+mm/hugetlb_vmemmap.h
+mm/Makefile
+mm/sparse-vmemmap.c

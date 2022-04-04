@@ -1,0 +1,17 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm: page_alloc: simplify pageblock migratetype check in __free_one_page()
+
+Move pageblock migratetype check code in the while loop to simplify the
+logic. It also saves redundant buddy page checking code.
+
+Link: https://lkml.kernel.org/r/20220401230804.1658207-1-zi.yan@sent.com
+Link: https://lore.kernel.org/linux-mm/27ff69f9-60c5-9e59-feb2-295250077551@suse.cz/
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>

@@ -1,0 +1,32 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mremap: avoid unneeded do_munmap call
+
+When old_len == new_len, do_munmap will return -EINVAL due to len == 0. 
+This errno will be simply ignored because of old_len != new_len check.  So
+it is unnecessary to call do_munmap when old_len == new_len because
+nothing is actually done.
+
+Link: https://lkml.kernel.org/r/20220401081023.37080-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mremap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/mremap.c~mm-mremap-avoid-unneeded-do_munmap-call
++++ a/mm/mremap.c
+@@ -820,9 +820,9 @@ static unsigned long mremap_to(unsigned
+ 			goto out;
+ 	}
+ 
+-	if (old_len >= new_len) {
++	if (old_len > new_len) {
+ 		ret = do_munmap(mm, addr+new_len, old_len - new_len, uf_unmap);
+-		if (ret && old_len != new_len)
++		if (ret)
+ 			goto out;
+ 		old_len = new_len;
+ 	}
+_

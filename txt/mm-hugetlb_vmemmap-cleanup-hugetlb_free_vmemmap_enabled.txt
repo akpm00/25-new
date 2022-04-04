@@ -1,0 +1,12 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb_vmemmap: cleanup hugetlb_free_vmemmap_enabled*
+
+The word of "free" is not expressive enough to express the feature of
+optimizing vmemmap pages associated with each HugeTLB, rename this keywork
+to "optimize".  In this patch , cheanup the static key and
+hugetlb_free_vmemmap_enabled() to make code more expressive.
+
+Link: https://lkml.kernel.org/r/20220404074652.68024-3-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

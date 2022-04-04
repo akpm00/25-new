@@ -1,0 +1,13 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/memcg: non-hierarchical mode is deprecated
+
+After commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical
+mode"), we won't have a NULL parent except root_mem_cgroup.  And this case
+is handled when (memcg == root).
+
+Link: https://lkml.kernel.org/r/20220403020833.26164-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Shakeel Butt <shakeelb@google.com>

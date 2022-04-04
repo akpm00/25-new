@@ -1,0 +1,58 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support for multi-value selection in single argument
+
+When viewing page owner information, we may want to select blocks whose
+PID/TGID/TASK_COMM_NAME appears in a user-specified list for data analysis
+and aggregation.  But currently page_owner_sort only supports selecting
+blocks associated with only one specified PID/TGID/TASK_COMM_NAME.
+
+Therefore, following adjustments are made to fix the problem:
+
+1. Enhance selecting function to support the selection of multiple
+   PIDs/TGIDs/TASK_COMM_NAMEs.
+
+The enhanced usages are as follows:
+
+--pid <pidlist>         Select by pid. This selects the blocks whose PID
+                        numbers appear in <pidlist>.
+--tgid <tgidlist>       Select by tgid. This selects the blocks whose
+                        TGID numbers appear in <tgidlist>.
+--name <cmdlist>        Select by task command name. This selects the
+                        blocks whose task command name appear in <cmdlist>.
+
+Where <pidlist>, <tgidlist>, <cmdlist> are single arguments in the form of
+a comma-separated list,which offers a way to specify individual selecting
+rules.
+
+For example, if you want to select blocks whose tgids are 1, 2 or 3, you
+have to use 4 commands as follows:
+
+        ./page_owner_sort <input> <output1> --tgid=1
+        ./page_owner_sort <input> <output2> --tgid=2
+        ./page_owner_sort <input> <output3> --tgid=3
+        cat <output1> <output2> <output3> > <output>
+
+With this patch, you can use only 1 command to obtain the same result as
+above:
+
+        ./page_owner_sort <input> <output1> --tgid=1,2,3
+
+2. Update explanations of --pid, --tgid and --name in the function
+   usage() and the document(Documents/vm/page_owner.rst).
+
+This work is coauthored by
+        Yixuan Cao
+        Shenghong Han
+        Yinan Zhang
+        Chongxi Zhao
+        Yuhong Feng
+        Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220401024856.767-2-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>

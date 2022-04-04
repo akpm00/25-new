@@ -1,12 +1,12 @@
 From: Guo Xuenan <guoxuenan@huawei.com>
 Subject: lz4: fix LZ4_decompress_safe_partial read out of bound
 
-When partialDecoding, it is EOF if we've either, filled the output
-buffer or can't proceed with reading an offset for following match.
+When partialDecoding, it is EOF if we've either filled the output buffer
+or can't proceed with reading an offset for following match.
 
-In some extreme corner cases when compressed data is crusted corrupted,
-UAF will occur. As reported by KASAN [1], LZ4_decompress_safe_partial
-may lead to read out of bound problem during decoding. lz4 upstream has
+In some extreme corner cases when compressed data is corrupted, UAF
+will occur.  As reported by KASAN [1], LZ4_decompress_safe_partial may
+lead to read out of bound problem during decoding.  lz4 upstream has
 fixed it [2] and this issue has been disscussed here [3] before.
 
 current decompression routine was ported from lz4 v1.8.3, bumping lib/lz4
@@ -21,6 +21,7 @@ Link: https://lkml.kernel.org/r/20211111105048.2006070-1-guoxuenan@huawei.com
 Reported-by: syzbot+63d688f1d899c588fb71@syzkaller.appspotmail.com
 Signed-off-by: Guo Xuenan <guoxuenan@huawei.com>
 Reviewed-by: Nick Terrell <terrelln@fb.com>
-Cc: Gao Xiang <hsiangkao@linux.alibaba.com>
+Acked-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 Cc: Yann Collet <cyan@fb.com>
 Cc: Chengyang Fan <cy.fan@huawei.com>
+Cc: <stable@vger.kernel.org>

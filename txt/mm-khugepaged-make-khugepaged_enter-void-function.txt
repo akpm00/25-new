@@ -1,0 +1,20 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: khugepaged: make khugepaged_enter() void function
+
+The most callers of khugepaged_enter() don't care about the return value. 
+Only dup_mmap(), anonymous THP page fault and MADV_HUGEPAGE handle the
+error by returning -ENOMEM.  Actually it is not harmful for them to ignore
+the error case either.  It also sounds overkilling to fail fork() and page
+fault early due to khugepaged_enter() error, and MADV_HUGEPAGE does set
+VM_HUGEPAGE flag regardless of the error.
+
+Link: https://lkml.kernel.org/r/20220404200250.321455-6-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Acked-by: Song Liu <song@kernel.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Zi Yan <ziy@nvidia.com>

@@ -1,0 +1,30 @@
+From: Nadav Amit <namit@vmware.com>
+Subject: mm: avoid unnecessary flush on change_huge_pmd()
+
+Calls to change_protection_range() on THP can trigger, at least on x86,
+two TLB flushes for one page: one immediately, when pmdp_invalidate() is
+called by change_huge_pmd(), and then another one later (that can be
+batched) when change_protection_range() finishes.
+
+The first TLB flush is only necessary to prevent the dirty bit (and with a
+lesser importance the access bit) from changing while the PTE is modified.
+However, this is not necessary as the x86 CPUs set the dirty-bit
+atomically with an additional check that the PTE is (still) present.  One
+caveat is Intel's Knights Landing that has a bug and does not do so.
+
+Leverage this behavior to eliminate the unnecessary TLB flush in
+change_huge_pmd().  Introduce a new arch specific pmdp_invalidate_ad()
+that only invalidates the access and dirty bit from further changes.
+
+Link: https://lkml.kernel.org/r/20220401180821.1986781-4-namit@vmware.com
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Nick Piggin <npiggin@gmail.com>

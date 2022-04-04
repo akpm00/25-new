@@ -1,0 +1,100 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm: page_alloc: simplify pageblock migratetype check in __free_one_page()
+
+Move pageblock migratetype check code in the while loop to simplify the
+logic. It also saves redundant buddy page checking code.
+
+Link: https://lkml.kernel.org/r/20220401230804.1658207-1-zi.yan@sent.com
+Link: https://lore.kernel.org/linux-mm/27ff69f9-60c5-9e59-feb2-295250077551@suse.cz/
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_alloc.c |   46 +++++++++++++++++-----------------------------
+ 1 file changed, 17 insertions(+), 29 deletions(-)
+
+--- a/mm/page_alloc.c~mm-page_alloc-simplify-pageblock-migratetype-check-in-__free_one_page
++++ a/mm/page_alloc.c
+@@ -1054,7 +1054,6 @@ static inline void __free_one_page(struc
+ 		int migratetype, fpi_t fpi_flags)
+ {
+ 	struct capture_control *capc = task_capc(zone);
+-	unsigned int max_order = pageblock_order;
+ 	unsigned long buddy_pfn;
+ 	unsigned long combined_pfn;
+ 	struct page *buddy;
+@@ -1070,8 +1069,7 @@ static inline void __free_one_page(struc
+ 	VM_BUG_ON_PAGE(pfn & ((1 << order) - 1), page);
+ 	VM_BUG_ON_PAGE(bad_range(zone, page), page);
+ 
+-continue_merging:
+-	while (order < max_order) {
++	while (order < MAX_ORDER - 1) {
+ 		if (compaction_capture(capc, page, order, migratetype)) {
+ 			__mod_zone_freepage_state(zone, -(1 << order),
+ 								migratetype);
+@@ -1082,6 +1080,22 @@ continue_merging:
+ 
+ 		if (!page_is_buddy(page, buddy, order))
+ 			goto done_merging;
++
++		if (unlikely(order >= pageblock_order)) {
++			/*
++			 * We want to prevent merge between freepages on pageblock
++			 * without fallbacks and normal pageblock. Without this,
++			 * pageblock isolation could cause incorrect freepage or CMA
++			 * accounting or HIGHATOMIC accounting.
++			 */
++			int buddy_mt = get_pageblock_migratetype(buddy);
++
++			if (migratetype != buddy_mt
++					&& (!migratetype_is_mergeable(migratetype) ||
++						!migratetype_is_mergeable(buddy_mt)))
++				goto done_merging;
++		}
++
+ 		/*
+ 		 * Our buddy is free or it is CONFIG_DEBUG_PAGEALLOC guard page,
+ 		 * merge with it and move up one order.
+@@ -1095,32 +1109,6 @@ continue_merging:
+ 		pfn = combined_pfn;
+ 		order++;
+ 	}
+-	if (order < MAX_ORDER - 1) {
+-		/* If we are here, it means order is >= pageblock_order.
+-		 * We want to prevent merge between freepages on pageblock
+-		 * without fallbacks and normal pageblock. Without this,
+-		 * pageblock isolation could cause incorrect freepage or CMA
+-		 * accounting or HIGHATOMIC accounting.
+-		 *
+-		 * We don't want to hit this code for the more frequent
+-		 * low-order merging.
+-		 */
+-		int buddy_mt;
+-
+-		buddy_pfn = __find_buddy_pfn(pfn, order);
+-		buddy = page + (buddy_pfn - pfn);
+-
+-		if (!page_is_buddy(page, buddy, order))
+-			goto done_merging;
+-		buddy_mt = get_pageblock_migratetype(buddy);
+-
+-		if (migratetype != buddy_mt
+-				&& (!migratetype_is_mergeable(migratetype) ||
+-					!migratetype_is_mergeable(buddy_mt)))
+-			goto done_merging;
+-		max_order = order + 1;
+-		goto continue_merging;
+-	}
+ 
+ done_merging:
+ 	set_buddy_order(page, order);
+_

@@ -1,0 +1,51 @@
+From: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: support sorting blocks by multiple keys
+
+When viewing page owner information, we may want to sort blocks of
+information by multiple keys, since one single key does not uniquely
+identify a block. Therefore, following adjustments are made:
+
+1. Add a new --sort option to support sorting blocks of information by
+multiple keys.
+
+	./page_owner_sort <input> <output> --sort=<order>
+	./page_owner_sort <input> <output> --sort <order>
+
+<order> is a single argument in the form of a comma-separated list,
+which offers a way to specify sorting order.
+
+Sorting syntax is [+|-]key[,[+|-]key[,...]]. The ascending or descending
+order can be specified by adding the + (ascending, default) or - (descend
+-ing) prefix to the key:
+
+	./page_owner_sort <input> <output> [option] --sort -key1,+key2,key3...
+
+For example, to sort the blocks first by task command name in lexicographic
+order and then by pid in ascending numerical order, use the following:
+
+	./page_owner_sort <input> <output> --sort=name,+pid
+
+To sort the blocks first by pid in ascending order and then by timestamp
+of the page when it is allocated in descending order, use the following:
+
+	./page_owner_sort <input> <output> --sort=pid,-alloc_ts
+
+2. Add explanations of a newly added --sort option in the function usage()
+and the document(Documentation/vm/page_owner.rst).
+
+This work is coauthored by
+	Yixuan Cao
+	Shenghong Han
+	Yinan Zhang
+	Chongxi Zhao
+	Yuhong Feng
+	Yongqiang Liu
+
+Link: https://lkml.kernel.org/r/20220401024856.767-3-yejiajian2018@email.szu.edu.cn
+Signed-off-by: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>

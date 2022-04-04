@@ -1,0 +1,119 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb_vmemmap: cleanup hugetlb_free_vmemmap_enabled*
+
+The word of "free" is not expressive enough to express the feature of
+optimizing vmemmap pages associated with each HugeTLB, rename this keywork
+to "optimize".  In this patch , cheanup the static key and
+hugetlb_free_vmemmap_enabled() to make code more expressive.
+
+Link: https://lkml.kernel.org/r/20220404074652.68024-3-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/mm/flush.c      |    2 +-
+ include/linux/page-flags.h |   12 ++++++------
+ mm/hugetlb_vmemmap.c       |   10 +++++-----
+ mm/memory_hotplug.c        |    2 +-
+ 4 files changed, 13 insertions(+), 13 deletions(-)
+
+--- a/arch/arm64/mm/flush.c~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
++++ a/arch/arm64/mm/flush.c
+@@ -85,7 +85,7 @@ void flush_dcache_page(struct page *page
+ 	 * set since the head vmemmap page frame is reused (more details can
+ 	 * refer to the comments above page_fixed_fake_head()).
+ 	 */
+-	if (hugetlb_free_vmemmap_enabled() && PageHuge(page))
++	if (hugetlb_optimize_vmemmap_enabled() && PageHuge(page))
+ 		page = compound_head(page);
+ 
+ 	if (test_bit(PG_dcache_clean, &page->flags))
+--- a/include/linux/page-flags.h~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
++++ a/include/linux/page-flags.h
+@@ -201,16 +201,16 @@ enum pageflags {
+ 
+ #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
+ DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+-			 hugetlb_free_vmemmap_enabled_key);
++			 hugetlb_optimize_vmemmap_key);
+ 
+-static __always_inline bool hugetlb_free_vmemmap_enabled(void)
++static __always_inline bool hugetlb_optimize_vmemmap_enabled(void)
+ {
+ 	return static_branch_maybe(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+-				   &hugetlb_free_vmemmap_enabled_key);
++				   &hugetlb_optimize_vmemmap_key);
+ }
+ 
+ /*
+- * If the feature of freeing some vmemmap pages associated with each HugeTLB
++ * If the feature of optimizing vmemmap pages associated with each HugeTLB
+  * page is enabled, the head vmemmap page frame is reused and all of the tail
+  * vmemmap addresses map to the head vmemmap page frame (furture details can
+  * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
+@@ -227,7 +227,7 @@ static __always_inline bool hugetlb_free
+  */
+ static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
+ {
+-	if (!hugetlb_free_vmemmap_enabled())
++	if (!hugetlb_optimize_vmemmap_enabled())
+ 		return page;
+ 
+ 	/*
+@@ -256,7 +256,7 @@ static inline const struct page *page_fi
+ 	return page;
+ }
+ 
+-static inline bool hugetlb_free_vmemmap_enabled(void)
++static inline bool hugetlb_optimize_vmemmap_enabled(void)
+ {
+ 	return false;
+ }
+--- a/mm/hugetlb_vmemmap.c~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
++++ a/mm/hugetlb_vmemmap.c
+@@ -189,8 +189,8 @@
+ #define RESERVE_VMEMMAP_SIZE		(RESERVE_VMEMMAP_NR << PAGE_SHIFT)
+ 
+ DEFINE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
+-			hugetlb_free_vmemmap_enabled_key);
+-EXPORT_SYMBOL(hugetlb_free_vmemmap_enabled_key);
++			hugetlb_optimize_vmemmap_key);
++EXPORT_SYMBOL(hugetlb_optimize_vmemmap_key);
+ 
+ static int __init hugetlb_vmemmap_early_param(char *buf)
+ {
+@@ -204,9 +204,9 @@ static int __init hugetlb_vmemmap_early_
+ 		return -EINVAL;
+ 
+ 	if (!strcmp(buf, "on"))
+-		static_branch_enable(&hugetlb_free_vmemmap_enabled_key);
++		static_branch_enable(&hugetlb_optimize_vmemmap_key);
+ 	else if (!strcmp(buf, "off"))
+-		static_branch_disable(&hugetlb_free_vmemmap_enabled_key);
++		static_branch_disable(&hugetlb_optimize_vmemmap_key);
+ 	else
+ 		return -EINVAL;
+ 
+@@ -282,7 +282,7 @@ void __init hugetlb_vmemmap_init(struct
+ 	BUILD_BUG_ON(__NR_USED_SUBPAGE >=
+ 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
+ 
+-	if (!hugetlb_free_vmemmap_enabled())
++	if (!hugetlb_optimize_vmemmap_enabled())
+ 		return;
+ 
+ 	vmemmap_pages = (nr_pages * sizeof(struct page)) >> PAGE_SHIFT;
+--- a/mm/memory_hotplug.c~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
++++ a/mm/memory_hotplug.c
+@@ -1289,7 +1289,7 @@ bool mhp_supports_memmap_on_memory(unsig
+ 	 *       populate a single PMD.
+ 	 */
+ 	return memmap_on_memory &&
+-	       !hugetlb_free_vmemmap_enabled() &&
++	       !hugetlb_optimize_vmemmap_enabled() &&
+ 	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
+ 	       size == memory_block_size_bytes() &&
+ 	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
+_

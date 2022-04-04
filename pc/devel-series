@@ -1,45 +1,13 @@
-origin.patch
+#origin.patch
 #NEXT_PATCHES_START linus
-#mm/madvise
-revert-mm-madvise-skip-unmapped-vma-holes-passed-to-process_madvise.patch
+#mm/migration
+mm-migrate-use-thp_order-instead-of-hpage_pmd_order-for-new-page-allocation.patch
 #
-#ofs2
-ocfs2-fix-crash-when-mount-with-quota-enabled.patch
+#mm/highmem
+highmem-fix-checks-in-__kmap_local_sched_inout.patch
 #
-#nilfs2
-nilfs2-fix-lockdep-warnings-in-page-operations-for-btree-nodes.patch
-nilfs2-fix-lockdep-warnings-during-disk-space-reclamation.patch
-nilfs2-get-rid-of-nilfs_mapping_init.patch
-#
-#mm/mlock
-mm-munlock-add-lru_add_drain-to-fix-memcg_stat_test.patch
-#
-mm-munlock-update-documentation-vm-unevictable-lrurst.patch
-#
-mm-munlock-protect-the-per-cpu-pagevec-by-a-local_lock_t.patch
-#
-#mm/kfence
-mm-kfence-fix-objcgs-vector-allocation.patch
-#
-#
-#mailmap
-mailmap-update-kirills-email.patch
-#
-#mm/memory-failure
-mmhwpoison-unmap-poisoned-page-before-invalidation.patch
-#
-#mm/kasan
-mm-kasan-fix-__gfp_bits_shift-definition-breaking-lockdep.patch
-#
-#mm/debug
-tools-vm-page_owner_sortc-remove-c-option.patch
-doc-vm-page_ownerrst-remove-content-related-to-c-option.patch
-#
-#mm/kmemleak
-mm-kmemleak-reset-tag-when-compare-object-pointer.patch
-#
-#mm/damon
-mm-damon-prevent-activated-scheme-from-sleeping-by-deactivated-schemes.patch
+#lz4
+lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -72,7 +40,13 @@ mm-mempolicy-fix-mpol_new-leak-in-shared_policy_replace.patch
 #mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
+#mm/memory-failure
+#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: -stable?
+mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
+#mm/kasan
+#irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
+irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 #
 #
@@ -121,8 +95,10 @@ mm.patch
 #mm/kcsan
 #mm/kmemleak
 #mm/kasan
-#
 #mm/debug
+tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
+tools-vm-page_owner_sortc-support-for-multi-value-selection-in-single-argument.patch
+tools-vm-page_owner_sortc-support-sorting-blocks-by-multiple-keys.patch
 #
 #mm/folios
 #mm/pagecache
@@ -184,7 +160,7 @@ mm-memcg-set-memcg-after-css-verified-and-got-reference.patch
 mm-memcg-set-pos-explicitly-for-reclaim-and-reclaim.patch
 mm-memcg-move-generation-assignment-and-comparison-together.patch
 #
-#mm-list_lru-fix-possible-race-in-memcg_reparent_list_lru_node.patch: ick
+mm-memcg-non-hierarchical-mode-is-deprecated.patch
 #
 #mm/selftests
 #mm/pagemap
@@ -192,9 +168,24 @@ mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
 #
 mm-mmu_gather-limit-free-batch-count-and-add-schedule-point-in-tlb_batch_pages_flush.patch
 #
+mm-debug_vm_pgtable-drop-protection_map-usage.patch
+mm-mmap-clarify-protection_map-indices.patch
+#
+#mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch: Michel Lespinasse ack?
+mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch
+#
+mm-mmapc-use-helper-mlock_future_check.patch
+#
 #mm/mprotect
+#mm-mprotect-use-mmu_gather.patch: more acks?
+mm-mprotect-use-mmu_gather.patch
+mm-mprotect-do-not-flush-when-not-required-architecturally.patch
+mm-avoid-unnecessary-flush-on-change_huge_pmd.patch
+#
 #mm/mremap
 mm-mremap-use-helper-mlock_future_check.patch
+#
+mm-mremap-avoid-unneeded-do_munmap-call.patch
 #
 #mm/memfd
 #mm/infrastructure
@@ -207,6 +198,8 @@ mm-mremap-use-helper-mlock_future_check.patch
 #mm/tracing
 #mm/page-reporting
 #mm/vmalloc
+mm-vmalloc-fix-a-comment.patch
+#
 #mm/documentation
 documentation-sysctl-document-page_lock_unfairness.patch
 #
@@ -221,6 +214,9 @@ mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch
 #mm-discard-__gfp_atomic.patch: check review
 mm-discard-__gfp_atomic.patch
 #
+mm-page_alloc-simplify-pageblock-migratetype-check-in-__free_one_page.patch
+mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation.patch
+#
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
 #
@@ -233,6 +229,19 @@ hugetlb-remove-use-of-list-iterator-variable-after-loop.patch
 #
 mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap.patch
 arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64.patch
+#
+mm-hugetlb_vmemmap-cleanup-hugetlb_vmemmap-related-functions.patch
+mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled.patch
+mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap.patch
+#
+sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
+mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
+mm-khugepaged-skip-dax-vma.patch
+mm-thp-only-regular-file-could-be-thp-eligible.patch
+mm-khugepaged-make-khugepaged_enter-void-function.patch
+mm-khugepaged-move-some-khugepaged_-functions-to-khugepagedc.patch
+mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
+mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 #mm/dax
 #mm/userfaultfd
@@ -259,6 +268,8 @@ mm-z3fold-remove-unneeded-page_headless-check-in-free_handle.patch
 #mm/ras
 #mm/compaction
 mm-compaction-use-helper-isolation_suitable.patch
+#
+drivers-base-nodec-fix-compaction-sysfs-file-leak.patch
 #
 #mm/mempolicy
 #mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch: https://lkml.kernel.org/r/Yi9w7TCYbj+OLGXJ@dhcp22.suse.cz
@@ -315,8 +326,12 @@ mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node.patch
 mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes.patch
 #
 #mm/rmap
-#mm-rmap-convert-from-atomic_t-to-refcount_t-on-anon_vma-refcount.patch: bloat!
-#
+mm-rmap-fix-cache-flush-on-thp-pages.patch
+dax-fix-cache-flush-on-pmd-mapped-pages.patch
+mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes.patch
+mm-pvmw-add-support-for-walking-devmap-pages.patch
+dax-fix-missing-writeprotect-the-pte-entry.patch
+mm-simplify-follow_invalidate_pte.patch
 #
 #mm/zswap
 #mm/zsmalloc
@@ -719,9 +734,6 @@ lib-stringc-simplify-strspn.patch
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START lz4
-#lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch: acks?
-lz4-fix-lz4_decompress_safe_partial-read-out-of-bound.patch
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitops
 #NEXT_PATCHES_END
@@ -939,6 +951,7 @@ rapidio-remove-unnecessary-use-of-list-iterator.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START taskstats
 taskstats-version-12-with-thread-group-and-exe-info.patch
+taskstats-version-12-with-thread-group-and-exe-info-fix.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START timerfd
@@ -1004,6 +1017,8 @@ taskstats-version-12-with-thread-group-and-exe-info.patch
 #NEXT_PATCHES_START mutex
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysvfs
+fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START cachefiles
 #NEXT_PATCHES_END
@@ -1103,7 +1118,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
-linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -1159,3 +1173,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry..patch
 #[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry..patch
 #[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry.patch
+#[obsolete]linux-next-git-rejects.patch

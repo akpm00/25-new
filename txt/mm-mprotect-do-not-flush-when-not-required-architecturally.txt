@@ -1,0 +1,33 @@
+From: Nadav Amit <namit@vmware.com>
+Subject: mm/mprotect: do not flush when not required architecturally
+
+Currently, using mprotect() to unprotect a memory region or uffd to
+unprotect a memory region causes a TLB flush.  However, in such cases the
+PTE is often not modified (i.e., remain RO) and therefore not TLB flush is
+needed.
+
+Add an arch-specific pte_needs_flush() which tells whether a TLB flush is
+needed based on the old PTE and the new one.  Implement an x86
+pte_needs_flush().
+
+Always flush the TLB when it is architecturally needed even when skipping
+a TLB flush might only result in a spurious page-faults by skipping the
+flush.
+
+Even with such conservative manner, we can in the future further refine
+the checks to test whether a PTE is present by only considering the
+architectural _PAGE_PRESENT flag instead of {pte|pmd}_preesnt().  For not
+be careful and use the latter.
+
+Link: https://lkml.kernel.org/r/20220401180821.1986781-3-namit@vmware.com
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Nick Piggin <npiggin@gmail.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: Peter Xu <peterx@redhat.com>

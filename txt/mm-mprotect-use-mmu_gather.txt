@@ -1,0 +1,91 @@
+From: Nadav Amit <namit@vmware.com>
+Subject: mm/mprotect: use mmu_gather
+
+Patch series "mm/mprotect: avoid unnecessary TLB flushes", v6.
+
+This patchset is intended to remove unnecessary TLB flushes during
+mprotect() syscalls.  Once this patch-set make it through, similar and
+further optimizations for MADV_COLD and userfaultfd would be possible.
+
+Basically, there are 3 optimizations in this patch-set:
+
+1. Use TLB batching infrastructure to batch flushes across VMAs and do
+   better/fewer flushes.  This would also be handy for later userfaultfd
+   enhancements.
+
+2. Avoid unnecessary TLB flushes.  This optimization is the one that
+   provides most of the performance benefits.  Unlike previous versions,
+   we now only avoid flushes that would not result in spurious
+   page-faults.
+
+3. Avoiding TLB flushes on change_huge_pmd() that are only needed to
+   prevent the A/D bits from changing.
+
+Andrew asked for some benchmark numbers.  I do not have an easy
+determinate macrobenchmark in which it is easy to show benefit.  I
+therefore ran a microbenchmark: a loop that does the following on
+anonymous memory, just as a sanity check to see that time is saved by
+avoiding TLB flushes.  The loop goes:
+
+	mprotect(p, PAGE_SIZE, PROT_READ)
+	mprotect(p, PAGE_SIZE, PROT_READ|PROT_WRITE)
+	*p = 0; // make the page writable
+
+The test was run in KVM guest with 1 or 2 threads (the second thread was
+busy-looping).  I measured the time (cycles) of each operation:
+
+		1 thread		2 threads
+		mmots	+patch		mmots	+patch
+PROT_READ	3494	2725 (-22%)	8630	7788 (-10%)
+PROT_READ|WRITE	3952	2724 (-31%)	9075	2865 (-68%)
+
+[ mmots = v5.17-rc6-mmots-2022-03-06-20-38 ]
+
+The exact numbers are really meaningless, but the benefit is clear.  There
+are 2 interesting results though.  
+
+(1) PROT_READ is cheaper, while one can expect it not to be affected. 
+This is presumably due to TLB miss that is saved
+
+(2) Without memory access (*p = 0), the speedup of the patch is even
+greater.  In that scenario mprotect(PROT_READ) also avoids the TLB flush. 
+As a result both operations on the patched kernel take roughly ~1500
+cycles (with either 1 or 2 threads), whereas on mmotm their cost is as
+high as presented in the table.
+
+
+This patch (of 3):
+
+change_pXX_range() currently does not use mmu_gather, but instead
+implements its own deferred TLB flushes scheme.  This both complicates the
+code, as developers need to be aware of different invalidation schemes,
+and prevents opportunities to avoid TLB flushes or perform them in finer
+granularity.
+
+The use of mmu_gather for modified PTEs has benefits in various scenarios
+even if pages are not released.  For instance, if only a single page needs
+to be flushed out of a range of many pages, only that page would be
+flushed.  If a THP page is flushed, on x86 a single TLB invlpg instruction
+can be used instead of 512 instructions (or a full TLB flush, which would
+Linux would actually use by default).  mprotect() over multiple VMAs
+requires a single flush.
+
+Use mmu_gather in change_pXX_range().  As the pages are not released, only
+record the flushed range using tlb_flush_pXX_range().
+
+Handle THP similarly and get rid of flush_cache_range() which becomes
+redundant since tlb_start_vma() calls it when needed.
+
+Link: https://lkml.kernel.org/r/20220401180821.1986781-1-namit@vmware.com
+Link: https://lkml.kernel.org/r/20220401180821.1986781-2-namit@vmware.com
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Nick Piggin <npiggin@gmail.com>

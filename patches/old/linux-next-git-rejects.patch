@@ -1,153 +1,40 @@
 From: Andrew Morton <akpm@linux-foundation.org>
 Subject: linux-next-git-rejects
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: a
 
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/net/ethernet/intel/iavf/iavf_virtchnl.c |   16 --------------
- drivers/net/ethernet/intel/ice/ice.h            |    3 --
- drivers/net/ethernet/intel/ice/ice_main.c       |   14 ------------
- drivers/net/phy/meson-gxl.c                     |   10 --------
- drivers/staging/gdm724x/gdm_lte.c               |    4 ---
- net/bluetooth/hci_sync.c                        |    7 ------
- net/dsa/dsa2.c                                  |    3 --
- 7 files changed, 1 insertion(+), 56 deletions(-)
+ Makefile |    6 ------
+ 1 file changed, 6 deletions(-)
 
---- a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c~linux-next-git-rejects
-+++ a/drivers/net/ethernet/intel/iavf/iavf_virtchnl.c
-@@ -1845,22 +1845,6 @@ static void iavf_netdev_features_vlan_st
- }
- 
- /**
-- * iavf_netdev_features_vlan_strip_set - update vlan strip status
-- * @netdev: ptr to netdev being adjusted
-- * @enable: enable or disable vlan strip
-- *
-- * Helper function to change vlan strip status in netdev->features.
-- */
--static void iavf_netdev_features_vlan_strip_set(struct net_device *netdev,
--						const bool enable)
--{
--	if (enable)
--		netdev->features |= NETIF_F_HW_VLAN_CTAG_RX;
--	else
--		netdev->features &= ~NETIF_F_HW_VLAN_CTAG_RX;
--}
--
--/**
-  * iavf_virtchnl_completion
-  * @adapter: adapter structure
-  * @v_opcode: opcode sent by PF
---- a/drivers/net/ethernet/intel/ice/ice.h~linux-next-git-rejects
-+++ a/drivers/net/ethernet/intel/ice/ice.h
-@@ -488,10 +488,7 @@ enum ice_pf_flags {
- 	ICE_FLAG_LINK_LENIENT_MODE_ENA,
- 	ICE_FLAG_PLUG_AUX_DEV,
- 	ICE_FLAG_MTU_CHANGED,
+--- a/Makefile~linux-next-git-rejects
++++ a/Makefile
+@@ -443,10 +443,7 @@ else
+ HOSTCC	= gcc
+ HOSTCXX	= g++
+ endif
 -<<<<<<< HEAD
 -=======
- 	ICE_FLAG_GNSS,			/* GNSS successfully initialized */
+ HOSTRUSTC = rustc
 ->>>>>>> linux-next/akpm-base
- 	ICE_PF_FLAGS_NBITS		/* must be last */
- };
  
---- a/drivers/net/ethernet/intel/ice/ice_main.c~linux-next-git-rejects
-+++ a/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2265,22 +2265,10 @@ static void ice_service_task(struct work
- 		return;
- 	}
- 
--	if (test_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags)) {
-+	if (test_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags))
- 		/* Plug aux device per request */
- 		ice_plug_aux_dev(pf);
+ KBUILD_USERHOSTCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
+ 			 -O2 -fomit-frame-pointer -std=gnu11 \
+@@ -454,8 +451,6 @@ KBUILD_USERHOSTCFLAGS := -Wall -Wmissing
+ KBUILD_USERCFLAGS  := $(KBUILD_USERHOSTCFLAGS) $(USERCFLAGS)
+ KBUILD_USERLDFLAGS := $(USERLDFLAGS)
  
 -<<<<<<< HEAD
--		/* Mark plugging as done but check whether unplug was
--		 * requested during ice_plug_aux_dev() call
--		 * (e.g. from ice_clear_rdma_cap()) and if so then
--		 * plug aux device.
--		 */
--		if (!test_and_clear_bit(ICE_FLAG_PLUG_AUX_DEV, pf->flags))
--			ice_unplug_aux_dev(pf);
--	}
--
 -=======
+ # These flags apply to all Rust code in the tree, including the kernel and
+ # host programs.
+ export rust_common_flags := --edition=2021 \
+@@ -472,7 +467,6 @@ export rust_common_flags := --edition=20
+ 			    -Dclippy::needless_continue \
+ 			    -Wclippy::dbg_macro
+ 
 ->>>>>>> linux-next/akpm-base
- 	if (test_and_clear_bit(ICE_FLAG_MTU_CHANGED, pf->flags)) {
- 		struct iidc_event *event;
- 
---- a/drivers/net/phy/meson-gxl.c~linux-next-git-rejects
-+++ a/drivers/net/phy/meson-gxl.c
-@@ -243,17 +243,7 @@ static irqreturn_t meson_gxl_handle_inte
- 	    irq_status == INTSRC_ENERGY_DETECT)
- 		return IRQ_HANDLED;
- 
--<<<<<<< HEAD
--	/* Give PHY some time before MAC starts sending data. This works
--	 * around an issue where network doesn't come up properly.
--	 */
--	if (!(irq_status & INTSRC_LINK_DOWN))
--		phy_queue_state_machine(phydev, msecs_to_jiffies(100));
--	else
--		phy_trigger_machine(phydev);
--=======
- 	phy_trigger_machine(phydev);
-->>>>>>> linux-next/akpm-base
- 
- 	return IRQ_HANDLED;
- }
---- a/drivers/staging/gdm724x/gdm_lte.c~linux-next-git-rejects
-+++ a/drivers/staging/gdm724x/gdm_lte.c
-@@ -79,11 +79,7 @@ static int gdm_lte_rx(struct sk_buff *sk
- 	int ret, len;
- 
- 	len = skb->len + ETH_HLEN;
--<<<<<<< HEAD
--	ret = netif_rx_ni(skb);
--=======
- 	ret = netif_rx(skb);
-->>>>>>> linux-next/akpm-base
- 	if (ret == NET_RX_DROP) {
- 		nic->stats.rx_dropped++;
- 	} else {
---- a/net/bluetooth/hci_sync.c~linux-next-git-rejects
-+++ a/net/bluetooth/hci_sync.c
-@@ -290,17 +290,10 @@ static void hci_cmd_sync_work(struct wor
- 		if (entry)
- 			list_del(&entry->list);
- 		mutex_unlock(&hdev->cmd_sync_work_lock);
--<<<<<<< HEAD
- 
- 		if (!entry)
- 			break;
- 
--=======
--
--		if (!entry)
--			break;
--
-->>>>>>> linux-next/akpm-base
- 		bt_dev_dbg(hdev, "entry %p", entry);
- 
- 		if (entry->func) {
---- a/net/dsa/dsa2.c~linux-next-git-rejects
-+++ a/net/dsa/dsa2.c
-@@ -1062,14 +1062,11 @@ static int dsa_tree_setup_master(struct
- 			err = dsa_master_setup(master, dp);
- 			if (err)
- 				break;
--<<<<<<< HEAD
--=======
- 
- 			/* Replay master state event */
- 			dsa_tree_master_admin_state_change(dst, master, admin_up);
- 			dsa_tree_master_oper_state_change(dst, master,
- 							  netif_oper_up(master));
-->>>>>>> linux-next/akpm-base
- 		}
- 	}
- 
+ KBUILD_HOSTCFLAGS   := $(KBUILD_USERHOSTCFLAGS) $(HOST_LFS_CFLAGS) $(HOSTCFLAGS)
+ KBUILD_HOSTCXXFLAGS := -Wall -O2 $(HOST_LFS_CFLAGS) $(HOSTCXXFLAGS)
+ KBUILD_HOSTRUSTFLAGS := $(rust_common_flags) -O -Cstrip=debuginfo \
 _

@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: drivers/base/node.c: fix compaction sysfs file leak
+
+Compaction sysfs file is created via compaction_register_node in
+register_node.  But we forgot to remove it in unregister_node.  Thus
+compaction sysfs file is leaked.  Using compaction_unregister_node to fix
+this issue.
+
+Link: https://lkml.kernel.org/r/20220401070905.43679-1-linmiaohe@huawei.com
+Fixes: ed4a6d7f0676 ("mm: compaction: add /sys trigger for per-node memory compaction")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Mel Gorman <mel@csn.ul.ie>
+Cc: Minchan Kim <minchan.kim@gmail.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
