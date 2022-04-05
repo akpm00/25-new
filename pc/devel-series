@@ -41,7 +41,6 @@ mm-mempolicy-fix-mpol_new-leak-in-shared_policy_replace.patch
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #mm/memory-failure
-#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: -stable?
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
 #mm/kasan
@@ -234,6 +233,7 @@ mm-hugetlb_vmemmap-cleanup-hugetlb_vmemmap-related-functions.patch
 mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled.patch
 mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap.patch
 #
+#sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch+N: https://lkml.kernel.org/r/YkuKbMbSecBVsa1k@casper.infradead.org
 sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
 mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
 mm-khugepaged-skip-dax-vma.patch

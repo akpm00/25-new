@@ -28,10 +28,12 @@ hugetlb_lock (even for non-hugetlb pages).  That can be improved, but
 memory_failure() is rare in principle, so should not be a big problem.
 
 Link: https://lkml.kernel.org/r/20220404092131.751733-1-naoya.horiguchi@linux.dev
+Fixes: 761ad8d7c7b5 ("mm: hwpoison: introduce memory_failure_hugetlb()")
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Yang Shi <shy828301@gmail.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
