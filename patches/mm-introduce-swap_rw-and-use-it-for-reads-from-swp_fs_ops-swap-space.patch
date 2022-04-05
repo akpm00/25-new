@@ -49,7 +49,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/cifs/file.c~mm-introduce-swap_rw-and-use-it-for-reads-from-swp_fs_ops-swap-space
 +++ a/fs/cifs/file.c
-@@ -4899,6 +4899,10 @@ static int cifs_swap_activate(struct swa
+@@ -4905,6 +4905,10 @@ static int cifs_swap_activate(struct swa
  
  	cifs_dbg(FYI, "swap activate\n");
  
@@ -75,7 +75,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	isize = inode->i_size;
 --- a/include/linux/fs.h~mm-introduce-swap_rw-and-use-it-for-reads-from-swp_fs_ops-swap-space
 +++ a/include/linux/fs.h
-@@ -409,6 +409,7 @@ struct address_space_operations {
+@@ -380,6 +380,7 @@ struct address_space_operations {
  	int (*swap_activate)(struct swap_info_struct *sis, struct file *file,
  				sector_t *span);
  	void (*swap_deactivate)(struct file *file);

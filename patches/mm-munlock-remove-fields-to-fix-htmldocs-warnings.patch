@@ -45,7 +45,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			void *private;
 --- a/mm/swap.c~mm-munlock-remove-fields-to-fix-htmldocs-warnings
 +++ a/mm/swap.c
-@@ -1026,13 +1026,13 @@ static void __pagevec_lru_add_fn(struct
+@@ -1028,13 +1028,13 @@ static void __pagevec_lru_add_fn(struct
  		folio_clear_active(folio);
  		folio_set_unevictable(folio);
  		/*

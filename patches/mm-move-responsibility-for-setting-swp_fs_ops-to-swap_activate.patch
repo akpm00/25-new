@@ -37,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/cifs/file.c~mm-move-responsibility-for-setting-swp_fs_ops-to-swap_activate
 +++ a/fs/cifs/file.c
-@@ -4927,7 +4927,8 @@ static int cifs_swap_activate(struct swa
+@@ -4933,7 +4933,8 @@ static int cifs_swap_activate(struct swa
  	 * from reading or writing the file
  	 */
  

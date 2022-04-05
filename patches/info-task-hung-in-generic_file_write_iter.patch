@@ -94,7 +94,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  }
  
-@@ -3183,6 +3214,11 @@ EXPORT_SYMBOL(sync_dirty_buffer);
+@@ -3182,6 +3213,11 @@ EXPORT_SYMBOL(sync_dirty_buffer);
   */
  static inline int buffer_busy(struct buffer_head *bh)
  {
@@ -106,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return atomic_read(&bh->b_count) |
  		(bh->b_state & ((1 << BH_Dirty) | (1 << BH_Lock)));
  }
-@@ -3221,11 +3257,18 @@ int try_to_free_buffers(struct page *pag
+@@ -3220,11 +3256,18 @@ int try_to_free_buffers(struct page *pag
  	int ret = 0;
  
  	BUG_ON(!PageLocked(page));
@@ -126,7 +126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto out;
  	}
  
-@@ -3249,6 +3292,9 @@ int try_to_free_buffers(struct page *pag
+@@ -3248,6 +3291,9 @@ int try_to_free_buffers(struct page *pag
  	if (ret)
  		cancel_dirty_page(page);
  	spin_unlock(&mapping->private_lock);
@@ -138,7 +138,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct buffer_head *bh = buffers_to_free;
 --- a/include/linux/sched.h~info-task-hung-in-generic_file_write_iter
 +++ a/include/linux/sched.h
-@@ -1501,6 +1501,13 @@ struct task_struct {
+@@ -1498,6 +1498,13 @@ struct task_struct {
  	struct callback_head		l1d_flush_kill;
  #endif
  

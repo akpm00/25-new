@@ -19,6 +19,8 @@ patch wraps fat_msg with a macro.
 Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
 Signed-off-by: Jonathan Lassoff <jof@thejof.com>
 Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Tested-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

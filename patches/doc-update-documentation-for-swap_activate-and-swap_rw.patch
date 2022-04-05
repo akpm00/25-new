@@ -21,7 +21,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/Documentation/filesystems/locking.rst~doc-update-documentation-for-swap_activate-and-swap_rw
 +++ a/Documentation/filesystems/locking.rst
-@@ -260,8 +260,9 @@ prototypes::
+@@ -258,8 +258,9 @@ prototypes::
  	int (*launder_folio)(struct folio *);
  	bool (*is_partially_uptodate)(struct folio *, size_t from, size_t count);
  	int (*error_remove_page)(struct address_space *, struct page *);
@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  locking rules:
  	All except dirty_folio and freepage may block
-@@ -290,6 +291,7 @@ is_partially_uptodate:	yes
+@@ -287,6 +288,7 @@ is_partially_uptodate:	yes
  error_remove_page:	yes
  swap_activate:		no
  swap_deactivate:	no
@@ -40,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  ======================	======================== =========	===============
  
  ->write_begin(), ->write_end() and ->readpage() may be called from
-@@ -392,15 +394,19 @@ cleaned, or an error value if not. Note
+@@ -386,15 +388,19 @@ cleaned, or an error value if not. Note
  getting mapped back in and redirtied, it needs to be kept locked
  across the entire operation.
  
@@ -67,7 +67,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/Documentation/filesystems/vfs.rst~doc-update-documentation-for-swap_activate-and-swap_rw
 +++ a/Documentation/filesystems/vfs.rst
-@@ -751,8 +751,9 @@ cache in your filesystem.  The following
+@@ -749,8 +749,9 @@ cache in your filesystem.  The following
  					       size_t count);
  		void (*is_dirty_writeback) (struct page *, bool *, bool *);
  		int (*error_remove_page) (struct mapping *mapping, struct page *page);
@@ -78,7 +78,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	};
  
  ``writepage``
-@@ -963,15 +964,21 @@ cache in your filesystem.  The following
+@@ -952,15 +953,21 @@ cache in your filesystem.  The following
  	unless you have them locked or reference counts increased.
  
  ``swap_activate``
