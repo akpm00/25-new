@@ -1,0 +1,24 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/shmem: take care of UFFDIO_COPY_MODE_WP
+
+Pass wp_copy into shmem_mfill_atomic_pte() through the stack, then apply
+the UFFD_WP bit properly when the UFFDIO_COPY on shmem is with
+UFFDIO_COPY_MODE_WP.  wp_copy lands mfill_atomic_install_pte() finally.
+
+Note: we must do pte_wrprotect() if !writable in
+mfill_atomic_install_pte(), as mk_pte() could return a writable pte (e.g.,
+when VM_SHARED on a shmem file).
+
+Link: https://lkml.kernel.org/r/20220405014841.14185-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

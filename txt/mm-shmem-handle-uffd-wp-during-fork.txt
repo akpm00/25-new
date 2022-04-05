@@ -1,0 +1,27 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/shmem: handle uffd-wp during fork()
+
+Normally we skip copy page when fork() for VM_SHARED shmem, but we can't
+skip it anymore if uffd-wp is enabled on dst vma.  This should only happen
+when the src uffd has UFFD_FEATURE_EVENT_FORK enabled on uffd-wp shmem
+vma, so that VM_UFFD_WP will be propagated onto dst vma too, then we
+should copy the pgtables with uffd-wp bit and pte markers, because these
+information will be lost otherwise.
+
+Since the condition checks will become even more complicated for deciding
+"whether a vma needs to copy the pgtable during fork()", introduce a
+helper vma_needs_copy() for it, so everything will be clearer.
+
+Link: https://lkml.kernel.org/r/20220405014855.14468-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

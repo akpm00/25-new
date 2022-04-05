@@ -1,0 +1,120 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/shmem: take care of UFFDIO_COPY_MODE_WP
+
+Pass wp_copy into shmem_mfill_atomic_pte() through the stack, then apply
+the UFFD_WP bit properly when the UFFDIO_COPY on shmem is with
+UFFDIO_COPY_MODE_WP.  wp_copy lands mfill_atomic_install_pte() finally.
+
+Note: we must do pte_wrprotect() if !writable in
+mfill_atomic_install_pte(), as mk_pte() could return a writable pte (e.g.,
+when VM_SHARED on a shmem file).
+
+Link: https://lkml.kernel.org/r/20220405014841.14185-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/shmem_fs.h |    4 ++--
+ mm/shmem.c               |    4 ++--
+ mm/userfaultfd.c         |   23 ++++++++++++++++++-----
+ 3 files changed, 22 insertions(+), 9 deletions(-)
+
+--- a/include/linux/shmem_fs.h~mm-shmem-take-care-of-uffdio_copy_mode_wp
++++ a/include/linux/shmem_fs.h
+@@ -145,11 +145,11 @@ extern int shmem_mfill_atomic_pte(struct
+ 				  struct vm_area_struct *dst_vma,
+ 				  unsigned long dst_addr,
+ 				  unsigned long src_addr,
+-				  bool zeropage,
++				  bool zeropage, bool wp_copy,
+ 				  struct page **pagep);
+ #else /* !CONFIG_SHMEM */
+ #define shmem_mfill_atomic_pte(dst_mm, dst_pmd, dst_vma, dst_addr, \
+-			       src_addr, zeropage, pagep)       ({ BUG(); 0; })
++			       src_addr, zeropage, wp_copy, pagep) ({ BUG(); 0; })
+ #endif /* CONFIG_SHMEM */
+ #endif /* CONFIG_USERFAULTFD */
+ 
+--- a/mm/shmem.c~mm-shmem-take-care-of-uffdio_copy_mode_wp
++++ a/mm/shmem.c
+@@ -2313,7 +2313,7 @@ int shmem_mfill_atomic_pte(struct mm_str
+ 			   struct vm_area_struct *dst_vma,
+ 			   unsigned long dst_addr,
+ 			   unsigned long src_addr,
+-			   bool zeropage,
++			   bool zeropage, bool wp_copy,
+ 			   struct page **pagep)
+ {
+ 	struct inode *inode = file_inode(dst_vma->vm_file);
+@@ -2386,7 +2386,7 @@ int shmem_mfill_atomic_pte(struct mm_str
+ 		goto out_release;
+ 
+ 	ret = mfill_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,
+-				       page, true, false);
++				       page, true, wp_copy);
+ 	if (ret)
+ 		goto out_delete_from_cache;
+ 
+--- a/mm/userfaultfd.c~mm-shmem-take-care-of-uffdio_copy_mode_wp
++++ a/mm/userfaultfd.c
+@@ -78,10 +78,19 @@ int mfill_atomic_install_pte(struct mm_s
+ 	 * Always mark a PTE as write-protected when needed, regardless of
+ 	 * VM_WRITE, which the user might change.
+ 	 */
+-	if (wp_copy)
++	if (wp_copy) {
+ 		_dst_pte = pte_mkuffd_wp(_dst_pte);
+-	else if (writable)
++		writable = false;
++	}
++
++	if (writable)
+ 		_dst_pte = pte_mkwrite(_dst_pte);
++	else
++		/*
++		 * We need this to make sure write bit removed; as mk_pte()
++		 * could return a pte with write bit set.
++		 */
++		_dst_pte = pte_wrprotect(_dst_pte);
+ 
+ 	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+ 
+@@ -96,7 +105,12 @@ int mfill_atomic_install_pte(struct mm_s
+ 	}
+ 
+ 	ret = -EEXIST;
+-	if (!pte_none(*dst_pte))
++	/*
++	 * We allow to overwrite a pte marker: consider when both MISSING|WP
++	 * registered, we firstly wr-protect a none pte which has no page cache
++	 * page backing it, then access the page.
++	 */
++	if (!pte_none_mostly(*dst_pte))
+ 		goto out_unlock;
+ 
+ 	if (page_in_cache) {
+@@ -480,11 +494,10 @@ static __always_inline ssize_t mfill_ato
+ 			err = mfill_zeropage_pte(dst_mm, dst_pmd,
+ 						 dst_vma, dst_addr);
+ 	} else {
+-		VM_WARN_ON_ONCE(wp_copy);
+ 		err = shmem_mfill_atomic_pte(dst_mm, dst_pmd, dst_vma,
+ 					     dst_addr, src_addr,
+ 					     mode != MCOPY_ATOMIC_NORMAL,
+-					     page);
++					     wp_copy, page);
+ 	}
+ 
+ 	return err;
+_

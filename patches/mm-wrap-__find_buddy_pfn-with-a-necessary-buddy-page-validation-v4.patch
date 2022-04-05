@@ -1,0 +1,57 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4
+
+updates per David
+
+Link: https://lkml.kernel.org/r/20220401230804.1658207-2-zi.yan@sent.com
+Link: https://lore.kernel.org/linux-mm/CAHk-=3Dwji_AmYygZMTsPMdJ7XksMt7kOur8oDfDdniBRMjm4VkQ@mail.gmail.com/
+Link: https://lkml.kernel.org/r/7236E7CA-B5F1-4C04-AB85-E86FA3E9A54B@nvidia.com
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: David Hildenbrand <david@redhat.com>
+Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/internal.h   |    4 ++--
+ mm/page_alloc.c |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/internal.h~mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4
++++ a/mm/internal.h
+@@ -252,7 +252,7 @@ static inline unsigned int buddy_order(s
+  * For recording page's order, we use page_private(page).
+  */
+ static inline bool page_is_buddy(struct page *page, struct page *buddy,
+-							unsigned int order)
++				 unsigned int order)
+ {
+ 	if (!page_is_guard(buddy) && !PageBuddy(buddy))
+ 		return false;
+@@ -312,8 +312,8 @@ __find_buddy_pfn(unsigned long page_pfn,
+ static inline struct page *find_buddy_page_pfn(struct page *page,
+ 			unsigned long pfn, unsigned int order, unsigned long *buddy_pfn)
+ {
+-	struct page *buddy;
+ 	unsigned long __buddy_pfn = __find_buddy_pfn(pfn, order);
++	struct page *buddy;
+ 
+ 	buddy = page + (__buddy_pfn - pfn);
+ 	if (buddy_pfn)
+--- a/mm/page_alloc.c~mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4
++++ a/mm/page_alloc.c
+@@ -976,8 +976,8 @@ static inline bool
+ buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
+ 		   struct page *page, unsigned int order)
+ {
+-	struct page *higher_page;
+ 	unsigned long higher_page_pfn;
++	struct page *higher_page;
+ 
+ 	if (order >= MAX_ORDER - 2)
+ 		return false;
+_

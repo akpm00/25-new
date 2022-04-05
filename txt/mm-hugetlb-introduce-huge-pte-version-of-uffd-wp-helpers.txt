@@ -1,0 +1,23 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: introduce huge pte version of uffd-wp helpers
+
+They will be used in the follow up patches to either check/set/clear
+uffd-wp bit of a huge pte.
+
+So far it reuses all the small pte helpers.  Archs can overwrite these
+versions when necessary (with __HAVE_ARCH_HUGE_PTE_UFFD_WP* macros) in the
+future.
+
+Link: https://lkml.kernel.org/r/20220405014858.14531-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

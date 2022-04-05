@@ -47,6 +47,11 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.pa
 #irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
+#mm/vmalloc
+mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
+#
+#
+#
 #
 #
 #
@@ -215,6 +220,7 @@ mm-discard-__gfp_atomic.patch
 #
 mm-page_alloc-simplify-pageblock-migratetype-check-in-__free_one_page.patch
 mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation.patch
+mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4.patch
 #
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
@@ -245,6 +251,30 @@ mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 #mm/dax
 #mm/userfaultfd
+mm-introduce-pte_marker-swap-entry.patch
+mm-teach-core-mm-about-pte-markers.patch
+mm-check-against-orig_pte-for-finish_fault.patch
+mm-uffd-pte_marker_uffd_wp.patch
+mm-shmem-take-care-of-uffdio_copy_mode_wp.patch
+mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch
+mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed.patch
+mm-shmem-allow-uffd-wr-protect-none-pte-for-file-backed-mem.patch
+mm-shmem-allows-file-back-mem-to-be-uffd-wr-protected-on-thps.patch
+mm-shmem-handle-uffd-wp-during-fork.patch
+mm-hugetlb-introduce-huge-pte-version-of-uffd-wp-helpers.patch
+mm-hugetlb-hook-page-faults-for-uffd-write-protection.patch
+mm-hugetlb-take-care-of-uffdio_copy_mode_wp.patch
+mm-hugetlb-handle-uffdio_writeprotect.patch
+mm-hugetlb-handle-pte-markers-in-page-faults.patch
+mm-hugetlb-allow-uffd-wr-protect-none-ptes.patch
+mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch
+mm-hugetlb-handle-uffd-wp-during-fork.patch
+mm-khugepaged-dont-recycle-vma-pgtable-if-uffd-wp-registered.patch
+mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
+mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch
+mm-enable-pte-markers-by-default.patch
+selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
+#
 #mm/vmscan
 mm-vmscan-reclaim-only-affects-managed_zones.patch
 mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone.patch
@@ -729,6 +759,8 @@ lib-kconfigdebug-remove-more-config__value-indirections.patch
 #
 lib-test_stringc-add-strspn-and-strcspn-tests.patch
 lib-stringc-simplify-strspn.patch
+#
+lib-remove-back_str-initialization.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap

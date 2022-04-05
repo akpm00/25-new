@@ -1,0 +1,60 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/shmem: allows file-back mem to be uffd wr-protected on thps
+
+We don't have "huge" version of pte markers, instead when necessary we
+split the thp.
+
+However split the thp is not enough, because file-backed thp is handled
+totally differently comparing to anonymous thps: rather than doing a real
+split, the thp pmd will simply got cleared in __split_huge_pmd_locked().
+
+That is not enough if e.g.  when there is a thp covers range [0, 2M) but
+we want to wr-protect small page resides in [4K, 8K) range, because after
+__split_huge_pmd() returns, there will be a none pmd, and
+change_pmd_range() will just skip it right after the split.
+
+Here we leverage the previously introduced change_pmd_prepare() macro so
+that we'll populate the pmd with a pgtable page after the pmd split (in
+which process the pmd will be cleared for cases like shmem).  Then
+change_pte_range() will do all the rest for us by installing the uffd-wp
+pte marker at any none pte that we'd like to wr-protect.
+
+Link: https://lkml.kernel.org/r/20220405014852.14413-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mprotect.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- a/mm/mprotect.c~mm-shmem-allows-file-back-mem-to-be-uffd-wr-protected-on-thps
++++ a/mm/mprotect.c
+@@ -338,8 +338,15 @@ static inline unsigned long change_pmd_r
+ 		}
+ 
+ 		if (is_swap_pmd(*pmd) || pmd_trans_huge(*pmd) || pmd_devmap(*pmd)) {
+-			if (next - addr != HPAGE_PMD_SIZE) {
++			if ((next - addr != HPAGE_PMD_SIZE) ||
++			    uffd_wp_protect_file(vma, cp_flags)) {
+ 				__split_huge_pmd(vma, pmd, addr, false, NULL);
++				/*
++				 * For file-backed, the pmd could have been
++				 * cleared; make sure pmd populated if
++				 * necessary, then fall-through to pte level.
++				 */
++				change_pmd_prepare(vma, pmd, cp_flags);
+ 			} else {
+ 				/*
+ 				 * change_huge_pmd() does not defer TLB flushes,
+_

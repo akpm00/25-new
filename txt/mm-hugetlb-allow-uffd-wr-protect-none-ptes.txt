@@ -1,0 +1,23 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: allow uffd wr-protect none ptes
+
+Teach hugetlbfs code to wr-protect none ptes just in case the page cache
+existed for that pte.  Meanwhile we also need to be able to recognize a
+uffd-wp marker pte and remove it for uffd_wp_resolve.
+
+Since at it, introduce a variable "psize" to replace all references to the
+huge page size fetcher.
+
+Link: https://lkml.kernel.org/r/20220405014912.14815-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

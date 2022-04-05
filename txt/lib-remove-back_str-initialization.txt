@@ -1,0 +1,17 @@
+From: Tom Rix <trix@redhat.com>
+Subject: lib: remove back_str initialization
+
+Clang static analysis reports this false positive
+glob.c:48:32: warning: Assigned value is garbage
+  or undefined
+  char const *back_pat = NULL, *back_str = back_str;
+                                ^~~~~~~~   ~~~~~~~~
+
+back_str is set after back_pat and it's use is protected by the !back_pat
+check.  It is not necessary to initialize back_str, so remove the
+initialization.
+
+Link: https://lkml.kernel.org/r/20220402131546.3383578-1-trix@redhat.com
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>

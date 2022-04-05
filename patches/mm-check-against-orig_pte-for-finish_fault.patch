@@ -1,0 +1,64 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm: check against orig_pte for finish_fault()
+
+We used to check against none pte in finish_fault(), with the assumption
+that the orig_pte is always none pte.
+
+This change prepares us to be able to call do_fault() on !none ptes.  For
+example, we should allow that to happen for pte marker so that we can
+restore information out of the pte markers.
+
+Let's change the "pte_none" check into detecting changes since we fetched
+orig_pte.  One trivial thing to take care of here is, when pmd==NULL for
+the pgtable we may not initialize orig_pte at all in handle_pte_fault().
+
+By default orig_pte will be all zeros however the problem is not all
+architectures are using all-zeros for a none pte.  pte_clear() will be the
+right thing to use here so that we'll always have a valid orig_pte value
+for the whole handle_pte_fault() call.
+
+Link: https://lkml.kernel.org/r/20220405014836.14077-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+--- a/mm/memory.c~mm-check-against-orig_pte-for-finish_fault
++++ a/mm/memory.c
+@@ -4237,7 +4237,7 @@ vm_fault_t finish_fault(struct vm_fault
+ 				      vmf->address, &vmf->ptl);
+ 	ret = 0;
+ 	/* Re-check under ptl */
+-	if (likely(pte_none(*vmf->pte)))
++	if (likely(pte_same(*vmf->pte, vmf->orig_pte)))
+ 		do_set_pte(vmf, page, vmf->address);
+ 	else
+ 		ret = VM_FAULT_NOPAGE;
+@@ -4705,6 +4705,13 @@ static vm_fault_t handle_pte_fault(struc
+ 		 * concurrent faults and from rmap lookups.
+ 		 */
+ 		vmf->pte = NULL;
++		/*
++		 * Always initialize orig_pte.  This matches with below
++		 * code to have orig_pte to be the none pte if pte==NULL.
++		 * This makes the rest code to be always safe to reference
++		 * it, e.g. in finish_fault() we'll detect pte changes.
++		 */
++		pte_clear(vmf->vma->vm_mm, vmf->address, &vmf->orig_pte);
+ 	} else {
+ 		/*
+ 		 * If a huge pmd materialized under us just retry later.  Use
+_

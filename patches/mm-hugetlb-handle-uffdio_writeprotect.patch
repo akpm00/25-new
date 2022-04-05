@@ -1,0 +1,133 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: handle UFFDIO_WRITEPROTECT
+
+This starts from passing cp_flags into hugetlb_change_protection() so
+hugetlb will be able to handle MM_CP_UFFD_WP[_RESOLVE] requests.
+
+huge_pte_clear_uffd_wp() is introduced to handle the case where the
+UFFDIO_WRITEPROTECT is requested upon migrating huge page entries.
+
+Link: https://lkml.kernel.org/r/20220405014906.14708-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/hugetlb.h |    6 ++++--
+ mm/hugetlb.c            |   13 ++++++++++++-
+ mm/mprotect.c           |    3 ++-
+ mm/userfaultfd.c        |    8 ++++++++
+ 4 files changed, 26 insertions(+), 4 deletions(-)
+
+--- a/include/linux/hugetlb.h~mm-hugetlb-handle-uffdio_writeprotect
++++ a/include/linux/hugetlb.h
+@@ -211,7 +211,8 @@ struct page *follow_huge_pgd(struct mm_s
+ int pmd_huge(pmd_t pmd);
+ int pud_huge(pud_t pud);
+ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+-		unsigned long address, unsigned long end, pgprot_t newprot);
++		unsigned long address, unsigned long end, pgprot_t newprot,
++		unsigned long cp_flags);
+ 
+ bool is_hugetlb_entry_migration(pte_t pte);
+ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
+@@ -397,7 +398,8 @@ static inline void move_hugetlb_state(st
+ 
+ static inline unsigned long hugetlb_change_protection(
+ 			struct vm_area_struct *vma, unsigned long address,
+-			unsigned long end, pgprot_t newprot)
++			unsigned long end, pgprot_t newprot,
++			unsigned long cp_flags)
+ {
+ 	return 0;
+ }
+--- a/mm/hugetlb.c~mm-hugetlb-handle-uffdio_writeprotect
++++ a/mm/hugetlb.c
+@@ -6207,7 +6207,8 @@ long follow_hugetlb_page(struct mm_struc
+ }
+ 
+ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+-		unsigned long address, unsigned long end, pgprot_t newprot)
++		unsigned long address, unsigned long end,
++		pgprot_t newprot, unsigned long cp_flags)
+ {
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long start = address;
+@@ -6217,6 +6218,8 @@ unsigned long hugetlb_change_protection(
+ 	unsigned long pages = 0;
+ 	bool shared_pmd = false;
+ 	struct mmu_notifier_range range;
++	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
++	bool uffd_wp_resolve = cp_flags & MM_CP_UFFD_WP_RESOLVE;
+ 
+ 	/*
+ 	 * In the case of shared PMDs, the area to flush could be beyond
+@@ -6263,6 +6266,10 @@ unsigned long hugetlb_change_protection(
+ 					entry = make_readable_migration_entry(
+ 								swp_offset(entry));
+ 				newpte = swp_entry_to_pte(entry);
++				if (uffd_wp)
++					newpte = pte_swp_mkuffd_wp(newpte);
++				else if (uffd_wp_resolve)
++					newpte = pte_swp_clear_uffd_wp(newpte);
+ 				set_huge_swap_pte_at(mm, address, ptep,
+ 						     newpte, huge_page_size(h));
+ 				pages++;
+@@ -6277,6 +6284,10 @@ unsigned long hugetlb_change_protection(
+ 			old_pte = huge_ptep_modify_prot_start(vma, address, ptep);
+ 			pte = huge_pte_modify(old_pte, newprot);
+ 			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
++			if (uffd_wp)
++				pte = huge_pte_mkuffd_wp(huge_pte_wrprotect(pte));
++			else if (uffd_wp_resolve)
++				pte = huge_pte_clear_uffd_wp(pte);
+ 			huge_ptep_modify_prot_commit(vma, address, ptep, old_pte, pte);
+ 			pages++;
+ 		}
+--- a/mm/mprotect.c~mm-hugetlb-handle-uffdio_writeprotect
++++ a/mm/mprotect.c
+@@ -460,7 +460,8 @@ unsigned long change_protection(struct m
+ 	BUG_ON((cp_flags & MM_CP_UFFD_WP_ALL) == MM_CP_UFFD_WP_ALL);
+ 
+ 	if (is_vm_hugetlb_page(vma))
+-		pages = hugetlb_change_protection(vma, start, end, newprot);
++		pages = hugetlb_change_protection(vma, start, end, newprot,
++						  cp_flags);
+ 	else
+ 		pages = change_protection_range(tlb, vma, start, end, newprot,
+ 						cp_flags);
+--- a/mm/userfaultfd.c~mm-hugetlb-handle-uffdio_writeprotect
++++ a/mm/userfaultfd.c
+@@ -705,6 +705,7 @@ int mwriteprotect_range(struct mm_struct
+ 			atomic_t *mmap_changing)
+ {
+ 	struct vm_area_struct *dst_vma;
++	unsigned long page_mask;
+ 	struct mmu_gather tlb;
+ 	pgprot_t newprot;
+ 	int err;
+@@ -742,6 +743,13 @@ int mwriteprotect_range(struct mm_struct
+ 	if (!vma_is_anonymous(dst_vma))
+ 		goto out_unlock;
+ 
++	if (is_vm_hugetlb_page(dst_vma)) {
++		err = -EINVAL;
++		page_mask = vma_kernel_pagesize(dst_vma) - 1;
++		if ((start & page_mask) || (len & page_mask))
++			goto out_unlock;
++	}
++
+ 	if (enable_wp)
+ 		newprot = vm_get_page_prot(dst_vma->vm_flags & ~(VM_WRITE));
+ 	else
+_

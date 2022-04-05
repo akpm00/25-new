@@ -1,0 +1,39 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: only drop uffd-wp special pte if required
+
+As with shmem uffd-wp special ptes, only drop the uffd-wp special swap pte
+if unmapping an entire vma or synchronized such that faults can not race
+with the unmap operation.  This requires passing zap_flags all the way to
+the lowest level hugetlb unmap routine: __unmap_hugepage_range.
+
+In general, unmap calls originated in hugetlbfs code will pass the
+ZAP_FLAG_DROP_MARKER flag as synchronization is in place to prevent
+faults.  The exception is hole punch which will first unmap without any
+synchronization.  Later when hole punch actually removes the page from the
+file, it will check to see if there was a subsequent fault and if so take
+the hugetlb fault mutex while unmapping again.  This second unmap will
+pass in ZAP_FLAG_DROP_MARKER.
+
+The justification of "whether to apply ZAP_FLAG_DROP_MARKER flag when
+unmap a hugetlb range" is (IMHO): we should never reach a state when a
+page fault could errornously fault in a page-cache page that was
+wr-protected to be writable, even in an extremely short period.  That
+could happen if e.g.  we pass ZAP_FLAG_DROP_MARKER when
+hugetlbfs_punch_hole() calls hugetlb_vmdelete_list(), because if a page
+faults after that call and before remove_inode_hugepages() is executed,
+the page cache can be mapped writable again in the small racy window, that
+can cause unexpected data overwritten.
+
+Link: https://lkml.kernel.org/r/20220405014915.14873-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

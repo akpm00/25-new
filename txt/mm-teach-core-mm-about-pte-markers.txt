@@ -1,0 +1,26 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm: teach core mm about pte markers
+
+This patch still does not use pte marker in any way, however it teaches
+the core mm about the pte marker idea.
+
+For example, handle_pte_marker() is introduced that will parse and handle
+all the pte marker faults.
+
+Many of the places are more about commenting it up - so that we know
+there's the possibility of pte marker showing up, and why we don't need
+special code for the cases.
+
+Link: https://lkml.kernel.org/r/20220405014833.14015-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

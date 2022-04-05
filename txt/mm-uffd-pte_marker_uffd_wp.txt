@@ -1,0 +1,36 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/uffd: PTE_MARKER_UFFD_WP
+
+This patch introduces the 1st user of pte marker: the uffd-wp marker.
+
+When the pte marker is installed with the uffd-wp bit set, it means this
+pte was wr-protected by uffd.
+
+We will use this special pte to arm the ptes that got either unmapped or
+swapped out for a file-backed region that was previously wr-protected. 
+This special pte could trigger a page fault just like swap entries.
+
+This idea is greatly inspired by Hugh and Andrea in the discussion, which
+is referenced in the links below.
+
+Some helpers are introduced to detect whether a swap pte is uffd
+wr-protected.  After the pte marker introduced, one swap pte can be
+wr-protected in two forms: either it is a normal swap pte and it has
+_PAGE_SWP_UFFD_WP set, or it's a pte marker that has PTE_MARKER_UFFD_WP
+set.
+
+Link: https://lore.kernel.org/lkml/20201126222359.8120-1-peterx@redhat.com/
+Link: https://lore.kernel.org/lkml/20201130230603.46187-1-peterx@redhat.com/
+Link: https://lkml.kernel.org/r/20220405014838.14131-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Suggested-by: Andrea Arcangeli <aarcange@redhat.com>
+Suggested-by: Hugh Dickins <hughd@google.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

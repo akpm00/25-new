@@ -1,0 +1,24 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/uffd: enable write protection for shmem & hugetlbfs
+
+We've had all the necessary changes ready for both shmem and hugetlbfs. 
+Turn on all the shmem/hugetlbfs switches for userfaultfd-wp.
+
+We can expand UFFD_API_RANGE_IOCTLS_BASIC with _UFFDIO_WRITEPROTECT too
+because all existing types now support write protection mode.
+
+Since vma_can_userfault() will be used elsewhere, move into userfaultfd_k.h.
+
+Link: https://lkml.kernel.org/r/20220405014926.15101-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

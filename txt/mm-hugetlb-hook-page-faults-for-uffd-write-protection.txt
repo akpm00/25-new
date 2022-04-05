@@ -1,0 +1,22 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: hook page faults for uffd write protection
+
+Hook up hugetlbfs_fault() with the capability to handle userfaultfd-wp
+faults.
+
+We do this slightly earlier than hugetlb_cow() so that we can avoid taking
+some extra locks that we definitely don't need.
+
+Link: https://lkml.kernel.org/r/20220405014901.14590-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

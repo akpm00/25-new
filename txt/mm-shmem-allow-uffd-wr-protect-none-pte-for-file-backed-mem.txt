@@ -1,0 +1,50 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/shmem: allow uffd wr-protect none pte for file-backed mem
+
+File-backed memory differs from anonymous memory in that even if the pte
+is missing, the data could still resides either in the file or in
+page/swap cache.  So when wr-protect a pte, we need to consider none ptes
+too.
+
+We do that by installing the uffd-wp pte markers when necessary.  So when
+there's a future write to the pte, the fault handler will go the special
+path to first fault-in the page as read-only, then report to userfaultfd
+server with the wr-protect message.
+
+On the other hand, when unprotecting a page, it's also possible that the
+pte got unmapped but replaced by the special uffd-wp marker.  Then we'll
+need to be able to recover from a uffd-wp pte marker into a none pte, so
+that the next access to the page will fault in correctly as usual when
+accessed the next time.
+
+Special care needs to be taken throughout the change_protection_range()
+process.  Since now we allow user to wr-protect a none pte, we need to be
+able to pre-populate the page table entries if we see (!anonymous &&
+MM_CP_UFFD_WP) requests, otherwise change_protection_range() will always
+skip when the pgtable entry does not exist.
+
+For example, the pgtable can be missing for a whole chunk of 2M pmd, but
+the page cache can exist for the 2M range.  When we want to wr-protect one
+4K page within the 2M pmd range, we need to pre-populate the pgtable and
+install the pte marker showing that we want to get a message and block the
+thread when the page cache of that 4K page is written.  Without
+pre-populating the pmd, change_protection() will simply skip that whole
+pmd.
+
+Note that this patch only covers the small pages (pte level) but not
+covering any of the transparent huge pages yet.  That will be done later,
+and this patch will be a preparation for it too.
+
+Link: https://lkml.kernel.org/r/20220405014850.14352-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

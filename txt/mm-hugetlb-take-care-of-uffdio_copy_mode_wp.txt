@@ -1,0 +1,26 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/hugetlb: take care of UFFDIO_COPY_MODE_WP
+
+Pass the wp_copy variable into hugetlb_mcopy_atomic_pte() thoughout the
+stack.  Apply the UFFD_WP bit if UFFDIO_COPY_MODE_WP is with UFFDIO_COPY.
+
+Hugetlb pages are only managed by hugetlbfs, so we're safe even without
+setting dirty bit in the huge pte if the page is installed as read-only. 
+However we'd better still keep the dirty bit set for a read-only
+UFFDIO_COPY pte (when UFFDIO_COPY_MODE_WP bit is set), not only to match
+what we do with shmem, but also because the page does contain dirty data
+that the kernel just copied from the userspace.
+
+Link: https://lkml.kernel.org/r/20220405014904.14643-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>

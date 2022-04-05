@@ -1,0 +1,55 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/pagemap: recognize uffd-wp bit for shmem/hugetlbfs
+
+This requires the pagemap code to be able to recognize the newly
+introduced swap special pte for uffd-wp, meanwhile the general case for
+hugetlb that we recently start to support.  It should make pagemap uffd-wp
+support complete.
+
+Link: https://lkml.kernel.org/r/20220405014923.15047-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/proc/task_mmu.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/fs/proc/task_mmu.c~mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs
++++ a/fs/proc/task_mmu.c
+@@ -1421,6 +1421,8 @@ static pagemap_entry_t pte_to_pagemap_en
+ 		migration = is_migration_entry(entry);
+ 		if (is_pfn_swap_entry(entry))
+ 			page = pfn_swap_entry_to_page(entry);
++		if (pte_marker_entry_uffd_wp(entry))
++			flags |= PM_UFFD_WP;
+ 	}
+ 
+ 	if (page && !PageAnon(page))
+@@ -1556,10 +1558,15 @@ static int pagemap_hugetlb_range(pte_t *
+ 		if (page_mapcount(page) == 1)
+ 			flags |= PM_MMAP_EXCLUSIVE;
+ 
++		if (huge_pte_uffd_wp(pte))
++			flags |= PM_UFFD_WP;
++
+ 		flags |= PM_PRESENT;
+ 		if (pm->show_pfn)
+ 			frame = pte_pfn(pte) +
+ 				((addr & ~hmask) >> PAGE_SHIFT);
++	} else if (pte_swp_uffd_wp_any(pte)) {
++		flags |= PM_UFFD_WP;
+ 	}
+ 
+ 	for (; addr != end; addr += PAGE_SIZE) {
+_

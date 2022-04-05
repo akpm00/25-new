@@ -1,0 +1,7 @@
+fs/userfaultfd.c
+mm/filemap.c
+mm/hmm.c
+mm/memcontrol.c
+mm/memory.c
+mm/mincore.c
+mm/mprotect.c

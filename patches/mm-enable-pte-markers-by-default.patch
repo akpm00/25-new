@@ -1,0 +1,43 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm: enable PTE markers by default
+
+Enable PTE markers by default.  On x86_64 it means it'll auto-enable
+PTE_MARKER_UFFD_WP as well.
+
+Link: https://lkml.kernel.org/r/20220405014929.15158-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jerome Glisse <jglisse@redhat.com>
+Cc: "Kirill A . Shutemov" <kirill@shutemov.name>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/mm/Kconfig~mm-enable-pte-markers-by-default
++++ a/mm/Kconfig
+@@ -911,12 +911,14 @@ config ANON_VMA_NAME
+ 
+ config PTE_MARKER
+ 	bool "Marker PTEs support"
++	default y
+ 
+ 	help
+ 	  Allows to create marker PTEs for file-backed memory.
+ 
+ config PTE_MARKER_UFFD_WP
+ 	bool "Marker PTEs support for userfaultfd write protection"
++	default y
+ 	depends on PTE_MARKER && HAVE_ARCH_USERFAULTFD_WP
+ 
+ 	help
+_
