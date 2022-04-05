@@ -255,6 +255,7 @@ mm-introduce-pte_marker-swap-entry.patch
 mm-teach-core-mm-about-pte-markers.patch
 mm-check-against-orig_pte-for-finish_fault.patch
 mm-uffd-pte_marker_uffd_wp.patch
+mm-uffd-pte_marker_uffd_wp-fix.patch
 mm-shmem-take-care-of-uffdio_copy_mode_wp.patch
 mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch
 mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed.patch
