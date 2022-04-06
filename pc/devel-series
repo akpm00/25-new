@@ -714,7 +714,6 @@ proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes.patc
 fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body.patch
 fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix.patch
 #
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
 #proc-sysctl-make-protected_-world-readable.patch: mcgrof request
