@@ -1,0 +1,2 @@
+tools/testing/selftests/vm/gup_test.c
+tools/testing/selftests/vm/run_vmtests.sh

@@ -48,6 +48,7 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.pa
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 #mm/vmalloc
+mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/kfence
 mm-kfence-support-kmem_dump_obj-for-kfence-objects.patch
@@ -100,6 +101,8 @@ mm.patch
 #mm/kcsan
 #mm/kmemleak
 #mm/kasan
+kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel.patch
+#
 #mm/debug
 tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
 tools-vm-page_owner_sortc-support-for-multi-value-selection-in-single-argument.patch
@@ -110,7 +113,6 @@ tools-vm-page_owner_sortc-support-sorting-blocks-by-multiple-keys.patch
 #mm/msync
 #mm/fadvise
 #mm/gup
-#
 mm-rmap-fix-missing-swap_free-in-try_to_unmap-after-arch_unmap_one-failed.patch
 mm-hugetlb-take-src_mm-write_protect_seq-in-copy_hugetlb_page_range.patch
 mm-memory-slightly-simplify-copy_present_pte.patch
@@ -136,6 +138,8 @@ s390-pgtable-cleanup-description-of-swp-pte-layout.patch
 s390-pgtable-support-__have_arch_pte_swp_exclusive.patch
 powerpc-pgtable-remove-_page_bit_swap_type-for-book3s.patch
 powerpc-pgtable-support-__have_arch_pte_swp_exclusive-for-book3s.patch
+#
+selftest-vm-clarify-error-statement-in-gup_test.patch
 #
 #mm/swap
 mm-create-new-mm-swaph-header-file.patch
@@ -379,6 +383,7 @@ zram-add-a-huge_idle-writeback-mode.patch
 #mm/secretmem
 #mm/kfence
 #mm/hmm
+#mm/mapletree
 #
 #mm/damon
 damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
