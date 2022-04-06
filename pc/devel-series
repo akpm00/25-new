@@ -1150,7 +1150,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 # next
 linux-next.patch
-linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -1208,3 +1207,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[withdrawn]nfs42-use-a-specific-kmem_cache-to-allocate-nfs4_xattr_entry.patch
 #[obsolete]linux-next-git-rejects.patch
 #[obsolete]linux-next-rejects.patch
+#[obsolete]linux-next-git-rejects.patch
