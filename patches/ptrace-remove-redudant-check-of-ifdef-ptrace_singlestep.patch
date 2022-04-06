@@ -1,0 +1,45 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: ptrace: remove redudant check of #ifdef PTRACE_SINGLESTEP
+
+Patch series "ptrace: do some cleanup".
+
+
+This patch (of 3):
+
+PTRACE_SINGLESTEP is always defined as 9 in include/uapi/linux/ptrace.h,
+remove redudant check of #ifdef PTRACE_SINGLESTEP.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-2-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/ptrace.c |    6 ------
+ 1 file changed, 6 deletions(-)
+
+--- a/kernel/ptrace.c~ptrace-remove-redudant-check-of-ifdef-ptrace_singlestep
++++ a/kernel/ptrace.c
+@@ -829,11 +829,7 @@ static long ptrace_get_rseq_configuratio
+ }
+ #endif
+ 
+-#ifdef PTRACE_SINGLESTEP
+ #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
+-#else
+-#define is_singlestep(request)		0
+-#endif
+ 
+ #ifdef PTRACE_SINGLEBLOCK
+ #define is_singleblock(request)		((request) == PTRACE_SINGLEBLOCK)
+@@ -1221,9 +1217,7 @@ int ptrace_request(struct task_struct *c
+ 	}
+ #endif
+ 
+-#ifdef PTRACE_SINGLESTEP
+ 	case PTRACE_SINGLESTEP:
+-#endif
+ #ifdef PTRACE_SINGLEBLOCK
+ 	case PTRACE_SINGLEBLOCK:
+ #endif
+_

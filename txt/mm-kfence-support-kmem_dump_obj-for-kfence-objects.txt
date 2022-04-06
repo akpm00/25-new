@@ -1,0 +1,22 @@
+From: Marco Elver <elver@google.com>
+Subject: mm, kfence: support kmem_dump_obj() for KFENCE objects
+
+Calling kmem_obj_info() via kmem_dump_obj() on KFENCE objects has been
+producing garbage data due to the object not actually being maintained by
+SLAB or SLUB.
+
+Fix this by implementing __kfence_obj_info() that copies relevant
+information to struct kmem_obj_info when the object was allocated by
+KFENCE; this is called by a common kmem_obj_info(), which also calls the
+slab/slub/slob specific variant now called __kmem_obj_info().
+
+For completeness, kmem_dump_obj() now displays if the object was allocated
+by KFENCE.
+
+Link: https://lore.kernel.org/all/20220323090520.GG16885@xsang-OptiPlex-9020/
+Link: https://lkml.kernel.org/r/20220406131558.3558585-1-elver@google.com
+Fixes: b89fb5ef0ce6 ("mm, kfence: insert KFENCE hooks for SLUB")
+Fixes: d3fb45f370d9 ("mm, kfence: insert KFENCE hooks for SLAB")
+Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>

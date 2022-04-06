@@ -1,0 +1,14 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: ptrace: remove redudant check of #ifdef PTRACE_SINGLESTEP
+
+Patch series "ptrace: do some cleanup".
+
+
+This patch (of 3):
+
+PTRACE_SINGLESTEP is always defined as 9 in include/uapi/linux/ptrace.h,
+remove redudant check of #ifdef PTRACE_SINGLESTEP.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-2-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>

@@ -1,0 +1,9 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: MAINTAINERS: remove redundant file of PTRACE SUPPORT entry
+
+In MAINTAINERS PTRACE SUPPORT entry, the file include/uapi/linux/ptrace.h
+is redundant, remove it.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-4-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>

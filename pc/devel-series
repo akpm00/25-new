@@ -48,8 +48,9 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.pa
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 #mm/vmalloc
-mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
+#mm/kfence
+mm-kfence-support-kmem_dump_obj-for-kfence-objects.patch
 #
 #
 #
@@ -252,6 +253,7 @@ mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #mm/dax
 #mm/userfaultfd
 mm-introduce-pte_marker-swap-entry.patch
+mm-introduce-pte_marker-swap-entry-fix.patch
 mm-teach-core-mm-about-pte-markers.patch
 mm-check-against-orig_pte-for-finish_fault.patch
 mm-uffd-pte_marker_uffd_wp.patch
@@ -900,6 +902,10 @@ fat-add-ratelimit-to-fat_ent_bread.patch
 #NEXT_PATCHES_START devcgroup
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ptrace
+ptrace-remove-redudant-check-of-ifdef-ptrace_singlestep.patch
+ptrace-fix-wrong-comment-of-pt_dtrace.patch
+maintainers-remove-redundant-file-of-ptrace-support-entry.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START trace
 #NEXT_PATCHES_END
@@ -1208,3 +1214,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[obsolete]linux-next-git-rejects.patch
 #[obsolete]linux-next-rejects.patch
 #[obsolete]linux-next-git-rejects.patch
+#[to-be-updated]mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch

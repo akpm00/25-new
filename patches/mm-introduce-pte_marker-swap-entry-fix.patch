@@ -1,0 +1,27 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: fixup! mm: Introduce PTE_MARKER swap entry
+
+Link: https://lkml.kernel.org/r/Yk2rdB7SXZf+2BDF@xz-m1.local
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/s390/include/asm/hugetlb.h |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/arch/s390/include/asm/hugetlb.h~mm-introduce-pte_marker-swap-entry-fix
++++ a/arch/s390/include/asm/hugetlb.h
+@@ -85,6 +85,11 @@ static inline int huge_pte_none(pte_t pt
+ 	return pte_none(pte);
+ }
+ 
++static inline int huge_pte_none_mostly(pte_t pte)
++{
++	return huge_pte_none(pte);
++}
++
+ static inline int huge_pte_write(pte_t pte)
+ {
+ 	return pte_write(pte);
+_

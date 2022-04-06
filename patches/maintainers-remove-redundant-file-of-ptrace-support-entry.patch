@@ -1,0 +1,26 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: MAINTAINERS: remove redundant file of PTRACE SUPPORT entry
+
+In MAINTAINERS PTRACE SUPPORT entry, the file include/uapi/linux/ptrace.h
+is redundant, remove it.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-4-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/MAINTAINERS~maintainers-remove-redundant-file-of-ptrace-support-entry
++++ a/MAINTAINERS
+@@ -15959,7 +15959,6 @@ F:	include/asm-generic/syscall.h
+ F:	include/linux/ptrace.h
+ F:	include/linux/regset.h
+ F:	include/uapi/linux/ptrace.h
+-F:	include/uapi/linux/ptrace.h
+ F:	kernel/ptrace.c
+ 
+ PULSE8-CEC DRIVER
+_

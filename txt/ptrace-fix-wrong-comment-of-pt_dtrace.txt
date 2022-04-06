@@ -1,0 +1,8 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: ptrace: fix wrong comment of PT_DTRACE
+
+PT_DTRACE is only used on um now, fix the wrong comment.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-3-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>

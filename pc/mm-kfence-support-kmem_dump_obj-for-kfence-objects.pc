@@ -1,0 +1,9 @@
+include/linux/kfence.h
+mm/kfence/core.c
+mm/kfence/kfence.h
+mm/kfence/report.c
+mm/slab.c
+mm/slab_common.c
+mm/slab.h
+mm/slob.c
+mm/slub.c

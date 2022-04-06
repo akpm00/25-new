@@ -1,0 +1,26 @@
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Subject: ptrace: fix wrong comment of PT_DTRACE
+
+PT_DTRACE is only used on um now, fix the wrong comment.
+
+Link: https://lkml.kernel.org/r/1649240981-11024-3-git-send-email-yangtiezhu@loongson.cn
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/ptrace.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/linux/ptrace.h~ptrace-fix-wrong-comment-of-pt_dtrace
++++ a/include/linux/ptrace.h
+@@ -30,7 +30,7 @@ extern int ptrace_access_vm(struct task_
+ 
+ #define PT_SEIZED	0x00010000	/* SEIZE used, enable new behavior */
+ #define PT_PTRACED	0x00000001
+-#define PT_DTRACE	0x00000002	/* delayed trace (used on m68k, i386) */
++#define PT_DTRACE	0x00000002	/* delayed trace (used on um) */
+ 
+ #define PT_OPT_FLAG_SHIFT	3
+ /* PT_TRACE_* event enable flags */
+_
