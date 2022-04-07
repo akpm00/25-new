@@ -9,8 +9,8 @@ Link: https://lkml.kernel.org/r/20220403020833.26164-1-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Shakeel Butt <shakeelb@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
