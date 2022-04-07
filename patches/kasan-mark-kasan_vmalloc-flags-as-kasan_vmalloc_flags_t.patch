@@ -1,0 +1,39 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: mark KASAN_VMALLOC flags as kasan_vmalloc_flags_t
+
+Fix sparse warning:
+
+mm/kasan/shadow.c:496:15: warning: restricted kasan_vmalloc_flags_t degrades to integer
+
+Link: https://lkml.kernel.org/r/52d8fccdd3a48d4bdfd0ff522553bac2a13f1579.1649351254.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/kasan.h |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/include/linux/kasan.h~kasan-mark-kasan_vmalloc-flags-as-kasan_vmalloc_flags_t
++++ a/include/linux/kasan.h
+@@ -23,10 +23,10 @@ struct task_struct;
+ 
+ typedef unsigned int __bitwise kasan_vmalloc_flags_t;
+ 
+-#define KASAN_VMALLOC_NONE		0x00u
+-#define KASAN_VMALLOC_INIT		0x01u
+-#define KASAN_VMALLOC_VM_ALLOC		0x02u
+-#define KASAN_VMALLOC_PROT_NORMAL	0x04u
++#define KASAN_VMALLOC_NONE		((__force kasan_vmalloc_flags_t)0x00u)
++#define KASAN_VMALLOC_INIT		((__force kasan_vmalloc_flags_t)0x01u)
++#define KASAN_VMALLOC_VM_ALLOC		((__force kasan_vmalloc_flags_t)0x02u)
++#define KASAN_VMALLOC_PROT_NORMAL	((__force kasan_vmalloc_flags_t)0x04u)
+ 
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 
+_

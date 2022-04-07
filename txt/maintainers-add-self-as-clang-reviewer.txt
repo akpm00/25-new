@@ -1,0 +1,10 @@
+From: Tom Rix <trix@redhat.com>
+Subject: MAINTAINERS: add Tom as clang reviewer
+
+I have been helping with build breaks and other clang things and would
+like to help with the reviews.
+
+Link: https://lkml.kernel.org/r/20220407175715.3378998-1-trix@redhat.com
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
