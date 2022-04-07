@@ -1,0 +1,15 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: dissolve truncated hugetlb page
+
+If me_huge_page meets a truncated huge page, hpage won't be dissolved even
+if we hold the last refcnt.  It's because the truncated huge page has NULL
+page_mapping while it's not anonymous page too.  Thus we lose the last
+chance to dissolve it into buddy to save healthy subpages.  Remove
+PageAnon check to handle these huge pages too.
+
+Link: https://lkml.kernel.org/r/20220407130352.15618-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Yang Shi <shy828301@gmail.com>

@@ -240,6 +240,10 @@ mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4.patch
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
 #
+mm-memory-failurec-avoid-false-postive-pageswapcache-test.patch
+mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
+mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
+#
 #mm/mlock
 #mm/hugetlb
 #mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?

@@ -1,0 +1,38 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: minor cleanup for HWPoisonHandlable
+
+The local variable movable can be removed by returning true directly. 
+Also fix typo 'mirgate'.  No functional change intended.
+
+Link: https://lkml.kernel.org/r/20220407130352.15618-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+--- a/mm/memory-failure.c~mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable
++++ a/mm/memory-failure.c
+@@ -1180,13 +1180,11 @@ void ClearPageHWPoisonTakenOff(struct pa
+  */
+ static inline bool HWPoisonHandlable(struct page *page, unsigned long flags)
+ {
+-	bool movable = false;
+-
+-	/* Soft offline could mirgate non-LRU movable pages */
++	/* Soft offline could migrate non-LRU movable pages */
+ 	if ((flags & MF_SOFT_OFFLINE) && __PageMovable(page))
+-		movable = true;
++		return true;
+ 
+-	return movable || PageLRU(page) || is_free_buddy_page(page);
++	return PageLRU(page) || is_free_buddy_page(page);
+ }
+ 
+ static int __get_hwpoison_page(struct page *page, unsigned long flags)
+_

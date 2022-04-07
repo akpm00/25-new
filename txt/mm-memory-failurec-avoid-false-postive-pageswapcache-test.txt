@@ -1,0 +1,24 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: avoid false-postive PageSwapCache test
+
+Patch series "A few fixup and cleanup patches for memory failure".
+
+This series contains a patch to fix false-postive PageSwapCache test,
+minor cleanup for HWPoisonHandlable and try to dissolve truncated hugetlb
+page.  More details can be found in the respective changelogs.
+
+
+This patch (of 3):
+
+PageSwapCache is only reliable when PageAnon is true because PG_swapcache
+serves as PG_owner_priv_1 which can be used by fs if it's pagecache page. 
+So we should test PageAnon to distinguish pagecache page from swapcache
+page to avoid false-postive PageSwapCache test.
+
+Link: https://lkml.kernel.org/r/20220407130352.15618-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220407130352.15618-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: David Hildenbrand <david@redhat.com>
