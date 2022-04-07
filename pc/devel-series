@@ -192,7 +192,6 @@ mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch
 #
 mm-mmapc-use-helper-mlock_future_check.patch
 #
-mm-generalize-arch_has_filter_pgprot.patch
 #
 mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
 powerpc-mm-enable-arch_has_vm_get_page_prot.patch
@@ -1245,3 +1244,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[obsolete]linux-next-rejects.patch
 #[obsolete]linux-next-git-rejects.patch
 #[to-be-updated]mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
+#[merged]mm-generalize-arch_has_filter_pgprot.patch
