@@ -1,0 +1,17 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: drop arch_filter_pgprot()
+
+There are no platforms left which subscribe ARCH_HAS_FILTER_PGPROT.  Hence
+drop generic arch_filter_pgprot() and also config ARCH_HAS_FILTER_PGPROT.
+
+Link: https://lkml.kernel.org/r/20220407103251.1209606-7-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>

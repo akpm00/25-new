@@ -1,0 +1,3 @@
+arch/sparc/include/asm/mman.h
+arch/sparc/Kconfig
+arch/sparc/mm/init_64.c
