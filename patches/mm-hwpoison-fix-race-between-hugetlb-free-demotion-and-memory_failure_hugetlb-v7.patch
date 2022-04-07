@@ -1,0 +1,85 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7
+
+- Move lock_page() to try_memory_failure_hugetlb()
+  (based on bug report from Dan Carpenter)
+- Add Fixes: tag and CC to stable.
+
+Link: https://lkml.kernel.org/r/20220407112929.1344748-1-naoya.horiguchi@linux.dev
+Fixes: 761ad8d7c7b5 ("mm: hwpoison: introduce memory_failure_hugetlb()")
+Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |   19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
+
+--- a/mm/memory-failure.c~mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7
++++ a/mm/memory-failure.c
+@@ -1500,8 +1500,6 @@ static int try_to_split_thp_page(struct
+ 
+ /*
+  * Called from hugetlb code with hugetlb_lock held.
+- * If a hugepage is successfully grabbed (so it's determined to handle
+- * the error as a hugepage error), returns with holding the page lock.
+  *
+  * Return values:
+  *   0             - free hugepage
+@@ -1533,25 +1531,20 @@ int __get_huge_page_for_hwpoison(unsigne
+ 		goto out;
+ 	}
+ 
+-	lock_page(head);
+-
+ 	if (hwpoison_filter(page)) {
+ 		ret = -EOPNOTSUPP;
+-		goto unlock;
++		goto out;
+ 	}
+ 
+ 	if (TestSetPageHWPoison(head)) {
+ 		ret = -EHWPOISON;
+-		goto unlock;
++		goto out;
+ 	}
+ 
+-	/* keep locking page. */
+ 	return ret;
+-unlock:
+-	unlock_page(head);
++out:
+ 	if (count_increased)
+ 		put_page(head);
+-out:
+ 	return ret;
+ }
+ 
+@@ -1596,14 +1589,11 @@ retry:
+ 
+ 	num_poisoned_pages_inc();
+ 
+-	head = compound_head(p);
+-
+ 	/*
+ 	 * Handling free hugepage.  The possible race with hugepage allocation
+ 	 * or demotion can be prevented by PageHWPoison flag.
+ 	 */
+ 	if (res == 0) {
+-		unlock_page(head);
+ 		res = MF_FAILED;
+ 		if (__page_handle_poison(p)) {
+ 			page_ref_inc(p);
+@@ -1613,6 +1603,9 @@ retry:
+ 		return res == MF_RECOVERED ? 0 : -EBUSY;
+ 	}
+ 
++	head = compound_head(p);
++	lock_page(head);
++
+ 	/*
+ 	 * The page could have changed compound pages due to race window.
+ 	 * If this happens just bail out.
+_

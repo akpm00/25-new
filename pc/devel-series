@@ -51,6 +51,7 @@ mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #mm/memory-failure
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
+mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7.patch
 #
 #mm/kasan
 #irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
@@ -62,13 +63,9 @@ mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #mm/kfence
 mm-kfence-support-kmem_dump_obj-for-kfence-objects.patch
 #
-#
-#
-#
-#
-#
 #mm/pagealloc
-#mm-fix-panic-in-__alloc_pages.patch: more acks? https://lkml.kernel.org/r/2e191db3-286f-90c6-bf96-3f89891e9926@gmail.com
+#mm-page_alloc-fix-build_zonerefs_node.patch: really -stable?
+mm-page_alloc-fix-build_zonerefs_node.patch
 #
 #mm/userfaultfd
 #userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
@@ -195,6 +192,16 @@ mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch
 #
 mm-mmapc-use-helper-mlock_future_check.patch
 #
+mm-generalize-arch_has_filter_pgprot.patch
+#
+mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
+powerpc-mm-enable-arch_has_vm_get_page_prot.patch
+arm64-mm-enable-arch_has_vm_get_page_prot.patch
+sparc-mm-enable-arch_has_vm_get_page_prot.patch
+x86-mm-enable-arch_has_vm_get_page_prot.patch
+mm-mmap-drop-arch_filter_pgprot.patch
+mm-mmap-drop-arch_vm_get_page_pgprot.patch
+#
 #mm/mprotect
 #mm-mprotect-use-mmu_gather.patch: more acks?
 mm-mprotect-use-mmu_gather.patch
@@ -295,6 +302,8 @@ mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
 mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch
 mm-enable-pte-markers-by-default.patch
 selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
+#
+userfaultfd-selftests-use-swap-instead-of-open-coding-it.patch
 #
 #mm/vmscan
 mm-vmscan-reclaim-only-affects-managed_zones.patch
@@ -782,6 +791,9 @@ lib-test_stringc-add-strspn-and-strcspn-tests.patch
 lib-stringc-simplify-strspn.patch
 #
 lib-remove-back_str-initialization.patch
+#
+#percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch: acks?
+percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap

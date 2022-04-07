@@ -1,0 +1,22 @@
+From: Guo Zhengkui <guozhengkui@vivo.com>
+Subject: userfaultfd/selftests: use swap() instead of open coding it
+
+Address the following coccicheck warning:
+
+tools/testing/selftests/vm/userfaultfd.c:1536:21-22: WARNING opportunity
+for swap().
+tools/testing/selftests/vm/userfaultfd.c:1540:33-34: WARNING opportunity
+for swap().
+
+by using swap() for the swapping of variable values and drop
+`tmp_area` that is not needed any more.
+
+`swap()` macro in userfaultfd.c is introduced in commit 681696862bc18
+("selftests: vm: remove dependecy from internal kernel macros")
+
+It has been tested with gcc (Debian 8.3.0-6) 8.3.0.
+
+Link: https://lkml.kernel.org/r/20220407123141.4998-1-guozhengkui@vivo.com
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>

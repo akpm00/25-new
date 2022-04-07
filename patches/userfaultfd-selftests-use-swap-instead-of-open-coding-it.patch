@@ -1,0 +1,56 @@
+From: Guo Zhengkui <guozhengkui@vivo.com>
+Subject: userfaultfd/selftests: use swap() instead of open coding it
+
+Address the following coccicheck warning:
+
+tools/testing/selftests/vm/userfaultfd.c:1536:21-22: WARNING opportunity
+for swap().
+tools/testing/selftests/vm/userfaultfd.c:1540:33-34: WARNING opportunity
+for swap().
+
+by using swap() for the swapping of variable values and drop
+`tmp_area` that is not needed any more.
+
+`swap()` macro in userfaultfd.c is introduced in commit 681696862bc18
+("selftests: vm: remove dependecy from internal kernel macros")
+
+It has been tested with gcc (Debian 8.3.0-6) 8.3.0.
+
+Link: https://lkml.kernel.org/r/20220407123141.4998-1-guozhengkui@vivo.com
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/vm/userfaultfd.c |   11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+--- a/tools/testing/selftests/vm/userfaultfd.c~userfaultfd-selftests-use-swap-instead-of-open-coding-it
++++ a/tools/testing/selftests/vm/userfaultfd.c
+@@ -1422,7 +1422,6 @@ static void userfaultfd_pagemap_test(uns
+ static int userfaultfd_stress(void)
+ {
+ 	void *area;
+-	char *tmp_area;
+ 	unsigned long nr;
+ 	struct uffdio_register uffdio_register;
+ 	struct uffd_stats uffd_stats[nr_cpus];
+@@ -1533,13 +1532,9 @@ static int userfaultfd_stress(void)
+ 					    count_verify[nr], nr);
+ 
+ 		/* prepare next bounce */
+-		tmp_area = area_src;
+-		area_src = area_dst;
+-		area_dst = tmp_area;
+-
+-		tmp_area = area_src_alias;
+-		area_src_alias = area_dst_alias;
+-		area_dst_alias = tmp_area;
++		swap(area_src, area_dst);
++
++		swap(area_src_alias, area_dst_alias);
+ 
+ 		uffd_stats_report(uffd_stats, nr_cpus);
+ 	}
+_

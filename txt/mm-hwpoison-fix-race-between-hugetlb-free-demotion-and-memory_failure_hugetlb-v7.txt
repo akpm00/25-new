@@ -1,0 +1,13 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7
+
+- Move lock_page() to try_memory_failure_hugetlb()
+  (based on bug report from Dan Carpenter)
+- Add Fixes: tag and CC to stable.
+
+Link: https://lkml.kernel.org/r/20220407112929.1344748-1-naoya.horiguchi@linux.dev
+Fixes: 761ad8d7c7b5 ("mm: hwpoison: introduce memory_failure_hugetlb()")
+Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
