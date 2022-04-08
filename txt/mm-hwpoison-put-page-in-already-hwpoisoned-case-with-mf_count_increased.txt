@@ -1,0 +1,15 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm/hwpoison: put page in already hwpoisoned case with MF_COUNT_INCREASED
+
+In already hwpoisoned case, memory_failure() is supposed to return with
+releasing the page refcount taken for error handling.  But currently the
+refcount is not released when called with MF_COUNT_INCREASED, which makes
+page refcount inconsistent.  This should be rare and non-critical, but it
+might be inconvenient in testing (unpoison doesn't work).
+
+Link: https://lkml.kernel.org/r/20220408135323.1559401-3-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Yang Shi <shy828301@gmail.com>

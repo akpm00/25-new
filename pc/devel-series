@@ -53,6 +53,7 @@ memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #mm/memory-failure
+mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
 #mm/kasan
 #irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
@@ -251,6 +252,9 @@ mm-remove-unnecessary-void-conversions.patch
 mm-memory-failurec-avoid-false-postive-pageswapcache-test.patch
 mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
 mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
+#
+mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased.patch
+revert-mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
 #
 #mm/mlock
 #mm/hugetlb

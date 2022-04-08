@@ -1,0 +1,15 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: Revert "mm/memory-failure.c: fix race with changing page compound again"
+
+Reverts commit 888af2701db7 ("mm/memory-failure.c: fix race with changing
+page compound again") because now we fetch the page refcount under
+hugetlb_lock in try_memory_failure_hugetlb() so that the race check is no
+longer necessary.
+
+Link: https://lkml.kernel.org/r/20220408135323.1559401-4-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>

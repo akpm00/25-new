@@ -1,0 +1,71 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: Revert "mm/memory-failure.c: fix race with changing page compound again"
+
+Reverts commit 888af2701db7 ("mm/memory-failure.c: fix race with changing
+page compound again") because now we fetch the page refcount under
+hugetlb_lock in try_memory_failure_hugetlb() so that the race check is no
+longer necessary.
+
+Link: https://lkml.kernel.org/r/20220408135323.1559401-4-naoya.horiguchi@linux.dev
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h      |    1 -
+ include/ras/ras_event.h |    1 -
+ mm/memory-failure.c     |   11 -----------
+ 3 files changed, 13 deletions(-)
+
+--- a/include/linux/mm.h~revert-mm-memory-failurec-fix-race-with-changing-page-compound-again
++++ a/include/linux/mm.h
+@@ -3292,7 +3292,6 @@ enum mf_action_page_type {
+ 	MF_MSG_BUDDY,
+ 	MF_MSG_DAX,
+ 	MF_MSG_UNSPLIT_THP,
+-	MF_MSG_DIFFERENT_PAGE_SIZE,
+ 	MF_MSG_UNKNOWN,
+ };
+ 
+--- a/include/ras/ras_event.h~revert-mm-memory-failurec-fix-race-with-changing-page-compound-again
++++ a/include/ras/ras_event.h
+@@ -374,7 +374,6 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
+ 	EM ( MF_MSG_DAX, "dax page" )					\
+ 	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
+-	EM ( MF_MSG_DIFFERENT_PAGE_SIZE, "different page size" )	\
+ 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
+ 
+ /*
+--- a/mm/memory-failure.c~revert-mm-memory-failurec-fix-race-with-changing-page-compound-again
++++ a/mm/memory-failure.c
+@@ -734,7 +734,6 @@ static const char * const action_page_ty
+ 	[MF_MSG_BUDDY]			= "free buddy page",
+ 	[MF_MSG_DAX]			= "dax page",
+ 	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
+-	[MF_MSG_DIFFERENT_PAGE_SIZE]	= "different page size",
+ 	[MF_MSG_UNKNOWN]		= "unknown page",
+ };
+ 
+@@ -1603,16 +1602,6 @@ retry:
+ 		return res == MF_RECOVERED ? 0 : -EBUSY;
+ 	}
+ 
+-	/*
+-	 * The page could have changed compound pages due to race window.
+-	 * If this happens just bail out.
+-	 */
+-	if (!PageHuge(p) || compound_head(p) != head) {
+-		action_result(pfn, MF_MSG_DIFFERENT_PAGE_SIZE, MF_IGNORED);
+-		res = -EBUSY;
+-		goto out;
+-	}
+-
+ 	page_flags = head->flags;
+ 
+ 	/*
+_
