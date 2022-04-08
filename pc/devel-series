@@ -37,6 +37,9 @@ maintainers-add-self-as-clang-reviewer.patch
 #
 #
 #NEXT_PATCHES_START mainline-later (next week, approximately)
+#mm/tmpfs
+tmpfs-fix-regressions-from-wider-use-of-zero_page.patch
+#
 #m/secretmem
 mm-secretmem-fix-panic-when-growing-a-memfd_secret.patch
 mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
@@ -50,9 +53,6 @@ memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #mm/memory-failure
-#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: TBU
-mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
-mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7.patch
 #
 #mm/kasan
 #irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
@@ -794,7 +794,6 @@ lib-stringc-simplify-strspn.patch
 #
 lib-remove-back_str-initialization.patch
 #
-percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
@@ -1249,3 +1248,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #[obsolete]linux-next-git-rejects.patch
 #[to-be-updated]mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #[merged]mm-generalize-arch_has_filter_pgprot.patch
+#[nacked]percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch
+#[to-be-updated]mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
+#[to-be-updated]mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7.patch

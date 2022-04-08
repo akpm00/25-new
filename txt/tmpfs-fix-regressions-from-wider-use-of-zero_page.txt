@@ -1,0 +1,32 @@
+From: Hugh Dickins <hughd@google.com>
+Subject: tmpfs: fix regressions from wider use of ZERO_PAGE
+
+Chuck Lever reported fsx-based xfstests generic 075 091 112 127 failing
+when 5.18-rc1 NFS server exports tmpfs: bisected to recent tmpfs change.
+
+Whilst nfsd_splice_action() does contain some questionable handling of
+repeated pages, and Chuck was able to work around there, history from
+Mark Hemment makes clear that there might be similar dangers elsewhere:
+it was not a good idea for me to pass ZERO_PAGE down to unknown actors.
+
+Revert shmem_file_read_iter() to using ZERO_PAGE for holes only when
+iter_is_iovec(); in other cases, use the more natural iov_iter_zero()
+instead of copy_page_to_iter().  We would use iov_iter_zero() throughout,
+but the x86 clear_user() is not nearly so well optimized as copy to user
+(dd of 1T sparse tmpfs file takes 57 seconds rather than 44 seconds).
+
+And now pagecache_init() does not need to SetPageUptodate(ZERO_PAGE(0)):
+which had caused boot failure on arm noMMU STM32F7 and STM32H7 boards
+
+Link: https://lkml.kernel.org/r/9a978571-8648-e830-5735-1f4748ce2e30@google.com
+Fixes: 56a8c8eb1eaf ("tmpfs: do not allocate pages on read")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reported-by: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Reported-by: Chuck Lever III <chuck.lever@oracle.com>
+Tested-by: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Mark Hemment <markhemm@googlemail.com>
+Cc: Patrice CHOTARD <patrice.chotard@foss.st.com>
+Cc: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Lukas Czerner <lczerner@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Darrick J. Wong" <djwong@kernel.org>

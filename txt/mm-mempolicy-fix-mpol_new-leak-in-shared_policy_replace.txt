@@ -25,4 +25,4 @@ Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
 Cc: Mel Gorman <mgorman@suse.de>
-Cc: <stable@vger.kernel.org>	[3.8
+Cc: <stable@vger.kernel.org>	[3.8]

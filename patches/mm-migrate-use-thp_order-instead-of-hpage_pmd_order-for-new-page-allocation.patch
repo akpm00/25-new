@@ -9,8 +9,7 @@ determine the source page order during migration.
 
 Link: https://lkml.kernel.org/r/20220404165325.1883267-1-zi.yan@sent.com
 Link: https://lore.kernel.org/linux-mm/20220404132908.GA785673@u2004/
-Fixes: d68eccad3706 ("mm/filemap: Allow large folios to be added to the pag=
-e cache")
+Fixes: d68eccad3706 ("mm/filemap: Allow large folios to be added to the page cache")
 Reported-by: Naoya Horiguchi <naoya.horiguchi@linux.dev>
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 Cc: Matthew Wilcox <willy@infradead.org>
