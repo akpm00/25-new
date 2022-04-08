@@ -50,6 +50,7 @@ memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #
 #mm/memory-failure
+#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: TBU
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7.patch
 #
@@ -58,6 +59,7 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 #mm/vmalloc
+mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
 mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/kfence
@@ -792,7 +794,6 @@ lib-stringc-simplify-strspn.patch
 #
 lib-remove-back_str-initialization.patch
 #
-#percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch: acks?
 percpu_ref-call-wake_up_all-after-percpu_ref_put-completes.patch
 #
 #NEXT_PATCHES_END
