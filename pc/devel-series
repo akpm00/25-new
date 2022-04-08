@@ -59,7 +59,7 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb-v7
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 #mm/vmalloc
-mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
+#mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
 mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/kfence
@@ -1187,6 +1187,8 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 # next
 linux-next.patch
+linux-next-rejects.patch
+linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent

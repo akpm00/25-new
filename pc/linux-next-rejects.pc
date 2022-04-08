@@ -1,0 +1,3 @@
+arch/x86/mm/Makefile
+mm/mempolicy.c
+mm/migrate.c

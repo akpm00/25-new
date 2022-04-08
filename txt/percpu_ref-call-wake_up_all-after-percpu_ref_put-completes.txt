@@ -39,6 +39,7 @@ percpu_ref is stable after percpu_ref_switch_to_atomic_sync() returns.  So
 just do it.
 
 Link: https://lkml.kernel.org/r/20220407103335.36885-1-zhengqi.arch@bytedance.com
+Fixes: 490c79a65708 ("percpu_ref: decouple switching to atomic mode and  killing")
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Ming Lei <ming.lei@redhat.com>
 Cc: Dennis Zhou <dennis@kernel.org>
