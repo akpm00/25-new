@@ -53,6 +53,6 @@ Link: https://lkml.kernel.org/r/52f819991051f9b865e9ce25605509bfdbacadcd.1649277
 Fixes: 690467c81b1a  ("mm/vmalloc: Move draining areas out of caller context")
 Signed-off-by: Omar Sandoval <osandov@fb.com>
 Acked-by: Chris Down <chris@chrisdown.name>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Cc: Baoquan He <bhe@redhat.com>
