@@ -1,0 +1,43 @@
+From: Yang Yang <yang.yang29@zte.com.cn>
+Subject: delayacct: track delays from write-protect copy
+
+Delay accounting does not track the delay of write-protect copy.  When
+tasks trigger many write-protect copys(include COW and unsharing of
+anonymous pages[1]), it may spend a amount of time waiting for them.  To
+get the delay of tasks in write-protect copy, could help users to evaluate
+the impact of using KSM or fork() or GUP.
+
+Also update tools/accounting/getdelays.c:
+
+    / # ./getdelays -dl -p 231
+    print delayacct stats ON
+    listen forever
+    PID     231
+
+    CPU             count     real total  virtual total    delay total  delay average
+                     6247     1859000000     2154070021     1674255063          0.268ms
+    IO              count    delay total  delay average
+                        0              0              0ms
+    SWAP            count    delay total  delay average
+                        0              0              0ms
+    RECLAIM         count    delay total  delay average
+                        0              0              0ms
+    THRASHING       count    delay total  delay average
+                        0              0              0ms
+    COMPACT         count    delay total  delay average
+                        3          72758              0ms
+    WPCOPY          count    delay total  delay average
+                     3635      271567604              0ms
+
+[1] commit 31cc5bc4af70("mm: support GUP-triggered unsharing of anonymous pages")
+
+Link: https://lkml.kernel.org/r/20220409014342.2505532-1-yang.yang29@zte.com.cn
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Jiang Xuexin <jiang.xuexin@zte.com.cn>
+Reviewed-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Reviewed-by: wangyong <wang.yong12@zte.com.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

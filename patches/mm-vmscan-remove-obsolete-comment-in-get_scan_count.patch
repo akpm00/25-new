@@ -1,0 +1,29 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: remove obsolete comment in get_scan_count
+
+Since commit 1431d4d11abb ("mm: base LRU balancing on an explicit cost
+model"), the relative value of each set of LRU lists is based on cost
+model instead of rotated/scanned ratio.  Cleanup the relevant comment.
+
+Link: https://lkml.kernel.org/r/20220409030245.61211-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-remove-obsolete-comment-in-get_scan_count
++++ a/mm/vmscan.c
+@@ -2663,9 +2663,7 @@ enum scan_balance {
+ 
+ /*
+  * Determine how aggressively the anon and file LRU lists should be
+- * scanned.  The relative value of each set of LRU lists is determined
+- * by looking at the fraction of the pages scanned we did rotate back
+- * onto the active list instead of evict.
++ * scanned.
+  *
+  * nr[0] = anon inactive pages to scan; nr[1] = anon active pages to scan
+  * nr[2] = file inactive pages to scan; nr[3] = file active pages to scan
+_

@@ -1,0 +1,30 @@
+From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: kasan: fix hw tags enablement when KUNIT tests are disabled
+
+Kasan enables hw tags via kasan_enable_tagging() which based on the mode
+passed via kernel command line selects the correct hw backend. 
+kasan_enable_tagging() is meant to be invoked indirectly via the cpu
+features framework of the architectures that support these backends. 
+Currently the invocation of this function is guarded by
+CONFIG_KASAN_KUNIT_TEST which allows the enablement of the correct backend
+only when KUNIT tests are enabled in the kernel.
+
+This inconsistency was introduced in commit:
+
+  ed6d74446cbf ("kasan: test: support async (again) and asymm modes for HW_TAGS")
+
+... and prevents to enable MTE on arm64 when KUNIT tests for kasan hw_tags are
+disabled.
+
+Fix the issue making sure that the CONFIG_KASAN_KUNIT_TEST guard does not
+prevent the correct invocation of kasan_enable_tagging().
+
+Link: https://lkml.kernel.org/r/20220408124323.10028-1-vincenzo.frascino@arm.com
+Fixes: ed6d74446cbf ("kasan: test: support async (again) and asymm modes for HW_TAGS")
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
