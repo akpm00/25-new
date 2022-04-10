@@ -33,9 +33,6 @@ Cc: "Darrick J. Wong" <djwong@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/filemap.c |    6 ------
- mm/shmem.c   |   31 ++++++++++++++++++++-----------
- 2 files changed, 20 insertions(+), 17 deletions(-)
 
 --- a/mm/filemap.c~tmpfs-fix-regressions-from-wider-use-of-zero_page
 +++ a/mm/filemap.c
