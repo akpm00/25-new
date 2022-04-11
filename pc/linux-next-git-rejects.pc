@@ -1,2 +1,0 @@
-drivers/gpu/drm/amd/display/dc/dcn10/dcn10_hw_sequencer.c
-drivers/mmc/host/mmci_stm32_sdmmc.c
