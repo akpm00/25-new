@@ -99,6 +99,8 @@ tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
 tools-vm-page_owner_sortc-support-for-multi-value-selection-in-single-argument.patch
 tools-vm-page_owner_sortc-support-sorting-blocks-by-multiple-keys.patch
 #
+tools-vm-page_owner-support-debug-log-to-avoid-huge-log-print.patch
+#
 #mm/folios
 #mm/pagecache
 #mm/msync
@@ -233,10 +235,6 @@ mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4.patch
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
 #
-#mm-memory-failurec-avoid-false-postive-pageswapcache-test.patch: TBU
-mm-memory-failurec-avoid-false-postive-pageswapcache-test.patch
-mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
-mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #
 mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased.patch
 revert-mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
@@ -359,6 +357,8 @@ mm-migration-remove-some-duplicated-codes-in-migrate_pages.patch
 mm-migration-fix-potential-page-refcounts-leak-in-migrate_pages.patch
 mm-migration-fix-potential-invalid-node-access-for-reclaim-based-migration.patch
 mm-migration-fix-possible-do_pages_stat_array-racing-with-memory-offline.patch
+#
+mm-migrate-simplify-the-refcount-validation-when-migrating-hugetlb-mapping.patch
 #
 #mm/kmap
 #mm/thp
@@ -1278,3 +1278,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]mm-list_lruc-revert-mm-list_lru-optimize-memcg_reparent_list_lru_node.patch
 #[merged]maintainers-add-self-as-clang-reviewer.patch
 #[obsolete]linux-next-git-rejects.patch
+#[to-be-updated]mm-memory-failurec-avoid-false-postive-pageswapcache-test.patch
+#[to-be-updated]mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
+#[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
