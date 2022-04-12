@@ -24,13 +24,10 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/migrate.c    |    2 +-
- mm/page_alloc.c |    2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
 
 --- a/mm/migrate.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/migrate.c
-@@ -2058,7 +2058,7 @@ static int numamigrate_isolate_page(pg_d
+@@ -2044,7 +2044,7 @@ static int numamigrate_isolate_page(pg_d
  		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
  			return 0;
  		for (z = pgdat->nr_zones - 1; z >= 0; z--) {

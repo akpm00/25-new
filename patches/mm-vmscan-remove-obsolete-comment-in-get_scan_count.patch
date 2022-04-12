@@ -10,8 +10,6 @@ Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/vmscan.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
 --- a/mm/vmscan.c~mm-vmscan-remove-obsolete-comment-in-get_scan_count
 +++ a/mm/vmscan.c

@@ -1,0 +1,36 @@
+From: Yu Zhao <yuzhao@google.com>
+Subject: mm: x86: add CONFIG_ARCH_HAS_NONLEAF_PMD_YOUNG
+
+Some architectures support the accessed bit in non-leaf PMD entries, e.g.,
+x86 sets the accessed bit in a non-leaf PMD entry when using it as part of
+linear address translation [1].  Page table walkers that clear the
+accessed bit may use this capability to reduce their search space.
+
+Note that:
+1. Although an inline function is preferable, this capability is added
+   as a configuration option for consistency with the existing macros.
+2. Due to the little interest in other varieties, this capability was
+   only tested on Intel and AMD CPUs.
+
+[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
+     Volume 3 (June 2021), section 4.8
+
+Link: https://lkml.kernel.org/r/20220407031525.2368067-3-yuzhao@google.com
+Signed-off-by: Yu Zhao <yuzhao@google.com>
+Reviewed-by: Barry Song <baohua@kernel.org>
+Acked-by: Brian Geffon <bgeffon@google.com>
+Acked-by: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+Acked-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Acked-by: Steven Barrett <steven@liquorix.net>
+Acked-by: Suleiman Souhlal <suleiman@google.com>
+Tested-by: Daniel Byrne <djbyrne@mtu.edu>
+Tested-by: Donald Carr <d@chaos-reins.com>
+Tested-by: Holger Hoffstätte <holger@applied-asynchrony.com>
+Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
+Tested-by: Shuang Zhai <szhai2@cs.rochester.edu>
+Tested-by: Sofia Trinh <sofia.trinh@edi.works>
+Tested-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yang Shi <shy828301@gmail.com>

@@ -20,8 +20,6 @@ Cc: Vitaly Wool <vitaly.wool@konsulko.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/z3fold.c |   41 ++++++++++++-----------------------------
- 1 file changed, 12 insertions(+), 29 deletions(-)
 
 --- a/mm/z3fold.c~mm-z3fold-move-decrement-of-pool-pages_nr-into-__release_z3fold_page
 +++ a/mm/z3fold.c

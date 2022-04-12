@@ -13,12 +13,10 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/migrate.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/mm/migrate.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone-v2
 +++ a/mm/migrate.c
-@@ -1983,7 +1983,7 @@ SYSCALL_DEFINE6(move_pages, pid_t, pid,
+@@ -1981,7 +1981,7 @@ SYSCALL_DEFINE6(move_pages, pid_t, pid,
  #ifdef CONFIG_NUMA_BALANCING
  /*
   * Returns true if this is a safe migration target node for misplaced NUMA
@@ -27,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   */
  static bool migrate_balanced_pgdat(struct pglist_data *pgdat,
  				   unsigned long nr_migrate_pages)
-@@ -1993,7 +1993,7 @@ static bool migrate_balanced_pgdat(struc
+@@ -1991,7 +1991,7 @@ static bool migrate_balanced_pgdat(struc
  	for (z = pgdat->nr_zones - 1; z >= 0; z--) {
  		struct zone *zone = pgdat->node_zones + z;
  
