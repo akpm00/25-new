@@ -19,14 +19,11 @@ Cc: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/linux/mm_types.h |    4 ++--
- mm/ksm.c                 |    3 ---
- 2 files changed, 2 insertions(+), 5 deletions(-)
 
 --- a/include/linux/mm_types.h~ksm-count-ksm-merging-pages-for-each-process-fix
 +++ a/include/linux/mm_types.h
-@@ -652,8 +652,8 @@ struct mm_struct {
- 
+@@ -670,8 +670,8 @@ struct mm_struct {
+ #endif /* CONFIG_LRU_GEN */
  #ifdef CONFIG_KSM
  		/*
 -		 * Represet how many pages of this process are
