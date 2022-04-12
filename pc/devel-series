@@ -2,75 +2,29 @@
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
-#mm/migration
-#
-#mm/highmem
-#
-#lz4
-#
-#mm/sparsemem
-#
-#mm/mremap
-#
-#mm/mempolicy
-#
-#mailmap
-#
-#mm/memcg
-#
 #MAINTAINERS
-#
-#NEXT_PATCHES_END
-#
-#
-#
-#
-#
-#
-#NEXT_PATCHES_START mainline-later (next week, approximately)
+maintainers-broadcom-internal-lists-arent-maintainers.patch
 #mm/tmpfs
 tmpfs-fix-regressions-from-wider-use-of-zero_page.patch
 #
 #m/secretmem
 mm-secretmem-fix-panic-when-growing-a-memfd_secret.patch
 mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
-#
-#mm/memcg
-#memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
-memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
-#
-#mm/mlock
-#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
-mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
+mm-secretmem-fix-panic-when-growing-a-memfd_secret-v2.patch
 #
 #mm/memory-failure
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
 #mm/kasan
-#irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch: acks?
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
 #
 kasan-fix-hw-tags-enablement-when-kunit-tests-are-disabled.patch
-#
-#mm/vmalloc
-#mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
-mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/kfence
 mm-kfence-support-kmem_dump_obj-for-kfence-objects.patch
 #
 #mm/pagealloc
 mm-page_alloc-fix-build_zonerefs_node.patch
-#
-#mm/userfaultfd
-#userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
-userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
-#
-#selftests
-#selftests-vm-fix-clang-build-error-multiple-output-files.patch: acks?
-#
-#mm/pagealloc
-#mm-page_alloc-add-scheduling-point-to-free_unref_page_list.patch: -stable?
 #
 #mm/zram
 mm-fix-unexpected-zeroed-page-mapping-with-zram-swap.patch
@@ -80,6 +34,41 @@ mm-compaction-fix-compiler-warning-when-config_compaction=n.patch
 #
 #mm/hugetlb
 hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
+#
+#
+#
+#NEXT_PATCHES_END
+#
+#
+#
+#
+#
+#
+#NEXT_PATCHES_START mainline-later (next week, approximately)
+#
+#mm/pagealloc
+#mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch: acks?
+mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
+mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
+#
+#mm/memory-failure
+mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
+#
+#mm/memcg
+#memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
+memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
+#
+#mm/mlock
+#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
+mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
+#
+#mm/vmalloc
+#mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
+mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
+#
+#mm/userfaultfd
+#userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
+userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -196,6 +185,8 @@ x86-mm-enable-arch_has_vm_get_page_prot.patch
 mm-mmap-drop-arch_filter_pgprot.patch
 mm-mmap-drop-arch_vm_get_page_pgprot.patch
 #
+#mm-fix-align-error-when-get_addr-in-unmapped_area_topdown.patch: acks?  runtime effects?  -stable?
+mm-fix-align-error-when-get_addr-in-unmapped_area_topdown.patch
 #
 #mm/mprotect
 #mm-mprotect-use-mmu_gather.patch: more acks?
@@ -229,8 +220,8 @@ documentation-sysctl-document-page_lock_unfairness.patch
 #mm-page_alloc-simplify-update-of-pgdat-in-wake_all_kswapds.patch: acks?
 mm-page_alloc-simplify-update-of-pgdat-in-wake_all_kswapds.patch
 #
-#mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch: acks?
 mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order.patch
+mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order-v3.patch
 #
 #mm-discard-__gfp_atomic.patch: check review
 mm-discard-__gfp_atomic.patch
@@ -278,6 +269,7 @@ mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #mm/userfaultfd
 mm-introduce-pte_marker-swap-entry.patch
 mm-introduce-pte_marker-swap-entry-fix.patch
+#mm-teach-core-mm-about-pte-markers.patch: https://lkml.kernel.org/r/87a6crawzy.fsf@nvdebian.thelocal
 mm-teach-core-mm-about-pte-markers.patch
 mm-check-against-orig_pte-for-finish_fault.patch
 mm-uffd-pte_marker_uffd_wp.patch
@@ -859,6 +851,8 @@ list-fix-a-data-race-around-ep-rdllist.patch
 #NEXT_PATCHES_START rwsem
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START init
+init-kconfig-remove-uselib-syscall-by-default.patch
+#
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
 #
@@ -1037,7 +1031,10 @@ rapidio-remove-unnecessary-use-of-list-iterator.patch
 taskstats-version-12-with-thread-group-and-exe-info.patch
 taskstats-version-12-with-thread-group-and-exe-info-fix.patch
 #
+kernel-make-taskstats-available-from-all-net-namespaces.patch
+#
 delayacct-track-delays-from-write-protect-copy.patch
+#
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START timerfd
@@ -1177,6 +1174,8 @@ fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super.patch
 #NEXT_PATCHES_START inittmpfs
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START ipc
+ipc-sem-remove-redundant-assignments.patch
+#
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #

@@ -1,0 +1,28 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix
+
+add comment, per David
+
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/page_alloc.c~mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix
++++ a/mm/page_alloc.c
+@@ -2522,6 +2522,10 @@ static int move_freepages(struct zone *z
+ 
+ 	for (pfn = start_pfn; pfn <= end_pfn;) {
+ 		if (!pfn_valid(pfn)) {
++			/*
++			 * Pageblock alignment may cause us to try to access
++			 * into a hole
++			 */
+ 			pfn++;
+ 			continue;
+ 		}
+_

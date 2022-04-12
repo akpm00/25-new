@@ -1,0 +1,14 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order-v3
+
+remove remove MAX_NODE_LOAD, per Vlastimil
+
+Link: https://lkml.kernel.org/r/20220412001319.7462-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Oscar Salvador <osalvador@suse.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
+Cc: Krupa Ramakrishnan <krupa.ramakrishnan@amd.com>
+Cc: Michal Hocko <mhocko@suse.com>

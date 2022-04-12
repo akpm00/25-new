@@ -1,0 +1,10 @@
+From: Joe Perches <joe@perches.com>
+Subject: MAINTAINERS: Broadcom internal lists aren't maintainers
+
+Convert the broadcom internal list M: and L: entries to R: as
+exploder email addresses are neither maintainers nor mailing lists.
+
+Reorder the entries as necessary.
+
+Link: https://lkml.kernel.org/r/04eb301f5b3adbefdd78e76657eff0acb3e3d87f.camel@perches.com
+Signed-off-by: Joe Perches <joe@perches.com>

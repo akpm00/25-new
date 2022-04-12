@@ -1,0 +1,31 @@
+From: lipeifeng <lipeifeng@oppo.com>
+Subject: mm/mmap.c: fix align-error when get_addr in unmapped_area_topdown
+
+When we found a suitable gap_end(> info->high_limit), gap_end must be set
+to info->high_limit.  And we will get the gap_end after computing highest
+gap address at the desired alignment.
+
+2096 found:
+2097         if (gap_end > info->high_limit)
+2098                 gap_end = info->high_limit;
+2099
+2100 found_highest:
+2101         gap_end -= info->length;
+2102         gap_end -= (gap_end - info->align_offset) & info->align_mask;
+2103
+2104         VM_BUG_ON(gap_end < info->low_limit);
+2105         VM_BUG_ON(gap_end < gap_start);
+2106         return gap_end;
+
+so we must promise: info->high_limit - info->low_limit >= info->length +
+info->align_mask.
+
+Otherwise in rare cases(info->high_limit - info->low_limit < info->length
++ info->align_mask) we will get the addr in align-error if found suitable
+gap_end(> info->high_limit).
+
+Link: https://lkml.kernel.org/r/20220412081014.399-1-lipeifeng@oppo.com
+Signed-off-by: lipeifeng <lipeifeng@oppo.com>
+Cc: Michel Lespinasse <michel@lespinasse.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Barry Song <21cnbao@gmail.com>

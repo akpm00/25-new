@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix
+
+add comment, per David
+
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
