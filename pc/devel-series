@@ -5,7 +5,6 @@ origin.patch
 #MAINTAINERS
 maintainers-broadcom-internal-lists-arent-maintainers.patch
 #mm/tmpfs
-#tmpfs-fix-regressions-from-wider-use-of-zero_page.patch: https://lkml.kernel.org/r/20220409050638.GB17755@lst.de
 tmpfs-fix-regressions-from-wider-use-of-zero_page.patch
 #
 #m/secretmem
@@ -40,6 +39,9 @@ hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
 revert-fs-binfmt_elf-fix-pt_load-p_align-values-for-loaders.patch
 revert-fs-binfmt_elf-use-pt_load-p_align-values-for-static-pie.patch
 #
+#mm/vmalloc
+mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
+#
 #
 #NEXT_PATCHES_END
 #
@@ -58,6 +60,10 @@ mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
 #mm/memory-failure
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
+#mm/kmemleak
+#mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch: acks?  stable?
+mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
+#
 #mm/memcg
 #memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
 memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
@@ -65,10 +71,6 @@ memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 #mm/mlock
 #mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
 mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
-#
-#mm/vmalloc
-#mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch: https://lkml.kernel.org/r/Yk+l1/xLzhB02aIU@MiWiFi-R3L-srv
-mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/userfaultfd
 #userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
@@ -280,6 +282,7 @@ hugetlb-clean-up-hugetlb_cma_reserve.patch
 #
 #mm/dax
 #mm/userfaultfd
+#mm-introduce-pte_marker-swap-entry.patch: TBU
 mm-introduce-pte_marker-swap-entry.patch
 mm-introduce-pte_marker-swap-entry-fix.patch
 #mm-teach-core-mm-about-pte-markers.patch: https://lkml.kernel.org/r/87a6crawzy.fsf@nvdebian.thelocal
@@ -299,8 +302,11 @@ mm-hugetlb-take-care-of-uffdio_copy_mode_wp.patch
 mm-hugetlb-handle-uffdio_writeprotect.patch
 mm-hugetlb-handle-pte-markers-in-page-faults.patch
 mm-hugetlb-allow-uffd-wr-protect-none-ptes.patch
+#mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch: https://lkml.kernel.org/r/202204140108.DeRAhWEn-lkp@intel.com
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch
+mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix.patch
 mm-hugetlb-handle-uffd-wp-during-fork.patch
+mm-shmem-handle-uffd-wp-during-fork-fix.patch
 mm-khugepaged-dont-recycle-vma-pgtable-if-uffd-wp-registered.patch
 mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
 mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch

@@ -37,7 +37,7 @@ entry, it must only pin if PG_anon_exclusive is set for the mapped
 
 This commit doesn't adjust GUP, so this is only implicitly handled for
 FOLL_WRITE, follow-up commits will teach GUP to also respect it for
-FOLL_PIN without !FOLL_WRITE, to make all GUP pins of anonymous pages
+FOLL_PIN without FOLL_WRITE, to make all GUP pins of anonymous pages
 fully reliable.
 
 Whenever an anonymous page is to be shared (fork(), KSM), or when
@@ -220,6 +220,7 @@ apply.  This is future work.
 
 Link: https://lkml.kernel.org/r/20220329160440.193848-13-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Rientjes <rientjes@google.com>
@@ -244,5 +245,4 @@ Cc: Peter Xu <peterx@redhat.com>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: Roman Gushchin <guro@fb.com>
 Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Yang Shi <shy828301@gmail.com>

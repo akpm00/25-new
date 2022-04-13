@@ -1,0 +1,8 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: fixup! mm/hugetlb: Only drop uffd-wp special pte if required
+
+fix sparse warning
+
+Link: https://lkml.kernel.org/r/Ylcdw8I1L5iAoWhb@xz-m1.local
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>

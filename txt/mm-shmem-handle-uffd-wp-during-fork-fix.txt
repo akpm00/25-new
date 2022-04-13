@@ -1,0 +1,10 @@
+From: kernel test robot <lkp@intel.com>
+Subject: mm/shmem: vma_needs_copy can be static
+
+mm/memory.c:1238:1: warning: symbol 'vma_needs_copy' was not declared. Should it be static?
+
+Link: https://lkml.kernel.org/r/Ylb0CGeFJlc4EzLk@7ec4ff11d4ae
+Fixes: 729c63ce2bbd ("mm/shmem: handle uffd-wp during fork()")
+Signed-off-by: kernel test robot <lkp@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Peter Xu <peterx@redhat.com>
