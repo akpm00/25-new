@@ -86,6 +86,7 @@ invalid struct page to find out of page is in Buddy or LRU or not
 Hence, avoid operating on invalid pages within the same pageblock by
 checking if pfn is valid or not.
 
+[akpm@linux-foundation.org: add comment, per David]
 Link: https://lkml.kernel.org/r/fb3c8c008994b2ed96f74b6b9698ff998b689bd2.1649794059.git.quic_sudaraja@quicinc.com
 Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
 Fixes: 859a85ddf90e7140 ("mm: remove pfn_valid_within() and CONFIG_HOLES_IN_ZONE")
