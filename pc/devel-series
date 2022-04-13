@@ -54,7 +54,6 @@ mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #mm/pagealloc
 #mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch: acks?
-mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
 #
 #mm/memory-failure
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
@@ -1306,3 +1305,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
 #[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #[folded-merged]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
+#[nacked]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
