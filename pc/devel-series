@@ -5,6 +5,7 @@
 #MAINTAINERS
 maintainers-broadcom-internal-lists-arent-maintainers.patch
 #mm/tmpfs
+#tmpfs-fix-regressions-from-wider-use-of-zero_page.patch: https://lkml.kernel.org/r/20220409050638.GB17755@lst.de
 tmpfs-fix-regressions-from-wider-use-of-zero_page.patch
 #
 #m/secretmem
@@ -101,6 +102,8 @@ tools-vm-page_owner_sortc-support-sorting-blocks-by-multiple-keys.patch
 #
 tools-vm-page_owner-support-debug-log-to-avoid-huge-log-print.patch
 #
+tools-vm-page_owner_sortc-provide-allocator-labelling-and-update-cull-and-sort-options.patch
+#
 #mm/folios
 #mm/pagecache
 #mm/msync
@@ -180,6 +183,7 @@ mm-mmapc-use-helper-mlock_future_check.patch
 #
 #
 mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
+#powerpc-mm-enable-arch_has_vm_get_page_prot.patch: TBU
 powerpc-mm-enable-arch_has_vm_get_page_prot.patch
 arm64-mm-enable-arch_has_vm_get_page_prot.patch
 sparc-mm-enable-arch_has_vm_get_page_prot.patch
@@ -801,6 +805,7 @@ lib-stringc-simplify-strspn.patch
 #
 lib-remove-back_str-initialization.patch
 #
+lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap

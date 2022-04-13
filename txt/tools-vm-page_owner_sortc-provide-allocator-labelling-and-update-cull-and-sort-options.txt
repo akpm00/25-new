@@ -1,0 +1,68 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: provide allocator labelling and update --cull and --sort options
+
+An application is suspected of having memory leak when its memory
+consumption is high and keeps increasing.  There are several commonly used
+memory allocators: slab, cma, vmalloc, etc.  The memory leak
+identification can be sped up if the page information allocated by an
+allocator can be analyzed separately.
+
+This patch provides supports for memory allocator labelling for slab,
+vmalloc, and cma.  The pages allocated by slab and cma can be confirmed
+from the "PFN" line according to the kernel codes, and the label of the
+vmalloc allocator can be obtained by analyzing the stack trace.  Thanks
+for Vlastimil Babka's constructive suggestions.
+
+Based on Yinan Zhang's study, the call chain of vmalloc() is vmalloc() ->
+...  -> __vmalloc_node_range() -> __vmalloc_area_node(). 
+__vmalloc_area_node() requests memory through the interface of buddy
+allocation system.  In the current version, __vmalloc_area_node() uses
+four interfaces: alloc_pages_bulk_array_mempolicy(),
+alloc_pages_bulk_array_node(), alloc_pages() and alloc_pages_node().  By
+disassembling the code, we find that __vmalloc_area_node() is expanded in
+__vmalloc_node_range().  So __vmalloc_area_node is not in the stack trace.
+
+On the test machine, the stack trace of pages allocated by vmalloc has the
+following four forms:
+
+__alloc_pages_bulk+0x230/0x6a0
+__vmalloc_node_range+0x19c/0x598
+
+alloc_pages_bulk_array_mempolicy+0xbc/0x278
+__vmalloc_node_range+0x1e8/0x598
+
+__alloc_pages+0x160/0x2b0
+__vmalloc_node_range+0x234/0x598
+
+alloc_pages+0xac/0x150
+__vmalloc_node_range+0x44c/0x598
+
+Therefore, in two consecutive lines of stacktrace, if the first line
+contains the word "alloc_pages" and the second line contains the word
+"__vmalloc_node_range", it can be determined that the page is allocated by
+vmalloc.  And the function offset and size are not the same on different
+machines, so there is no need to match them.
+
+At the same time, this patch updates the --cull and --sort options to
+support allocator-based merge statistics and sorting.  The added functions
+are fully compatible with the original work.  When using, you can use
+"allocator", or abbreviated as "ator".  Relevant updates have also been
+made in the documentation(Documentation/vm/page_owner.rst).
+
+Example:
+./page_owner_sort <input> <output> --cull=st,pid,name,allocator
+./page_owner_sort <input> <output> --sort=ator,pid,name
+
+This work is coauthored by Jiajian Ye, Yinan Zhang, Shenghong Han,
+Chongxi Zhao, Yuhong Feng and Yongqiang Liu.
+
+Link: https://lkml.kernel.org/r/20220410132932.9402-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
