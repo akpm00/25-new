@@ -10,6 +10,7 @@ might be inconvenient in testing (unpoison doesn't work).
 Link: https://lkml.kernel.org/r/20220408135323.1559401-3-naoya.horiguchi@linux.dev
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Yang Shi <shy828301@gmail.com>
@@ -21,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory-failure.c~mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased
 +++ a/mm/memory-failure.c
-@@ -1809,6 +1809,8 @@ try_again:
+@@ -1812,6 +1812,8 @@ try_again:
  		res = -EHWPOISON;
  		if (flags & MF_ACTION_REQUIRED)
  			res = kill_accessing_process(current, pfn, flags);

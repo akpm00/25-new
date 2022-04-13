@@ -58,6 +58,13 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/cgroup.h          |   15 +
+ include/linux/mm_inline.h       |   12 +
+ include/linux/mmzone.h          |    9 +
+ kernel/cgroup/cgroup-internal.h |    1 
+ mm/Kconfig                      |    6 
+ mm/vmscan.c                     |  238 +++++++++++++++++++++++++++++-
+ 6 files changed, 272 insertions(+), 9 deletions(-)
 
 --- a/include/linux/cgroup.h~mm-multi-gen-lru-kill-switch
 +++ a/include/linux/cgroup.h

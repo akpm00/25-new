@@ -61,6 +61,8 @@ Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory-failure.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 --- a/mm/memory-failure.c~mm-memory-failurec-skip-huge_zero_page-in-memory_failure
 +++ a/mm/memory-failure.c

@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-fix-potential-invalid-node-access-for-reclaim-based-migration
 +++ a/mm/migrate.c
-@@ -2516,9 +2516,9 @@ static int __meminit migrate_on_reclaim_
+@@ -2491,9 +2491,9 @@ static int __meminit migrate_on_reclaim_
  
  void __init migrate_on_reclaim_init(void)
  {

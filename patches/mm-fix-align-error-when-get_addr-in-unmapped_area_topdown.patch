@@ -32,6 +32,8 @@ Cc: Barry Song <21cnbao@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mmap.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 --- a/mm/mmap.c~mm-fix-align-error-when-get_addr-in-unmapped_area_topdown
 +++ a/mm/mmap.c

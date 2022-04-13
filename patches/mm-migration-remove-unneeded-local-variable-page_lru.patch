@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-remove-unneeded-local-variable-page_lru
 +++ a/mm/migrate.c
-@@ -2036,7 +2036,6 @@ static struct page *alloc_misplaced_dst_
+@@ -2025,7 +2025,6 @@ static struct page *alloc_misplaced_dst_
  
  static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
  {
@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int nr_pages = thp_nr_pages(page);
  	int order = compound_order(page);
  
-@@ -2063,8 +2062,7 @@ static int numamigrate_isolate_page(pg_d
+@@ -2052,8 +2051,7 @@ static int numamigrate_isolate_page(pg_d
  	if (isolate_lru_page(page))
  		return 0;
  

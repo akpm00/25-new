@@ -290,6 +290,11 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/arm64/include/asm/pgtable.h |   14 ++------------
+ arch/x86/include/asm/pgtable.h   |    6 +++---
+ include/linux/pgtable.h          |   13 +++++++++++++
+ mm/memory.c                      |   14 +-------------
+ 4 files changed, 19 insertions(+), 28 deletions(-)
 
 --- a/arch/arm64/include/asm/pgtable.h~mm-x86-arm64-add-arch_has_hw_pte_young
 +++ a/arch/arm64/include/asm/pgtable.h

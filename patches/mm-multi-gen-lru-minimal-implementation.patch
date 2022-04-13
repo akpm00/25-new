@@ -176,6 +176,14 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mm_inline.h |   24 +
+ include/linux/mmzone.h    |   41 +
+ kernel/bounds.c           |    2 
+ mm/Kconfig                |   11 
+ mm/swap.c                 |   42 +
+ mm/vmscan.c               |  805 +++++++++++++++++++++++++++++++++++-
+ mm/workingset.c           |  119 +++++
+ 7 files changed, 1040 insertions(+), 4 deletions(-)
 
 --- a/include/linux/mm_inline.h~mm-multi-gen-lru-minimal-implementation
 +++ a/include/linux/mm_inline.h

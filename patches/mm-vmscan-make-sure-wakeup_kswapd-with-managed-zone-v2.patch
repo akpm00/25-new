@@ -13,6 +13,8 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/migrate.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/mm/migrate.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone-v2
 +++ a/mm/migrate.c

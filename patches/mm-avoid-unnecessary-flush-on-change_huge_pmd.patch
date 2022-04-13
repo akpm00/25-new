@@ -40,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/arch/x86/include/asm/pgtable.h~mm-avoid-unnecessary-flush-on-change_huge_pmd
 +++ a/arch/x86/include/asm/pgtable.h
-@@ -1173,6 +1173,11 @@ static inline pmd_t pmdp_establish(struc
+@@ -1168,6 +1168,11 @@ static inline pmd_t pmdp_establish(struc
  	}
  }
  #endif

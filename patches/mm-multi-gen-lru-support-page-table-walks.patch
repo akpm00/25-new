@@ -111,6 +111,17 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/exec.c                  |    2 
+ include/linux/memcontrol.h |    5 
+ include/linux/mm_types.h   |   78 ++
+ include/linux/mmzone.h     |   59 ++
+ include/linux/swap.h       |    4 
+ kernel/exit.c              |    1 
+ kernel/fork.c              |    9 
+ kernel/sched/core.c        |    1 
+ mm/memcontrol.c            |   24 
+ mm/vmscan.c                |  975 ++++++++++++++++++++++++++++++++++-
+ 10 files changed, 1144 insertions(+), 14 deletions(-)
 
 --- a/fs/exec.c~mm-multi-gen-lru-support-page-table-walks
 +++ a/fs/exec.c

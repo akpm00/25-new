@@ -6,11 +6,13 @@ enabled by default under X86_32.
 
 Link: https://lkml.kernel.org/r/20220412212519.4113845-1-keescook@chromium.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 Cc: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ init/Kconfig |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/init/Kconfig~init-kconfig-remove-uselib-syscall-by-default
 +++ a/init/Kconfig

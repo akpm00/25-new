@@ -13,6 +13,7 @@ page_add_anon_rmap() as exclusive when RMAP_EXCLUSIVE is passed.
 
 Link: https://lkml.kernel.org/r/20220329160440.193848-7-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Rientjes <rientjes@google.com>
@@ -37,7 +38,6 @@ Cc: Peter Xu <peterx@redhat.com>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: Roman Gushchin <guro@fb.com>
 Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
@@ -64,7 +64,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		unsigned long address, bool compound);
 --- a/mm/huge_memory.c~mm-rmap-remove-do_page_add_anon_rmap
 +++ a/mm/huge_memory.c
-@@ -3073,7 +3073,7 @@ void remove_migration_pmd(struct page_vm
+@@ -3072,7 +3072,7 @@ void remove_migration_pmd(struct page_vm
  		pmde = pmd_wrprotect(pmd_mkuffd_wp(pmde));
  
  	if (PageAnon(new))

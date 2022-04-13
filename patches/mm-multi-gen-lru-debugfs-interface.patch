@@ -41,6 +41,9 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/nodemask.h |    1 
+ mm/vmscan.c              |  346 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 347 insertions(+)
 
 --- a/include/linux/nodemask.h~mm-multi-gen-lru-debugfs-interface
 +++ a/include/linux/nodemask.h

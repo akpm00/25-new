@@ -43,6 +43,9 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mmzone.h |    2 +
+ mm/vmscan.c            |   69 ++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 67 insertions(+), 4 deletions(-)
 
 --- a/include/linux/mmzone.h~mm-multi-gen-lru-thrashing-prevention
 +++ a/include/linux/mmzone.h

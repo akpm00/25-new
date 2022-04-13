@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-fix-possible-do_pages_stat_array-racing-with-memory-offline
 +++ a/mm/migrate.c
-@@ -1810,13 +1810,18 @@ static void do_pages_stat_array(struct m
+@@ -1808,13 +1808,18 @@ static void do_pages_stat_array(struct m
  			goto set_status;
  
  		/* FOLL_DUMP to ignore special (like zero) pages */

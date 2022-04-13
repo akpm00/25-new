@@ -50,9 +50,11 @@ The removal was the fastest (by a wide margin with 4k reads). This patch
 removes set_iounmap_nonlazy().
 
 Link: https://lkml.kernel.org/r/52f819991051f9b865e9ce25605509bfdbacadcd.1649277321.git.osandov@fb.com
+Fixes: 690467c81b1a  ("mm/vmalloc: Move draining areas out of caller context")
 Signed-off-by: Omar Sandoval <osandov@fb.com>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>
+Acked-by: Chris Down <chris@chrisdown.name>
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Cc: Baoquan He <bhe@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

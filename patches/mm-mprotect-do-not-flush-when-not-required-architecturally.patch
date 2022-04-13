@@ -163,7 +163,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline void __native_tlb_flush_global(unsigned long cr4)
 --- a/include/asm-generic/tlb.h~mm-mprotect-do-not-flush-when-not-required-architecturally
 +++ a/include/asm-generic/tlb.h
-@@ -654,6 +654,20 @@ static inline void tlb_flush_p4d_range(s
+@@ -658,6 +658,20 @@ static inline void tlb_flush_p4d_range(s
  	} while (0)
  #endif
  

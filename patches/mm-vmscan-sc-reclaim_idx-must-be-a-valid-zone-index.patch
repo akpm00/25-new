@@ -11,6 +11,8 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/vmscan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/mm/vmscan.c~mm-vmscan-sc-reclaim_idx-must-be-a-valid-zone-index
 +++ a/mm/vmscan.c

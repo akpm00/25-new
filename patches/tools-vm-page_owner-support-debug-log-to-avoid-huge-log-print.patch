@@ -18,6 +18,8 @@ Cc: Sean Anderson <seanga2@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ tools/vm/page_owner_sort.c |   28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
 --- a/tools/vm/page_owner_sort.c~tools-vm-page_owner-support-debug-log-to-avoid-huge-log-print
 +++ a/tools/vm/page_owner_sort.c

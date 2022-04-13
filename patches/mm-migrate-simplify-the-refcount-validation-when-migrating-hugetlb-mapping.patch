@@ -19,6 +19,8 @@ Cc: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/migrate.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
 --- a/mm/migrate.c~mm-migrate-simplify-the-refcount-validation-when-migrating-hugetlb-mapping
 +++ a/mm/migrate.c

@@ -17,7 +17,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_alloc-simplify-update-of-pgdat-in-wake_all_kswapds
 +++ a/mm/page_alloc.c
-@@ -4678,9 +4678,10 @@ static void wake_all_kswapds(unsigned in
+@@ -4687,9 +4687,10 @@ static void wake_all_kswapds(unsigned in
  
  	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
  					ac->nodemask) {

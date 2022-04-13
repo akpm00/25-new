@@ -25,6 +25,10 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ Documentation/admin-guide/mm/index.rst        |    1 
+ Documentation/admin-guide/mm/multigen_lru.rst |  152 ++++++++++++++++
+ mm/Kconfig                                    |    3 
+ 3 files changed, 155 insertions(+), 1 deletion(-)
 
 --- a/Documentation/admin-guide/mm/index.rst~mm-multi-gen-lru-admin-guide
 +++ a/Documentation/admin-guide/mm/index.rst

@@ -26,6 +26,8 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/vmscan.c |  198 ++++++++++++++++++++++++++------------------------
+ 1 file changed, 104 insertions(+), 94 deletions(-)
 
 --- a/mm/vmscan.c~mm-vmscanc-refactor-shrink_node
 +++ a/mm/vmscan.c

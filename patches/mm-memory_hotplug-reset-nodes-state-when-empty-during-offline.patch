@@ -144,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/page_alloc.c~mm-memory_hotplug-reset-nodes-state-when-empty-during-offline
 +++ a/mm/page_alloc.c
-@@ -6347,6 +6347,13 @@ static DEFINE_PER_CPU(struct per_cpu_pag
+@@ -6355,6 +6355,13 @@ static DEFINE_PER_CPU(struct per_cpu_pag
  static DEFINE_PER_CPU(struct per_cpu_zonestat, boot_zonestats);
  DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
  
@@ -158,7 +158,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void __build_all_zonelists(void *data)
  {
  	int nid;
-@@ -7455,7 +7462,7 @@ static void __meminit pgdat_init_interna
+@@ -7463,7 +7470,7 @@ static void __meminit pgdat_init_interna
  	lruvec_init(&pgdat->__lruvec);
  }
  
@@ -167,7 +167,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  							unsigned long remaining_pages)
  {
  	atomic_long_set(&zone->managed_pages, remaining_pages);
-@@ -7468,46 +7475,6 @@ static void __meminit zone_init_internal
+@@ -7476,46 +7483,6 @@ static void __meminit zone_init_internal
  }
  
  /*

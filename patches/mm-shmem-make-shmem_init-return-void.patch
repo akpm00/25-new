@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  					loff_t size, unsigned long flags);
 --- a/mm/shmem.c~mm-shmem-make-shmem_init-return-void
 +++ a/mm/shmem.c
-@@ -3880,7 +3880,7 @@ static struct file_system_type shmem_fs_
+@@ -3889,7 +3889,7 @@ static struct file_system_type shmem_fs_
  	.fs_flags	= FS_USERNS_MOUNT,
  };
  
@@ -37,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	int error;
  
-@@ -3905,14 +3905,13 @@ int __init shmem_init(void)
+@@ -3914,14 +3914,13 @@ int __init shmem_init(void)
  	else
  		shmem_huge = SHMEM_HUGE_NEVER; /* just in case it was patched */
  #endif
@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) && defined(CONFIG_SYSFS)
-@@ -3990,14 +3989,14 @@ static struct file_system_type shmem_fs_
+@@ -3999,14 +3998,14 @@ static struct file_system_type shmem_fs_
  	.fs_flags	= FS_USERNS_MOUNT,
  };
  

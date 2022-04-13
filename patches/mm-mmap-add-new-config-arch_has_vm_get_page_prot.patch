@@ -44,7 +44,7 @@ Link: https://lkml.kernel.org/r/20220407103251.1209606-1-anshuman.khandual@arm.c
 Link: https://lkml.kernel.org/r/20220407103251.1209606-2-anshuman.khandual@arm.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Suggested-by: Christoph Hellwig <hch@infradead.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>

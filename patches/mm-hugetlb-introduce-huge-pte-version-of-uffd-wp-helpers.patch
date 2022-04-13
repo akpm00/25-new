@@ -30,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/arch/s390/include/asm/hugetlb.h~mm-hugetlb-introduce-huge-pte-version-of-uffd-wp-helpers
 +++ a/arch/s390/include/asm/hugetlb.h
-@@ -115,6 +115,21 @@ static inline pte_t huge_pte_modify(pte_
+@@ -120,6 +120,21 @@ static inline pte_t huge_pte_modify(pte_
  	return pte_modify(pte, newprot);
  }
  

@@ -4,6 +4,8 @@ Subject: linux-next-rejects
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/x86/mm/Makefile |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 --- a/arch/x86/mm/Makefile~linux-next-rejects
 +++ a/arch/x86/mm/Makefile

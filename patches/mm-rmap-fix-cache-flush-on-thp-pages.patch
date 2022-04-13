@@ -43,7 +43,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/rmap.c~mm-rmap-fix-cache-flush-on-thp-pages
 +++ a/mm/rmap.c
-@@ -970,7 +970,8 @@ static bool page_mkclean_one(struct foli
+@@ -977,7 +977,8 @@ static bool page_mkclean_one(struct foli
  			if (!pmd_dirty(*pmd) && !pmd_write(*pmd))
  				continue;
  

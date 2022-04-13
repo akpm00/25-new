@@ -24,6 +24,8 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ lib/irq_poll.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 --- a/lib/irq_poll.c~lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead
 +++ a/lib/irq_poll.c

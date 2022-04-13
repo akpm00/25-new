@@ -106,6 +106,7 @@ Link: https://lkml.kernel.org/r/20220329160440.193848-2-david@redhat.com
 Fixes: ca827d55ebaa ("mm, swap: Add infrastructure for saving page metadata on swap")
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Shakeel Butt <shakeelb@google.com>
@@ -116,7 +117,6 @@ Cc: Mike Rapoport <rppt@linux.ibm.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Jann Horn <jannh@google.com>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Nadav Amit <namit@vmware.com>

@@ -31,7 +31,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/arch/arm64/Kconfig~mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap
 +++ a/arch/arm64/Kconfig
-@@ -96,7 +96,7 @@ config ARM64
+@@ -97,7 +97,7 @@ config ARM64
  	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
  	select ARCH_WANT_FRAME_POINTERS
  	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)

@@ -25,6 +25,12 @@ rebuilt.
 Use populated_zone() when building a zonelist as it has been done before
 that commit.
 
+There was a report that QubesOS (based on Xen) is hitting this problem.
+Xen has switched to use the zone device functionality in kernel 5.9
+and QubesOS wants to use memory hotplugging for guests in order to be
+able to start a guest with minimal memory and expand it as needed. 
+This was the report leading to the patch.
+
 Link: https://lkml.kernel.org/r/20220407120637.9035-1-jgross@suse.com
 Fixes: 6aa303defb74 ("mm, vmscan: only allocate and reclaim from zones with pages managed by the buddy allocator")
 Signed-off-by: Juergen Gross <jgross@suse.com>
@@ -32,6 +38,8 @@ Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Reviewed-by: Wei Yang <richard.weiyang@gmail.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

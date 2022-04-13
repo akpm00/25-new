@@ -47,7 +47,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mmap.c~mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged
 +++ a/mm/mmap.c
-@@ -1856,6 +1856,12 @@ unsigned long mmap_region(struct file *f
+@@ -1850,6 +1850,12 @@ unsigned long mmap_region(struct file *f
  	}
  
  	vma_link(mm, vma, prev, rb_link, rb_parent);
@@ -78,7 +78,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -4130,8 +4128,6 @@ int shmem_zero_setup(struct vm_area_stru
+@@ -4139,8 +4137,6 @@ int shmem_zero_setup(struct vm_area_stru
  	vma->vm_file = file;
  	vma->vm_ops = &shmem_vm_ops;
  

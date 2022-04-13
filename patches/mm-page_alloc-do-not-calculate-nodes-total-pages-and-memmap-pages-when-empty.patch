@@ -29,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_alloc-do-not-calculate-nodes-total-pages-and-memmap-pages-when-empty
 +++ a/mm/page_alloc.c
-@@ -7277,6 +7277,10 @@ static void __init calculate_node_totalp
+@@ -7285,6 +7285,10 @@ static void __init calculate_node_totalp
  	unsigned long realtotalpages = 0, totalpages = 0;
  	enum zone_type i;
  
@@ -40,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	for (i = 0; i < MAX_NR_ZONES; i++) {
  		struct zone *zone = pgdat->node_zones + i;
  		unsigned long zone_start_pfn, zone_end_pfn;
-@@ -7309,6 +7313,7 @@ static void __init calculate_node_totalp
+@@ -7317,6 +7321,7 @@ static void __init calculate_node_totalp
  		realtotalpages += real_size;
  	}
  
@@ -48,7 +48,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pgdat->node_spanned_pages = totalpages;
  	pgdat->node_present_pages = realtotalpages;
  	pr_debug("On node %d totalpages: %lu\n", pgdat->node_id, realtotalpages);
-@@ -7526,6 +7531,10 @@ static void __init free_area_init_core(s
+@@ -7534,6 +7539,10 @@ static void __init free_area_init_core(s
  		size = zone->spanned_pages;
  		freesize = zone->present_pages;
  
@@ -59,7 +59,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/*
  		 * Adjust freesize so that it accounts for how much memory
  		 * is used by this zone for memmap. This affects the watermark
-@@ -7561,6 +7570,7 @@ static void __init free_area_init_core(s
+@@ -7569,6 +7578,7 @@ static void __init free_area_init_core(s
  		 * when the bootmem allocator frees pages into the buddy system.
  		 * And all highmem pages will be managed by the buddy system.
  		 */

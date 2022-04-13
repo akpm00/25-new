@@ -21,6 +21,8 @@ Cc: Ismael Luceno <ismael@iodev.co.uk>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ kernel/taskstats.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/kernel/taskstats.c~kernel-make-taskstats-available-from-all-net-namespaces
 +++ a/kernel/taskstats.c

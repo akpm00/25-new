@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-use-helper-macro-min-in-do_pages_stat
 +++ a/mm/migrate.c
-@@ -1856,16 +1856,12 @@ static int do_pages_stat(struct mm_struc
+@@ -1854,16 +1854,12 @@ static int do_pages_stat(struct mm_struc
  			 const void __user * __user *pages,
  			 int __user *status)
  {

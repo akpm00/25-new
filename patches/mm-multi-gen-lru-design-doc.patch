@@ -25,6 +25,9 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ Documentation/vm/index.rst        |    1 
+ Documentation/vm/multigen_lru.rst |  160 ++++++++++++++++++++++++++++
+ 2 files changed, 161 insertions(+)
 
 --- a/Documentation/vm/index.rst~mm-multi-gen-lru-design-doc
 +++ a/Documentation/vm/index.rst

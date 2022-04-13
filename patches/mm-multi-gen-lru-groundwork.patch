@@ -86,6 +86,23 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/fuse/dev.c                     |    3 
+ include/linux/mm.h                |    2 
+ include/linux/mm_inline.h         |  176 ++++++++++++++++++++++++++++
+ include/linux/mmzone.h            |   94 ++++++++++++++
+ include/linux/page-flags-layout.h |   11 -
+ include/linux/page-flags.h        |    4 
+ include/linux/sched.h             |    4 
+ kernel/bounds.c                   |    7 +
+ mm/Kconfig                        |    8 +
+ mm/huge_memory.c                  |    3 
+ mm/memcontrol.c                   |    2 
+ mm/memory.c                       |   25 +++
+ mm/mm_init.c                      |    6 
+ mm/mmzone.c                       |    2 
+ mm/swap.c                         |    9 +
+ mm/vmscan.c                       |   75 +++++++++++
+ 16 files changed, 418 insertions(+), 13 deletions(-)
 
 --- a/fs/fuse/dev.c~mm-multi-gen-lru-groundwork
 +++ a/fs/fuse/dev.c

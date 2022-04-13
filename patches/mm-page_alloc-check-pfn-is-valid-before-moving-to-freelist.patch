@@ -89,6 +89,7 @@ checking if pfn is valid or not.
 Link: https://lkml.kernel.org/r/fb3c8c008994b2ed96f74b6b9698ff998b689bd2.1649794059.git.quic_sudaraja@quicinc.com
 Signed-off-by: Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
 Fixes: 859a85ddf90e7140 ("mm: remove pfn_valid_within() and CONFIG_HOLES_IN_ZONE")
+Acked-by: David Rientjes <rientjes@google.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
 Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Suren Baghdasaryan <surenb@google.com>
@@ -96,6 +97,8 @@ Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/page_alloc.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
 --- a/mm/page_alloc.c~mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist
 +++ a/mm/page_alloc.c

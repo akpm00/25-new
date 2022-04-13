@@ -19,6 +19,7 @@ Link: https://lkml.kernel.org/r/20220329160440.193848-11-david@redhat.com
 Reported-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Rientjes <rientjes@google.com>
@@ -43,7 +44,6 @@ Cc: Peter Xu <peterx@redhat.com>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: Roman Gushchin <guro@fb.com>
 Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/huge_memory.c~mm-huge_memory-remove-outdated-vm_warn_on_once_page-from-unmap_page
 +++ a/mm/huge_memory.c
-@@ -2241,8 +2241,6 @@ static void unmap_page(struct page *page
+@@ -2240,8 +2240,6 @@ static void unmap_page(struct page *page
  		try_to_migrate(folio, ttu_flags);
  	else
  		try_to_unmap(folio, ttu_flags | TTU_IGNORE_MLOCK);

@@ -99,6 +99,8 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/vmscan.c |   45 +++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 4 deletions(-)
 
 --- a/mm/vmscan.c~mm-multi-gen-lru-optimize-multiple-memcgs
 +++ a/mm/vmscan.c

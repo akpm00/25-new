@@ -9,6 +9,7 @@ longer necessary.
 Link: https://lkml.kernel.org/r/20220408135323.1559401-4-naoya.horiguchi@linux.dev
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Yang Shi <shy828301@gmail.com>
@@ -51,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	[MF_MSG_UNKNOWN]		= "unknown page",
  };
  
-@@ -1603,16 +1602,6 @@ retry:
+@@ -1606,16 +1605,6 @@ retry:
  		return res == MF_RECOVERED ? 0 : -EBUSY;
  	}
  

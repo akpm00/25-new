@@ -20,6 +20,7 @@ Fixes: d3fb45f370d9 ("mm, kfence: insert KFENCE hooks for SLAB")
 Signed-off-by: Marco Elver <elver@google.com>
 Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 Reported-by: kernel test robot <oliver.sang@intel.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>	[slab]
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

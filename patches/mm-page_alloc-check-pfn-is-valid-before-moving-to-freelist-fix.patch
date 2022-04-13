@@ -11,6 +11,8 @@ Cc: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/page_alloc.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
 --- a/mm/page_alloc.c~mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix
 +++ a/mm/page_alloc.c

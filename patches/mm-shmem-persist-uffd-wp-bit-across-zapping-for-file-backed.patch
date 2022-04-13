@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed
 +++ a/include/linux/mm.h
-@@ -3431,4 +3431,14 @@ madvise_set_anon_name(struct mm_struct *
+@@ -3430,4 +3430,14 @@ madvise_set_anon_name(struct mm_struct *
  }
  #endif
  

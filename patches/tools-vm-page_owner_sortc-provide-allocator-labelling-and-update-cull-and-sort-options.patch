@@ -69,6 +69,9 @@ Cc: Yuhong Feng <yuhongf@szu.edu.cn>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ Documentation/vm/page_owner.rst |    3 
+ tools/vm/page_owner_sort.c      |  112 +++++++++++++++++++++++++-----
+ 2 files changed, 99 insertions(+), 16 deletions(-)
 
 --- a/Documentation/vm/page_owner.rst~tools-vm-page_owner_sortc-provide-allocator-labelling-and-update-cull-and-sort-options
 +++ a/Documentation/vm/page_owner.rst
