@@ -1,0 +1,34 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: revert "fs/binfmt_elf: fix PT_LOAD p_align values for loaders"
+
+925346c129da11 ("fs/binfmt_elf: fix PT_LOAD p_align values for loaders")
+is an attempt to fix regressions due to 9630f0d60fec5f ("fs/binfmt_elf:
+use PT_LOAD p_align values for static PIE").
+
+But regressionss continue to be reported:
+
+https://lore.kernel.org/lkml/cb5b81bd-9882-e5dc-cd22-54bdbaaefbbc@leemhuis.info/
+https://bugzilla.kernel.org/show_bug.cgi?id=215720
+https://lkml.kernel.org/r/b685f3d0-da34-531d-1aa9-479accd3e21b@leemhuis.info
+
+This patch reverts the fix, so the original can also be reverted.
+
+Fixes: 925346c129da11 ("fs/binfmt_elf: fix PT_LOAD p_align values for loaders")
+Cc: H.J. Lu <hjl.tools@gmail.com>
+Cc: Chris Kennelly <ckennelly@google.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Fangrui Song <maskray@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: <stable@vger.kernel.org>

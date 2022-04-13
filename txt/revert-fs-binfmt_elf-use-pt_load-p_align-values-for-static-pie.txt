@@ -1,0 +1,32 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: revert "fs/binfmt_elf: use PT_LOAD p_align values for static PIE"
+
+Despite Mike's attempted fix (925346c129da117122), regressions reports
+continue:
+
+https://lore.kernel.org/lkml/cb5b81bd-9882-e5dc-cd22-54bdbaaefbbc@leemhuis.info/
+https://bugzilla.kernel.org/show_bug.cgi?id=215720
+https://lkml.kernel.org/r/b685f3d0-da34-531d-1aa9-479accd3e21b@leemhuis.info
+
+So revert this patch.
+
+Fixes: 9630f0d60fec ("fs/binfmt_elf: use PT_LOAD p_align values for static PIE")
+
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Chris Kennelly <ckennelly@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Fangrui Song <maskray@google.com>
+Cc: H.J. Lu <hjl.tools@gmail.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: <stable@vger.kernel.org>

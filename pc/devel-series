@@ -90,6 +90,10 @@ mm-compaction-fix-compiler-warning-when-config_compaction=n.patch
 #mm/hugetlb
 hugetlb-do-not-demote-poisoned-hugetlb-pages.patch
 #
+#binfmt
+revert-fs-binfmt_elf-fix-pt_load-p_align-values-for-loaders.patch
+revert-fs-binfmt_elf-use-pt_load-p_align-values-for-static-pie.patch
+#
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
 #proc-kpageflags-do-not-use-uninitialized-struct-pages.patch: Dan issues
@@ -552,6 +556,8 @@ ia64-replace-comments-with-c99-initializers.patch
 #NEXT_PATCHES_START kbuild
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START scripts
+scripts-decode_stacktracesh-support-old-bash-version.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kernfs
 #NEXT_PATCHES_END
