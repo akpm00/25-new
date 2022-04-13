@@ -1,0 +1,39 @@
+From: Peng Liu <liupeng256@huawei.com>
+Subject: hugetlb: clean up hugetlb_cma_reserve
+
+Use more generic functions to deal with issues related to online nodes. 
+The changes will make the code simplified.
+
+Link: https://lkml.kernel.org/r/20220413032915.251254-5-liupeng256@huawei.com
+Signed-off-by: Peng Liu <liupeng256@huawei.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Liu Yuntao <liuyuntao10@huawei.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/hugetlb.c~hugetlb-clean-up-hugetlb_cma_reserve
++++ a/mm/hugetlb.c
+@@ -7026,7 +7026,7 @@ void __init hugetlb_cma_reserve(int orde
+ 		if (hugetlb_cma_size_in_node[nid] == 0)
+ 			continue;
+ 
+-		if (!node_state(nid, N_ONLINE)) {
++		if (!node_online(nid)) {
+ 			pr_warn("hugetlb_cma: invalid node %d specified\n", nid);
+ 			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
+ 			hugetlb_cma_size_in_node[nid] = 0;
+@@ -7065,7 +7065,7 @@ void __init hugetlb_cma_reserve(int orde
+ 	}
+ 
+ 	reserved = 0;
+-	for_each_node_state(nid, N_ONLINE) {
++	for_each_online_node(nid) {
+ 		int res;
+ 		char name[CMA_MAX_NAME];
+ 
+_
