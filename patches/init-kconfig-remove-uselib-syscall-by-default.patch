@@ -1,0 +1,28 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: init/Kconfig: remove USELIB syscall by default
+
+The uselib syscall has been long deprecated.  There's no need to keep this
+enabled by default under X86_32.
+
+Link: https://lkml.kernel.org/r/20220412212519.4113845-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/init/Kconfig~init-kconfig-remove-uselib-syscall-by-default
++++ a/init/Kconfig
+@@ -435,8 +435,8 @@ config CROSS_MEMORY_ATTACH
+ 	  See the man page for more details.
+ 
+ config USELIB
+-	bool "uselib syscall"
+-	def_bool ALPHA || M68K || SPARC || X86_32 || IA32_EMULATION
++	bool "uselib syscall (for libc5 and earlier)"
++	default ALPHA || M68K || SPARC
+ 	help
+ 	  This option enables the uselib syscall, a system call used in the
+ 	  dynamic linker from libc5 and earlier.  glibc does not use this
+_

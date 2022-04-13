@@ -23,8 +23,6 @@ Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- tools/testing/selftests/vm/userfaultfd.c |   11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
 
 --- a/tools/testing/selftests/vm/userfaultfd.c~userfaultfd-selftests-use-swap-instead-of-open-coding-it
 +++ a/tools/testing/selftests/vm/userfaultfd.c

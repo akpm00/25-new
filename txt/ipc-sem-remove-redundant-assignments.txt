@@ -1,0 +1,13 @@
+From: Michal Orzel <michalorzel.eng@gmail.com>
+Subject: ipc/sem: Remove redundant assignments
+
+Get rid of redundant assignments which end up in values not being
+read either because they are overwritten or the function ends.
+
+Reported by clang-tidy [deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220409101933.207157-1-michalorzel.eng@gmail.com
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>

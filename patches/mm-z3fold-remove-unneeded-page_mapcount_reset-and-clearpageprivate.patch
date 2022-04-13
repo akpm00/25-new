@@ -11,8 +11,6 @@ Reviewed-by: Vitaly Wool <vitaly.wool@konsulko.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/z3fold.c |    3 ---
- 1 file changed, 3 deletions(-)
 
 --- a/mm/z3fold.c~mm-z3fold-remove-unneeded-page_mapcount_reset-and-clearpageprivate
 +++ a/mm/z3fold.c

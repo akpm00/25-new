@@ -38,10 +38,6 @@ Cc: Zeal Robot <zealci@zte.com.cn>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/proc/base.c           |   22 ++++++++++++++++++++++
- include/linux/mm_types.h |    8 ++++++++
- mm/ksm.c                 |   11 +++++++++++
- 3 files changed, 41 insertions(+)
 
 --- a/fs/proc/base.c~ksm-count-ksm-merging-pages-for-each-process
 +++ a/fs/proc/base.c
@@ -90,11 +86,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int proc_tid_base_readdir(struct file *file, struct dir_context *ctx)
 --- a/include/linux/mm_types.h~ksm-count-ksm-merging-pages-for-each-process
 +++ a/include/linux/mm_types.h
-@@ -649,6 +649,14 @@ struct mm_struct {
- #ifdef CONFIG_IOMMU_SVA
- 		u32 pasid;
- #endif
-+
+@@ -668,6 +668,13 @@ struct mm_struct {
+ 			nodemask_t nodes;
+ 		} lru_gen;
+ #endif /* CONFIG_LRU_GEN */
 +#ifdef CONFIG_KSM
 +		/*
 +		 * Represet how many pages of this process are

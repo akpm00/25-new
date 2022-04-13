@@ -9,8 +9,6 @@ Signed-off-by: Michael Krufky <mkrufky@m1k.net>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/Makefile~mm
 +++ a/Makefile
@@ -18,8 +16,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  VERSION = 5
  PATCHLEVEL = 18
  SUBLEVEL = 0
--EXTRAVERSION = -rc1
-+EXTRAVERSION = -rc1-mm1
+-EXTRAVERSION = -rc2
++EXTRAVERSION = -rc2-mm1
  NAME = Superb Owl
  
  # *DOCUMENTATION*

@@ -12,7 +12,8 @@ decrease the penalty since:
   * in nodes with the same distance, the first one would be picked up
 
 So it is fine to increase same penalty when we get the first node in the
-same distance group.
+same distance group.  Since we just increase a constance of 1 to node
+penalty, it is not necessary to multiply MAX_NODE_LOAD for preference.
 
 Link: https://lkml.kernel.org/r/20220123013537.20491-1-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
@@ -23,12 +24,10 @@ Cc: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/page_alloc.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
 --- a/mm/page_alloc.c~mm-page_alloc-add-same-penalty-is-enough-to-get-round-robin-order
 +++ a/mm/page_alloc.c
-@@ -6286,13 +6286,12 @@ static void build_thisnode_zonelists(pg_
+@@ -6295,13 +6295,12 @@ static void build_thisnode_zonelists(pg_
  static void build_zonelists(pg_data_t *pgdat)
  {
  	static int node_order[MAX_NUMNODES];
@@ -43,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	prev_node = local_node;
  
  	memset(node_order, 0, sizeof(node_order));
-@@ -6304,11 +6303,10 @@ static void build_zonelists(pg_data_t *p
+@@ -6313,11 +6312,10 @@ static void build_zonelists(pg_data_t *p
  		 */
  		if (node_distance(local_node, node) !=
  		    node_distance(local_node, prev_node))

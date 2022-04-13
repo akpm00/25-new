@@ -1,0 +1,10 @@
+From: Kees Cook <keescook@chromium.org>
+Subject: init/Kconfig: remove USELIB syscall by default
+
+The uselib syscall has been long deprecated.  There's no need to keep this
+enabled by default under X86_32.
+
+Link: https://lkml.kernel.org/r/20220412212519.4113845-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>

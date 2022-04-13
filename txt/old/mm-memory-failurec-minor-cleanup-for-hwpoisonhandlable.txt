@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/memory-failure.c: minor cleanup for HWPoisonHandlable
+
+The local variable movable can be removed by returning true directly. 
+Also fix typo 'mirgate'.  No functional change intended.
+
+Link: https://lkml.kernel.org/r/20220407130352.15618-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
