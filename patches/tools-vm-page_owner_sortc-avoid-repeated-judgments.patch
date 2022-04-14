@@ -1,0 +1,40 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: tools/vm/page_owner_sort.c: avoid repeated judgments
+
+I noticed a detail that needs to be adjusted.  When judging whether a page
+is allocated by vmalloc, the value of the variable "tmp" was repeatedly
+judged, so the code was adjusted.
+
+This work is coauthored by Yinan Zhang, Jiajian Ye, Shenghong Han, Chongxi
+Zhao, Yuhong Feng and Yongqiang Liu.
+
+Link: https://lkml.kernel.org/r/20220414042744.13896-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Sean Anderson <seanga2@gmail.com>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/tools/vm/page_owner_sort.c~tools-vm-page_owner_sortc-avoid-repeated-judgments
++++ a/tools/vm/page_owner_sort.c
+@@ -444,10 +444,8 @@ static int get_allocator(const char *buf
+ 			tmp--;
+ 		first_line = ++tmp;
+ 		tmp = strstr(tmp, "alloc_pages");
+-		if (tmp) {
+-			if (tmp && first_line <= tmp && tmp < second_line)
+-				allocator |= ALLOCATOR_VMALLOC;
+-		}
++		if (tmp && first_line <= tmp && tmp < second_line)
++			allocator |= ALLOCATOR_VMALLOC;
+ 	}
+ 	if (allocator == 0)
+ 		allocator = ALLOCATOR_OTHERS;
+_

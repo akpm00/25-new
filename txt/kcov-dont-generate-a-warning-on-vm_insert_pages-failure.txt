@@ -1,0 +1,16 @@
+From: Aleksandr Nogikh <nogikh@google.com>
+Subject: kcov: don't generate a warning on vm_insert_page()'s failure
+
+vm_insert_page()'s failure is not an unexpected condition, so don't do
+WARN_ONCE() in such a case.
+
+Instead, print a kernel message and just return an error code.
+
+Link: https://lkml.kernel.org/r/20220401182512.249282-1-nogikh@google.com
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Taras Madan <tarasmadan@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>

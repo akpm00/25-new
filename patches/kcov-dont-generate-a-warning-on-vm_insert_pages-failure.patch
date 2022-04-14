@@ -1,0 +1,37 @@
+From: Aleksandr Nogikh <nogikh@google.com>
+Subject: kcov: don't generate a warning on vm_insert_page()'s failure
+
+vm_insert_page()'s failure is not an unexpected condition, so don't do
+WARN_ONCE() in such a case.
+
+Instead, print a kernel message and just return an error code.
+
+Link: https://lkml.kernel.org/r/20220401182512.249282-1-nogikh@google.com
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Taras Madan <tarasmadan@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/kernel/kcov.c~kcov-dont-generate-a-warning-on-vm_insert_pages-failure
++++ a/kernel/kcov.c
+@@ -475,8 +475,11 @@ static int kcov_mmap(struct file *filep,
+ 	vma->vm_flags |= VM_DONTEXPAND;
+ 	for (off = 0; off < size; off += PAGE_SIZE) {
+ 		page = vmalloc_to_page(kcov->area + off);
+-		if (vm_insert_page(vma, vma->vm_start + off, page))
+-			WARN_ONCE(1, "vm_insert_page() failed");
++		res = vm_insert_page(vma, vma->vm_start + off, page);
++		if (res) {
++			pr_warn_once("kcov: vm_insert_page() failed\n");
++			return res;
++		}
+ 	}
+ 	return 0;
+ exit:
+_

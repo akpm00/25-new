@@ -81,6 +81,14 @@ selftest-vm-add-skip-support-to-mremap_test.patch
 #oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch: acks?
 oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
 #
+#mm/kasan
+#kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch: acks?
+kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
+#
+#kcov
+#kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch; -stable?
+kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
+#
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
 #proc-kpageflags-do-not-use-uninitialized-struct-pages.patch: Dan issues
@@ -115,8 +123,14 @@ tools-vm-page_owner-support-debug-log-to-avoid-huge-log-print.patch
 #
 tools-vm-page_owner_sortc-provide-allocator-labelling-and-update-cull-and-sort-options.patch
 #
+tools-vm-page_owner_sortc-avoid-repeated-judgments.patch
+#
+#
+#
+#
 #mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch.patch: more info
 mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch.patch
+#
 #
 #mm/folios
 #mm/pagecache

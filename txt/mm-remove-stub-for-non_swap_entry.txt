@@ -32,5 +32,5 @@ Alistair:
 
 Link: https://lkml.kernel.org/r/20220413191147.66645-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
-Cc: Alistair Popple <apopple@nvidia.com>
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 Cc: Hugh Dickins <hughd@google.com>
