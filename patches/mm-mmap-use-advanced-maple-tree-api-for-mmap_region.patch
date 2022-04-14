@@ -1,5 +1,8 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap: Use advanced maple tree API for mmap_region()
+To: "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v7 26/70] mm/mmap: Use advanced maple tree API for mmap_region()
+Date: Mon, 4 Apr 2022 14:35:43 +0000
+x-mailer: git-send-email 2.34.1
 
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 
@@ -13,15 +16,16 @@ Add vma_expand() to expand a VMA if possible by doing the necessary
 hugepage check, uprobe_munmap of files, dcache flush, modifications then
 undoing the detaches, etc.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-27-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
+ mm/mmap.c | 234 +++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 187 insertions(+), 47 deletions(-)
 
-
---- a/mm/mmap.c~mm-mmap-use-advanced-maple-tree-api-for-mmap_region
-+++ a/mm/mmap.c
-@@ -519,28 +519,6 @@ static inline struct vm_area_struct *__v
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 1e6a72147480..be5ecb515d1e 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -511,28 +511,6 @@ static inline struct vm_area_struct *__vma_next(struct mm_struct *mm,
  	return vma->vm_next;
  }
  
@@ -50,10 +54,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static unsigned long count_vma_pages_range(struct mm_struct *mm,
  		unsigned long addr, unsigned long end)
  {
-@@ -643,6 +621,117 @@ static void __insert_vm_struct(struct mm
+@@ -634,6 +612,117 @@ static void __insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	mm->map_count++;
  }
  
- /*
++/*
 + * vma_expand - Expand an existing VMA
 + *
 + * @mas: The maple state
@@ -164,11 +169,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	return 0;
 +}
 +
-+/*
+ /*
   * We cannot adjust vm_start, vm_end, vm_pgoff fields of a vma that
   * is already present in an i_mmap tree without adjusting the tree.
-  * The following helper function should be used when such adjustments
-@@ -1631,9 +1720,15 @@ unsigned long mmap_region(struct file *f
+@@ -1623,9 +1712,15 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  		struct list_head *uf)
  {
  	struct mm_struct *mm = current->mm;
@@ -186,7 +190,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/* Check against address space limit. */
  	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
-@@ -1643,16 +1738,17 @@ unsigned long mmap_region(struct file *f
+@@ -1635,16 +1730,17 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  		 * MAP_FIXED may remove pages of mappings that intersects with
  		 * requested mapping. Account for the pages it would unmap.
  		 */
@@ -207,7 +211,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Private writable mapping: check memory availability
  	 */
-@@ -1663,14 +1759,43 @@ unsigned long mmap_region(struct file *f
+@@ -1655,14 +1751,43 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  		vm_flags |= VM_ACCOUNT;
  	}
  
@@ -243,8 +247,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		vma = prev;
 +		vm_pgoff = prev->vm_pgoff;
 +	}
-+
  
++
 +	/* Actually expand, if possible */
 +	if (vma &&
 +	    !vma_expand(&mas, vma, merge_start, merge_end, vm_pgoff, next)) {
@@ -258,7 +262,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Determine the object being mapped and call the appropriate
  	 * specific mapper. the address has already been validated, but
-@@ -1683,7 +1808,7 @@ unsigned long mmap_region(struct file *f
+@@ -1675,7 +1800,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  	}
  
  	vma->vm_start = addr;
@@ -267,7 +271,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vma->vm_flags = vm_flags;
  	vma->vm_page_prot = vm_get_page_prot(vm_flags);
  	vma->vm_pgoff = pgoff;
-@@ -1704,28 +1829,30 @@ unsigned long mmap_region(struct file *f
+@@ -1696,28 +1821,30 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  		 *
  		 * Answer: Yes, several device drivers can do it in their
  		 *         f_op->mmap method. -DaveM
@@ -304,7 +308,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				vm_flags = vma->vm_flags;
  				goto unmap_writable;
  			}
-@@ -1749,7 +1876,21 @@ unsigned long mmap_region(struct file *f
+@@ -1741,13 +1868,28 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  			goto free_vma;
  	}
  
@@ -324,10 +328,18 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		flush_dcache_mmap_unlock(vma->vm_file->f_mapping);
 +		i_mmap_unlock_write(vma->vm_file->f_mapping);
 +	}
++
+ 	/* Once vma denies write, undo our temporary denial count */
+ unmap_writable:
+ 	if (file && vm_flags & VM_SHARED)
+ 		mapping_unmap_writable(file->f_mapping);
+ 	file = vma->vm_file;
+-out:
++expanded:
+ 	perf_event_mmap(vma);
  
- 	/*
- 	 * vma_merge() calls khugepaged_enter_vma() either, the below
-@@ -1788,6 +1929,7 @@ out:
+ 	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
+@@ -1774,6 +1916,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  
  	vma_set_page_prot(vma);
  
@@ -335,7 +347,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return addr;
  
  unmap_and_free_vma:
-@@ -1804,6 +1946,7 @@ free_vma:
+@@ -1790,6 +1933,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  unacct_error:
  	if (charged)
  		vm_unacct_memory(charged);
@@ -343,7 +355,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return error;
  }
  
-@@ -2591,10 +2734,6 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2584,10 +2728,6 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
  	prev = vma->vm_prev;
  	/* we have start < vma->vm_end  */
  
@@ -354,4 +366,5 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * If we need to split any vma, do it now to save pain later.
  	 *
-_
+-- 
+2.34.1

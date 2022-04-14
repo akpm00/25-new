@@ -1,5 +1,8 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Remove rb tree.
+To: "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH v7 19/70] mm: Remove rb tree.
+Date: Mon, 4 Apr 2022 14:35:40 +0000
+x-mailer: git-send-email 2.34.1
 
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 
@@ -9,14 +12,23 @@ tracking.
 Drop validate_mm() calls in expand_upwards() and expand_downwards() as
 the lock is not held.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-20-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
+ arch/x86/kernel/tboot.c    |   1 -
+ drivers/firmware/efi/efi.c |   1 -
+ include/linux/mm.h         |   2 -
+ include/linux/mm_types.h   |  14 --
+ kernel/fork.c              |   8 -
+ mm/init-mm.c               |   2 -
+ mm/mmap.c                  | 495 ++++++++-----------------------------
+ mm/nommu.c                 |  87 ++-----
+ mm/util.c                  |  10 +-
+ 9 files changed, 134 insertions(+), 486 deletions(-)
 
-
---- a/arch/x86/kernel/tboot.c~mm-remove-rb-tree
-+++ a/arch/x86/kernel/tboot.c
+diff --git a/arch/x86/kernel/tboot.c b/arch/x86/kernel/tboot.c
+index 859e8d2ea070..a8e3130890ea 100644
+--- a/arch/x86/kernel/tboot.c
++++ b/arch/x86/kernel/tboot.c
 @@ -97,7 +97,6 @@ void __init tboot_probe(void)
  
  static pgd_t *tboot_pg_dir;
@@ -25,9 +37,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.mm_mt          = MTREE_INIT_EXT(mm_mt, MM_MT_FLAGS, tboot_mm.mmap_lock),
  	.pgd            = swapper_pg_dir,
  	.mm_users       = ATOMIC_INIT(2),
---- a/drivers/firmware/efi/efi.c~mm-remove-rb-tree
-+++ a/drivers/firmware/efi/efi.c
-@@ -54,7 +54,6 @@ static unsigned long __initdata mem_rese
+diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+index 92a765d8d3b6..f18c256bbf89 100644
+--- a/drivers/firmware/efi/efi.c
++++ b/drivers/firmware/efi/efi.c
+@@ -54,7 +54,6 @@ static unsigned long __initdata mem_reserve = EFI_INVALID_TABLE_ADDR;
  static unsigned long __initdata rt_prop = EFI_INVALID_TABLE_ADDR;
  
  struct mm_struct efi_mm = {
@@ -35,9 +49,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.mm_mt			= MTREE_INIT_EXT(mm_mt, MM_MT_FLAGS, efi_mm.mmap_lock),
  	.mm_users		= ATOMIC_INIT(2),
  	.mm_count		= ATOMIC_INIT(1),
---- a/include/linux/mm.h~mm-remove-rb-tree
-+++ a/include/linux/mm.h
-@@ -2669,8 +2669,6 @@ extern int __split_vma(struct mm_struct
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 2a54b8cfd551..ae83d2440bef 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2663,8 +2663,6 @@ extern int __split_vma(struct mm_struct *, struct vm_area_struct *,
  extern int split_vma(struct mm_struct *, struct vm_area_struct *,
  	unsigned long addr, int new_below);
  extern int insert_vm_struct(struct mm_struct *, struct vm_area_struct *);
@@ -46,9 +62,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern void unlink_file_vma(struct vm_area_struct *);
  extern struct vm_area_struct *copy_vma(struct vm_area_struct **,
  	unsigned long addr, unsigned long len, pgoff_t pgoff,
---- a/include/linux/mm_types.h~mm-remove-rb-tree
-+++ a/include/linux/mm_types.h
-@@ -397,19 +397,6 @@ struct vm_area_struct {
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 56d5fb69051a..123c8b07be08 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -400,19 +400,6 @@ struct vm_area_struct {
  
  	/* linked list of VM areas per task, sorted by address */
  	struct vm_area_struct *vm_next, *vm_prev;
@@ -68,7 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct mm_struct *vm_mm;	/* The address space we belong to. */
  
  	/*
-@@ -475,7 +462,6 @@ struct mm_struct {
+@@ -478,7 +465,6 @@ struct mm_struct {
  	struct {
  		struct vm_area_struct *mmap;		/* list of VMAs */
  		struct maple_tree mm_mt;
@@ -76,9 +94,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		u64 vmacache_seqnum;                   /* per-thread vmacache */
  #ifdef CONFIG_MMU
  		unsigned long (*get_unmapped_area) (struct file *filp,
---- a/kernel/fork.c~mm-remove-rb-tree
-+++ a/kernel/fork.c
-@@ -581,7 +581,6 @@ static __latent_entropy int dup_mmap(str
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 6420b9500caf..cb5a1423ea27 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -581,7 +581,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
  					struct mm_struct *oldmm)
  {
  	struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
@@ -86,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int retval;
  	unsigned long charge = 0;
  	MA_STATE(old_mas, &oldmm->mm_mt, 0, 0);
-@@ -608,8 +607,6 @@ static __latent_entropy int dup_mmap(str
+@@ -608,8 +607,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
  	mm->exec_vm = oldmm->exec_vm;
  	mm->stack_vm = oldmm->stack_vm;
  
@@ -95,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pprev = &mm->mmap;
  	retval = ksm_fork(mm, oldmm);
  	if (retval)
-@@ -697,10 +694,6 @@ static __latent_entropy int dup_mmap(str
+@@ -699,10 +696,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
  		tmp->vm_prev = prev;
  		prev = tmp;
  
@@ -106,7 +126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/* Link the vma into the MT */
  		mas.index = tmp->vm_start;
  		mas.last = tmp->vm_end - 1;
-@@ -1119,7 +1112,6 @@ static struct mm_struct *mm_init(struct
+@@ -1121,7 +1114,6 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
  	struct user_namespace *user_ns)
  {
  	mm->mmap = NULL;
@@ -114,8 +134,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mt_init_flags(&mm->mm_mt, MM_MT_FLAGS);
  	mt_set_external_lock(&mm->mm_mt, &mm->mmap_lock);
  	mm->vmacache_seqnum = 0;
---- a/mm/init-mm.c~mm-remove-rb-tree
-+++ a/mm/init-mm.c
+diff --git a/mm/init-mm.c b/mm/init-mm.c
+index b912b0f2eced..c9327abb771c 100644
+--- a/mm/init-mm.c
++++ b/mm/init-mm.c
 @@ -1,6 +1,5 @@
  // SPDX-License-Identifier: GPL-2.0
  #include <linux/mm_types.h>
@@ -131,8 +153,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	.mm_mt		= MTREE_INIT_EXT(mm_mt, MM_MT_FLAGS, init_mm.mmap_lock),
  	.pgd		= swapper_pg_dir,
  	.mm_users	= ATOMIC_INIT(2),
---- a/mm/mmap.c~mm-remove-rb-tree
-+++ a/mm/mmap.c
+diff --git a/mm/mmap.c b/mm/mmap.c
+index a83b4f55b91c..f8b84d957284 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
 @@ -39,7 +39,6 @@
  #include <linux/audit.h>
  #include <linux/khugepaged.h>
@@ -141,7 +165,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <linux/notifier.h>
  #include <linux/memory.h>
  #include <linux/printk.h>
-@@ -297,93 +296,6 @@ out:
+@@ -289,93 +288,6 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
  	return origbrk;
  }
  
@@ -235,7 +259,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #if defined(CONFIG_DEBUG_VM_MAPLE_TREE)
  extern void mt_validate(struct maple_tree *mt);
  extern void mt_dump(const struct maple_tree *mt);
-@@ -409,19 +321,25 @@ static void validate_mm_mt(struct mm_str
+@@ -401,19 +313,25 @@ static void validate_mm_mt(struct mm_struct *mm)
  		    (vma->vm_end - 1 != mas.last)) {
  			pr_emerg("issue in %s\n", current->comm);
  			dump_stack();
@@ -267,7 +291,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  			mt_dump(mas.tree);
  			if (vma_mt->vm_end != mas.last + 1) {
-@@ -445,21 +363,6 @@ static void validate_mm_mt(struct mm_str
+@@ -437,21 +355,6 @@ static void validate_mm_mt(struct mm_struct *mm)
  	VM_BUG_ON(vma);
  	mt_validate(&mm->mm_mt);
  }
@@ -289,7 +313,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  static void validate_mm(struct mm_struct *mm)
  {
-@@ -468,7 +371,10 @@ static void validate_mm(struct mm_struct
+@@ -460,7 +363,10 @@ static void validate_mm(struct mm_struct *mm)
  	unsigned long highest_address = 0;
  	struct vm_area_struct *vma = mm->mmap;
  
@@ -300,7 +324,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct anon_vma *anon_vma = vma->anon_vma;
  		struct anon_vma_chain *avc;
  
-@@ -478,6 +384,7 @@ static void validate_mm(struct mm_struct
+@@ -470,6 +376,7 @@ static void validate_mm(struct mm_struct *mm)
  				anon_vma_interval_tree_verify(avc);
  			anon_vma_unlock_read(anon_vma);
  		}
@@ -308,7 +332,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		highest_address = vm_end_gap(vma);
  		vma = vma->vm_next;
-@@ -492,80 +399,13 @@ static void validate_mm(struct mm_struct
+@@ -484,80 +391,13 @@ static void validate_mm(struct mm_struct *mm)
  			  mm->highest_vm_end, highest_address);
  		bug = 1;
  	}
@@ -392,7 +416,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  /*
   * vma has some anon_vma assigned, and is already inserted on that
-@@ -599,39 +439,26 @@ anon_vma_interval_tree_post_update_vma(s
+@@ -591,39 +431,26 @@ anon_vma_interval_tree_post_update_vma(struct vm_area_struct *vma)
  		anon_vma_interval_tree_insert(avc, &avc->anon_vma->rb_root);
  }
  
@@ -450,7 +474,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -658,8 +485,6 @@ static inline struct vm_area_struct *__v
+@@ -650,8 +477,6 @@ static inline struct vm_area_struct *__vma_next(struct mm_struct *mm,
   * @start: The start of the range.
   * @len: The length of the range.
   * @pprev: pointer to the pointer that will be set to previous vm_area_struct
@@ -459,7 +483,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   *
   * Find all the vm_area_struct that overlap from @start to
   * @end and munmap them.  Set @pprev to the previous vm_area_struct.
-@@ -668,14 +493,11 @@ static inline struct vm_area_struct *__v
+@@ -660,14 +485,11 @@ static inline struct vm_area_struct *__vma_next(struct mm_struct *mm,
   */
  static inline int
  munmap_vma_range(struct mm_struct *mm, unsigned long start, unsigned long len,
@@ -476,7 +500,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -696,30 +518,6 @@ static unsigned long count_vma_pages_ran
+@@ -688,30 +510,6 @@ static unsigned long count_vma_pages_range(struct mm_struct *mm,
  	return nr_pages;
  }
  
@@ -507,7 +531,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void __vma_link_file(struct vm_area_struct *vma)
  {
  	struct file *file;
-@@ -767,19 +565,8 @@ static void vma_store(struct mm_struct *
+@@ -759,19 +557,8 @@ static void vma_store(struct mm_struct *mm, struct vm_area_struct *vma)
  	vma_mas_store(vma, &mas);
  }
  
@@ -528,7 +552,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct address_space *mapping = NULL;
  
-@@ -788,7 +575,8 @@ static void vma_link(struct mm_struct *m
+@@ -780,7 +567,8 @@ static void vma_link(struct mm_struct *mm, struct vm_area_struct *vma,
  		i_mmap_lock_write(mapping);
  	}
  
@@ -538,7 +562,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__vma_link_file(vma);
  
  	if (mapping)
-@@ -800,30 +588,19 @@ static void vma_link(struct mm_struct *m
+@@ -792,30 +580,19 @@ static void vma_link(struct mm_struct *mm, struct vm_area_struct *vma,
  
  /*
   * Helper for vma_adjust() in the split_vma insert case: insert a vma into the
@@ -574,7 +598,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * We cannot adjust vm_start, vm_end, vm_pgoff fields of a vma that
   * is already present in an i_mmap tree without adjusting the tree.
-@@ -841,13 +618,10 @@ int __vma_adjust(struct vm_area_struct *
+@@ -833,13 +610,10 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  	struct rb_root_cached *root = NULL;
  	struct anon_vma *anon_vma = NULL;
  	struct file *file = vma->vm_file;
@@ -589,7 +613,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (next && !insert) {
  		struct vm_area_struct *exporter = NULL, *importer = NULL;
  
-@@ -973,21 +747,23 @@ again:
+@@ -965,21 +739,23 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  	}
  
  	if (start != vma->vm_start) {
@@ -622,7 +646,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		vma_store(mm, vma);
  
  	vma->vm_pgoff = pgoff;
-@@ -1005,25 +781,9 @@ again:
+@@ -997,25 +773,9 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  	}
  
  	if (remove_next) {
@@ -651,7 +675,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (file)
  			__remove_shared_vm_struct(next, file, mapping);
  	} else if (insert) {
-@@ -1033,15 +793,6 @@ again:
+@@ -1025,15 +785,6 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  		 * (it may either follow vma or precede it).
  		 */
  		__insert_vm_struct(mm, insert);
@@ -667,7 +691,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	if (anon_vma) {
-@@ -1099,10 +850,7 @@ again:
+@@ -1091,10 +842,7 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  			remove_next = 1;
  			end = next->vm_end;
  			goto again;
@@ -679,7 +703,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/*
  			 * If remove_next == 2 we obviously can't
  			 * reach this path.
-@@ -1129,8 +877,6 @@ again:
+@@ -1121,8 +869,6 @@ int __vma_adjust(struct vm_area_struct *vma, unsigned long start,
  		uprobe_mmap(insert);
  
  	validate_mm(mm);
@@ -688,7 +712,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -1283,7 +1029,6 @@ struct vm_area_struct *vma_merge(struct
+@@ -1275,7 +1021,6 @@ struct vm_area_struct *vma_merge(struct mm_struct *mm,
  	struct vm_area_struct *area, *next;
  	int err;
  
@@ -696,15 +720,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * We later require that vma->vm_flags == vm_flags,
  	 * so this tests vma->vm_flags & VM_SPECIAL, too.
-@@ -1359,7 +1104,6 @@ struct vm_area_struct *vma_merge(struct
- 		khugepaged_enter_vma(area, vm_flags);
+@@ -1351,7 +1096,6 @@ struct vm_area_struct *vma_merge(struct mm_struct *mm,
+ 		khugepaged_enter_vma_merge(area, vm_flags);
  		return area;
  	}
 -	validate_mm_mt(mm);
  
  	return NULL;
  }
-@@ -1529,6 +1273,7 @@ unsigned long do_mmap(struct file *file,
+@@ -1521,6 +1265,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
  	vm_flags_t vm_flags;
  	int pkey = 0;
  
@@ -712,7 +736,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	*populate = 0;
  
  	if (!len)
-@@ -1836,10 +1581,8 @@ unsigned long mmap_region(struct file *f
+@@ -1828,10 +1573,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  	struct mm_struct *mm = current->mm;
  	struct vm_area_struct *vma, *prev, *merge;
  	int error;
@@ -723,7 +747,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/* Check against address space limit. */
  	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
  		unsigned long nr_pages;
-@@ -1855,8 +1598,8 @@ unsigned long mmap_region(struct file *f
+@@ -1847,8 +1590,8 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  			return -ENOMEM;
  	}
  
@@ -734,16 +758,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return -ENOMEM;
  	/*
  	 * Private writable mapping: check memory availability
-@@ -1954,7 +1697,7 @@ unsigned long mmap_region(struct file *f
+@@ -1946,7 +1689,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  			goto free_vma;
  	}
  
 -	vma_link(mm, vma, prev, rb_link, rb_parent);
 +	vma_link(mm, vma, prev);
- 
- 	/*
- 	 * vma_merge() calls khugepaged_enter_vma() either, the below
-@@ -1993,7 +1736,6 @@ out:
+ 	/* Once vma denies write, undo our temporary denial count */
+ unmap_writable:
+ 	if (file && vm_flags & VM_SHARED)
+@@ -1979,7 +1722,6 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  
  	vma_set_page_prot(vma);
  
@@ -751,7 +775,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return addr;
  
  unmap_and_free_vma:
-@@ -2010,7 +1752,6 @@ free_vma:
+@@ -1996,7 +1738,6 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
  unacct_error:
  	if (charged)
  		vm_unacct_memory(charged);
@@ -759,7 +783,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return error;
  }
  
-@@ -2353,7 +2094,6 @@ int expand_upwards(struct vm_area_struct
+@@ -2346,7 +2087,6 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  	unsigned long gap_addr;
  	int error = 0;
  
@@ -767,7 +791,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!(vma->vm_flags & VM_GROWSUP))
  		return -EFAULT;
  
-@@ -2400,15 +2140,13 @@ int expand_upwards(struct vm_area_struct
+@@ -2393,15 +2133,13 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  			error = acct_stack_growth(vma, size, grow);
  			if (!error) {
  				/*
@@ -790,7 +814,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				 */
  				spin_lock(&mm->page_table_lock);
  				if (vma->vm_flags & VM_LOCKED)
-@@ -2419,9 +2157,7 @@ int expand_upwards(struct vm_area_struct
+@@ -2412,9 +2150,7 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  				/* Overwrite old entry in mtree. */
  				vma_store(mm, vma);
  				anon_vma_interval_tree_post_update_vma(vma);
@@ -801,16 +825,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  					mm->highest_vm_end = vm_end_gap(vma);
  				spin_unlock(&mm->page_table_lock);
  
-@@ -2431,8 +2167,6 @@ int expand_upwards(struct vm_area_struct
+@@ -2424,8 +2160,6 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  	}
  	anon_vma_unlock_write(vma->anon_vma);
- 	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 -	validate_mm(mm);
 -	validate_mm_mt(mm);
  	return error;
  }
  #endif /* CONFIG_STACK_GROWSUP || CONFIG_IA64 */
-@@ -2440,14 +2174,12 @@ int expand_upwards(struct vm_area_struct
+@@ -2433,14 +2167,12 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
  /*
   * vma is the first one with address < vma->vm_start.  Have to extend vma.
   */
@@ -826,7 +850,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	address &= PAGE_MASK;
  	if (address < mmap_min_addr)
  		return -EPERM;
-@@ -2484,15 +2216,13 @@ int expand_downwards(struct vm_area_stru
+@@ -2477,15 +2209,13 @@ int expand_downwards(struct vm_area_struct *vma,
  			error = acct_stack_growth(vma, size, grow);
  			if (!error) {
  				/*
@@ -849,7 +873,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				 */
  				spin_lock(&mm->page_table_lock);
  				if (vma->vm_flags & VM_LOCKED)
-@@ -2504,7 +2234,6 @@ int expand_downwards(struct vm_area_stru
+@@ -2497,7 +2227,6 @@ int expand_downwards(struct vm_area_struct *vma,
  				/* Overwrite old entry in mtree. */
  				vma_store(mm, vma);
  				anon_vma_interval_tree_post_update_vma(vma);
@@ -857,15 +881,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				spin_unlock(&mm->page_table_lock);
  
  				perf_event_mmap(vma);
-@@ -2513,7 +2242,6 @@ int expand_downwards(struct vm_area_stru
+@@ -2506,7 +2235,6 @@ int expand_downwards(struct vm_area_struct *vma,
  	}
  	anon_vma_unlock_write(vma->anon_vma);
- 	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 -	validate_mm(mm);
  	return error;
  }
  
-@@ -2646,7 +2374,6 @@ detach_vmas_to_be_unmapped(struct mm_str
+@@ -2639,7 +2367,6 @@ detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
  	vma->vm_prev = NULL;
  	vma_mt_szero(mm, vma->vm_start, end);
  	do {
@@ -873,7 +897,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (vma->vm_flags & VM_LOCKED)
  			mm->locked_vm -= vma_pages(vma);
  		mm->map_count--;
-@@ -2654,10 +2381,9 @@ detach_vmas_to_be_unmapped(struct mm_str
+@@ -2647,10 +2374,9 @@ detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
  		vma = vma->vm_next;
  	} while (vma && vma->vm_start < end);
  	*insertion_point = vma;
@@ -886,7 +910,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mm->highest_vm_end = prev ? vm_end_gap(prev) : 0;
  	tail_vma->vm_next = NULL;
  
-@@ -2774,11 +2500,7 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2767,11 +2493,7 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
  	if (len == 0)
  		return -EINVAL;
  
@@ -899,7 +923,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	arch_unmap(mm, start, end);
  
  	/* Find the first overlapping VMA where start < vma->vm_end */
-@@ -2786,6 +2508,11 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2779,6 +2501,11 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
  	if (!vma)
  		return 0;
  	prev = vma->vm_prev;
@@ -911,7 +935,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * If we need to split any vma, do it now to save pain later.
-@@ -2835,7 +2562,6 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2828,7 +2555,6 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
  			return error;
  	}
  
@@ -919,7 +943,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!detach_vmas_to_be_unmapped(mm, vma, prev, end))
  		downgrade = false;
  
-@@ -2979,11 +2705,11 @@ out:
+@@ -2972,11 +2698,11 @@ SYSCALL_DEFINE5(remap_file_pages, unsigned long, start, unsigned long, size,
   *  anonymous maps.  eventually we may be able to do some
   *  brk-specific accounting here.
   */
@@ -933,7 +957,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pgoff_t pgoff = addr >> PAGE_SHIFT;
  	int error;
  	unsigned long mapped_addr;
-@@ -3002,8 +2728,8 @@ static int do_brk_flags(unsigned long ad
+@@ -2995,8 +2721,8 @@ static int do_brk_flags(unsigned long addr, unsigned long len, unsigned long fla
  	if (error)
  		return error;
  
@@ -944,7 +968,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return -ENOMEM;
  
  	/* Check against address space limits *after* clearing old maps... */
-@@ -3037,7 +2763,7 @@ static int do_brk_flags(unsigned long ad
+@@ -3030,7 +2756,7 @@ static int do_brk_flags(unsigned long addr, unsigned long len, unsigned long fla
  	vma->vm_pgoff = pgoff;
  	vma->vm_flags = flags;
  	vma->vm_page_prot = vm_get_page_prot(flags);
@@ -953,7 +977,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out:
  	perf_event_mmap(vma);
  	mm->total_vm += len >> PAGE_SHIFT;
-@@ -3149,26 +2875,10 @@ void exit_mmap(struct mm_struct *mm)
+@@ -3142,26 +2868,10 @@ void exit_mmap(struct mm_struct *mm)
  int insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma)
  {
  	struct vm_area_struct *prev;
@@ -981,7 +1005,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if ((vma->vm_flags & VM_ACCOUNT) &&
  	     security_vm_enough_memory_mm(mm, vma_pages(vma)))
  		return -ENOMEM;
-@@ -3190,7 +2900,7 @@ int insert_vm_struct(struct mm_struct *m
+@@ -3183,7 +2893,7 @@ int insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma)
  		vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT;
  	}
  
@@ -990,7 +1014,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -3206,9 +2916,7 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3199,9 +2909,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
  	unsigned long vma_start = vma->vm_start;
  	struct mm_struct *mm = vma->vm_mm;
  	struct vm_area_struct *new_vma, *prev;
@@ -1000,7 +1024,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	validate_mm_mt(mm);
  	/*
-@@ -3220,10 +2928,9 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3213,10 +2921,9 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
  		faulted_in_anon_vma = false;
  	}
  
@@ -1013,7 +1037,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	new_vma = vma_merge(mm, prev, addr, addr + len, vma->vm_flags,
  			    vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
  			    vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-@@ -3264,7 +2971,7 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3257,7 +2964,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
  			get_file(new_vma->vm_file);
  		if (new_vma->vm_ops && new_vma->vm_ops->open)
  			new_vma->vm_ops->open(new_vma);
@@ -1022,9 +1046,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		*need_rmap_locks = false;
  	}
  	validate_mm_mt(mm);
---- a/mm/nommu.c~mm-remove-rb-tree
-+++ a/mm/nommu.c
-@@ -551,9 +551,9 @@ static void put_nommu_region(struct vm_r
+diff --git a/mm/nommu.c b/mm/nommu.c
+index 55a9e48a7a02..9b8c033ef997 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -551,9 +551,9 @@ static void put_nommu_region(struct vm_region *region)
   */
  static void add_vma_to_mm(struct mm_struct *mm, struct vm_area_struct *vma)
  {
@@ -1036,7 +1062,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	BUG_ON(!vma->vm_region);
  
-@@ -571,42 +571,10 @@ static void add_vma_to_mm(struct mm_stru
+@@ -571,42 +571,10 @@ static void add_vma_to_mm(struct mm_struct *mm, struct vm_area_struct *vma)
  		i_mmap_unlock_write(mapping);
  	}
  
@@ -1082,7 +1108,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__vma_link_list(mm, vma, prev);
  }
  
-@@ -619,6 +587,7 @@ static void delete_vma_from_mm(struct vm
+@@ -619,6 +587,7 @@ static void delete_vma_from_mm(struct vm_area_struct *vma)
  	struct address_space *mapping;
  	struct mm_struct *mm = vma->vm_mm;
  	struct task_struct *curr = current;
@@ -1090,7 +1116,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	mm->map_count--;
  	for (i = 0; i < VMACACHE_SIZE; i++) {
-@@ -641,8 +610,7 @@ static void delete_vma_from_mm(struct vm
+@@ -641,8 +610,7 @@ static void delete_vma_from_mm(struct vm_area_struct *vma)
  	}
  
  	/* remove from the MM's tree and list */
@@ -1100,7 +1126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__vma_unlink_list(mm, vma);
  }
  
-@@ -666,24 +634,19 @@ static void delete_vma(struct mm_struct
+@@ -666,24 +634,19 @@ static void delete_vma(struct mm_struct *mm, struct vm_area_struct *vma)
  struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
  {
  	struct vm_area_struct *vma;
@@ -1131,7 +1157,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  EXPORT_SYMBOL(find_vma);
  
-@@ -715,26 +678,23 @@ static struct vm_area_struct *find_vma_e
+@@ -715,26 +678,23 @@ static struct vm_area_struct *find_vma_exact(struct mm_struct *mm,
  {
  	struct vm_area_struct *vma;
  	unsigned long end = addr + len;
@@ -1176,9 +1202,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  int vm_brk(unsigned long addr, unsigned long len)
---- a/mm/util.c~mm-remove-rb-tree
-+++ a/mm/util.c
-@@ -288,6 +288,8 @@ void __vma_link_list(struct mm_struct *m
+diff --git a/mm/util.c b/mm/util.c
+index 54e5e761a9a9..0f6faa9e0da5 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -287,6 +287,8 @@ void __vma_link_list(struct mm_struct *mm, struct vm_area_struct *vma,
  	vma->vm_next = next;
  	if (next)
  		next->vm_prev = vma;
@@ -1187,7 +1215,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  void __vma_unlink_list(struct mm_struct *mm, struct vm_area_struct *vma)
-@@ -300,8 +302,14 @@ void __vma_unlink_list(struct mm_struct
+@@ -299,8 +301,14 @@ void __vma_unlink_list(struct mm_struct *mm, struct vm_area_struct *vma)
  		prev->vm_next = next;
  	else
  		mm->mmap = next;
@@ -1203,4 +1231,5 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /* Check if the vma is being used as a stack by this task */
-_
+-- 
+2.34.1

@@ -111,21 +111,10 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/exec.c                  |    2 
- include/linux/memcontrol.h |    5 
- include/linux/mm_types.h   |   78 ++
- include/linux/mmzone.h     |   59 ++
- include/linux/swap.h       |    4 
- kernel/exit.c              |    1 
- kernel/fork.c              |    9 
- kernel/sched/core.c        |    1 
- mm/memcontrol.c            |   24 
- mm/vmscan.c                |  975 ++++++++++++++++++++++++++++++++++-
- 10 files changed, 1144 insertions(+), 14 deletions(-)
 
 --- a/fs/exec.c~mm-multi-gen-lru-support-page-table-walks
 +++ a/fs/exec.c
-@@ -1015,6 +1015,7 @@ static int exec_mmap(struct mm_struct *m
+@@ -1017,6 +1017,7 @@ static int exec_mmap(struct mm_struct *m
  	active_mm = tsk->active_mm;
  	tsk->active_mm = mm;
  	tsk->mm = mm;
@@ -133,14 +122,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * This prevents preemption while active_mm is being loaded and
  	 * it and mm are being updated, which could cause problems for
-@@ -1027,6 +1028,7 @@ static int exec_mmap(struct mm_struct *m
+@@ -1029,6 +1030,7 @@ static int exec_mmap(struct mm_struct *m
  	activate_mm(active_mm, mm);
  	if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
  		local_irq_enable();
 +	lru_gen_use_mm(mm);
- 	tsk->mm->vmacache_seqnum = 0;
- 	vmacache_flush(tsk);
  	task_unlock(tsk);
+ 	if (old_mm) {
+ 		mmap_read_unlock(old_mm);
 --- a/include/linux/memcontrol.h~mm-multi-gen-lru-support-page-table-walks
 +++ a/include/linux/memcontrol.h
 @@ -344,6 +344,11 @@ struct mem_cgroup {
@@ -165,7 +154,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include <linux/auxvec.h>
  #include <linux/kref.h>
-@@ -17,6 +18,8 @@
+@@ -18,6 +19,8 @@
  #include <linux/page-flags-layout.h>
  #include <linux/workqueue.h>
  #include <linux/seqlock.h>
@@ -174,7 +163,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include <asm/mmu.h>
  
-@@ -649,6 +652,22 @@ struct mm_struct {
+@@ -632,6 +635,22 @@ struct mm_struct {
  #ifdef CONFIG_IOMMU_SVA
  		u32 pasid;
  #endif
@@ -197,8 +186,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	} __randomize_layout;
  
  	/*
-@@ -675,6 +694,65 @@ static inline cpumask_t *mm_cpumask(stru
- 	return (struct cpumask *)&mm->cpu_bitmap;
+@@ -680,6 +699,65 @@ static inline void vma_iter_init(struct
+ 	vmi->mas.node = MAS_START;
  }
  
 +#ifdef CONFIG_LRU_GEN
@@ -370,7 +359,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/kernel/fork.c~mm-multi-gen-lru-support-page-table-walks
 +++ a/kernel/fork.c
-@@ -1146,6 +1146,7 @@ static struct mm_struct *mm_init(struct
+@@ -1140,6 +1140,7 @@ static struct mm_struct *mm_init(struct
  		goto fail_nocontext;
  
  	mm->user_ns = get_user_ns(user_ns);
@@ -378,7 +367,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return mm;
  
  fail_nocontext:
-@@ -1189,6 +1190,7 @@ static inline void __mmput(struct mm_str
+@@ -1183,6 +1184,7 @@ static inline void __mmput(struct mm_str
  	if (mm->binfmt)
  		module_put(mm->binfmt->module);
  	mm_pasid_drop(mm);
@@ -386,7 +375,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmdrop(mm);
  }
  
-@@ -2658,6 +2660,13 @@ pid_t kernel_clone(struct kernel_clone_a
+@@ -2652,6 +2654,13 @@ pid_t kernel_clone(struct kernel_clone_a
  		get_task_struct(p);
  	}
  
@@ -412,7 +401,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/* will mmdrop() in finish_task_switch(). */
 --- a/mm/memcontrol.c~mm-multi-gen-lru-support-page-table-walks
 +++ a/mm/memcontrol.c
-@@ -6092,6 +6092,29 @@ static void mem_cgroup_move_task(void)
+@@ -6090,6 +6090,29 @@ static void mem_cgroup_move_task(void)
  }
  #endif
  
@@ -442,7 +431,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long value)
  {
  	if (value == PAGE_COUNTER_MAX)
-@@ -6437,6 +6460,7 @@ struct cgroup_subsys memory_cgrp_subsys
+@@ -6435,6 +6458,7 @@ struct cgroup_subsys memory_cgrp_subsys
  	.css_reset = mem_cgroup_css_reset,
  	.css_rstat_flush = mem_cgroup_css_rstat_flush,
  	.can_attach = mem_cgroup_can_attach,

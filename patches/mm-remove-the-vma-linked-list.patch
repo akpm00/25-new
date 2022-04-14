@@ -30,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-remove-the-vma-linked-list
 +++ a/include/linux/mm.h
-@@ -1875,8 +1875,9 @@ void zap_vma_ptes(struct vm_area_struct
+@@ -1868,8 +1868,9 @@ void zap_vma_ptes(struct vm_area_struct
  		  unsigned long size);
  void zap_page_range(struct vm_area_struct *vma, unsigned long address,
  		    unsigned long size);
@@ -44,7 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/include/linux/mm_types.h~mm-remove-the-vma-linked-list
 +++ a/include/linux/mm_types.h
-@@ -395,8 +395,6 @@ struct vm_area_struct {
+@@ -392,8 +392,6 @@ struct vm_area_struct {
  	unsigned long vm_end;		/* The first byte after our end address
  					   within vm_mm. */
  
@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct mm_struct *vm_mm;	/* The address space we belong to. */
  
  	/*
-@@ -460,7 +458,6 @@ struct vm_area_struct {
+@@ -457,7 +455,6 @@ struct vm_area_struct {
  struct kioctx_table;
  struct mm_struct {
  	struct {
@@ -61,7 +61,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct maple_tree mm_mt;
  #ifdef CONFIG_MMU
  		unsigned long (*get_unmapped_area) (struct file *filp,
-@@ -475,7 +472,6 @@ struct mm_struct {
+@@ -472,7 +469,6 @@ struct mm_struct {
  		unsigned long mmap_compat_legacy_base;
  #endif
  		unsigned long task_size;	/* size of task vm space */
@@ -88,7 +88,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int retval;
  	unsigned long charge = 0;
  	MA_STATE(old_mas, &oldmm->mm_mt, 0, 0);
-@@ -606,14 +605,11 @@ static __latent_entropy int dup_mmap(str
+@@ -606,7 +605,6 @@ static __latent_entropy int dup_mmap(str
  	mm->exec_vm = oldmm->exec_vm;
  	mm->stack_vm = oldmm->stack_vm;
  
@@ -96,14 +96,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	retval = ksm_fork(mm, oldmm);
  	if (retval)
  		goto out;
- 	khugepaged_fork(mm, oldmm);
+@@ -614,8 +612,6 @@ static __latent_entropy int dup_mmap(str
+ 	if (retval)
+ 		goto out;
  
 -	prev = NULL;
 -
  	retval = mas_expected_entries(&mas, oldmm->map_count);
  	if (retval)
  		goto out;
-@@ -685,14 +681,6 @@ static __latent_entropy int dup_mmap(str
+@@ -687,14 +683,6 @@ static __latent_entropy int dup_mmap(str
  		if (is_vm_hugetlb_page(tmp))
  			reset_vma_resv_huge_pages(tmp);
  
@@ -118,7 +120,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/* Link the vma into the MT */
  		mas.index = tmp->vm_start;
  		mas.last = tmp->vm_end - 1;
-@@ -1110,7 +1098,6 @@ static void mm_init_uprobes_state(struct
+@@ -1112,7 +1100,6 @@ static void mm_init_uprobes_state(struct
  static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
  	struct user_namespace *user_ns)
  {
@@ -174,9 +176,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mm_pgtables_bytes(mm),
 --- a/mm/internal.h~mm-remove-the-vma-linked-list
 +++ a/mm/internal.h
-@@ -70,8 +70,9 @@ bool __folio_end_writeback(struct folio
+@@ -69,8 +69,9 @@ void folio_rotate_reclaimable(struct fol
+ bool __folio_end_writeback(struct folio *folio);
  void deactivate_file_folio(struct folio *folio);
- void folio_activate(struct folio *folio);
  
 -void free_pgtables(struct mmu_gather *tlb, struct vm_area_struct *start_vma,
 -		unsigned long floor, unsigned long ceiling);
@@ -186,7 +188,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte);
  
  struct zap_details;
-@@ -529,9 +530,6 @@ static inline int vma_mas_remove(struct
+@@ -528,9 +529,6 @@ static inline int vma_mas_remove(struct
  }
  
  /* mm/util.c */
@@ -198,7 +200,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_MMU
 --- a/mm/memory.c~mm-remove-the-vma-linked-list
 +++ a/mm/memory.c
-@@ -391,12 +391,21 @@ void free_pgd_range(struct mmu_gather *t
+@@ -400,12 +400,21 @@ void free_pgd_range(struct mmu_gather *t
  	} while (pgd++, addr = next, addr != end);
  }
  
@@ -224,7 +226,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		/*
  		 * Hide vma from rmap and truncate_pagecache before freeing
-@@ -415,7 +424,7 @@ void free_pgtables(struct mmu_gather *tl
+@@ -424,7 +433,7 @@ void free_pgtables(struct mmu_gather *tl
  			while (next && next->vm_start <= vma->vm_end + PMD_SIZE
  			       && !is_vm_hugetlb_page(next)) {
  				vma = next;
@@ -233,7 +235,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				unlink_anon_vmas(vma);
  				unlink_file_vma(vma);
  			}
-@@ -423,7 +432,7 @@ void free_pgtables(struct mmu_gather *tl
+@@ -432,7 +441,7 @@ void free_pgtables(struct mmu_gather *tl
  				floor, next ? next->vm_start : ceiling);
  		}
  		vma = next;
@@ -242,7 +244,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
-@@ -1693,7 +1702,7 @@ static void unmap_single_vma(struct mmu_
+@@ -1628,17 +1637,19 @@ static void unmap_single_vma(struct mmu_
   * ensure that any thus-far unmapped pages are flushed before unmap_vmas()
   * drops the lock and schedules.
   */
@@ -251,10 +253,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct vm_area_struct *vma, unsigned long start_addr,
  		unsigned long end_addr)
  {
-@@ -1703,12 +1712,14 @@ void unmap_vmas(struct mmu_gather *tlb,
- 		/* Careful - we need to zap private pages too! */
- 		.even_cows = true,
- 	};
+ 	struct mmu_notifier_range range;
 +	MA_STATE(mas, mt, vma->vm_end, vma->vm_end);
  
  	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
@@ -262,12 +261,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmu_notifier_invalidate_range_start(&range);
 -	for ( ; vma && vma->vm_start < end_addr; vma = vma->vm_next)
 +	do {
- 		unmap_single_vma(tlb, vma, start_addr, end_addr, &details);
+ 		unmap_single_vma(tlb, vma, start_addr, end_addr, NULL);
 +	} while ((vma = mas_find(&mas, end_addr - 1)) != NULL);
  	mmu_notifier_invalidate_range_end(&range);
  }
  
-@@ -1723,8 +1734,11 @@ void unmap_vmas(struct mmu_gather *tlb,
+@@ -1653,8 +1664,11 @@ void unmap_vmas(struct mmu_gather *tlb,
  void zap_page_range(struct vm_area_struct *vma, unsigned long start,
  		unsigned long size)
  {
@@ -279,7 +278,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	lru_add_drain();
  	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
-@@ -1732,8 +1746,9 @@ void zap_page_range(struct vm_area_struc
+@@ -1662,8 +1676,9 @@ void zap_page_range(struct vm_area_struc
  	tlb_gather_mmu(&tlb, vma->vm_mm);
  	update_hiwater_rss(vma->vm_mm);
  	mmu_notifier_invalidate_range_start(&range);
@@ -997,7 +996,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mm->map_count++;
  	if (vma->vm_file) {
  		if (vma->vm_flags & VM_SHARED)
-@@ -2827,7 +2756,7 @@ unmap_and_free_vma:
+@@ -2822,7 +2751,7 @@ unmap_and_free_vma:
  	vma->vm_file = NULL;
  
  	/* Undo any partial mapping done by a device driver. */
@@ -1006,7 +1005,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	charged = 0;
  	if (vm_flags & VM_SHARED)
  		mapping_unmap_writable(file->f_mapping);
-@@ -2916,11 +2845,12 @@ SYSCALL_DEFINE5(remap_file_pages, unsign
+@@ -2911,11 +2840,12 @@ SYSCALL_DEFINE5(remap_file_pages, unsign
  		goto out;
  
  	if (start + size > vma->vm_end) {
@@ -1022,7 +1021,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				goto out;
  
  			if (next->vm_file != vma->vm_file)
-@@ -2929,8 +2859,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsign
+@@ -2924,8 +2854,7 @@ SYSCALL_DEFINE5(remap_file_pages, unsign
  			if (next->vm_flags != vma->vm_flags)
  				goto out;
  
@@ -1032,7 +1031,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  
  		if (!next)
-@@ -2976,7 +2905,7 @@ static int do_brk_munmap(struct ma_state
+@@ -2971,7 +2900,7 @@ static int do_brk_munmap(struct ma_state
  			 struct list_head *uf)
  {
  	struct mm_struct *mm = vma->vm_mm;
@@ -1041,7 +1040,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	unsigned long unmap_pages;
  	int ret;
  
-@@ -2993,6 +2922,7 @@ static int do_brk_munmap(struct ma_state
+@@ -2988,6 +2917,7 @@ static int do_brk_munmap(struct ma_state
  	ret = userfaultfd_unmap_prep(mm, newbrk, oldbrk, uf);
  	if (ret)
  		return ret;
@@ -1049,7 +1048,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	ret = 1;
  
  	/* Change the oldbrk of vma to the newbrk of the munmap area */
-@@ -3006,9 +2936,12 @@ static int do_brk_munmap(struct ma_state
+@@ -3001,9 +2931,12 @@ static int do_brk_munmap(struct ma_state
  	vma_init(&unmap, mm);
  	unmap.vm_start = newbrk;
  	unmap.vm_end = oldbrk;
@@ -1062,7 +1061,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (vma->anon_vma) {
  		anon_vma_interval_tree_post_update_vma(vma);
  		anon_vma_unlock_write(vma->anon_vma);
-@@ -3018,8 +2951,9 @@ static int do_brk_munmap(struct ma_state
+@@ -3013,8 +2946,9 @@ static int do_brk_munmap(struct ma_state
  	if (vma->vm_flags & VM_LOCKED)
  		mm->locked_vm -= unmap_pages;
  
@@ -1073,7 +1072,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/* Statistics */
  	vm_stat_account(mm, vma->vm_flags, -unmap_pages);
  	if (vma->vm_flags & VM_ACCOUNT)
-@@ -3030,6 +2964,7 @@ munmap_full_vma:
+@@ -3025,6 +2959,7 @@ munmap_full_vma:
  	return ret;
  
  mas_store_fail:
@@ -1081,7 +1080,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vma->vm_end = oldbrk;
  	if (vma->anon_vma) {
  		anon_vma_interval_tree_post_update_vma(vma);
-@@ -3051,11 +2986,9 @@ mas_store_fail:
+@@ -3046,11 +2981,9 @@ mas_store_fail:
   * do some brk-specific accounting here.
   */
  static int do_brk_flags(struct ma_state *mas, struct vm_area_struct *vma,
@@ -1094,7 +1093,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	validate_mm_mt(mm);
  
  
-@@ -3098,7 +3031,6 @@ static int do_brk_flags(struct ma_state
+@@ -3093,7 +3026,6 @@ static int do_brk_flags(struct ma_state
  		khugepaged_enter_vma_merge(vma, flags);
  		goto out;
  	}
@@ -1102,7 +1101,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/* create a vma struct for an anonymous mapping */
  	vma = vm_area_alloc(mm);
-@@ -3111,13 +3043,15 @@ static int do_brk_flags(struct ma_state
+@@ -3106,13 +3038,15 @@ static int do_brk_flags(struct ma_state
  	vma->vm_pgoff = addr >> PAGE_SHIFT;
  	vma->vm_flags = flags;
  	vma->vm_page_prot = vm_get_page_prot(flags);
@@ -1123,7 +1122,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out:
  	perf_event_mmap(vma);
  	mm->total_vm += len >> PAGE_SHIFT;
-@@ -3125,7 +3059,7 @@ out:
+@@ -3120,7 +3054,7 @@ out:
  	if (flags & VM_LOCKED)
  		mm->locked_vm += (len >> PAGE_SHIFT);
  	vma->vm_flags |= VM_SOFTDIRTY;
@@ -1132,7 +1131,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  
  vma_alloc_fail:
-@@ -3197,6 +3131,8 @@ void exit_mmap(struct mm_struct *mm)
+@@ -3192,6 +3126,8 @@ void exit_mmap(struct mm_struct *mm)
  	struct mmu_gather tlb;
  	struct vm_area_struct *vma;
  	unsigned long nr_accounted = 0;
@@ -1141,7 +1140,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/* mm's last user has gone, and its about to be pulled down */
  	mmu_notifier_release(mm);
-@@ -3221,7 +3157,7 @@ void exit_mmap(struct mm_struct *mm)
+@@ -3216,7 +3152,7 @@ void exit_mmap(struct mm_struct *mm)
  	mmap_write_lock(mm);
  	arch_exit_mmap(mm);
  
@@ -1150,7 +1149,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma) {
  		/* Can happen if dup_mmap() received an OOM */
  		mmap_write_unlock(mm);
-@@ -3233,18 +3169,25 @@ void exit_mmap(struct mm_struct *mm)
+@@ -3228,18 +3164,25 @@ void exit_mmap(struct mm_struct *mm)
  	tlb_gather_mmu_fullmm(&tlb, mm);
  	/* update_hiwater_rss(mm) here? but nobody should be looking */
  	/* Use -1 here to ensure all VMAs in the mm are unmapped */
@@ -1183,7 +1182,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmap_write_unlock(mm);
  	trace_exit_mmap(mm);
  	__mt_destroy(&mm->mm_mt);
-@@ -3283,7 +3226,7 @@ int insert_vm_struct(struct mm_struct *m
+@@ -3278,7 +3221,7 @@ int insert_vm_struct(struct mm_struct *m
  		vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT;
  	}
  
@@ -1192,7 +1191,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
  }
  
-@@ -3311,7 +3254,8 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3306,7 +3249,8 @@ struct vm_area_struct *copy_vma(struct v
  		faulted_in_anon_vma = false;
  	}
  
@@ -1202,7 +1201,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return NULL;	/* should never get here */
  
  	new_vma = vma_merge(mm, prev, addr, addr + len, vma->vm_flags,
-@@ -3354,7 +3298,7 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3349,7 +3293,7 @@ struct vm_area_struct *copy_vma(struct v
  			get_file(new_vma->vm_file);
  		if (new_vma->vm_ops && new_vma->vm_ops->open)
  			new_vma->vm_ops->open(new_vma);
@@ -1211,7 +1210,22 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		*need_rmap_locks = false;
  	}
  	validate_mm_mt(mm);
-@@ -3668,7 +3612,8 @@ int mm_take_all_locks(struct mm_struct *
+@@ -3650,12 +3594,13 @@ int mm_take_all_locks(struct mm_struct *
+ {
+ 	struct vm_area_struct *vma;
+ 	struct anon_vma_chain *avc;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
+ 
+ 	mmap_assert_write_locked(mm);
+ 
+ 	mutex_lock(&mm_all_locks_mutex);
+ 
+-	for (vma = mm->mmap; vma; vma = vma->vm_next) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		if (signal_pending(current))
+ 			goto out_unlock;
+ 		if (vma->vm_file && vma->vm_file->f_mapping &&
+@@ -3663,7 +3608,8 @@ int mm_take_all_locks(struct mm_struct *
  			vm_lock_mapping(mm, vma->vm_file->f_mapping);
  	}
  
@@ -1221,7 +1235,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (signal_pending(current))
  			goto out_unlock;
  		if (vma->vm_file && vma->vm_file->f_mapping &&
-@@ -3676,7 +3621,8 @@ int mm_take_all_locks(struct mm_struct *
+@@ -3671,7 +3617,8 @@ int mm_take_all_locks(struct mm_struct *
  			vm_lock_mapping(mm, vma->vm_file->f_mapping);
  	}
  
@@ -1231,6 +1245,20 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (signal_pending(current))
  			goto out_unlock;
  		if (vma->anon_vma)
+@@ -3730,11 +3677,12 @@ void mm_drop_all_locks(struct mm_struct
+ {
+ 	struct vm_area_struct *vma;
+ 	struct anon_vma_chain *avc;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
+ 
+ 	mmap_assert_write_locked(mm);
+ 	BUG_ON(!mutex_is_locked(&mm_all_locks_mutex));
+ 
+-	for (vma = mm->mmap; vma; vma = vma->vm_next) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		if (vma->anon_vma)
+ 			list_for_each_entry(avc, &vma->anon_vma_chain, same_vma)
+ 				vm_unlock_anon_vma(avc->anon_vma);
 --- a/mm/nommu.c~mm-remove-the-vma-linked-list
 +++ a/mm/nommu.c
 @@ -551,7 +551,6 @@ static void put_nommu_region(struct vm_r
