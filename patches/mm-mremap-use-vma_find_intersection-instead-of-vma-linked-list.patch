@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mremap: Use vma_find_intersection() instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mremap: use vma_find_intersection() instead of vma linked list
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-61-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

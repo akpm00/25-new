@@ -1,24 +1,17 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-To: "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v7 29/70] mm/mmap: Move mmap_region() below do_munmap()
-Date: Mon, 4 Apr 2022 14:35:44 +0000
-x-mailer: git-send-email 2.34.1
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: move mmap_region() below do_munmap()
 
-Relocation of code for the next commit.  There should be no changes
-here.
+Relocation of code for the next commit.  There should be no changes here.
 
+Link: https://lkml.kernel.org/r/20220404143501.2016403-30-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- mm/mmap.c | 460 +++++++++++++++++++++++++++---------------------------
- 1 file changed, 230 insertions(+), 230 deletions(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 0466e4512e2d..5a72c9dc46a6 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1701,236 +1701,6 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
+
+--- a/mm/mmap.c~mm-mmap-move-mmap_region-below-do_munmap
++++ a/mm/mmap.c
+@@ -1709,236 +1709,6 @@ static inline int accountable_mapping(st
  	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
  }
  
@@ -255,7 +248,7 @@ index 0466e4512e2d..5a72c9dc46a6 100644
  /* unmapped_area() Find an area between the low_limit and the high_limit with
   * the correct alignment and offset, all from @info. Note: current->mm is used
   * for the search.
-@@ -2769,6 +2539,236 @@ int do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
+@@ -2770,6 +2540,236 @@ int do_munmap(struct mm_struct *mm, unsi
  	return __do_munmap(mm, start, len, uf, false);
  }
  
@@ -492,5 +485,4 @@ index 0466e4512e2d..5a72c9dc46a6 100644
  static int __vm_munmap(unsigned long start, size_t len, bool downgrade)
  {
  	int ret;
--- 
-2.34.1
+_

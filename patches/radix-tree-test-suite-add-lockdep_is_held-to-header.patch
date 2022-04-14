@@ -1,5 +1,5 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: radix tree test suite: Add lockdep_is_held to header
+Subject: radix tree test suite: add lockdep_is_held to header
 
 maple tree uses lockdep_is_held, so define it as external in the header.
 

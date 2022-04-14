@@ -1,11 +1,9 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/khugepaged: Optimize collapse_pte_mapped_thp() by using vma_lookup()
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/khugepaged: optimize collapse_pte_mapped_thp() by using vma_lookup()
 
-vma_lookup() will walk the vma tree once and not continue to look for
-the next vma.  Since the exact vma is checked below, this is a more
-optimal way of searching.
+vma_lookup() will walk the vma tree once and not continue to look for the
+next vma.  Since the exact vma is checked below, this is a more optimal
+way of searching.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-24-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
@@ -16,7 +14,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/khugepaged.c~mm-khugepaged-optimize-collapse_pte_mapped_thp-by-using-vma_lookup
 +++ a/mm/khugepaged.c
-@@ -1453,7 +1453,7 @@ static void collapse_and_free_pmd(struct
+@@ -1435,7 +1435,7 @@ static void collapse_and_free_pmd(struct
  void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
  {
  	unsigned long haddr = addr & HPAGE_PMD_MASK;

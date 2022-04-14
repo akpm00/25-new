@@ -1,7 +1,7 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap.c: Pass in mapping to __vma_link_file()
+Subject: mm/mmap.c: pass in mapping to __vma_link_file()
 
-__vma_link_file() resolves the mapping from the file, if there is one.
+__vma_link_file() resolves the mapping from the file, if there is one. 
 Pass through the mapping and check the vm_file externally since most
 places already have the required information and check of vm_file.
 
@@ -73,7 +73,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  	}
  
-@@ -2964,6 +2959,7 @@ mas_store_fail:
+@@ -2959,6 +2954,7 @@ mas_store_fail:
  static int do_brk_flags(struct ma_state *mas, struct vm_area_struct *vma,
  		unsigned long addr, unsigned long len, unsigned long flags)
  {
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct mm_struct *mm = current->mm;
  	validate_mm_mt(mm);
  
-@@ -3019,13 +3015,15 @@ static int do_brk_flags(struct ma_state
+@@ -3014,13 +3010,15 @@ static int do_brk_flags(struct ma_state
  	vma->vm_pgoff = addr >> PAGE_SHIFT;
  	vma->vm_flags = flags;
  	vma->vm_page_prot = vm_get_page_prot(flags);

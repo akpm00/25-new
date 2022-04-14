@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Use maple tree operations for find_vma_intersection()
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm: use maple tree operations for find_vma_intersection()
 
-Move find_vma_intersection() to mmap.c and change implementation to
-maple tree.
+Move find_vma_intersection() to mmap.c and change implementation to maple
+tree.
 
 When searching for a vma within a range, it is easier to use the maple
 tree interface.
@@ -19,7 +17,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-use-maple-tree-operations-for-find_vma_intersection
 +++ a/include/linux/mm.h
-@@ -2789,26 +2789,12 @@ extern struct vm_area_struct * find_vma(
+@@ -2785,26 +2785,12 @@ extern struct vm_area_struct * find_vma(
  extern struct vm_area_struct * find_vma_prev(struct mm_struct * mm, unsigned long addr,
  					     struct vm_area_struct **pprev);
  
@@ -52,7 +50,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * vma_lookup() - Find a VMA at a specific address
 --- a/mm/mmap.c~mm-use-maple-tree-operations-for-find_vma_intersection
 +++ a/mm/mmap.c
-@@ -2043,6 +2043,35 @@ get_unmapped_area(struct file *file, uns
+@@ -2037,6 +2037,35 @@ get_unmapped_area(struct file *file, uns
  EXPORT_SYMBOL(get_unmapped_area);
  
  /**

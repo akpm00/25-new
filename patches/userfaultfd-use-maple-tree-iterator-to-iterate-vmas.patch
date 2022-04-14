@@ -1,9 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: userfaultfd: Use maple tree iterator to iterate VMAs
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: userfaultfd: use maple tree iterator to iterate VMAs
 
-Don't use the mm_struct linked list or the vma->vm_next in prep for removal
+Don't use the mm_struct linked list or the vma->vm_next in prep for
+removal.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-46-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
@@ -13,7 +12,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/userfaultfd.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
 +++ a/fs/userfaultfd.c
-@@ -612,14 +612,16 @@ static void userfaultfd_event_wait_compl
+@@ -610,14 +610,16 @@ static void userfaultfd_event_wait_compl
  	if (release_new_ctx) {
  		struct vm_area_struct *vma;
  		struct mm_struct *mm = release_new_ctx->mm;
@@ -31,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mmap_write_unlock(mm);
  
  		userfaultfd_ctx_put(release_new_ctx);
-@@ -800,11 +802,13 @@ static bool has_unmap_ctx(struct userfau
+@@ -798,11 +800,13 @@ static bool has_unmap_ctx(struct userfau
  	return false;
  }
  
@@ -49,7 +48,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct userfaultfd_unmap_ctx *unmap_ctx;
  		struct userfaultfd_ctx *ctx = vma->vm_userfaultfd_ctx.ctx;
  
-@@ -854,6 +858,7 @@ static int userfaultfd_release(struct in
+@@ -852,6 +856,7 @@ static int userfaultfd_release(struct in
  	/* len == 0 means wake all */
  	struct userfaultfd_wake_range range = { .len = 0, };
  	unsigned long new_flags;
@@ -57,7 +56,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	WRITE_ONCE(ctx->released, true);
  
-@@ -870,7 +875,7 @@ static int userfaultfd_release(struct in
+@@ -868,7 +873,7 @@ static int userfaultfd_release(struct in
  	 */
  	mmap_write_lock(mm);
  	prev = NULL;
@@ -66,7 +65,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  		BUG_ON(!!vma->vm_userfaultfd_ctx.ctx ^
  		       !!(vma->vm_flags & __VM_UFFD_FLAGS));
-@@ -1269,6 +1274,7 @@ static int userfaultfd_register(struct u
+@@ -1285,6 +1290,7 @@ static int userfaultfd_register(struct u
  	bool found;
  	bool basic_ioctls;
  	unsigned long start, end, vma_end;
@@ -74,7 +73,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	user_uffdio_register = (struct uffdio_register __user *) arg;
  
-@@ -1311,7 +1317,8 @@ static int userfaultfd_register(struct u
+@@ -1327,7 +1333,8 @@ static int userfaultfd_register(struct u
  		goto out;
  
  	mmap_write_lock(mm);
@@ -84,7 +83,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma)
  		goto out_unlock;
  
-@@ -1336,7 +1343,7 @@ static int userfaultfd_register(struct u
+@@ -1352,7 +1359,7 @@ static int userfaultfd_register(struct u
  	 */
  	found = false;
  	basic_ioctls = false;
@@ -93,7 +92,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  
  		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
-@@ -1396,8 +1403,10 @@ static int userfaultfd_register(struct u
+@@ -1412,8 +1419,10 @@ static int userfaultfd_register(struct u
  	}
  	BUG_ON(!found);
  
@@ -106,7 +105,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = 0;
  	do {
-@@ -1455,8 +1464,8 @@ static int userfaultfd_register(struct u
+@@ -1471,8 +1480,8 @@ static int userfaultfd_register(struct u
  	skip:
  		prev = vma;
  		start = vma->vm_end;
@@ -117,7 +116,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out_unlock:
  	mmap_write_unlock(mm);
  	mmput(mm);
-@@ -1500,6 +1509,7 @@ static int userfaultfd_unregister(struct
+@@ -1516,6 +1525,7 @@ static int userfaultfd_unregister(struct
  	bool found;
  	unsigned long start, end, vma_end;
  	const void __user *buf = (void __user *)arg;
@@ -125,7 +124,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = -EFAULT;
  	if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
-@@ -1518,7 +1528,8 @@ static int userfaultfd_unregister(struct
+@@ -1534,7 +1544,8 @@ static int userfaultfd_unregister(struct
  		goto out;
  
  	mmap_write_lock(mm);
@@ -135,7 +134,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma)
  		goto out_unlock;
  
-@@ -1543,7 +1554,7 @@ static int userfaultfd_unregister(struct
+@@ -1559,7 +1570,7 @@ static int userfaultfd_unregister(struct
  	 */
  	found = false;
  	ret = -EINVAL;
@@ -144,7 +143,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  
  		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
-@@ -1563,8 +1574,10 @@ static int userfaultfd_unregister(struct
+@@ -1579,8 +1590,10 @@ static int userfaultfd_unregister(struct
  	}
  	BUG_ON(!found);
  
@@ -157,7 +156,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = 0;
  	do {
-@@ -1629,8 +1642,8 @@ static int userfaultfd_unregister(struct
+@@ -1645,8 +1658,8 @@ static int userfaultfd_unregister(struct
  	skip:
  		prev = vma;
  		start = vma->vm_end;
@@ -170,7 +169,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmput(mm);
 --- a/include/linux/userfaultfd_k.h~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
 +++ a/include/linux/userfaultfd_k.h
-@@ -173,9 +173,8 @@ extern bool userfaultfd_remove(struct vm
+@@ -139,9 +139,8 @@ extern bool userfaultfd_remove(struct vm
  			       unsigned long start,
  			       unsigned long end);
  
@@ -182,7 +181,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern void userfaultfd_unmap_complete(struct mm_struct *mm,
  				       struct list_head *uf);
  
-@@ -256,7 +255,7 @@ static inline bool userfaultfd_remove(st
+@@ -222,7 +221,7 @@ static inline bool userfaultfd_remove(st
  	return true;
  }
  
@@ -202,7 +201,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		if (error)
  			return error;
-@@ -2990,10 +2990,7 @@ static int do_brk_munmap(struct ma_state
+@@ -2985,10 +2985,7 @@ static int do_brk_munmap(struct ma_state
  		goto munmap_full_vma;
  	}
  
@@ -214,7 +213,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (ret)
  		return ret;
  	ret = 1;
-@@ -3006,6 +3003,9 @@ static int do_brk_munmap(struct ma_state
+@@ -3001,6 +2998,9 @@ static int do_brk_munmap(struct ma_state
  	}
  
  	vma->vm_end = newbrk;

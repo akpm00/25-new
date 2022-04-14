@@ -1,5 +1,5 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: riscv: Use vma iterator for vdso
+Subject: riscv: use vma iterator for vdso
 
 Remove the linked list use in favour of the vma iterator.
 

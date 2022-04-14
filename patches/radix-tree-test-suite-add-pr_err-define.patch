@@ -1,7 +1,10 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: radix tree test suite: Add pr_err define
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: radix tree test suite: add pr_err define
+
+Patch series "Introducing the Maple Tree".
+
+
+This patch (of 70):
 
 define pr_err to printk
 

@@ -1,37 +1,29 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-To: "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v7 16/70] kernel/fork: Use maple tree for dup_mmap() during forking
-Date: Mon, 4 Apr 2022 14:35:39 +0000
-x-mailer: git-send-email 2.34.1
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: kernel/fork: use maple tree for dup_mmap() during forking
 
 The maple tree was already tracking VMAs in this function by an earlier
-commit, but the rbtree iterator was being used to iterate the list.
-Change the iterator to use a maple tree native iterator and switch to
-the maple tree advanced API to avoid multiple walks of the tree during
-insert operations.  Unexport the now-unused vma_store() function.
+commit, but the rbtree iterator was being used to iterate the list. 
+Change the iterator to use a maple tree native iterator and switch to the
+maple tree advanced API to avoid multiple walks of the tree during insert
+operations.  Unexport the now-unused vma_store() function.
 
 For performance reasons we bulk allocate the maple tree nodes.  The node
 calculations are done internally to the tree and use the VMA count and
-assume the worst-case node requirements.  The VM_DONT_COPY flag does
-not allow for the most efficient copy method of the tree and so a bulk
-loading algorithm is used.
+assume the worst-case node requirements.  The VM_DONT_COPY flag does not
+allow for the most efficient copy method of the tree and so a bulk loading
+algorithm is used.
 
+Link: https://lkml.kernel.org/r/20220404143501.2016403-17-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- include/linux/mm.h |  2 --
- kernel/fork.c      | 24 ++++++++++++++++++------
- mm/mmap.c          |  2 +-
- 3 files changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ec21ab9b6fc7..2a54b8cfd551 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2608,8 +2608,6 @@ extern bool arch_has_descending_max_zone_pfns(void);
+
+--- a/include/linux/mm.h~kernel-fork-use-maple-tree-for-dup_mmap-during-forking
++++ a/include/linux/mm.h
+@@ -2610,8 +2610,6 @@ extern bool arch_has_descending_max_zone
  /* nommu.c */
  extern atomic_long_t mmap_pages_allocated;
  extern int nommu_shrink_inode_mappings(struct inode *, size_t, size_t);
@@ -40,11 +32,9 @@ index ec21ab9b6fc7..2a54b8cfd551 100644
  
  /* interval_tree.c */
  void vma_interval_tree_insert(struct vm_area_struct *node,
-diff --git a/kernel/fork.c b/kernel/fork.c
-index c81993dff42c..6420b9500caf 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -583,7 +583,9 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+--- a/kernel/fork.c~kernel-fork-use-maple-tree-for-dup_mmap-during-forking
++++ a/kernel/fork.c
+@@ -583,7 +583,9 @@ static __latent_entropy int dup_mmap(str
  	struct vm_area_struct *mpnt, *tmp, *prev, **pprev;
  	struct rb_node **rb_link, *rb_parent;
  	int retval;
@@ -55,7 +45,7 @@ index c81993dff42c..6420b9500caf 100644
  	LIST_HEAD(uf);
  
  	uprobe_start_dup_mmap();
-@@ -617,7 +619,12 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+@@ -617,7 +619,12 @@ static __latent_entropy int dup_mmap(str
  		goto out;
  
  	prev = NULL;
@@ -69,7 +59,7 @@ index c81993dff42c..6420b9500caf 100644
  		struct file *file;
  
  		if (mpnt->vm_flags & VM_DONTCOPY) {
-@@ -631,7 +638,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+@@ -631,7 +638,7 @@ static __latent_entropy int dup_mmap(str
  		 */
  		if (fatal_signal_pending(current)) {
  			retval = -EINTR;
@@ -78,7 +68,7 @@ index c81993dff42c..6420b9500caf 100644
  		}
  		if (mpnt->vm_flags & VM_ACCOUNT) {
  			unsigned long len = vma_pages(mpnt);
-@@ -697,7 +704,9 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+@@ -697,7 +704,9 @@ static __latent_entropy int dup_mmap(str
  		rb_parent = &tmp->vm_rb;
  
  		/* Link the vma into the MT */
@@ -89,7 +79,7 @@ index c81993dff42c..6420b9500caf 100644
  
  		mm->map_count++;
  		if (!(tmp->vm_flags & VM_WIPEONFORK))
-@@ -707,10 +716,13 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+@@ -707,10 +716,13 @@ static __latent_entropy int dup_mmap(str
  			tmp->vm_ops->open(tmp);
  
  		if (retval)
@@ -104,7 +94,7 @@ index c81993dff42c..6420b9500caf 100644
  out:
  	mmap_write_unlock(mm);
  	flush_tlb_mm(oldmm);
-@@ -726,7 +738,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+@@ -726,7 +738,7 @@ fail_nomem_policy:
  fail_nomem:
  	retval = -ENOMEM;
  	vm_unacct_memory(charge);
@@ -113,11 +103,9 @@ index c81993dff42c..6420b9500caf 100644
  }
  
  static inline int mm_alloc_pgd(struct mm_struct *mm)
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 8e236030c0b5..a83b4f55b91c 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -751,7 +751,7 @@ static inline void vma_mt_szero(struct mm_struct *mm, unsigned long start,
+--- a/mm/mmap.c~kernel-fork-use-maple-tree-for-dup_mmap-during-forking
++++ a/mm/mmap.c
+@@ -759,7 +759,7 @@ static inline void vma_mt_szero(struct m
   * @mm: The struct_mm
   * @vma: The vm_area_struct to store in the maple tree.
   */
@@ -126,5 +114,4 @@ index 8e236030c0b5..a83b4f55b91c 100644
  {
  	MA_STATE(mas, &mm->mm_mt, 0, 0);
  
--- 
-2.34.1
+_

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mmap: Use the VMA iterator in count_vma_pages_range()
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mmap: use the VMA iterator in count_vma_pages_range()
 
 This simplifies the implementation and is faster than using the linked
 list.

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/madvise: Use vma_find() instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/madvise: use vma_find() instead of vma linked list
 
 madvise_walk_vmas() no longer uses linked list.
 

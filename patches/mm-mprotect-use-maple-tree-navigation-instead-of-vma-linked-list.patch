@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mprotect: Use maple tree navigation instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mprotect: use maple tree navigation instead of vma linked list
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-60-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
@@ -12,7 +10,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mprotect.c~mm-mprotect-use-maple-tree-navigation-instead-of-vma-linked-list
 +++ a/mm/mprotect.c
-@@ -621,6 +621,7 @@ static int do_mprotect_pkey(unsigned lon
+@@ -550,6 +550,7 @@ static int do_mprotect_pkey(unsigned lon
  	const bool rier = (current->personality & READ_IMPLIES_EXEC) &&
  				(prot & PROT_READ);
  	struct mmu_gather tlb;
@@ -20,7 +18,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	start = untagged_addr(start);
  
-@@ -652,7 +653,7 @@ static int do_mprotect_pkey(unsigned lon
+@@ -581,7 +582,7 @@ static int do_mprotect_pkey(unsigned lon
  	if ((pkey != -1) && !mm_pkey_is_allocated(current->mm, pkey))
  		goto out;
  
@@ -29,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	error = -ENOMEM;
  	if (!vma)
  		goto out;
-@@ -678,7 +679,7 @@ static int do_mprotect_pkey(unsigned lon
+@@ -607,7 +608,7 @@ static int do_mprotect_pkey(unsigned lon
  	if (start > vma->vm_start)
  		prev = vma;
  	else
@@ -38,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	tlb_gather_mmu(&tlb, current->mm);
  	for (nstart = start ; ; ) {
-@@ -741,7 +742,7 @@ static int do_mprotect_pkey(unsigned lon
+@@ -670,7 +671,7 @@ static int do_mprotect_pkey(unsigned lon
  		if (nstart >= end)
  			break;
  

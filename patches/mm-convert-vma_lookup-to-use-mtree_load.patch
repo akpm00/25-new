@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Convert vma_lookup() to use mtree_load()
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: convert vma_lookup() to use mtree_load()
 
-Unlike the rbtree, the Maple Tree will return a NULL if there's
-nothing at a particular address.
+Unlike the rbtree, the Maple Tree will return a NULL if there's nothing at
+a particular address.
 
 Since the previous commit dropped the vmacache, it is now possible to
 consult the tree directly.
@@ -19,7 +17,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-convert-vma_lookup-to-use-mtree_load
 +++ a/include/linux/mm.h
-@@ -2806,12 +2806,7 @@ struct vm_area_struct *find_vma_intersec
+@@ -2802,12 +2802,7 @@ struct vm_area_struct *find_vma_intersec
  static inline
  struct vm_area_struct *vma_lookup(struct mm_struct *mm, unsigned long addr)
  {

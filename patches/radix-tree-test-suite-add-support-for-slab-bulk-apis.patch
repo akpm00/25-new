@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: radix tree test suite: Add support for slab bulk APIs
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: radix tree test suite: add support for slab bulk APIs
 
-Add support for kmem_cache_free_bulk() and kmem_cache_alloc_bulk() to
-the radix tree test suite.
+Add support for kmem_cache_free_bulk() and kmem_cache_alloc_bulk() to the
+radix tree test suite.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-5-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/ksm: Use vma iterators instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/ksm: use vma iterators instead of vma linked list
 
 Remove the use of the linked list for eventual removal.
 
@@ -14,7 +12,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/ksm.c~mm-ksm-use-vma-iterators-instead-of-vma-linked-list
 +++ a/mm/ksm.c
-@@ -981,11 +981,13 @@ static int unmerge_and_remove_all_rmap_i
+@@ -975,11 +975,13 @@ static int unmerge_and_remove_all_rmap_i
  						struct mm_slot, mm_list);
  	spin_unlock(&ksm_mmlist_lock);
  
@@ -31,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			if (ksm_test_exit(mm))
  				break;
  			if (!(vma->vm_flags & VM_MERGEABLE) || !vma->anon_vma)
-@@ -2232,6 +2234,7 @@ static struct rmap_item *scan_get_next_r
+@@ -2224,6 +2226,7 @@ static struct rmap_item *scan_get_next_r
  	struct mm_slot *slot;
  	struct vm_area_struct *vma;
  	struct rmap_item *rmap_item;
@@ -39,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int nid;
  
  	if (list_empty(&ksm_mm_head.mm_list))
-@@ -2290,13 +2293,13 @@ next_mm:
+@@ -2282,13 +2285,13 @@ next_mm:
  	}
  
  	mm = slot->mm;
@@ -57,7 +55,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (!(vma->vm_flags & VM_MERGEABLE))
  			continue;
  		if (ksm_scan.address < vma->vm_start)
-@@ -2334,6 +2337,7 @@ next_mm:
+@@ -2326,6 +2329,7 @@ next_mm:
  	}
  
  	if (ksm_test_exit(mm)) {

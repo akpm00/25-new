@@ -1,22 +1,20 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: Maple Tree: Add new data structure
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: Maple Tree: add new data structure
 
 The maple tree is an RCU-safe range based B-tree designed to use modern
 processor cache efficiently.  There are a number of places in the kernel
 that a non-overlapping range-based tree would be beneficial, especially
-one with a simple interface.  The first user that is covered in this
-patch set is the vm_area_struct, where three data structures are
-replaced by the maple tree: the augmented rbtree, the vma cache, and the
-linked list of VMAs in the mm_struct.  The long term goal is to reduce
-or remove the mmap_sem contention.
+one with a simple interface.  The first user that is covered in this patch
+set is the vm_area_struct, where three data structures are replaced by the
+maple tree: the augmented rbtree, the vma cache, and the linked list of
+VMAs in the mm_struct.  The long term goal is to reduce or remove the
+mmap_sem contention.
 
 The tree has a branching factor of 10 for non-leaf nodes and 16 for leaf
-nodes.  With the increased branching factor, it is significantly shorter than
-the rbtree so it has fewer cache misses.  The removal of the linked list
-between subsequent entries also reduces the cache misses and the need to pull
-in the previous and next VMA during many tree alterations.
+nodes.  With the increased branching factor, it is significantly shorter
+than the rbtree so it has fewer cache misses.  The removal of the linked
+list between subsequent entries also reduces the cache misses and the need
+to pull in the previous and next VMA during many tree alterations.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-8-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

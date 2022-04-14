@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/memcontrol: Stop using mm->highest_vm_end
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/memcontrol: stop using mm->highest_vm_end
 
 Pass through ULONG_MAX instead.
 
@@ -13,7 +11,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcontrol-stop-using-mm-highest_vm_end
 +++ a/mm/memcontrol.c
-@@ -5767,7 +5767,7 @@ static unsigned long mem_cgroup_count_pr
+@@ -5760,7 +5760,7 @@ static unsigned long mem_cgroup_count_pr
  	unsigned long precharge;
  
  	mmap_read_lock(mm);
@@ -22,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmap_read_unlock(mm);
  
  	precharge = mc.precharge;
-@@ -6065,9 +6065,7 @@ retry:
+@@ -6058,9 +6058,7 @@ retry:
  	 * When we have consumed all precharges and failed in doing
  	 * additional charge, the page walk just aborts.
  	 */

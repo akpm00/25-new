@@ -1,13 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-To: "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v7 26/70] mm/mmap: Use advanced maple tree API for mmap_region()
-Date: Mon, 4 Apr 2022 14:35:43 +0000
-x-mailer: git-send-email 2.34.1
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: use advanced maple tree API for mmap_region()
 
-Changing mmap_region() to use the maple tree state and the advanced
-maple tree interface allows for a lot less tree walking.
+Changing mmap_region() to use the maple tree state and the advanced maple
+tree interface allows for a lot less tree walking.
 
 This change removes the last caller of munmap_vma_range(), so drop this
 unused function.
@@ -16,16 +11,15 @@ Add vma_expand() to expand a VMA if possible by doing the necessary
 hugepage check, uprobe_munmap of files, dcache flush, modifications then
 undoing the detaches, etc.
 
+Link: https://lkml.kernel.org/r/20220404143501.2016403-27-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- mm/mmap.c | 234 +++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 187 insertions(+), 47 deletions(-)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 1e6a72147480..be5ecb515d1e 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -511,28 +511,6 @@ static inline struct vm_area_struct *__vma_next(struct mm_struct *mm,
+
+--- a/mm/mmap.c~mm-mmap-use-advanced-maple-tree-api-for-mmap_region
++++ a/mm/mmap.c
+@@ -519,28 +519,6 @@ static inline struct vm_area_struct *__v
  	return vma->vm_next;
  }
  
@@ -54,11 +48,10 @@ index 1e6a72147480..be5ecb515d1e 100644
  static unsigned long count_vma_pages_range(struct mm_struct *mm,
  		unsigned long addr, unsigned long end)
  {
-@@ -634,6 +612,117 @@ static void __insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma,
- 	mm->map_count++;
+@@ -643,6 +621,117 @@ static void __insert_vm_struct(struct mm
  }
  
-+/*
+ /*
 + * vma_expand - Expand an existing VMA
 + *
 + * @mas: The maple state
@@ -169,10 +162,11 @@ index 1e6a72147480..be5ecb515d1e 100644
 +	return 0;
 +}
 +
- /*
++/*
   * We cannot adjust vm_start, vm_end, vm_pgoff fields of a vma that
   * is already present in an i_mmap tree without adjusting the tree.
-@@ -1623,9 +1712,15 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+  * The following helper function should be used when such adjustments
+@@ -1631,9 +1720,15 @@ unsigned long mmap_region(struct file *f
  		struct list_head *uf)
  {
  	struct mm_struct *mm = current->mm;
@@ -190,7 +184,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  
  	/* Check against address space limit. */
  	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
-@@ -1635,16 +1730,17 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1643,16 +1738,17 @@ unsigned long mmap_region(struct file *f
  		 * MAP_FIXED may remove pages of mappings that intersects with
  		 * requested mapping. Account for the pages it would unmap.
  		 */
@@ -211,7 +205,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	/*
  	 * Private writable mapping: check memory availability
  	 */
-@@ -1655,14 +1751,43 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1663,14 +1759,43 @@ unsigned long mmap_region(struct file *f
  		vm_flags |= VM_ACCOUNT;
  	}
  
@@ -262,7 +256,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	/*
  	 * Determine the object being mapped and call the appropriate
  	 * specific mapper. the address has already been validated, but
-@@ -1675,7 +1800,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1683,7 +1808,7 @@ unsigned long mmap_region(struct file *f
  	}
  
  	vma->vm_start = addr;
@@ -271,7 +265,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	vma->vm_flags = vm_flags;
  	vma->vm_page_prot = vm_get_page_prot(vm_flags);
  	vma->vm_pgoff = pgoff;
-@@ -1696,28 +1821,30 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1704,28 +1829,30 @@ unsigned long mmap_region(struct file *f
  		 *
  		 * Answer: Yes, several device drivers can do it in their
  		 *         f_op->mmap method. -DaveM
@@ -308,7 +302,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  				vm_flags = vma->vm_flags;
  				goto unmap_writable;
  			}
-@@ -1741,13 +1868,28 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1749,13 +1876,28 @@ unsigned long mmap_region(struct file *f
  			goto free_vma;
  	}
  
@@ -339,7 +333,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	perf_event_mmap(vma);
  
  	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
-@@ -1774,6 +1916,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1782,6 +1924,7 @@ out:
  
  	vma_set_page_prot(vma);
  
@@ -347,7 +341,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	return addr;
  
  unmap_and_free_vma:
-@@ -1790,6 +1933,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+@@ -1798,6 +1941,7 @@ free_vma:
  unacct_error:
  	if (charged)
  		vm_unacct_memory(charged);
@@ -355,7 +349,7 @@ index 1e6a72147480..be5ecb515d1e 100644
  	return error;
  }
  
-@@ -2584,10 +2728,6 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
+@@ -2585,10 +2729,6 @@ int __do_munmap(struct mm_struct *mm, un
  	prev = vma->vm_prev;
  	/* we have start < vma->vm_end  */
  
@@ -366,5 +360,4 @@ index 1e6a72147480..be5ecb515d1e 100644
  	/*
  	 * If we need to split any vma, do it now to save pain later.
  	 *
--- 
-2.34.1
+_

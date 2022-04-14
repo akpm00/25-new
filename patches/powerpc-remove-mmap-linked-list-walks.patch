@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: powerpc: Remove mmap linked list walks
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: powerpc: remove mmap linked list walks
 
 Use the VMA iterator instead.
 

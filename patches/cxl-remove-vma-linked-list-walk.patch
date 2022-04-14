@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: cxl: Remove vma linked list walk
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: cxl: remove vma linked list walk
 
-Use the VMA iterator instead.  This requires a little restructuring
-of the surrounding code to hoist the mm to the caller.  That turns
+Use the VMA iterator instead.  This requires a little restructuring of the
+surrounding code to hoist the mm to the caller.  That turns
 cxl_prefault_one() into a trivial function, so call cxl_fault_segment()
 directly.
 

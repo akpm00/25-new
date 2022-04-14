@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: ipc/shm: Use VMA iterator instead of linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: ipc/shm: use VMA iterator instead of linked list
 
 The VMA iterator is faster than the linked llist, and it can be walked
 even when VMAs are being removed from the address space, so there's no
