@@ -324,7 +324,6 @@ riscv-use-vma-iterator-for-vdso.patch
 mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
-mglru-vs-maple-tree.patch
 #
 #mm/hugetlb
 #mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?
