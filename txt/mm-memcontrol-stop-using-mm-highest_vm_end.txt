@@ -1,0 +1,9 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/memcontrol: Stop using mm->highest_vm_end
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Pass through ULONG_MAX instead.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-57-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

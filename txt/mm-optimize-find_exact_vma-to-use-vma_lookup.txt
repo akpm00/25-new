@@ -1,0 +1,12 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm: Optimize find_exact_vma() to use vma_lookup()
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Use vma_lookup() to walk the tree to the start value requested.  If
+the vma at the start does not match, then the answer is NULL and there
+is no need to look at the next vma the way that find_vma() would.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-23-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>

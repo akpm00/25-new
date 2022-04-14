@@ -1,0 +1,15 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm: Use maple tree operations for find_vma_intersection()
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Move find_vma_intersection() to mmap.c and change implementation to
+maple tree.
+
+When searching for a vma within a range, it is easier to use the maple
+tree interface.
+
+Exported find_vma_intersection() for kvm module.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-26-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

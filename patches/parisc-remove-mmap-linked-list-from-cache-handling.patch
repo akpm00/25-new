@@ -1,0 +1,48 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: parisc: Remove mmap linked list from cache handling
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Use the VMA iterator instead.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-34-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/parisc/kernel/cache.c~parisc-remove-mmap-linked-list-from-cache-handling
++++ a/arch/parisc/kernel/cache.c
+@@ -536,9 +536,11 @@ static inline unsigned long mm_total_siz
+ {
+ 	struct vm_area_struct *vma;
+ 	unsigned long usize = 0;
++	VMA_ITERATOR(vmi, mm, 0);
+ 
+-	for (vma = mm->mmap; vma; vma = vma->vm_next)
++	for_each_vma(vmi, vma)
+ 		usize += vma->vm_end - vma->vm_start;
++
+ 	return usize;
+ }
+ 
+@@ -578,6 +580,7 @@ static void flush_cache_pages(struct vm_
+ void flush_cache_mm(struct mm_struct *mm)
+ {
+ 	struct vm_area_struct *vma;
++	VMA_ITERATOR(vmi, mm, 0);
+ 
+ 	/* Flushing the whole cache on each cpu takes forever on
+ 	   rp3440, etc.  So, avoid it if the mm isn't too big.  */
+@@ -589,7 +592,7 @@ void flush_cache_mm(struct mm_struct *mm
+ 		return;
+ 	}
+ 
+-	for (vma = mm->mmap; vma; vma = vma->vm_next)
++	for_each_vma(vmi, vma)
+ 		flush_cache_pages(vma, mm, vma->vm_start, vma->vm_end);
+ }
+ 
+_

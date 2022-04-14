@@ -29,13 +29,11 @@ Cc: Wei Yang <richard.weiyang@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/memory_hotplug.c |   37 +++++++++++++++----------------------
- 1 file changed, 15 insertions(+), 22 deletions(-)
 
 --- a/mm/memory_hotplug.c~mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node
 +++ a/mm/memory_hotplug.c
-@@ -1155,8 +1155,7 @@ static void reset_node_present_pages(pg_
- 	pgdat->node_present_pages = 0;
+@@ -1145,8 +1145,7 @@ failed_addition:
+ 	return ret;
  }
  
 -/* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
@@ -44,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct pglist_data *pgdat = NODE_DATA(nid);
  
-@@ -1176,8 +1175,6 @@ static pg_data_t __ref *hotadd_init_pgda
+@@ -1166,8 +1165,6 @@ static pg_data_t __ref *hotadd_init_pgda
  	 * to access not-initialized zonelist, build here.
  	 */
  	build_all_zonelists(pgdat);
@@ -53,7 +51,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -1187,31 +1184,27 @@ static pg_data_t __ref *hotadd_init_pgda
+@@ -1177,31 +1174,27 @@ static pg_data_t __ref *hotadd_init_pgda
   * called by cpu_up() to online a node without onlined memory.
   *
   * Returns:

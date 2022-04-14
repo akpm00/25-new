@@ -197,12 +197,6 @@ Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/linux/pgtable.h |   29 ++++++++++++++++++++
- include/linux/swapops.h |    2 +
- mm/memory.c             |   55 +++++++++++++++++++++++++++++++++++---
- mm/rmap.c               |   19 +++++++------
- mm/swapfile.c           |   13 ++++++++
- 5 files changed, 105 insertions(+), 13 deletions(-)
 
 --- a/include/linux/pgtable.h~mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit
 +++ a/include/linux/pgtable.h

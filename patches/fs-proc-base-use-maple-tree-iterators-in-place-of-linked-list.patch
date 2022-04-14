@@ -1,0 +1,40 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: fs/proc/base: Use maple tree iterators in place of linked list
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-44-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/fs/proc/base.c~fs-proc-base-use-maple-tree-iterators-in-place-of-linked-list
++++ a/fs/proc/base.c
+@@ -2322,6 +2322,7 @@ proc_map_files_readdir(struct file *file
+ 	GENRADIX(struct map_files_info) fa;
+ 	struct map_files_info *p;
+ 	int ret;
++	MA_STATE(mas, NULL, 0, 0);
+ 
+ 	genradix_init(&fa);
+ 
+@@ -2349,6 +2350,7 @@ proc_map_files_readdir(struct file *file
+ 	}
+ 
+ 	nr_files = 0;
++	mas.tree = &mm->mm_mt;
+ 
+ 	/*
+ 	 * We need two passes here:
+@@ -2360,7 +2362,8 @@ proc_map_files_readdir(struct file *file
+ 	 * routine might require mmap_lock taken in might_fault().
+ 	 */
+ 
+-	for (vma = mm->mmap, pos = 2; vma; vma = vma->vm_next) {
++	pos = 2;
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		if (!vma->vm_file)
+ 			continue;
+ 		if (++pos <= ctx->pos)
+_

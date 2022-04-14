@@ -1,0 +1,33 @@
+From: Yu Zhao <yuzhao@google.com>
+Subject: mm-x86-add-config_arch_has_nonleaf_pmd_young-fix
+
+fix Kconfig warnings
+
+Link: https://lkml.kernel.org/r/YlZrmTd0JGO7/g8a@google.com
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/arch/Kconfig~mm-x86-add-config_arch_has_nonleaf_pmd_young-fix
++++ a/arch/Kconfig
+@@ -1380,7 +1380,6 @@ config HAVE_ARCH_NODE_DEV_GROUP
+ 
+ config ARCH_HAS_NONLEAF_PMD_YOUNG
+ 	bool
+-	depends on PGTABLE_LEVELS > 2
+ 	help
+ 	  Architectures that select this option are capable of setting the
+ 	  accessed bit in non-leaf PMD entries when using them as part of linear
+--- a/arch/x86/Kconfig~mm-x86-add-config_arch_has_nonleaf_pmd_young-fix
++++ a/arch/x86/Kconfig
+@@ -85,7 +85,7 @@ config X86
+ 	select ARCH_HAS_PMEM_API		if X86_64
+ 	select ARCH_HAS_PTE_DEVMAP		if X86_64
+ 	select ARCH_HAS_PTE_SPECIAL
+-	select ARCH_HAS_NONLEAF_PMD_YOUNG
++	select ARCH_HAS_NONLEAF_PMD_YOUNG	if PGTABLE_LEVELS > 2
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
+ 	select ARCH_HAS_COPY_MC			if X86_64
+ 	select ARCH_HAS_SET_MEMORY
+_

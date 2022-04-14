@@ -1,0 +1,7 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: radix tree test suite: Add lockdep_is_held to header
+
+maple tree uses lockdep_is_held, so define it as external in the header.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-6-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>

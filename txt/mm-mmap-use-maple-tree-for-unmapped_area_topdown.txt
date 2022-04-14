@@ -1,0 +1,14 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mmap: Use maple tree for unmapped_area{_topdown}
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+The maple tree code was added to find the unmapped area in a previous
+commit and was checked against what the rbtree returned, but the actual
+result was never used.  Start using the maple tree implementation and
+remove the rbtree code.
+
+Add kernel documentation comment for these functions.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-16-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

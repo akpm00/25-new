@@ -1,0 +1,18 @@
+From: YueHaibing <yuehaibing@huawei.com>
+Subject: mm/memory_hotplug: fix build warning without CONFIG_MEMORY_HOTREMOVE
+
+mm/memory_hotplug.c:1148:13: warning: `reset_node_present_pages' defined but not used [-Wunused-function]
+ 1148 | static void reset_node_present_pages(pg_data_t *pgdat)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~
+
+reset_node_present_pages() now only used in node_reset_state(),move it
+inside the ifdef block to fix this warning.
+
+Link: https://lkml.kernel.org/r/20220408022402.29668-1-yuehaibing@huawei.com
+Fixes: 0d540af7befe ("mm/memory_hotplug: reset node's state when empty during offline")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Wei Yang <richard.weiyang@gmail.com>

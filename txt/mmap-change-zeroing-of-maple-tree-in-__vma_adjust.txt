@@ -1,0 +1,12 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mmap: Change zeroing of maple tree in __vma_adjust()
+
+Only write to the maple tree if we are not inserting or the insert isn't
+going to overwrite the area to clear.  This avoids spanning writes and
+node coealescing when unnecessary.
+
+The change requires a custom search for the linked list addition to find
+the correct VMA for the prev link.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-21-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>

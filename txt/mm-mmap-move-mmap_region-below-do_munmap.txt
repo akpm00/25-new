@@ -1,0 +1,10 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mmap: Move mmap_region() below do_munmap()
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Relocation of code for the next commit.  There should be no changes
+here.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-30-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

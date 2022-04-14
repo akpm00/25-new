@@ -6,9 +6,9 @@ The changes will make the code simplified.
 
 Link: https://lkml.kernel.org/r/20220413032915.251254-5-liupeng256@huawei.com
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>

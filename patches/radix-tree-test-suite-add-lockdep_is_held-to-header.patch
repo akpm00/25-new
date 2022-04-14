@@ -1,0 +1,21 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: radix tree test suite: Add lockdep_is_held to header
+
+maple tree uses lockdep_is_held, so define it as external in the header.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-6-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/tools/testing/radix-tree/linux/lockdep.h~radix-tree-test-suite-add-lockdep_is_held-to-header
++++ a/tools/testing/radix-tree/linux/lockdep.h
+@@ -11,4 +11,6 @@ static inline void lockdep_set_class(spi
+ 					struct lock_class_key *key)
+ {
+ }
++
++extern int lockdep_is_held(const void *);
+ #endif /* _LINUX_LOCKDEP_H */
+_

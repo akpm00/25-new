@@ -1,0 +1,7 @@
+From: Yu Zhao <yuzhao@google.com>
+Subject: mm-x86-add-config_arch_has_nonleaf_pmd_young-fix
+
+fix Kconfig warnings
+
+Link: https://lkml.kernel.org/r/YlZrmTd0JGO7/g8a@google.com
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>

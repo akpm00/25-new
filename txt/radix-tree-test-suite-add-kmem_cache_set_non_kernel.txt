@@ -1,0 +1,13 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: radix tree test suite: Add kmem_cache_set_non_kernel()
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+kmem_cache_set_non_kernel() is a mechanism to allow a certain number of
+kmem_cache_alloc requests to succeed even when GFP_KERNEL is not set in
+the flags.  This functionality allows for testing different paths though
+the code.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-3-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

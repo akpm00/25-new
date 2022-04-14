@@ -1,0 +1,9 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: radix tree test suite: Add pr_err define
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+define pr_err to printk
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-2-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

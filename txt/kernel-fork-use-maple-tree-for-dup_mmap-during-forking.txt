@@ -1,0 +1,21 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: kernel/fork: Use maple tree for dup_mmap() during forking
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+The maple tree was already tracking VMAs in this function by an earlier
+commit, but the rbtree iterator was being used to iterate the list.
+Change the iterator to use a maple tree native iterator and switch to
+the maple tree advanced API to avoid multiple walks of the tree during
+insert operations.  Unexport the now-unused vma_store() function.
+
+For performance reasons we bulk allocate the maple tree nodes.  The node
+calculations are done internally to the tree and use the VMA count and
+assume the worst-case node requirements.  The VM_DONT_COPY flag does
+not allow for the most efficient copy method of the tree and so a bulk
+loading algorithm is used.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-17-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>

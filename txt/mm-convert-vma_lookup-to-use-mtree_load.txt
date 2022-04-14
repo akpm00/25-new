@@ -1,0 +1,15 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm: Convert vma_lookup() to use mtree_load()
+
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+
+Unlike the rbtree, the Maple Tree will return a NULL if there's
+nothing at a particular address.
+
+Since the previous commit dropped the vmacache, it is now possible to
+consult the tree directly.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-29-Liam.Howlett@oracle.com
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

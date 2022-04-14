@@ -1,0 +1,10 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/ksm: Use vma iterators instead of vma linked list
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Remove the use of the linked list for eventual removal.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-55-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

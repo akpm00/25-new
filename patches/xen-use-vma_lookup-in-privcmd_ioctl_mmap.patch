@@ -1,0 +1,29 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: xen: Use vma_lookup() in privcmd_ioctl_mmap()
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+vma_lookup() walks the VMA tree for a specific value, find_vma() will
+search the tree after walking to a specific value.  It is more efficient
+to only walk to the requested value since privcmd_ioctl_mmap() will exit
+the loop if vm_start != msg->va.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-22-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/drivers/xen/privcmd.c~xen-use-vma_lookup-in-privcmd_ioctl_mmap
++++ a/drivers/xen/privcmd.c
+@@ -282,7 +282,7 @@ static long privcmd_ioctl_mmap(struct fi
+ 						     struct page, lru);
+ 		struct privcmd_mmap_entry *msg = page_address(page);
+ 
+-		vma = find_vma(mm, msg->va);
++		vma = vma_lookup(mm, msg->va);
+ 		rc = -EINVAL;
+ 
+ 		if (!vma || (msg->va != vma->vm_start) || vma->vm_private_data)
+_

@@ -1,0 +1,24 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: radix tree test suite: Add pr_err define
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+define pr_err to printk
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-2-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/tools/testing/radix-tree/linux/kernel.h~radix-tree-test-suite-add-pr_err-define
++++ a/tools/testing/radix-tree/linux/kernel.h
+@@ -14,6 +14,7 @@
+ #include "../../../include/linux/kconfig.h"
+ 
+ #define printk printf
++#define pr_err printk
+ #define pr_info printk
+ #define pr_debug printk
+ #define pr_cont printk
+_

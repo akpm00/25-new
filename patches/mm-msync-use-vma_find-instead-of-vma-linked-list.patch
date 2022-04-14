@@ -1,0 +1,24 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/msync: Use vma_find() instead of vma linked list
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-62-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/msync.c~mm-msync-use-vma_find-instead-of-vma-linked-list
++++ a/mm/msync.c
+@@ -104,7 +104,7 @@ SYSCALL_DEFINE3(msync, unsigned long, st
+ 				error = 0;
+ 				goto out_unlock;
+ 			}
+-			vma = vma->vm_next;
++			vma = find_vma(mm, vma->vm_end);
+ 		}
+ 	}
+ out_unlock:
+_

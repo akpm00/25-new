@@ -18,9 +18,9 @@ invalid parameter string, just use return '1' to avoid print again.
 
 Link: https://lkml.kernel.org/r/20220413032915.251254-4-liupeng256@huawei.com
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>

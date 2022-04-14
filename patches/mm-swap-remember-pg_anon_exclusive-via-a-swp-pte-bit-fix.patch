@@ -1,0 +1,21 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit-fix
+
+Link: https://lkml.kernel.org/r/ac725bcb-313a-4fff-250a-68ba9a8f85fb@redhat.com
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/memory.c~mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit-fix
++++ a/mm/memory.c
+@@ -3747,7 +3747,7 @@ vm_fault_t do_swap_page(struct vm_fault
+ 			 */
+ 			exclusive = true;
+ 		} else if (exclusive && PageWriteback(page) &&
+-			   !(swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
++			  (swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
+ 			/*
+ 			 * This is tricky: not all swap backends support
+ 			 * concurrent page modifications while under writeback.
+_

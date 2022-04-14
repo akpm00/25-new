@@ -1,0 +1,14 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: xtensa: Remove vma linked list walks
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Use the VMA iterator instead.  Since VMA can no longer be NULL in the
+loop, then deal with out-of-memory outside the loop.  This means a
+slightly longer run time in the failure case (-ENOMEM) - it will run to
+the end of the VMAs before erroring instead of in the middle of the
+loop.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-38-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

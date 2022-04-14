@@ -37,12 +37,6 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/Kconfig                   |    9 +++++++++
- arch/x86/Kconfig               |    1 +
- arch/x86/include/asm/pgtable.h |    3 ++-
- arch/x86/mm/pgtable.c          |    5 ++++-
- include/linux/pgtable.h        |    4 ++--
- 5 files changed, 18 insertions(+), 4 deletions(-)
 
 --- a/arch/Kconfig~mm-x86-add-config_arch_has_nonleaf_pmd_young
 +++ a/arch/Kconfig

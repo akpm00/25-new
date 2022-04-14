@@ -1,0 +1,227 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: userfaultfd: Use maple tree iterator to iterate VMAs
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Don't use the mm_struct linked list or the vma->vm_next in prep for removal
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-46-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/fs/userfaultfd.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
++++ a/fs/userfaultfd.c
+@@ -612,14 +612,16 @@ static void userfaultfd_event_wait_compl
+ 	if (release_new_ctx) {
+ 		struct vm_area_struct *vma;
+ 		struct mm_struct *mm = release_new_ctx->mm;
++		VMA_ITERATOR(vmi, mm, 0);
+ 
+ 		/* the various vma->vm_userfaultfd_ctx still points to it */
+ 		mmap_write_lock(mm);
+-		for (vma = mm->mmap; vma; vma = vma->vm_next)
++		for_each_vma(vmi, vma) {
+ 			if (vma->vm_userfaultfd_ctx.ctx == release_new_ctx) {
+ 				vma->vm_userfaultfd_ctx = NULL_VM_UFFD_CTX;
+ 				vma->vm_flags &= ~__VM_UFFD_FLAGS;
+ 			}
++		}
+ 		mmap_write_unlock(mm);
+ 
+ 		userfaultfd_ctx_put(release_new_ctx);
+@@ -800,11 +802,13 @@ static bool has_unmap_ctx(struct userfau
+ 	return false;
+ }
+ 
+-int userfaultfd_unmap_prep(struct vm_area_struct *vma,
+-			   unsigned long start, unsigned long end,
+-			   struct list_head *unmaps)
++int userfaultfd_unmap_prep(struct mm_struct *mm, unsigned long start,
++			   unsigned long end, struct list_head *unmaps)
+ {
+-	for ( ; vma && vma->vm_start < end; vma = vma->vm_next) {
++	VMA_ITERATOR(vmi, mm, start);
++	struct vm_area_struct *vma;
++
++	for_each_vma_range(vmi, vma, end) {
+ 		struct userfaultfd_unmap_ctx *unmap_ctx;
+ 		struct userfaultfd_ctx *ctx = vma->vm_userfaultfd_ctx.ctx;
+ 
+@@ -854,6 +858,7 @@ static int userfaultfd_release(struct in
+ 	/* len == 0 means wake all */
+ 	struct userfaultfd_wake_range range = { .len = 0, };
+ 	unsigned long new_flags;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
+ 
+ 	WRITE_ONCE(ctx->released, true);
+ 
+@@ -870,7 +875,7 @@ static int userfaultfd_release(struct in
+ 	 */
+ 	mmap_write_lock(mm);
+ 	prev = NULL;
+-	for (vma = mm->mmap; vma; vma = vma->vm_next) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		cond_resched();
+ 		BUG_ON(!!vma->vm_userfaultfd_ctx.ctx ^
+ 		       !!(vma->vm_flags & __VM_UFFD_FLAGS));
+@@ -1269,6 +1274,7 @@ static int userfaultfd_register(struct u
+ 	bool found;
+ 	bool basic_ioctls;
+ 	unsigned long start, end, vma_end;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
+ 
+ 	user_uffdio_register = (struct uffdio_register __user *) arg;
+ 
+@@ -1311,7 +1317,8 @@ static int userfaultfd_register(struct u
+ 		goto out;
+ 
+ 	mmap_write_lock(mm);
+-	vma = find_vma_prev(mm, start, &prev);
++	mas_set(&mas, start);
++	vma = mas_find(&mas, ULONG_MAX);
+ 	if (!vma)
+ 		goto out_unlock;
+ 
+@@ -1336,7 +1343,7 @@ static int userfaultfd_register(struct u
+ 	 */
+ 	found = false;
+ 	basic_ioctls = false;
+-	for (cur = vma; cur && cur->vm_start < end; cur = cur->vm_next) {
++	for (cur = vma; cur; cur = mas_next(&mas, end - 1)) {
+ 		cond_resched();
+ 
+ 		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
+@@ -1396,8 +1403,10 @@ static int userfaultfd_register(struct u
+ 	}
+ 	BUG_ON(!found);
+ 
+-	if (vma->vm_start < start)
+-		prev = vma;
++	mas_set(&mas, start);
++	prev = mas_prev(&mas, 0);
++	if (prev != vma)
++		mas_next(&mas, ULONG_MAX);
+ 
+ 	ret = 0;
+ 	do {
+@@ -1455,8 +1464,8 @@ static int userfaultfd_register(struct u
+ 	skip:
+ 		prev = vma;
+ 		start = vma->vm_end;
+-		vma = vma->vm_next;
+-	} while (vma && vma->vm_start < end);
++		vma = mas_next(&mas, end - 1);
++	} while (vma);
+ out_unlock:
+ 	mmap_write_unlock(mm);
+ 	mmput(mm);
+@@ -1500,6 +1509,7 @@ static int userfaultfd_unregister(struct
+ 	bool found;
+ 	unsigned long start, end, vma_end;
+ 	const void __user *buf = (void __user *)arg;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
+ 
+ 	ret = -EFAULT;
+ 	if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
+@@ -1518,7 +1528,8 @@ static int userfaultfd_unregister(struct
+ 		goto out;
+ 
+ 	mmap_write_lock(mm);
+-	vma = find_vma_prev(mm, start, &prev);
++	mas_set(&mas, start);
++	vma = mas_find(&mas, ULONG_MAX);
+ 	if (!vma)
+ 		goto out_unlock;
+ 
+@@ -1543,7 +1554,7 @@ static int userfaultfd_unregister(struct
+ 	 */
+ 	found = false;
+ 	ret = -EINVAL;
+-	for (cur = vma; cur && cur->vm_start < end; cur = cur->vm_next) {
++	for (cur = vma; cur; cur = mas_next(&mas, end - 1)) {
+ 		cond_resched();
+ 
+ 		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
+@@ -1563,8 +1574,10 @@ static int userfaultfd_unregister(struct
+ 	}
+ 	BUG_ON(!found);
+ 
+-	if (vma->vm_start < start)
+-		prev = vma;
++	mas_set(&mas, start);
++	prev = mas_prev(&mas, 0);
++	if (prev != vma)
++		mas_next(&mas, ULONG_MAX);
+ 
+ 	ret = 0;
+ 	do {
+@@ -1629,8 +1642,8 @@ static int userfaultfd_unregister(struct
+ 	skip:
+ 		prev = vma;
+ 		start = vma->vm_end;
+-		vma = vma->vm_next;
+-	} while (vma && vma->vm_start < end);
++		vma = mas_next(&mas, end - 1);
++	} while (vma);
+ out_unlock:
+ 	mmap_write_unlock(mm);
+ 	mmput(mm);
+--- a/include/linux/userfaultfd_k.h~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
++++ a/include/linux/userfaultfd_k.h
+@@ -173,9 +173,8 @@ extern bool userfaultfd_remove(struct vm
+ 			       unsigned long start,
+ 			       unsigned long end);
+ 
+-extern int userfaultfd_unmap_prep(struct vm_area_struct *vma,
+-				  unsigned long start, unsigned long end,
+-				  struct list_head *uf);
++extern int userfaultfd_unmap_prep(struct mm_struct *mm, unsigned long start,
++				  unsigned long end, struct list_head *uf);
+ extern void userfaultfd_unmap_complete(struct mm_struct *mm,
+ 				       struct list_head *uf);
+ 
+@@ -256,7 +255,7 @@ static inline bool userfaultfd_remove(st
+ 	return true;
+ }
+ 
+-static inline int userfaultfd_unmap_prep(struct vm_area_struct *vma,
++static inline int userfaultfd_unmap_prep(struct mm_struct *mm,
+ 					 unsigned long start, unsigned long end,
+ 					 struct list_head *uf)
+ {
+--- a/mm/mmap.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
++++ a/mm/mmap.c
+@@ -2500,7 +2500,7 @@ do_mas_align_munmap(struct ma_state *mas
+ 		 * split, despite we could. This is unlikely enough
+ 		 * failure that it's not worth optimizing it for.
+ 		 */
+-		int error = userfaultfd_unmap_prep(vma, start, end, uf);
++		int error = userfaultfd_unmap_prep(mm, start, end, uf);
+ 
+ 		if (error)
+ 			return error;
+@@ -2990,10 +2990,7 @@ static int do_brk_munmap(struct ma_state
+ 		goto munmap_full_vma;
+ 	}
+ 
+-	vma_init(&unmap, mm);
+-	unmap.vm_start = newbrk;
+-	unmap.vm_end = oldbrk;
+-	ret = userfaultfd_unmap_prep(&unmap, newbrk, oldbrk, uf);
++	ret = userfaultfd_unmap_prep(mm, newbrk, oldbrk, uf);
+ 	if (ret)
+ 		return ret;
+ 	ret = 1;
+@@ -3006,6 +3003,9 @@ static int do_brk_munmap(struct ma_state
+ 	}
+ 
+ 	vma->vm_end = newbrk;
++	vma_init(&unmap, mm);
++	unmap.vm_start = newbrk;
++	unmap.vm_end = oldbrk;
+ 	if (vma_mas_remove(&unmap, mas))
+ 		goto mas_store_fail;
+ 
+_

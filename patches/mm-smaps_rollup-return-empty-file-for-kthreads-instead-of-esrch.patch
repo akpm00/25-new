@@ -1,0 +1,32 @@
+From: "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: mm/smaps_rollup: return empty file for kthreads instead of ESRCH
+
+This restores the behavior prior to 258f669e7e88 ("mm:
+/proc/pid/smaps_rollup: convert to single value seq_file"), making it once
+again consistent with maps and smaps, and allowing patterns like awk
+'$1=="Anonymous:"{x+=$2}END{print x}' /proc/*/smaps_rollup to work. 
+Searching all Debian packages for "smaps_rollup" did not find any programs
+which would be affected by this change.
+
+Link: https://lkml.kernel.org/r/20220413211357.26938-1-alex_y_xu@yahoo.ca
+Fixes: 258f669e7e88 ("mm: /proc/pid/smaps_rollup: convert to single value seq_file")
+Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/fs/proc/task_mmu.c~mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch
++++ a/fs/proc/task_mmu.c
+@@ -883,10 +883,8 @@ static int show_smaps_rollup(struct seq_
+ 		return -ESRCH;
+ 
+ 	mm = priv->mm;
+-	if (!mm || !mmget_not_zero(mm)) {
+-		ret = -ESRCH;
++	if (!mm || !mmget_not_zero(mm))
+ 		goto out_put_task;
+-	}
+ 
+ 	memset(&mss, 0, sizeof(mss));
+ 
+_

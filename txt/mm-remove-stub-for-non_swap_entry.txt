@@ -1,0 +1,36 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: include/linux/swapops.h: remove stub for non_swap_entry()
+
+The stub for non_swap_entry() may not help much, because MAX_SWAPFILES has
+already contained all the information to decide whether a swap entry is
+real swap entry or pesudo ones (migrations, ...).
+
+There can be some performance influences on non_swap_entry() with below
+conditions all met:
+
+  !CONFIG_MIGRATION && !CONFIG_MEMORY_FAILURE && !CONFIG_DEVICE_PRIVATE
+
+But that's definitely not the major config most machines will use, at the
+meantime it's already in a slow path of swap entry (being parsed from a
+swap pte), so IMHO it shouldn't be a major issue.  Also according to the
+analysis from Alistair, somehow the stub didn't do the job right [1].
+
+To make the code cleaner, let's drop the stub.
+
+[1] https://lore.kernel.org/lkml/8735ihbw6g.fsf@nvdebian.thelocal/
+
+Note: the uffd-wp shmem & hugetlbfs series will need this patch to make
+sure swap entries work as expected with below config as spotted by
+Alistair:
+
+  !CONFIG_MIGRATION &&
+  !CONFIG_MEMORY_FAILURE &&
+  !CONFIG_DEVICE_PRIVATE &&
+  CONFIG_PTE_MARKER
+
+(PS: this config should mostly never gonna happen, though, afaict..)
+
+Link: https://lkml.kernel.org/r/20220413191147.66645-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Hugh Dickins <hughd@google.com>

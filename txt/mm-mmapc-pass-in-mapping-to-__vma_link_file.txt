@@ -1,0 +1,9 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mmap.c: Pass in mapping to __vma_link_file()
+
+__vma_link_file() resolves the mapping from the file, if there is one.
+Pass through the mapping and check the vm_file externally since most
+places already have the required information and check of vm_file.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-71-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>

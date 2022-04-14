@@ -1,0 +1,11 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: fs/proc/task_mmu: Stop using linked list and highest_vm_end
+
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+
+Remove references to mm_struct linked list and highest_vm_end for when
+they are removed
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-45-Liam.Howlett@oracle.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

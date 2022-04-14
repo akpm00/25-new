@@ -1,0 +1,36 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/memcontrol: Stop using mm->highest_vm_end
+
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+
+Pass through ULONG_MAX instead.
+
+Link: https://lkml.kernel.org/r/20220404143501.2016403-57-Liam.Howlett@oracle.com
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/mm/memcontrol.c~mm-memcontrol-stop-using-mm-highest_vm_end
++++ a/mm/memcontrol.c
+@@ -5767,7 +5767,7 @@ static unsigned long mem_cgroup_count_pr
+ 	unsigned long precharge;
+ 
+ 	mmap_read_lock(mm);
+-	walk_page_range(mm, 0, mm->highest_vm_end, &precharge_walk_ops, NULL);
++	walk_page_range(mm, 0, ULONG_MAX, &precharge_walk_ops, NULL);
+ 	mmap_read_unlock(mm);
+ 
+ 	precharge = mc.precharge;
+@@ -6065,9 +6065,7 @@ retry:
+ 	 * When we have consumed all precharges and failed in doing
+ 	 * additional charge, the page walk just aborts.
+ 	 */
+-	walk_page_range(mc.mm, 0, mc.mm->highest_vm_end, &charge_walk_ops,
+-			NULL);
+-
++	walk_page_range(mc.mm, 0, ULONG_MAX, &charge_walk_ops, NULL);
+ 	mmap_read_unlock(mc.mm);
+ 	atomic_dec(&mc.from->moving_account);
+ }
+_
