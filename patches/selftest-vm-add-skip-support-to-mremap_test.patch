@@ -1,0 +1,37 @@
+From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: selftest/vm: add skip support to mremap_test
+
+Allow the mremap test to be skipped due to errors such as failing to find
+a valid remap region and failure to parse the mmap_min_addr sysctl.
+
+Link: https://lkml.kernel.org/r/20220414171529.62058-5-sidhartha.kumar@oracle.com
+Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+
+--- a/tools/testing/selftests/vm/run_vmtests.sh~selftest-vm-add-skip-support-to-mremap_test
++++ a/tools/testing/selftests/vm/run_vmtests.sh
+@@ -291,11 +291,16 @@ echo "-------------------"
+ echo "running mremap_test"
+ echo "-------------------"
+ ./mremap_test
+-if [ $? -ne 0 ]; then
++ret_val=$?
++
++if [ $ret_val -eq 0 ]; then
++	echo "[PASS]"
++elif [ $ret_val -eq $ksft_skip ]; then
++	 echo "[SKIP]"
++	 exitcode=$ksft_skip
++else
+ 	echo "[FAIL]"
+ 	exitcode=1
+-else
+-	echo "[PASS]"
+ fi
+ 
+ echo "-----------------"
+_

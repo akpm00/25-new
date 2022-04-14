@@ -13,6 +13,7 @@ mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
 mm-secretmem-fix-panic-when-growing-a-memfd_secret-v2.patch
 #
 #mm/memory-failure
+#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: maybe TBU https://lkml.kernel.org/r/5b665bcd-57f8-85ae-b0c4-c055875dbfff@oracle.com
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
 #mm/kasan
@@ -52,14 +53,10 @@ mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #
-#mm/pagealloc
-#mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch: acks?
-#
 #mm/memory-failure
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
 #mm/kmemleak
-#mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch: acks?
 mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
 #
 #mm/memcg
@@ -73,6 +70,16 @@ mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #mm/userfaultfd
 #userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
 userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
+#
+#mm/mremap
+selftest-vm-verify-mmap-addr-in-mremap_test.patch
+selftest-vm-verify-remap-destination-address-in-mremap_test.patch
+selftest-vm-support-xfail-in-mremap_test.patch
+selftest-vm-add-skip-support-to-mremap_test.patch
+#
+#mm/oom-kill
+#oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch: acks?
+oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -129,6 +136,7 @@ mm-huge_memory-remove-outdated-vm_warn_on_once_page-from-unmap_page.patch
 mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages.patch
 mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive.patch
 mm-gup-disallow-follow_pagefoll_pin.patch
+#mm-support-gup-triggered-unsharing-of-anonymous-pages.patch: https://lkml.kernel.org/r/9005b167-db08-c967-463b-5e0e092cbb6c@suse.cz
 mm-support-gup-triggered-unsharing-of-anonymous-pages.patch
 mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page.patch
 mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning.patch
@@ -249,9 +257,12 @@ mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4.patch
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
 #
-#
 mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased.patch
 revert-mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
+#
+mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
+#mm-memory-failurec-dissolve-truncated-hugetlb-page.patch: acks?
+mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #
 #mm/mlock
 #mm/mapletree
@@ -416,6 +427,9 @@ mm-multi-gen-lru-debugfs-interface.patch
 mm-multi-gen-lru-admin-guide.patch
 mm-multi-gen-lru-design-doc.patch
 mglru-vs-maple-tree.patch
+#
+mm-vmscan-fix-comment-for-current_may_throttle.patch
+mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
 #
 #mm/proc
 #mm/z3fold
