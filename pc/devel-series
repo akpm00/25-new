@@ -1302,7 +1302,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
-linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -1383,3 +1382,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #[folded-merged]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
 #[nacked]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
+#[obsolete]linux-next-git-rejects.patch
