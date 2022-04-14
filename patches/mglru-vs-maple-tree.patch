@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (mmap_read_trylock(mm)) {
  			unsigned long start = walk->next_addr;
 -			unsigned long end = mm->highest_vm_end;
-+			unsigned long end = TASK_SIZE;
++			unsigned long end = ULONG_MAX;
  
  			err = walk_page_range(mm, start, end, &mm_walk_ops, walk);
  
