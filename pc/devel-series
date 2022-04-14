@@ -195,18 +195,6 @@ mm-mmap-clarify-protection_map-indices.patch
 mm-mmapc-use-helper-mlock_future_check.patch
 #
 #
-#mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch+N: TBU
-mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
-#powerpc-mm-enable-arch_has_vm_get_page_prot.patch: TBU
-powerpc-mm-enable-arch_has_vm_get_page_prot.patch
-arm64-mm-enable-arch_has_vm_get_page_prot.patch
-sparc-mm-enable-arch_has_vm_get_page_prot.patch
-x86-mm-enable-arch_has_vm_get_page_prot.patch
-#mm-mmap-drop-arch_filter_pgprot.patch: TBU
-mm-mmap-drop-arch_filter_pgprot.patch
-#mm-mmap-drop-arch_vm_get_page_pgprot.patch: TBU
-mm-mmap-drop-arch_vm_get_page_pgprot.patch
-#
 #mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch: Michel Lespinasse ack?
 #mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch
 #
@@ -344,6 +332,7 @@ hugetlb-remove-use-of-list-iterator-variable-after-loop.patch
 #
 mm-hugetlb_vmemmap-introduce-arch_want_hugetlb_page_free_vmemmap.patch
 arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64.patch
+arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64-fix.patch
 #
 mm-hugetlb_vmemmap-cleanup-hugetlb_vmemmap-related-functions.patch
 mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled.patch
@@ -375,6 +364,8 @@ mm-introduce-pte_marker-swap-entry-fix.patch
 #mm-teach-core-mm-about-pte-markers.patch: https://lkml.kernel.org/r/87a6crawzy.fsf@nvdebian.thelocal
 mm-teach-core-mm-about-pte-markers.patch
 mm-check-against-orig_pte-for-finish_fault.patch
+mm-check-against-orig_pte-for-finish_fault-fix.patch
+mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes.patch
 mm-uffd-pte_marker_uffd_wp.patch
 mm-uffd-pte_marker_uffd_wp-fix.patch
 mm-shmem-take-care-of-uffdio_copy_mode_wp.patch
@@ -1397,3 +1388,10 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #[folded-merged]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
 #[nacked]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
+#[to-be-updated]mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
+#[to-be-updated]powerpc-mm-enable-arch_has_vm_get_page_prot.patch
+#[to-be-updated]arm64-mm-enable-arch_has_vm_get_page_prot.patch
+#[to-be-updated]sparc-mm-enable-arch_has_vm_get_page_prot.patch
+#[to-be-updated]x86-mm-enable-arch_has_vm_get_page_prot.patch
+#[to-be-updated]mm-mmap-drop-arch_filter_pgprot.patch
+#[to-be-updated]mm-mmap-drop-arch_vm_get_page_pgprot.patch
