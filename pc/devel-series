@@ -194,6 +194,13 @@ mm-mmap-clarify-protection_map-indices.patch
 #
 mm-mmapc-use-helper-mlock_future_check.patch
 #
+mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
+powerpc-mm-enable-arch_has_vm_get_page_prot.patch
+arm64-mm-enable-arch_has_vm_get_page_prot.patch
+sparc-mm-enable-arch_has_vm_get_page_prot.patch
+x86-mm-enable-arch_has_vm_get_page_prot.patch
+mm-mmap-drop-arch_filter_pgprot.patch
+mm-mmap-drop-arch_vm_get_page_pgprot.patch
 #
 #mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch: Michel Lespinasse ack?
 #mm-modify-the-method-to-search-addr-in-unmapped_area_topdown.patch

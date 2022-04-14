@@ -1,0 +1,21 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/mmap: Drop arch_vm_get_page_pgprot()
+
+There are no platforms left which use arch_vm_get_page_prot(). Just drop
+generic arch_vm_get_page_prot().
+
+Link: https://lkml.kernel.org/r/20220414062125.609297-8-anshuman.khandual@arm.com
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
