@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/pagewalk: Use vma_find() instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/pagewalk: use vma_find() instead of vma linked list
 
 walk_page_range() no longer uses the one vma linked list reference.
 

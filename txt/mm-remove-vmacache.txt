@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Remove vmacache
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm: remove vmacache
 
 By using the maple tree and the maple tree state, the vmacache is no
 longer beneficial and is complicating the VMA code.  Remove the vmacache

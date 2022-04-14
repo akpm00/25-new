@@ -1,9 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: userfaultfd: Use maple tree iterator to iterate VMAs
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: userfaultfd: use maple tree iterator to iterate VMAs
 
-Don't use the mm_struct linked list or the vma->vm_next in prep for removal
+Don't use the mm_struct linked list or the vma->vm_next in prep for
+removal.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-46-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

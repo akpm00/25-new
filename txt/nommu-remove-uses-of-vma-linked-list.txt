@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: nommu: Remove uses of VMA linked list
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: nommu: remove uses of VMA linked list
 
-Use the maple tree or VMA iterator instead.  This is faster and will
-allow us to shrink the VMA.
+Use the maple tree or VMA iterator instead.  This is faster and will allow
+us to shrink the VMA.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-67-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

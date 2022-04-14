@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: perf: Use VMA iterator
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: perf: use VMA iterator
 
 The VMA iterator is faster than the linked list and removing the linked
 list will shrink the vm_area_struct.

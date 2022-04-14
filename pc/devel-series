@@ -346,6 +346,7 @@ mm-thp-only-regular-file-could-be-thp-eligible.patch
 mm-khugepaged-make-khugepaged_enter-void-function.patch
 mm-khugepaged-move-some-khugepaged_-functions-to-khugepagedc.patch
 mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
+mm-khugepaged-introduce-khugepaged_enter_vma-helper-vs-maple-tree.patch
 mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 hugetlb-fix-wrong-use-of-nr_online_nodes.patch
@@ -1381,3 +1382,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #[folded-merged]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
 #[nacked]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
+mglru-vs-maple-tree.patch

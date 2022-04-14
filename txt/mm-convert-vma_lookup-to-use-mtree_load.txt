@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Convert vma_lookup() to use mtree_load()
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: convert vma_lookup() to use mtree_load()
 
-Unlike the rbtree, the Maple Tree will return a NULL if there's
-nothing at a particular address.
+Unlike the rbtree, the Maple Tree will return a NULL if there's nothing at
+a particular address.
 
 Since the previous commit dropped the vmacache, it is now possible to
 consult the tree directly.

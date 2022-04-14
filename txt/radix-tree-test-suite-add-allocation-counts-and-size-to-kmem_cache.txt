@@ -1,11 +1,9 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: radix tree test suite: Add allocation counts and size to kmem_cache
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: radix tree test suite: add allocation counts and size to kmem_cache
 
-Add functions to get the number of allocations, and total allocations
-from a kmem_cache.  Also add a function to get the allocated size and a
-way to zero the total allocations.
+Add functions to get the number of allocations, and total allocations from
+a kmem_cache.  Also add a function to get the allocated size and a way to
+zero the total allocations.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-4-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

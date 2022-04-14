@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: bpf: Remove VMA linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: bpf: remove VMA linked list
 
 Use vma_next() and remove reference to the start of the linked list
 

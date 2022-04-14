@@ -1,12 +1,10 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Add VMA iterator
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: add VMA iterator
 
-This thin layer of abstraction over the maple tree state is for
-iterating over VMAs.  You can go forwards, go backwards or ask where
-the iterator is.  Rename the existing vma_next() to __vma_next() --
-it will be removed by the end of this series.
+This thin layer of abstraction over the maple tree state is for iterating
+over VMAs.  You can go forwards, go backwards or ask where the iterator
+is.  Rename the existing vma_next() to __vma_next() -- it will be removed
+by the end of this series.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-11-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

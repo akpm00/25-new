@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap: Use advanced maple tree API for mmap_region()
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: use advanced maple tree API for mmap_region()
 
-Changing mmap_region() to use the maple tree state and the advanced
-maple tree interface allows for a lot less tree walking.
+Changing mmap_region() to use the maple tree state and the advanced maple
+tree interface allows for a lot less tree walking.
 
 This change removes the last caller of munmap_vma_range(), so drop this
 unused function.

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: arm64: Remove mmap linked list from vdso
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: arm64: remove mmap linked list from vdso
 
 Use the VMA iterator instead.
 

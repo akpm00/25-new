@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: parisc: Remove mmap linked list from cache handling
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: parisc: remove mmap linked list from cache handling
 
 Use the VMA iterator instead.
 

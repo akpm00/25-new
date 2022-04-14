@@ -1,13 +1,11 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Remove rb tree.
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm: remove rb tree.
 
 Remove the RB tree and start using the maple tree for vm_area_struct
 tracking.
 
-Drop validate_mm() calls in expand_upwards() and expand_downwards() as
-the lock is not held.
+Drop validate_mm() calls in expand_upwards() and expand_downwards() as the
+lock is not held.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-20-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

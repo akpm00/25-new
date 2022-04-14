@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: xen: Use vma_lookup() in privcmd_ioctl_mmap()
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: xen: use vma_lookup() in privcmd_ioctl_mmap()
 
 vma_lookup() walks the VMA tree for a specific value, find_vma() will
 search the tree after walking to a specific value.  It is more efficient

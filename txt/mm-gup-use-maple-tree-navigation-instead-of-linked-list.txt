@@ -1,10 +1,8 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/gup: Use maple tree navigation instead of linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/gup: use maple tree navigation instead of linked list
 
-Use find_vma_intersection() to locate the VMAs in __mm_populate()
-instead of using find_vma() and the linked list.
+Use find_vma_intersection() to locate the VMAs in __mm_populate() instead
+of using find_vma() and the linked list.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-53-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>

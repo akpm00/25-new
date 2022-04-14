@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: s390: Remove vma linked list walks
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: s390: remove vma linked list walks
 
 Use the VMA iterator instead.
 

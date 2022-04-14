@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mlock: Use vma iterator and instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mlock: use vma iterator and instead of vma linked list
 
 Handle overflow checking in count_mm_mlocked_page_nr() differently.
 

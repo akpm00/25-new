@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: i915: Use the VMA iterator
-
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: i915: use the VMA iterator
 
 Replace the linked list in probe_range() with the VMA iterator.
 

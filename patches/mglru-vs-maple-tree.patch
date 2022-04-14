@@ -1,0 +1,43 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mglru-vs-maple-tree
+
+nasty, but it compiles
+
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Liam Howlett <liam.howlett@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/vmscan.c~mglru-vs-maple-tree
++++ a/mm/vmscan.c
+@@ -3704,7 +3704,7 @@ static bool get_next_vma(struct mm_walk
+ 
+ 	while (walk->vma) {
+ 		if (next >= walk->vma->vm_end) {
+-			walk->vma = walk->vma->vm_next;
++			walk->vma = find_vma(walk->mm, walk->vma->vm_end);
+ 			continue;
+ 		}
+ 
+@@ -3712,7 +3712,7 @@ static bool get_next_vma(struct mm_walk
+ 			return false;
+ 
+ 		if (should_skip_vma(walk->vma->vm_start, walk->vma->vm_end, walk)) {
+-			walk->vma = walk->vma->vm_next;
++			walk->vma = find_vma(walk->mm, walk->vma->vm_end);
+ 			continue;
+ 		}
+ 
+@@ -4062,7 +4062,7 @@ static void walk_mm(struct lruvec *lruve
+ 		/* the caller might be holding the lock for write */
+ 		if (mmap_read_trylock(mm)) {
+ 			unsigned long start = walk->next_addr;
+-			unsigned long end = mm->highest_vm_end;
++			unsigned long end = TASK_SIZE;
+ 
+ 			err = walk_page_range(mm, start, end, &mm_walk_ops, walk);
+ 
+_

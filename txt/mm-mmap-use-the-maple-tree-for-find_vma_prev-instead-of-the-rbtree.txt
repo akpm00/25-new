@@ -1,11 +1,9 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap: Use the maple tree for find_vma_prev() instead of the rbtree
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: use the maple tree for find_vma_prev() instead of the rbtree
 
-Use the maple tree's advanced API and a maple state to walk the tree
-for the entry at the address of the next vma, then use the maple state
-to walk back one entry to find the previous entry.
+Use the maple tree's advanced API and a maple state to walk the tree for
+the entry at the address of the next vma, then use the maple state to walk
+back one entry to find the previous entry.
 
 Add kernel documentation comments for this API.
 

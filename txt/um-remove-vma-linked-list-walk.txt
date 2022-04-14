@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: um: Remove vma linked list walk
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: um: remove vma linked list walk
 
 Use the VMA iterator instead.
 

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap: Use the maple tree in find_vma() instead of the rbtree.
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: use the maple tree in find_vma() instead of the rbtree.
 
 Using the maple tree interface mt_find() will handle the RCU locking and
 will start searching at the address up to the limit, ULONG_MAX in this

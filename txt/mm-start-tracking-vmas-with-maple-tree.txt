@@ -1,16 +1,14 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm: Start tracking VMAs with maple tree
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm: start tracking VMAs with maple tree
 
-Start tracking the VMAs with the new maple tree structure in parallel
-with the rb_tree.  Add debug and trace events for maple tree operations
-and duplicate the rb_tree that is created on forks into the maple tree.
+Start tracking the VMAs with the new maple tree structure in parallel with
+the rb_tree.  Add debug and trace events for maple tree operations and
+duplicate the rb_tree that is created on forks into the maple tree.
 
 The maple tree is added to the mm_struct including the mm_init struct,
-added support in required mm/mmap functions, added tracking in
-kernel/fork for process forking, and used to find the unmapped_area and
-checked against what the rbtree finds.
+added support in required mm/mmap functions, added tracking in kernel/fork
+for process forking, and used to find the unmapped_area and checked
+against what the rbtree finds.
 
 Link: https://lkml.kernel.org/r/20220404143501.2016403-10-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

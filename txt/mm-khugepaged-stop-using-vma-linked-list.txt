@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/khugepaged: Stop using vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/khugepaged: stop using vma linked list
 
 Use vma iterator & find_vma() instead of vma linked list.
 

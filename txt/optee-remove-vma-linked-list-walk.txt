@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: optee: Remove vma linked list walk
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: optee: remove vma linked list walk
 
 Use the VMA iterator instead.  Change the calling convention of
 __check_mem_type() to pass in the mm instead of the first vma in the

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: acct: Use VMA iterator instead of linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: acct: use VMA iterator instead of linked list
 
 The VMA iterator is faster than the linked list.
 

@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/memcontrol: Stop using mm->highest_vm_end
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/memcontrol: stop using mm->highest_vm_end
 
 Pass through ULONG_MAX instead.
 

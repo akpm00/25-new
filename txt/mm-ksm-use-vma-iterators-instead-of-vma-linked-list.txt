@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/ksm: Use vma iterators instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/ksm: use vma iterators instead of vma linked list
 
 Remove the use of the linked list for eventual removal.
 

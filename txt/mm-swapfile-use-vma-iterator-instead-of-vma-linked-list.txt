@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/swapfile: Use vma iterator instead of vma linked list
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/swapfile: use vma iterator instead of vma linked list
 
 unuse_mm() no longer needs to reference the linked list.
 

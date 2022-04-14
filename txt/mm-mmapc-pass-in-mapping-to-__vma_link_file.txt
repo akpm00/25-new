@@ -1,7 +1,7 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap.c: Pass in mapping to __vma_link_file()
+Subject: mm/mmap.c: pass in mapping to __vma_link_file()
 
-__vma_link_file() resolves the mapping from the file, if there is one.
+__vma_link_file() resolves the mapping from the file, if there is one. 
 Pass through the mapping and check the vm_file externally since most
 places already have the required information and check of vm_file.
 

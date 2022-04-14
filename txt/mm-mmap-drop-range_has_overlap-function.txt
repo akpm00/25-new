@@ -1,7 +1,5 @@
-From: Liam Howlett <liam.howlett@oracle.com>
-Subject: mm/mmap: Drop range_has_overlap() function
-
 From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Subject: mm/mmap: drop range_has_overlap() function
 
 Since there is no longer a linked list, the range_has_overlap() function
 is identical to the find_vma_intersection() function.
