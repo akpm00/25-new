@@ -42,5 +42,5 @@ lowmem's min boundary.
 
 Link: https://lkml.kernel.org/r/20220413122925.33856-1-patrick.wang.shcn@gmail.com
 Signed-off-by: Patrick Wang <patrick.wang.shcn@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Cc: <stable@vger.kernel.org>

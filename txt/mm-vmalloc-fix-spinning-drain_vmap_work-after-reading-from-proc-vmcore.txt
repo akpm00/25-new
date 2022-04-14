@@ -55,4 +55,4 @@ Signed-off-by: Omar Sandoval <osandov@fb.com>
 Acked-by: Chris Down <chris@chrisdown.name>
 Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Baoquan He <bhe@redhat.com>
+Acked-by: Baoquan He <bhe@redhat.com>

@@ -1,0 +1,9 @@
+From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: selftest/vm: support xfail in mremap_test
+
+Use ksft_test_result_xfail for the tests which are expected to fail.
+
+Link: https://lkml.kernel.org/r/20220414171529.62058-4-sidhartha.kumar@oracle.com
+Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: <stable@vger.kernel.org>

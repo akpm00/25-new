@@ -1,0 +1,22 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes
+
+WARNING: braces {} are not necessary for single statement blocks
+#52: FILE: mm/memory.c:4199:
++	if (vmf->flags & FAULT_FLAG_ORIG_PTE_VALID) {
++		return !pte_same(*vmf->pte, vmf->orig_pte);
++	}
+
+total: 0 errors, 1 warnings, 59 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./patches/mm-check-against-orig_pte-for-finish_fault-fix.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Please run checkpatch prior to sending patches
+
+Cc: Peter Xu <peterx@redhat.com>

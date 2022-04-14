@@ -1,0 +1,18 @@
+From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: selftest/vm: verify mmap addr in mremap_test
+
+Patch series "selftest/vm fix segfault in mremap_test".
+
+
+Avoid calling mmap with requested addresses that are less than the
+system's mmap_min_addr.  Running the test as root returns EACCES when
+trying to map addresses < mmap_min_addr which is not one of the error
+codes for the retry condition.  Add a munmap call after an alignment check
+as the mappings are retained after the retry and can reach
+vm.max_map_count.
+
+Link: https://lkml.kernel.org/r/20220414171529.62058-1-sidhartha.kumar@oracle.com
+Link: https://lkml.kernel.org/r/20220414171529.62058-2-sidhartha.kumar@oracle.com
+Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: <stable@vger.kernel.org>

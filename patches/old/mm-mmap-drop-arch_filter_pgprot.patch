@@ -2,22 +2,31 @@ From: Anshuman Khandual <anshuman.khandual@arm.com>
 Subject: mm/mmap: drop arch_filter_pgprot()
 
 There are no platforms left which subscribe ARCH_HAS_FILTER_PGPROT.  Hence
-just drop arch_filter_pgprot() and also the config ARCH_HAS_FILTER_PGPROT.
+drop generic arch_filter_pgprot() and also config ARCH_HAS_FILTER_PGPROT.
 
-Link: https://lkml.kernel.org/r/1645425519-9034-13-git-send-email-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/20220407103251.1209606-7-anshuman.khandual@arm.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  mm/Kconfig |    3 ---
- mm/mmap.c  |   10 +---------
- 2 files changed, 1 insertion(+), 12 deletions(-)
+ mm/mmap.c  |    9 +--------
+ 2 files changed, 1 insertion(+), 11 deletions(-)
 
 --- a/mm/Kconfig~mm-mmap-drop-arch_filter_pgprot
 +++ a/mm/Kconfig
-@@ -744,9 +744,6 @@ config IDLE_PAGE_TRACKING
- config ARCH_HAS_CACHE_LINE_SIZE
- 	bool
+@@ -762,9 +762,6 @@ config ARCH_HAS_CURRENT_STACK_POINTER
+ 	  register alias named "current_stack_pointer", this config can be
+ 	  selected.
  
 -config ARCH_HAS_FILTER_PGPROT
 -	bool
@@ -27,11 +36,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/mmap.c~mm-mmap-drop-arch_filter_pgprot
 +++ a/mm/mmap.c
-@@ -102,14 +102,6 @@ static void unmap_region(struct mm_struc
-  *								w: (no) no
-  *								x: (yes) yes
-  */
--
+@@ -121,20 +121,13 @@ pgprot_t protection_map[16] __ro_after_i
+ };
+ 
+ #ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
 -#ifndef CONFIG_ARCH_HAS_FILTER_PGPROT
 -static inline pgprot_t arch_filter_pgprot(pgprot_t prot)
 -{
@@ -39,11 +47,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -}
 -#endif
 -
- static inline pgprot_t __vm_get_page_prot(unsigned long vm_flags)
+ pgprot_t vm_get_page_prot(unsigned long vm_flags)
  {
- 	switch (vm_flags & (VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)) {
-@@ -155,7 +147,7 @@ pgprot_t vm_get_page_prot(unsigned long
- 	pgprot_t ret = __pgprot(pgprot_val(__vm_get_page_prot(vm_flags)) |
+ 	pgprot_t ret = __pgprot(pgprot_val(protection_map[vm_flags &
+ 				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]) |
  			pgprot_val(arch_vm_get_page_prot(vm_flags)));
  
 -	return arch_filter_pgprot(ret);

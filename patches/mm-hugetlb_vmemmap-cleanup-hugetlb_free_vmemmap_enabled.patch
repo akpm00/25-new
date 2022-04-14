@@ -13,17 +13,12 @@ Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/arm64/mm/flush.c      |    2 +-
- include/linux/page-flags.h |   12 ++++++------
- mm/hugetlb_vmemmap.c       |   10 +++++-----
- mm/memory_hotplug.c        |    2 +-
- 4 files changed, 13 insertions(+), 13 deletions(-)
 
 --- a/arch/arm64/mm/flush.c~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
 +++ a/arch/arm64/mm/flush.c
-@@ -85,7 +85,7 @@ void flush_dcache_page(struct page *page
- 	 * set since the head vmemmap page frame is reused (more details can
- 	 * refer to the comments above page_fixed_fake_head()).
+@@ -86,7 +86,7 @@ void flush_dcache_page(struct page *page
+ 	 * is reused (more details can refer to the comments above
+ 	 * page_fixed_fake_head()).
  	 */
 -	if (hugetlb_free_vmemmap_enabled() && PageHuge(page))
 +	if (hugetlb_optimize_vmemmap_enabled() && PageHuge(page))

@@ -1,0 +1,62 @@
+From: Nico Pache <npache@redhat.com>
+Subject: oom_kill.c: futex: delay the OOM reaper to allow time for proper futex cleanup
+
+The pthread struct is allocated on PRIVATE|ANONYMOUS memory [1] which can
+be targeted by the oom reaper.  This mapping is used to store the futex
+robust list head; the kernel does not keep a copy of the robust list and
+instead references a userspace address to maintain the robustness during a
+process death.  A race can occur between exit_mm and the oom reaper that
+allows the oom reaper to free the memory of the futex robust list before
+the exit path has handled the futex death:
+
+    CPU1                               CPU2
+------------------------------------------------------------------------
+    page_fault
+    do_exit "signal"
+    wake_oom_reaper
+                                        oom_reaper
+                                        oom_reap_task_mm (invalidates mm)
+    exit_mm
+    exit_mm_release
+    futex_exit_release
+    futex_cleanup
+    exit_robust_list
+    get_user (EFAULT- can't access memory)
+
+If the get_user EFAULT's, the kernel will be unable to recover the waiters
+on the robust_list, leaving userspace mutexes hung indefinitely.
+
+Delay the OOM reaper, allowing more time for the exit path to perform the
+futex cleanup.
+
+Reproducer: https://gitlab.com/jsavitz/oom_futex_reproducer
+
+Based on a patch by Michal Hocko.
+
+[1] https://elixir.bootlin.com/glibc/latest/source/nptl/allocatestack.c#L370
+
+Link: https://lkml.kernel.org/r/20220414144042.677008-1-npache@redhat.com
+Fixes: 212925802454 ("mm: oom: let oom_reap_task and exit_mmap run concurrently")
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Signed-off-by: Nico Pache <npache@redhat.com>
+Co-developed-by: Joel Savitz <jsavitz@redhat.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Rafael Aquini <aquini@redhat.com>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Herton R. Krzesinski <herton@redhat.com>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Joel Savitz <jsavitz@redhat.com>
+Cc: Darren Hart <dvhart@infradead.org>
+Cc: <stable@vger.kernel.org>
