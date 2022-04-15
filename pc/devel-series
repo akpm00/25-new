@@ -9,12 +9,6 @@ tmpfs-fix-regressions-from-wider-use-of-zero_page.patch
 #
 #m/secretmem
 mm-secretmem-fix-panic-when-growing-a-memfd_secret.patch
-mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
-mm-secretmem-fix-panic-when-growing-a-memfd_secret-v2.patch
-#
-#mm/memory-failure
-#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: maybe TBU https://lkml.kernel.org/r/5b665bcd-57f8-85ae-b0c4-c055875dbfff@oracle.com
-mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
 #mm/kasan
 irq_work-use-kasan_record_aux_stack_noalloc-record-callstack.patch
@@ -43,6 +37,9 @@ revert-fs-binfmt_elf-use-pt_load-p_align-values-for-static-pie.patch
 #mm/vmalloc
 mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #
+#mm/kmemleak
+mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
+#
 #
 #NEXT_PATCHES_END
 #
@@ -54,10 +51,10 @@ mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #
 #mm/memory-failure
-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
+#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: maybe TBU https://lkml.kernel.org/r/5b665bcd-57f8-85ae-b0c4-c055875dbfff@oracle.com
+mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
-#mm/kmemleak
-mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
+mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
 #mm/memcg
 #memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
@@ -1329,7 +1326,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
-linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -1410,6 +1406,7 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
 #[folded-merged]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist-fix.patch
 #[nacked]mm-page_alloc-check-pfn-is-valid-before-moving-to-freelist.patch
+#[obsolete]linux-next-git-rejects.patch
 #[to-be-updated]mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
 #[to-be-updated]powerpc-mm-enable-arch_has_vm_get_page_prot.patch
 #[to-be-updated]arm64-mm-enable-arch_has_vm_get_page_prot.patch
@@ -1417,3 +1414,5 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]x86-mm-enable-arch_has_vm_get_page_prot.patch
 #[to-be-updated]mm-mmap-drop-arch_filter_pgprot.patch
 #[to-be-updated]mm-mmap-drop-arch_vm_get_page_pgprot.patch
+#[folded-merged]mm-secretmem-fix-panic-when-growing-a-memfd_secret-fix.patch
+#[folded-merged]mm-secretmem-fix-panic-when-growing-a-memfd_secret-v2.patch
