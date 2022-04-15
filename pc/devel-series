@@ -72,6 +72,7 @@ mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
 #mm/mremap
+#selftest-vm-verify-mmap-addr-in-mremap_test.patch: https://lkml.kernel.org/r/eb48d665-1a8b-50cb-00d5-95d8b8cf5625@linuxfoundation.org
 selftest-vm-verify-mmap-addr-in-mremap_test.patch
 selftest-vm-verify-remap-destination-address-in-mremap_test.patch
 selftest-vm-support-xfail-in-mremap_test.patch
