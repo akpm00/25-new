@@ -108,6 +108,7 @@ mm.patch
 #mm/kmemleak
 #mm/kasan
 kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel.patch
+kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch
 #
 kasan-mark-kasan_vmalloc-flags-as-kasan_vmalloc_flags_t.patch
 #
@@ -1326,6 +1327,7 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
+linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent

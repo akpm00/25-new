@@ -48,8 +48,6 @@ Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/kasan/quarantine.c |   40 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
 
 --- a/mm/kasan/quarantine.c~kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel
 +++ a/mm/kasan/quarantine.c
@@ -71,7 +69,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* Maximum size of the global queue. */
  static unsigned long quarantine_max_size;
  
-@@ -311,12 +322,23 @@ static void qlist_move_cache(struct qlis
+@@ -311,14 +322,25 @@ static void qlist_move_cache(struct qlis
  static void per_cpu_remove_cache(void *arg)
  {
  	struct kmem_cache *cache = arg;
@@ -86,6 +84,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +#endif
  	q = this_cpu_ptr(&cpu_quarantine);
 +#ifndef CONFIG_PREEMPT_RT
+ 	if (READ_ONCE(q->offline))
+ 		return;
  	qlist_move_cache(q, &to_free, cache);
  	qlist_free_all(&to_free, cache);
 +#else
@@ -97,7 +97,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /* Free all quarantined objects belonging to cache. */
-@@ -324,6 +346,10 @@ void kasan_quarantine_remove_cache(struc
+@@ -326,6 +348,10 @@ void kasan_quarantine_remove_cache(struc
  {
  	unsigned long flags, i;
  	struct qlist_head to_free = QLIST_INIT;
@@ -108,7 +108,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * Must be careful to not miss any objects that are being moved from
-@@ -334,6 +360,16 @@ void kasan_quarantine_remove_cache(struc
+@@ -336,6 +362,16 @@ void kasan_quarantine_remove_cache(struc
  	 */
  	on_each_cpu(per_cpu_remove_cache, cache, 1);
  

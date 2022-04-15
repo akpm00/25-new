@@ -1,0 +1,11 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix
+
+reduce ifdeffery
+
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Zqiang <qiang1.zhang@intel.com>

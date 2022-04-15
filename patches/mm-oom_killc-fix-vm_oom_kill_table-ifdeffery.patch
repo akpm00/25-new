@@ -11,8 +11,6 @@ Cc: Luis Chamberlain <mcgrof@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/oom_kill.c |   58 ++++++++++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 29 deletions(-)
 
 --- a/mm/oom_kill.c~mm-oom_killc-fix-vm_oom_kill_table-ifdeffery
 +++ a/mm/oom_kill.c
@@ -52,8 +50,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * Serializes oom killer invocations (out_of_memory()) from all contexts to
   * prevent from over eager oom killing (e.g. when the oom killer is invoked
-@@ -703,6 +674,35 @@ static void wake_oom_reaper(struct task_
- 	wake_up(&oom_reaper_wait);
+@@ -730,6 +701,35 @@ static void queue_oom_reaper(struct task
+ 	add_timer(&tsk->oom_reaper_timer);
  }
  
 +#ifdef CONFIG_SYSCTL
