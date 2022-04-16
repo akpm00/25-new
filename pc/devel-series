@@ -68,6 +68,10 @@ mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 #userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
 userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
+#mm/hugetlbfs
+#mm-hugetlbfs-allow-for-high-userspace-addresses.patch: changelog update
+mm-hugetlbfs-allow-for-high-userspace-addresses.patch
+#
 #mm/mremap
 #selftest-vm-verify-mmap-addr-in-mremap_test.patch: https://lkml.kernel.org/r/eb48d665-1a8b-50cb-00d5-95d8b8cf5625@linuxfoundation.org
 selftest-vm-verify-mmap-addr-in-mremap_test.patch
@@ -443,6 +447,8 @@ mm-vmscan-fix-comment-for-current_may_throttle.patch
 mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
 #
 #mm/proc
+mm-proc-remove-redundant-page-validation-of-pte_page.patch
+#
 #mm/z3fold
 mm-z3fold-declare-z3fold_mount-with-__init.patch
 mm-z3fold-remove-obsolete-comment-in-z3fold_alloc.patch
