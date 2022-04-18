@@ -12,7 +12,6 @@ easier to grasp) and use 0x20 now for _PAGE_SWP_EXCLUSIVE.
 
 Link: https://lkml.kernel.org/r/20220329164329.208407-9-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc: Borislav Petkov <bp@alien8.de>

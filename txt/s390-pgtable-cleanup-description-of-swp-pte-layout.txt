@@ -9,7 +9,6 @@ Document which bits are used for what, and which ones are unused.
 
 Link: https://lkml.kernel.org/r/20220329164329.208407-6-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc: Borislav Petkov <bp@alien8.de>
