@@ -11,6 +11,19 @@ codes for the retry condition.  Add a munmap call after an alignment check
 as the mappings are retained after the retry and can reach
 vm.max_map_count.
 
+What happens when mmap tries to map addresses < mmap_min_addr?
+
+: If run without root, mmap returns the EPERM error code but with root it
+: returns the EACCES error code.  In the code of the test case, it checks
+: if the map failed with the EPERM error code and will retry with a new
+: address.
+: 
+: The test breaks when run as root because EACCES isn't caught for the
+: retry condition.
+: 
+: Rather than arbitrarily also catching the EACCES error code, I avoid
+: mapping with addresses < mmap_min_addr.
+
 Link: https://lkml.kernel.org/r/20220414171529.62058-1-sidhartha.kumar@oracle.com
 Link: https://lkml.kernel.org/r/20220414171529.62058-2-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>

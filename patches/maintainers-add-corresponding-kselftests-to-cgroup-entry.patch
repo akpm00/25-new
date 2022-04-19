@@ -1,0 +1,32 @@
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Subject: MAINTAINERS: add corresponding kselftests to cgroup entry
+
+List cgroup kselftests in the cgroup MAINTAINERS entry.  These are tests
+covering core, freezer and cgroup.kill functionality.
+
+Link: https://lkml.kernel.org/r/20220415000133.3955987-4-roman.gushchin@linux.dev
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Chris Down <chris@chrisdown.name>
+Cc: David Vernet <void@manifault.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/MAINTAINERS~maintainers-add-corresponding-kselftests-to-cgroup-entry
++++ a/MAINTAINERS
+@@ -4993,6 +4993,7 @@ F:	Documentation/admin-guide/cgroup-v1/
+ F:	Documentation/admin-guide/cgroup-v2.rst
+ F:	include/linux/cgroup*
+ F:	kernel/cgroup/
++F:	tools/testing/selftests/cgroup/
+ 
+ CONTROL GROUP - BLOCK IO CONTROLLER (BLKIO)
+ M:	Tejun Heo <tj@kernel.org>
+_

@@ -9,6 +9,6 @@ PageAnon check to handle these hugepages too.
 
 Link: https://lkml.kernel.org/r/20220414114941.11223-3-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: David Hildenbrand <david@redhat.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: Yang Shi <shy828301@gmail.com>

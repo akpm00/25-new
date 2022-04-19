@@ -1,0 +1,48 @@
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Subject: mm, hugetlb, hwpoison: separate branch for free and in-use hugepage
+
+We know that HPageFreed pages should have page refcount 0, so
+get_page_unless_zero() always fails and returns 0.  So explicitly separate
+the branch based on page state for minor optimization and better
+readability.
+
+Link: https://lkml.kernel.org/r/20220415041848.GA3034499@ik1-406-35019.vs.sakura.ne.jp
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Suggested-by: Mike Kravetz <mike.kravetz@oracle.com>
+Suggested-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hugetlb.c        |    4 +++-
+ mm/memory-failure.c |    4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+--- a/mm/hugetlb.c~mm-hugetlb-hwpoison-separate-branch-for-free-and-in-use-hugepage
++++ a/mm/hugetlb.c
+@@ -6831,7 +6831,9 @@ int get_hwpoison_huge_page(struct page *
+ 	spin_lock_irq(&hugetlb_lock);
+ 	if (PageHeadHuge(page)) {
+ 		*hugetlb = true;
+-		if (HPageFreed(page) || HPageMigratable(page))
++		if (HPageFreed(page))
++			ret = 0;
++		else if (HPageMigratable(page))
+ 			ret = get_page_unless_zero(page);
+ 		else
+ 			ret = -EBUSY;
+--- a/mm/memory-failure.c~mm-hugetlb-hwpoison-separate-branch-for-free-and-in-use-hugepage
++++ a/mm/memory-failure.c
+@@ -1518,7 +1518,9 @@ int __get_huge_page_for_hwpoison(unsigne
+ 	if (flags & MF_COUNT_INCREASED) {
+ 		ret = 1;
+ 		count_increased = true;
+-	} else if (HPageFreed(head) || HPageMigratable(head)) {
++	} else if (HPageFreed(head)) {
++		ret = 0;
++	} else if (HPageMigratable(head)) {
+ 		ret = get_page_unless_zero(head);
+ 		if (ret)
+ 			count_increased = true;
+_

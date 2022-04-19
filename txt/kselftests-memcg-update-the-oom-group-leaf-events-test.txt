@@ -1,0 +1,30 @@
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Subject: kselftests: memcg: update the oom group leaf events test
+
+Patch series "mm: memcg kselftests fixes".
+
+
+This patch (of 4):
+
+Commit 9852ae3fe529 ("mm, memcg: consider subtrees in memory.events") made
+memory.events recursive: all events are propagated upwards by the tree. 
+It was a change in semantics.
+
+It broke the oom group leaf events test: it assumes that after an OOM the
+oom_kill counter is zero on parent's level.
+
+Let's adjust the test: it should have similar expectations for the child
+and parent levels.
+
+The test passes after this fix.
+
+Link: https://lkml.kernel.org/r/20220415000133.3955987-2-roman.gushchin@linux.dev
+Link: https://lkml.kernel.org/r/20220415000133.3955987-1-roman.gushchin@linux.dev
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: David Vernet <void@manifault.com>
+Cc: Chris Down <chris@chrisdown.name>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>

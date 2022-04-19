@@ -1,0 +1,41 @@
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Subject: kselftests: memcg: speed up the memory.high test
+
+After commit 0e4b01df8659 ("mm, memcg: throttle allocators when failing
+reclaim over memory.high") allocating memory over memory.high became very
+time consuming.  But it's exactly what the memory.high test from cgroup
+kselftests is doing: it tries to allocate 100M with 30M memory.high value.
+It takes forever to complete.
+
+In order to keep it passing (or failing) in a reasonable amount of time
+let's try to allocate only a little over 30M: 31M to be precise.
+
+With this change test_memcontrol finishes in a reasonable amount of
+time:
+  $ time ./test_memcontrol
+  ok 1 test_memcg_subtree_control
+  ok 2 test_memcg_current
+  ok 3 test_memcg_min
+  ok 4 test_memcg_low
+  ok 5 test_memcg_high
+  ok 6 test_memcg_max
+  ok 7 test_memcg_oom_events
+  ok 8 test_memcg_swap_max
+  ok 9 test_memcg_sock
+  ok 10 test_memcg_oom_group_leaf_events
+  ok 11 test_memcg_oom_group_parent_events
+  ok 12 test_memcg_oom_group_score_events
+
+  real	0m2.273s
+  user	0m0.064s
+  sys	0m0.739s
+
+Link: https://lkml.kernel.org/r/20220415000133.3955987-3-roman.gushchin@linux.dev
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: David Vernet <void@manifault.com>
+Cc: Chris Down <chris@chrisdown.name>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>

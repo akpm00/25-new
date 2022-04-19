@@ -21,10 +21,10 @@ when an invalid parameter is received.
 Link: https://lkml.kernel.org/r/20220413032915.251254-3-liupeng256@huawei.com
 Fixes: b5389086ad7b ("hugetlbfs: extend the definition of hugepages parameter to support node allocation")
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Cc: Kefeng Wang <wangkefeng.wang@huawei.com>

@@ -30,6 +30,7 @@ mm-hugetlbfs-allow-for-high-userspace-addresses.patch
 #mm/mremap
 #selftest-vm-verify-mmap-addr-in-mremap_test.patch: https://lkml.kernel.org/r/eb48d665-1a8b-50cb-00d5-95d8b8cf5625@linuxfoundation.org
 selftest-vm-verify-mmap-addr-in-mremap_test.patch
+#selftest-vm-verify-remap-destination-address-in-mremap_test.patch: https://lkml.kernel.org/r/7b1c0a82-f7c3-4f60-ccb3-893caf4221f9@oracle.com
 selftest-vm-verify-remap-destination-address-in-mremap_test.patch
 selftest-vm-support-xfail-in-mremap_test.patch
 selftest-vm-add-skip-support-to-mremap_test.patch
@@ -157,6 +158,11 @@ mm-memcg-move-generation-assignment-and-comparison-together.patch
 #
 mm-memcg-non-hierarchical-mode-is-deprecated.patch
 #
+kselftests-memcg-update-the-oom-group-leaf-events-test.patch
+kselftests-memcg-speed-up-the-memoryhigh-test.patch
+maintainers-add-corresponding-kselftests-to-cgroup-entry.patch
+maintainers-add-corresponding-kselftests-to-memcg-entry.patch
+#
 #mm/selftests
 #mm/pagemap
 mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
@@ -230,8 +236,9 @@ mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased.patch
 revert-mm-memory-failurec-fix-race-with-changing-page-compound-again.patch
 #
 mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable.patch
-#mm-memory-failurec-dissolve-truncated-hugetlb-page.patch: acks?
 mm-memory-failurec-dissolve-truncated-hugetlb-page.patch
+#
+mm-hugetlb-hwpoison-separate-branch-for-free-and-in-use-hugepage.patch
 #
 #mm/mlock
 #mm/mapletree
@@ -526,7 +533,7 @@ damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
 selftests-damon-add-damon-to-selftests-root-makefile.patch
 #
 #mm/swap2
-#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: acks?
+#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: acks? https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal
 mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
 #
 #mm/tools

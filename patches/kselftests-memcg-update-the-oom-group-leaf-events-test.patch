@@ -1,0 +1,58 @@
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Subject: kselftests: memcg: update the oom group leaf events test
+
+Patch series "mm: memcg kselftests fixes".
+
+
+This patch (of 4):
+
+Commit 9852ae3fe529 ("mm, memcg: consider subtrees in memory.events") made
+memory.events recursive: all events are propagated upwards by the tree. 
+It was a change in semantics.
+
+It broke the oom group leaf events test: it assumes that after an OOM the
+oom_kill counter is zero on parent's level.
+
+Let's adjust the test: it should have similar expectations for the child
+and parent levels.
+
+The test passes after this fix.
+
+Link: https://lkml.kernel.org/r/20220415000133.3955987-2-roman.gushchin@linux.dev
+Link: https://lkml.kernel.org/r/20220415000133.3955987-1-roman.gushchin@linux.dev
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: David Vernet <void@manifault.com>
+Cc: Chris Down <chris@chrisdown.name>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/cgroup/test_memcontrol.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c~kselftests-memcg-update-the-oom-group-leaf-events-test
++++ a/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -1079,7 +1079,8 @@ cleanup:
+ /*
+  * This test disables swapping and tries to allocate anonymous memory
+  * up to OOM with memory.group.oom set. Then it checks that all
+- * processes in the leaf (but not the parent) were killed.
++ * processes in the leaf were killed. It also checks that oom_events
++ * were propagated to the parent level.
+  */
+ static int test_memcg_oom_group_leaf_events(const char *root)
+ {
+@@ -1122,7 +1123,7 @@ static int test_memcg_oom_group_leaf_eve
+ 	if (cg_read_key_long(child, "memory.events", "oom_kill ") <= 0)
+ 		goto cleanup;
+ 
+-	if (cg_read_key_long(parent, "memory.events", "oom_kill ") != 0)
++	if (cg_read_key_long(parent, "memory.events", "oom_kill ") <= 0)
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+_
