@@ -1,0 +1,29 @@
+From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: MAINTAINERS: add Vincenzo Frascino to KASAN reviewers
+
+Add my email address to KASAN reviewers list to make sure that I am Cc'ed
+in all the KASAN changes that may affect arm64 MTE.
+
+Link: https://lkml.kernel.org/r/20220419170640.21404-1-vincenzo.frascino@arm.com
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/MAINTAINERS~maintainers-add-vincenzo-frascino-to-kasan-reviewers
++++ a/MAINTAINERS
+@@ -10549,6 +10549,7 @@ M:	Andrey Ryabinin <ryabinin.a.a@gmail.c
+ R:	Alexander Potapenko <glider@google.com>
+ R:	Andrey Konovalov <andreyknvl@gmail.com>
+ R:	Dmitry Vyukov <dvyukov@google.com>
++R:	Vincenzo Frascino <vincenzo.frascino@arm.com>
+ L:	kasan-dev@googlegroups.com
+ S:	Maintained
+ F:	Documentation/dev-tools/kasan.rst
+_

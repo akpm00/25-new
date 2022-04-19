@@ -22,6 +22,7 @@ Link: https://lkml.kernel.org/r/164859778128.29473.15189737957277399416.stgit@no
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: NeilBrown <neilb@suse.de>
 Tested-by: David Howells <dhowells@redhat.com>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

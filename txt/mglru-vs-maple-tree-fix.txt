@@ -1,0 +1,9 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/vmscan: Use VMA_ITERATOR in get_next_vma()
+
+The next vma may actually be many VMAs away, so use the VMA_ITERATOR to
+continue searching from vm_end onwards.
+
+Link: https://lkml.kernel.org/r/20220419174757.2tptlbkebiletmck@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Yu Zhao <yuzhao@google.com>

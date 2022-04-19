@@ -28,6 +28,7 @@ totally fine.
 
 Link: https://lkml.kernel.org/r/20220416004104.4089743-1-roman.gushchin@linux.dev
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Dave Chinner <dchinner@redhat.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>

@@ -4,129 +4,23 @@ Subject: linux-next-git-rejects
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/x86/kernel/cpu/common.c               |    6 ---
- drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c |    3 -
- fs/cifs/cifsfs.c                           |    4 --
- fs/io_uring.c                              |   35 -------------------
- 4 files changed, 48 deletions(-)
+ fs/xattr.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c~linux-next-git-rejects
-+++ a/drivers/gpu/drm/msm/disp/mdp5/mdp5_plane.c
-@@ -102,10 +102,7 @@ static void mdp5_plane_reset(struct drm_
- 	mdp5_state = kzalloc(sizeof(*mdp5_state), GFP_KERNEL);
- 	if (!mdp5_state)
- 		return;
+--- a/fs/xattr.c~linux-next-git-rejects
++++ a/fs/xattr.c
+@@ -566,13 +566,6 @@ int setxattr_copy(const char __user *nam
+ 			error = PTR_ERR(ctx->kvalue);
+ 			ctx->kvalue = NULL;
+ 		}
 -<<<<<<< HEAD
--=======
- 
-->>>>>>> linux-next/akpm-base
- 	__drm_atomic_helper_plane_reset(plane, &mdp5_state->base);
- }
- 
---- a/fs/cifs/cifsfs.c~linux-next-git-rejects
-+++ a/fs/cifs/cifsfs.c
-@@ -266,11 +266,7 @@ static void cifs_kill_sb(struct super_bl
- 	 * before we kill the sb.
- 	 */
- 	if (cifs_sb->root) {
--<<<<<<< HEAD
--		for (node = rb_first(root); node; node = rb_next(node)) {
--=======
- 		for(node = rb_first(root); node; node = rb_next(node)) {
-->>>>>>> linux-next/akpm-base
- 			tlink = rb_entry(node, struct tcon_link, tl_rbnode);
- 			tcon = tlink_tcon(tlink);
- 			if (IS_ERR(tcon))
---- a/arch/x86/kernel/cpu/common.c~linux-next-git-rejects
-+++ a/arch/x86/kernel/cpu/common.c
-@@ -1869,12 +1869,6 @@ void identify_secondary_cpu(struct cpuin
- 	validate_apic_and_package_id(c);
- 	x86_spec_ctrl_setup_ap();
- 	update_srbds_msr();
--<<<<<<< HEAD
--
--	tsx_ap_init();
--}
+-		if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
+-		    (strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
+-			posix_acl_fix_xattr_from_user(mnt_userns, d_inode(d),
+-						      kvalue, size);
 -=======
 ->>>>>>> linux-next/akpm-base
+ 	}
  
- 	tsx_ap_init();
- }
---- a/fs/io_uring.c~linux-next-git-rejects
-+++ a/fs/io_uring.c
-@@ -945,17 +945,7 @@ struct io_kiocb {
- 	u16				buf_index;
- 	unsigned int			flags;
- 
--<<<<<<< HEAD
--	u64				user_data;
--	u32				result;
--	/* fd initially, then cflags for completion */
--	union {
--		u32			cflags;
--		int			fd;
--	};
--=======
- 	struct io_cqe			cqe;
-->>>>>>> linux-next/akpm-base
- 
- 	struct io_ring_ctx		*ctx;
- 	struct task_struct		*task;
-@@ -6258,20 +6248,6 @@ static int io_poll_check_events(struct i
- 		if (v & IO_POLL_CANCEL_FLAG)
- 			return -ECANCELED;
- 
--<<<<<<< HEAD
--		if (!req->result) {
--			struct poll_table_struct pt = { ._key = req->apoll_events };
--			unsigned flags = locked ? 0 : IO_URING_F_UNLOCKED;
--
--			if (unlikely(!io_assign_file(req, flags)))
--				return -EBADF;
--			req->result = vfs_poll(req->file, &pt) & req->apoll_events;
--		}
--
--		/* multishot, just fill an CQE and proceed */
--		if (req->result && !(req->apoll_events & EPOLLONESHOT)) {
--			__poll_t mask = mangle_poll(req->result & req->apoll_events);
--=======
- 		if (!req->cqe.res) {
- 			struct poll_table_struct pt = { ._key = req->apoll_events };
- 
-@@ -6284,7 +6260,6 @@ static int io_poll_check_events(struct i
- 		/* multishot, just fill an CQE and proceed */
- 		if (req->cqe.res && !(req->apoll_events & EPOLLONESHOT)) {
- 			__poll_t mask = mangle_poll(req->cqe.res & req->apoll_events);
-->>>>>>> linux-next/akpm-base
- 			bool filled;
- 
- 			spin_lock(&ctx->completion_lock);
-@@ -7527,15 +7502,9 @@ static bool io_assign_file(struct io_kio
- 		return true;
- 
- 	if (req->flags & REQ_F_FIXED_FILE)
--<<<<<<< HEAD
--		req->file = io_file_get_fixed(req, req->fd, issue_flags);
--	else
--		req->file = io_file_get_normal(req, req->fd);
--=======
- 		req->file = io_file_get_fixed(req, req->cqe.fd, issue_flags);
- 	else
- 		req->file = io_file_get_normal(req, req->cqe.fd);
-->>>>>>> linux-next/akpm-base
- 	if (req->file)
- 		return true;
- 
-@@ -8091,11 +8060,7 @@ static int io_init_req(struct io_ring_ct
- 	if (io_op_defs[opcode].needs_file) {
- 		struct io_submit_state *state = &ctx->submit_state;
- 
--<<<<<<< HEAD
--		req->fd = READ_ONCE(sqe->fd);
--=======
- 		req->cqe.fd = READ_ONCE(sqe->fd);
-->>>>>>> linux-next/akpm-base
- 
- 		/*
- 		 * Plug now if we have more than 2 IO left after this, and the
+ 	return error;
 _

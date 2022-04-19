@@ -1,0 +1,47 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/vmscan: Use VMA_ITERATOR in get_next_vma()
+
+The next vma may actually be many VMAs away, so use the VMA_ITERATOR to
+continue searching from vm_end onwards.
+
+Link: https://lkml.kernel.org/r/20220419174757.2tptlbkebiletmck@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+--- a/mm/vmscan.c~mglru-vs-maple-tree-fix
++++ a/mm/vmscan.c
+@@ -3697,24 +3697,21 @@ static bool get_next_vma(struct mm_walk
+ 			 unsigned long *start, unsigned long *end)
+ {
+ 	unsigned long next = round_up(*end, size);
++	VMA_ITERATOR(vmi, walk->mm, walk->vma->vm_end)
+ 
+ 	VM_BUG_ON(mask & size);
+ 	VM_BUG_ON(*start >= *end);
+ 	VM_BUG_ON((next & mask) != (*start & mask));
+ 
+-	while (walk->vma) {
+-		if (next >= walk->vma->vm_end) {
+-			walk->vma = find_vma(walk->mm, walk->vma->vm_end);
++	for_each_mte_vma(vmi, walk->vma) {
++		if (next >= walk->vma->vm_end)
+ 			continue;
+-		}
+ 
+ 		if ((next & mask) != (walk->vma->vm_start & mask))
+ 			return false;
+ 
+-		if (should_skip_vma(walk->vma->vm_start, walk->vma->vm_end, walk)) {
+-			walk->vma = find_vma(walk->mm, walk->vma->vm_end);
++		if (should_skip_vma(walk->vma->vm_start, walk->vma->vm_end, walk))
+ 			continue;
+-		}
+ 
+ 		*start = max(next, walk->vma->vm_start);
+ 		next = (next | ~mask) + 1;
+_

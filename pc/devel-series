@@ -1,4 +1,4 @@
-#origin.patch
+origin.patch
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -24,13 +24,12 @@ mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
 userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
 #mm/hugetlbfs
-#mm-hugetlbfs-allow-for-high-userspace-addresses.patch: changelog update
 mm-hugetlbfs-allow-for-high-userspace-addresses.patch
 #
 #mm/mremap
 #selftest-vm-verify-mmap-addr-in-mremap_test.patch: https://lkml.kernel.org/r/eb48d665-1a8b-50cb-00d5-95d8b8cf5625@linuxfoundation.org
 selftest-vm-verify-mmap-addr-in-mremap_test.patch
-#selftest-vm-verify-remap-destination-address-in-mremap_test.patch: https://lkml.kernel.org/r/7b1c0a82-f7c3-4f60-ccb3-893caf4221f9@oracle.com
+#selftest-vm-verify-remap-destination-address-in-mremap_test.patch: https://lkml.kernel.org/r/7b1c0a82-f7c3-4f60-ccb3-893caf4221f9@oracle.com https://lkml.kernel.org/r/3a062d04-b35c-868a-cd94-5d57fef68813@linuxfoundation.org
 selftest-vm-verify-remap-destination-address-in-mremap_test.patch
 selftest-vm-support-xfail-in-mremap_test.patch
 selftest-vm-add-skip-support-to-mremap_test.patch
@@ -42,6 +41,9 @@ oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patc
 #mm/kasan
 #kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch: acks?
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
+#
+#maintainers-add-vincenzo-frascino-to-kasan-reviewers.patch: acks?
+maintainers-add-vincenzo-frascino-to-kasan-reviewers.patch
 #
 #kcov
 kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
@@ -109,10 +111,12 @@ mm-rmap-drop-compound-parameter-from-page_add_new_anon_rmap.patch
 mm-rmap-use-page_move_anon_rmap-when-reusing-a-mapped-pageanon-page-exclusively.patch
 mm-huge_memory-remove-outdated-vm_warn_on_once_page-from-unmap_page.patch
 mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages.patch
+#mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive.patch: TBU
 mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive.patch
 mm-gup-disallow-follow_pagefoll_pin.patch
 #mm-support-gup-triggered-unsharing-of-anonymous-pages.patch: https://lkml.kernel.org/r/9005b167-db08-c967-463b-5e0e092cbb6c@suse.cz
 mm-support-gup-triggered-unsharing-of-anonymous-pages.patch
+mm-support-gup-triggered-unsharing-of-anonymous-pages-fix.patch
 mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page.patch
 mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning.patch
 #
@@ -120,6 +124,7 @@ mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit.patch
 mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit-fix.patch
 mm-debug_vm_pgtable-add-tests-for-__have_arch_pte_swp_exclusive.patch
 x86-pgtable-support-__have_arch_pte_swp_exclusive.patch
+x86-pgtable-support-__have_arch_pte_swp_exclusive-fix.patch
 arm64-pgtable-support-__have_arch_pte_swp_exclusive.patch
 s390-pgtable-cleanup-description-of-swp-pte-layout.patch
 s390-pgtable-support-__have_arch_pte_swp_exclusive.patch
@@ -129,6 +134,7 @@ powerpc-pgtable-support-__have_arch_pte_swp_exclusive-for-book3s.patch
 selftest-vm-clarify-error-statement-in-gup_test.patch
 #
 #mm/swap
+#mm-create-new-mm-swaph-header-file.patch+N: https://lkml.kernel.org/r/CAMuHMdVJZmjM0yc=-iVi0y5ML6u8E4pG_RpLpwbZKu35Y9vOZQ@mail.gmail.com
 mm-create-new-mm-swaph-header-file.patch
 mm-create-new-mm-swaph-header-file-fix.patch
 mm-drop-swap_dirty_folio.patch
@@ -249,6 +255,7 @@ radix-tree-test-suite-add-support-for-slab-bulk-apis.patch
 radix-tree-test-suite-add-lockdep_is_held-to-header.patch
 mips-rename-mt_init-to-mips_mt_init.patch
 maple-tree-add-new-data-structure.patch
+maple-tree-add-new-data-structure-fix.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
 mm-add-vma-iterator.patch
@@ -273,6 +280,7 @@ mm-mmap-move-mmap_region-below-do_munmap.patch
 mm-mmap-reorganize-munmap-to-use-maple-states.patch
 mm-mmap-change-do_brk_munmap-to-use-do_mas_align_munmap.patch
 arm64-remove-mmap-linked-list-from-vdso.patch
+arm64-remove-mmap-linked-list-from-vdso-fix.patch
 parisc-remove-mmap-linked-list-from-cache-handling.patch
 powerpc-remove-mmap-linked-list-walks.patch
 s390-remove-vma-linked-list-walks.patch
@@ -378,6 +386,7 @@ mm-shmem-handle-uffd-wp-during-fork-fix.patch
 mm-khugepaged-dont-recycle-vma-pgtable-if-uffd-wp-registered.patch
 mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
 mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch
+#mm-enable-pte-markers-by-default.patch: https://lkml.kernel.org/r/Yl7RrKV5mXtNAAzi@cmpxchg.org
 mm-enable-pte-markers-by-default.patch
 selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
 #
@@ -408,6 +417,7 @@ mm-multi-gen-lru-debugfs-interface.patch
 mm-multi-gen-lru-admin-guide.patch
 mm-multi-gen-lru-design-doc.patch
 mglru-vs-maple-tree.patch
+mglru-vs-maple-tree-fix.patch
 #
 mm-vmscan-fix-comment-for-current_may_throttle.patch
 mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
@@ -921,8 +931,6 @@ lib-stringc-simplify-strspn.patch
 #
 lib-remove-back_str-initialization.patch
 #
-lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead.patch
-#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START bitmap
 #NEXT_PATCHES_END
@@ -1337,6 +1345,8 @@ mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START post-linux-next
 #
+#lib
+#
 #selftests
 #selftests-vm-add-test-for-soft-dirty-pte-bit.patch: check review, TBU
 #
@@ -1431,3 +1441,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #[merged]mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
 #[withdrawn]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
+#[merged]lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead.patch

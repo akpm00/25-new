@@ -1,0 +1,9 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: x86-pgtable-support-__have_arch_pte_swp_exclusive-fix
+
+Looks like I ignored that 32bit uses a different (undocumented) swap layout
+and bit 3 falls into the swp type. We'll restrict this to x86-64 for now, just
+like for the other architectures.
+
+Link: https://lkml.kernel.org/r/d875c292-46b3-f281-65ae-71d0b0c6f592@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>

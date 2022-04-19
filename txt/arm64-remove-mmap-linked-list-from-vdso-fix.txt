@@ -1,0 +1,11 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: arm64: change elfcore for_each_mte_vma() to use VMA iterator
+
+Rework for_each_mte_vma() to use a VMA iterator instead of an explicit
+linked-list.
+
+Link: https://lore.kernel.org/r/20220218023650.672072-1-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220419192157.2jn6olj7lg6jvo5e@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Signed-off-by: Will Deacon <will@kernel.org>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
