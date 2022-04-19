@@ -1,0 +1,35 @@
+From: Roman Gushchin <roman.gushchin@linux.dev>
+Subject: mm: do not call add_nr_deferred() with zero deferred
+
+add_nr_deferred() is often called with next_deferred equal to 0.
+For instance, it's happening under low memory pressure for any
+shrinkers with a low number of cached objects. A corresponding trace
+looks like:
+  <...>-619914 [005] .... 467456.345160: mm_shrink_slab_end: \
+  super_cache_scan+0x0/0x1a0 0000000087027f06: nid: 1	     \
+  unused scan count 0 new scan count 0 total_scan 0	     \
+  last shrinker return val 0
+
+  <...>-619914 [005] .... 467456.345371: mm_shrink_slab_end: \
+  super_cache_scan+0x0/0x1a0 0000000087027f06: nid: 1	     \
+  unused scan count 0 new scan count 0 total_scan 0	     \
+  last shrinker return val 0
+
+  <...>-619914 [005] .... 467456.345380: mm_shrink_slab_end: \
+  super_cache_scan+0x0/0x1a0 0000000087027f06: nid: 1 unused \
+  scan count 0 new scan count 0 total_scan 0	             \
+  last shrinker return val 0
+
+This lead to unnecessary checks and atomic operations, which can be
+avoided by checking next_deferred for not being zero before calling
+add_nr_deferred().  In this case the mm_shrink_slab_end trace point will
+get a potentially slightly outdated "new scan count" value, but it's
+totally fine.
+
+Link: https://lkml.kernel.org/r/20220416004104.4089743-1-roman.gushchin@linux.dev
+Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Yang Shi <shy828301@gmail.com>

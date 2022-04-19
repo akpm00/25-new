@@ -1,0 +1,31 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: make compaction_zonelist_suitable return false when COMPACT_SUCCESS
+
+When compact_result indicates that the allocation should now succeed, i.e.
+compact_result = COMPACT_SUCCESS, compaction_zonelist_suitable should
+return false because there is no need to do compaction now.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-11-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/compaction.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/compaction.c~mm-compaction-make-compaction_zonelist_suitable-return-false-when-compact_success
++++ a/mm/compaction.c
+@@ -2291,7 +2291,7 @@ bool compaction_zonelist_suitable(struct
+ 		available += zone_page_state_snapshot(zone, NR_FREE_PAGES);
+ 		compact_result = __compaction_suitable(zone, order, alloc_flags,
+ 				ac->highest_zoneidx, available);
+-		if (compact_result != COMPACT_SKIPPED)
++		if (compact_result == COMPACT_CONTINUE)
+ 			return true;
+ 	}
+ 
+_

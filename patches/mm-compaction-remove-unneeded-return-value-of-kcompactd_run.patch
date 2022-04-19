@@ -1,0 +1,79 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: remove unneeded return value of kcompactd_run
+
+Patch series "A few cleanup and fixup patches for compaction".
+
+This series contains a few patches to clean up some obsolete comment,
+remove unneeded return value and so on.  Also we fix the possible NULL
+pointer dereference.  More details can be found in the respective
+changelogs.
+
+
+This patch (of 12):
+
+The return value of kcompactd_run() is unused now.  Clean it up.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220418141253.24298-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc; Mel Gorman <mgorman@techsingularity.net>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/compaction.h |    5 ++---
+ mm/compaction.c            |    7 ++-----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+--- a/include/linux/compaction.h~mm-compaction-remove-unneeded-return-value-of-kcompactd_run
++++ a/include/linux/compaction.h
+@@ -177,7 +177,7 @@ static inline bool compaction_withdrawn(
+ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+ 					int alloc_flags);
+ 
+-extern int kcompactd_run(int nid);
++extern void kcompactd_run(int nid);
+ extern void kcompactd_stop(int nid);
+ extern void wakeup_kcompactd(pg_data_t *pgdat, int order, int highest_zoneidx);
+ 
+@@ -212,9 +212,8 @@ static inline bool compaction_withdrawn(
+ 	return true;
+ }
+ 
+-static inline int kcompactd_run(int nid)
++static inline void kcompactd_run(int nid)
+ {
+-	return 0;
+ }
+ static inline void kcompactd_stop(int nid)
+ {
+--- a/mm/compaction.c~mm-compaction-remove-unneeded-return-value-of-kcompactd_run
++++ a/mm/compaction.c
+@@ -3016,21 +3016,18 @@ static int kcompactd(void *p)
+  * This kcompactd start function will be called by init and node-hot-add.
+  * On node-hot-add, kcompactd will moved to proper cpus if cpus are hot-added.
+  */
+-int kcompactd_run(int nid)
++void kcompactd_run(int nid)
+ {
+ 	pg_data_t *pgdat = NODE_DATA(nid);
+-	int ret = 0;
+ 
+ 	if (pgdat->kcompactd)
+-		return 0;
++		return;
+ 
+ 	pgdat->kcompactd = kthread_run(kcompactd, pgdat, "kcompactd%d", nid);
+ 	if (IS_ERR(pgdat->kcompactd)) {
+ 		pr_err("Failed to start kcompactd on node %d\n", nid);
+-		ret = PTR_ERR(pgdat->kcompactd);
+ 		pgdat->kcompactd = NULL;
+ 	}
+-	return ret;
+ }
+ 
+ /*
+_

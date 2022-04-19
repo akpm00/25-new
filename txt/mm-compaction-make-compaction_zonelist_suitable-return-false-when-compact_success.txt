@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: make compaction_zonelist_suitable return false when COMPACT_SUCCESS
+
+When compact_result indicates that the allocation should now succeed, i.e.
+compact_result = COMPACT_SUCCESS, compaction_zonelist_suitable should
+return false because there is no need to do compaction now.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-11-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

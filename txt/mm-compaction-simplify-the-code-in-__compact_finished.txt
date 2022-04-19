@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: simplify the code in __compact_finished
+
+Since commit efe771c7603b ("mm, compaction: always finish scanning of a
+full pageblock"), compaction will always finish scanning a pageblock.  And
+migrate_pfn is assured to align with pageblock_nr_pages when we reach
+here.  So we will always return COMPACT_SUCCESS if a suitable fallback is
+found due to the below IS_ALIGNED check of migrate_pfn.  Simplify the code
+to make this clear and improve the readability.  No functional change
+intended.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-12-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

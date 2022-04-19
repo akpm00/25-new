@@ -18,19 +18,21 @@ invalid parameter string, just use return '1' to avoid print again.
 
 Link: https://lkml.kernel.org/r/20220413032915.251254-4-liupeng256@huawei.com
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/hugetlb.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 --- a/mm/hugetlb.c~hugetlb-fix-return-value-of-__setup-handlers
 +++ a/mm/hugetlb.c
-@@ -4159,7 +4159,7 @@ static int __init hugepages_setup(char *
+@@ -4157,7 +4157,7 @@ static int __init hugepages_setup(char *
  	if (!parsed_valid_hugepagesz) {
  		pr_warn("HugeTLB: hugepages=%s does not follow a valid hugepagesz, ignoring\n", s);
  		parsed_valid_hugepagesz = true;
@@ -39,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	/*
-@@ -4175,7 +4175,7 @@ static int __init hugepages_setup(char *
+@@ -4173,7 +4173,7 @@ static int __init hugepages_setup(char *
  
  	if (mhp == last_mhp) {
  		pr_warn("HugeTLB: hugepages= specified twice without interleaving hugepagesz=, ignoring hugepages=%s\n", s);
@@ -48,16 +50,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	while (*p) {
-@@ -4186,7 +4186,7 @@ static int __init hugepages_setup(char *
+@@ -4184,7 +4184,7 @@ static int __init hugepages_setup(char *
  		if (p[count] == ':') {
  			if (!hugetlb_node_alloc_supported()) {
  				pr_warn("HugeTLB: architecture can't support node specific alloc, ignoring!\n");
 -				return 0;
 +				return 1;
  			}
- 			if (!node_online(tmp))
+ 			if (tmp >= MAX_NUMNODES || !node_online(tmp))
  				goto invalid;
-@@ -4228,7 +4228,7 @@ static int __init hugepages_setup(char *
+@@ -4226,7 +4226,7 @@ static int __init hugepages_setup(char *
  invalid:
  	pr_warn("HugeTLB: Invalid hugepages parameter %s\n", p);
  	hugepages_clear_pages_in_node();
@@ -66,7 +68,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  __setup("hugepages=", hugepages_setup);
  
-@@ -4249,7 +4249,7 @@ static int __init hugepagesz_setup(char
+@@ -4247,7 +4247,7 @@ static int __init hugepagesz_setup(char
  
  	if (!arch_hugetlb_valid_size(size)) {
  		pr_err("HugeTLB: unsupported hugepagesz=%s\n", s);
@@ -75,7 +77,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	h = size_to_hstate(size);
-@@ -4264,7 +4264,7 @@ static int __init hugepagesz_setup(char
+@@ -4262,7 +4262,7 @@ static int __init hugepagesz_setup(char
  		if (!parsed_default_hugepagesz ||  h != &default_hstate ||
  		    default_hstate.max_huge_pages) {
  			pr_warn("HugeTLB: hugepagesz=%s specified twice, ignoring\n", s);
@@ -84,7 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  
  		/*
-@@ -4295,14 +4295,14 @@ static int __init default_hugepagesz_set
+@@ -4293,14 +4293,14 @@ static int __init default_hugepagesz_set
  	parsed_valid_hugepagesz = false;
  	if (parsed_default_hugepagesz) {
  		pr_err("HugeTLB: default_hugepagesz previously specified, ignoring %s\n", s);

@@ -41,6 +41,8 @@ Fixes: f9317f77a6e0 ("hugetlb: clean up potential spectre issue warnings")
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
 Suggested-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Cc: Muchun Song <songmuchun@bytedance.com>

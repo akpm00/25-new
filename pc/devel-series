@@ -2,38 +2,7 @@
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
-#MAINTAINERS
-#mm/tmpfs
-#
-#m/secretmem
-#
-#mm/kasan
-#
-#
-#mm/kfence
-#
-#mm/pagealloc
-#
-#mm/zram
-#
-#mm/compaction
-#
-#mm/hugetlb
-#
-#binfmt
-#
-#mm/vmalloc
-#
-#mm/kmemleak
-#
-#
 #NEXT_PATCHES_END
-#
-#
-#
-#
-#
-#
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #
 #mm/memory-failure
@@ -74,8 +43,10 @@ oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patc
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
 #
 #kcov
-#kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch; -stable?
 kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
+#
+#mm/highmem
+mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -360,8 +331,10 @@ mm-khugepaged-introduce-khugepaged_enter_vma-helper-vs-maple-tree.patch
 mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 hugetlb-fix-wrong-use-of-nr_online_nodes.patch
+hugetlb-fix-wrong-use-of-nr_online_nodes-v4.patch
 hugetlb-fix-hugepages_setup-when-deal-with-pernode.patch
 hugetlb-fix-return-value-of-__setup-handlers.patch
+#hugetlb-clean-up-hugetlb_cma_reserve.patch: TBU
 hugetlb-clean-up-hugetlb_cma_reserve.patch
 #
 #mm/dax
@@ -432,6 +405,10 @@ mglru-vs-maple-tree.patch
 mm-vmscan-fix-comment-for-current_may_throttle.patch
 mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
 #
+mm-vmscan-fix-comment-for-isolate_lru_pages.patch
+#
+mm-do-not-call-add_nr_deferred-with-zero-deferred.patch
+#
 #mm/proc
 mm-proc-remove-redundant-page-validation-of-pte_page.patch
 #
@@ -498,6 +475,8 @@ mm-untangle-config-dependencies-for-demote-on-reclaim.patch
 #mm/balloon-compaction
 #mm/mmap
 #mm/madvise
+mm-madvise-fix-potential-pte_unmap_unlock-pte-error.patch
+#
 #mm/virtio
 #mm/util
 #mm/memory-hotplug
@@ -506,6 +485,19 @@ mm-memory_hotplug-reset-nodes-state-when-empty-during-offline.patch
 mm-memory_hotplug-reset-nodes-state-when-empty-during-offline-fix.patch
 mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node.patch
 mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes.patch
+#
+mm-compaction-remove-unneeded-return-value-of-kcompactd_run.patch
+mm-compaction-remove-unneeded-pfn-update.patch
+mm-compaction-remove-unneeded-assignment-to-isolate_start_pfn.patch
+mm-compaction-clean-up-comment-for-sched-contention.patch
+mm-compaction-clean-up-comment-about-suitable-migration-target-recheck.patch
+mm-compaction-use-compact_cluster_max-in-compactionc.patch
+mm-compaction-use-helper-compound_nr-in-isolate_migratepages_block.patch
+mm-compaction-clean-up-comment-about-async-compaction-in-isolate_migratepages.patch
+mm-compaction-avoid-possible-null-pointer-dereference-in-kcompactd_cpu_online.patch
+mm-compaction-make-compaction_zonelist_suitable-return-false-when-compact_success.patch
+mm-compaction-simplify-the-code-in-__compact_finished.patch
+mm-compaction-make-sure-highest-is-above-the-min_pfn.patch
 #
 #mm/rmap
 mm-rmap-fix-cache-flush-on-thp-pages.patch
@@ -530,6 +522,12 @@ zram-add-a-huge_idle-writeback-mode.patch
 #mm/hmm
 #mm/damon
 damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
+#
+selftests-damon-add-damon-to-selftests-root-makefile.patch
+#
+#mm/swap2
+#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: acks?
+mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
 #
 #mm/tools
 #
@@ -1292,6 +1290,8 @@ fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super.patch
 #NEXT_PATCHES_START ipc
 ipc-sem-remove-redundant-assignments.patch
 #
+ipc-update-semtimedop-to-use-hrtimer.patch
+#
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #
@@ -1332,7 +1332,6 @@ mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #
 #selftests
 #selftests-vm-add-test-for-soft-dirty-pte-bit.patch: check review, TBU
-selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #
 #kselftest-vm-override-targets-from-arguments.patch: TBU
 kselftest-vm-override-targets-from-arguments.patch
@@ -1424,3 +1423,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]revert-fs-binfmt_elf-use-pt_load-p_align-values-for-static-pie.patch
 #[merged]mm-vmalloc-fix-spinning-drain_vmap_work-after-reading-from-proc-vmcore.patch
 #[merged]mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
+#[withdrawn]selftests-vm-add-test-for-soft-dirty-pte-bit.patch

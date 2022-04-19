@@ -1,0 +1,23 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: remove unneeded return value of kcompactd_run
+
+Patch series "A few cleanup and fixup patches for compaction".
+
+This series contains a few patches to clean up some obsolete comment,
+remove unneeded return value and so on.  Also we fix the possible NULL
+pointer dereference.  More details can be found in the respective
+changelogs.
+
+
+This patch (of 12):
+
+The return value of kcompactd_run() is unused now.  Clean it up.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220418141253.24298-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc; Mel Gorman <mgorman@techsingularity.net>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Charan Teja Kalla <charante@codeaurora.org>

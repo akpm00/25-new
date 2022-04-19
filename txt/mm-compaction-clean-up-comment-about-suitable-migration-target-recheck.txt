@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: clean up comment about suitable migration target recheck
+
+checked_pageblock is already removed and suitable_migration_target is not
+rechecked under the zone lock since commit f8224aa5a0a4 ("mm, compaction:
+do not recheck suitable_migration_target under lock").  Correct the
+comment accordingly.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-6-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

@@ -6,7 +6,21 @@ WARN_ONCE() in such a case.
 
 Instead, print a kernel message and just return an error code.
 
+This flaw has been reported under an OOM condition by sysbot
+(https://lkml.kernel.org/r/Ylkr2xrVbhQYwNLf@elver.google.com).
+
+The message is mainly for the benefit of the test log, in this case the
+fuzzer's log so that humans inspecting the log can figure out what was
+going on. KCOV is a testing tool, so I think being a little more chatty
+when KCOV unexpectedly is about to fail will save someone debugging
+time.
+
+We don't want the WARN, because it's not a kernel bug that syzbot should
+report, and failure can happen if the fuzzer tries hard enough (as
+above).
+
 Link: https://lkml.kernel.org/r/20220401182512.249282-1-nogikh@google.com
+Fixes: b3d7fe86fbd0 ("kcov: properly handle subsequent mmap calls"),
 Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
 Acked-by: Marco Elver <elver@google.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>

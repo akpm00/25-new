@@ -1,0 +1,31 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: remove unneeded assignment to isolate_start_pfn
+
+isolate_start_pfn is unused when cc->nr_freepages !  = 0.  Otherwise
+cc->free_pfn will overwrite it unconditionally.  So we should remove this
+unneeded and somewhat misleading assignment.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/compaction.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/compaction.c~mm-compaction-remove-unneeded-assignment-to-isolate_start_pfn
++++ a/mm/compaction.c
+@@ -1586,7 +1586,7 @@ static void isolate_freepages(struct com
+ 	unsigned int stride;
+ 
+ 	/* Try a small search of the free lists for a candidate */
+-	isolate_start_pfn = fast_isolate_freepages(cc);
++	fast_isolate_freepages(cc);
+ 	if (cc->nr_freepages)
+ 		goto splitmap;
+ 
+_

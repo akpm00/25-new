@@ -1,0 +1,30 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: use helper compound_nr in isolate_migratepages_block
+
+Use helper compound_nr to make use of compound_nr when CONFIG_64BIT and
+simplify the code a bit.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/compaction.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/compaction.c~mm-compaction-use-helper-compound_nr-in-isolate_migratepages_block
++++ a/mm/compaction.c
+@@ -908,7 +908,7 @@ isolate_migratepages_block(struct compac
+ 				 /* Do not report -EBUSY down the chain */
+ 				if (ret == -EBUSY)
+ 					ret = 0;
+-				low_pfn += (1UL << compound_order(page)) - 1;
++				low_pfn += compound_nr(page) - 1;
+ 				goto isolate_fail;
+ 			}
+ 
+_

@@ -1,5 +1,5 @@
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: mm, hugetlb: allow for "high" userspace addresses
+Subject: mm, hugetlbfs: allow for "high" userspace addresses
 
 This is a fix for commit f6795053dac8 ("mm: mmap: Allow for "high"
 userspace addresses") for hugetlb.

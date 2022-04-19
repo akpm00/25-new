@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: clean up comment for sched contention
+
+Since commit cf66f0700c8f ("mm, compaction: do not consider a need to
+reschedule as contention"), async compaction won't abort when scheduling
+is needed.  Correct the relevant comment accordingly.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

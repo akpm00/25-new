@@ -32,11 +32,13 @@ Alistair:
 
 Link: https://lkml.kernel.org/r/20220413191147.66645-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
-Cc: Alistair Popple <apopple@nvidia.com>
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 Cc: Hugh Dickins <hughd@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/swapops.h |    8 --------
+ 1 file changed, 8 deletions(-)
 
 --- a/include/linux/swapops.h~mm-remove-stub-for-non_swap_entry
 +++ a/include/linux/swapops.h

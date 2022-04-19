@@ -1,0 +1,27 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swapfile: unuse_pte can map random data if swap read fails
+
+There is a bug in unuse_pte(): when swap page happens to be unreadable,
+page filled with random data is mapped into user address space.  In case
+of error, a special swap entry indicating swap read fails is set to the
+page table.  So the swapcache page can be freed and the user won't end up
+with a permanently mounted swap because a sector is bad.  And if the page
+is accessed later, the user process will be killed so that corrupted data
+is never consumed.  On the other hand, if the page is never accessed, the
+user won't even notice it.
+
+Link: https://lkml.kernel.org/r/20220416030549.60559-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Howells <dhowells@redhat.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Ralph Campbell <rcampbell@nvidia.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Hugh Dickins <hughd@google.com>

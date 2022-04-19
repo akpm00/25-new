@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: make sure highest is above the min_pfn
+
+It's not guaranteed that highest will be above the min_pfn.  If highest is
+below the min_pfn, migrate_pfn and free_pfn can meet prematurely and lead
+to some useless work.  Make sure highest is above min_pfn to avoid making
+a futile effort.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-13-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

@@ -1,0 +1,10 @@
+From: Yuanchu Xie <yuanchu@google.com>
+Subject: selftests/damon: add damon to selftests root Makefile
+
+Currently the damon selftests are not built with the rest of the
+selftests.  We add damon to the list of targets.
+
+Link: https://lkml.kernel.org/r/20220418202017.3583638-1-yuanchu@google.com
+Fixes: b348eb7abd09 ("mm/damon: add user space selftests")
+Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>

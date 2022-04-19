@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: avoid possible NULL pointer dereference in kcompactd_cpu_online
+
+It's possible that kcompactd_run could fail to run kcompactd for a hot
+added node and leave pgdat->kcompactd as NULL.  So pgdat->kcompactd should
+be checked here to avoid possible NULL pointer dereference.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-10-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

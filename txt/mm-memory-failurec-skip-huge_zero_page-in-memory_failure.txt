@@ -52,9 +52,11 @@ This makes huge_zero_page bail out explicitly before split in
 memory_failure(), thus the panic above won't happen again.
 
 Link: https://lkml.kernel.org/r/497d3835612610e370c74e697ea3c721d1d55b9c.1649775850.git.xuyu@linux.alibaba.com
+Fixes: 6a46079cf57a ("HWPOISON: The high level memory error handler in the VM v7")
 Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
 Reported-by: Abaci <abaci@linux.alibaba.com>
 Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Cc: <stable@vger.kernel.org>

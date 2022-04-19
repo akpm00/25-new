@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: use helper compound_nr in isolate_migratepages_block
+
+Use helper compound_nr to make use of compound_nr when CONFIG_64BIT and
+simplify the code a bit.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

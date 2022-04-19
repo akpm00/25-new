@@ -1,0 +1,28 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: remove unneeded pfn update
+
+pfn is unused in this do while loop. Remove the unneeded pfn update.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/compaction.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/compaction.c~mm-compaction-remove-unneeded-pfn-update
++++ a/mm/compaction.c
+@@ -317,7 +317,6 @@ __reset_isolation_pfn(struct zone *zone,
+ 		}
+ 
+ 		page += (1 << PAGE_ALLOC_COSTLY_ORDER);
+-		pfn += (1 << PAGE_ALLOC_COSTLY_ORDER);
+ 	} while (page <= end_page);
+ 
+ 	return false;
+_

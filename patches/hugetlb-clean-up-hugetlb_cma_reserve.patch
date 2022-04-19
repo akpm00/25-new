@@ -6,19 +6,21 @@ The changes will make the code simplified.
 
 Link: https://lkml.kernel.org/r/20220413032915.251254-5-liupeng256@huawei.com
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/hugetlb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/mm/hugetlb.c~hugetlb-clean-up-hugetlb_cma_reserve
 +++ a/mm/hugetlb.c
-@@ -7026,7 +7026,7 @@ void __init hugetlb_cma_reserve(int orde
+@@ -7024,7 +7024,7 @@ void __init hugetlb_cma_reserve(int orde
  		if (hugetlb_cma_size_in_node[nid] == 0)
  			continue;
  
@@ -27,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pr_warn("hugetlb_cma: invalid node %d specified\n", nid);
  			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
  			hugetlb_cma_size_in_node[nid] = 0;
-@@ -7065,7 +7065,7 @@ void __init hugetlb_cma_reserve(int orde
+@@ -7063,7 +7063,7 @@ void __init hugetlb_cma_reserve(int orde
  	}
  
  	reserved = 0;

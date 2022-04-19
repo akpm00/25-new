@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/madvise: fix potential pte_unmap_unlock pte error
+
+We can't assume pte_offset_map_lock will return same orig_pte value. So
+it's necessary to reacquire the orig_pte or pte_unmap_unlock will unmap
+the stale pte.
+
+Link: https://lkml.kernel.org/r/20220416081416.23304-1-linmiaohe@huawei.com
+Fixes: 9c276cc65a58 ("mm: introduce MADV_COLD")
+Fixes: 854e9ed09ded ("mm: support madvise(MADV_FREE)")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Hugh Dickins <hughd@google.com>

@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm: compaction: clean up comment about async compaction in isolate_migratepages
+
+Since commit 282722b0d258 ("mm, compaction: restrict async compaction to
+pageblocks of same migratetype"), async direct compaction is restricted to
+scan the pageblocks of same migratetype.  Correct the comment accordingly.
+
+Link: https://lkml.kernel.org/r/20220418141253.24298-9-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Charan Teja Kalla <charante@codeaurora.org>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Pintu Kumar <pintu@codeaurora.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>

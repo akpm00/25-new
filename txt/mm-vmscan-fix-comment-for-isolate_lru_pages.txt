@@ -1,0 +1,11 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: fix comment for isolate_lru_pages
+
+Since commit 791b48b64232 ("mm: vmscan: scan until it finds eligible
+pages"), splicing any skipped pages to the tail of the LRU list won't put
+the system at risk of premature OOM but will waste lots of cpu cycles. 
+Correct the comment accordingly.
+
+Link: https://lkml.kernel.org/r/20220416025231.8082-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Minchan Kim <minchan@kernel.org>

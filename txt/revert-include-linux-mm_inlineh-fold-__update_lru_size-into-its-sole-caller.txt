@@ -22,6 +22,7 @@ Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 Tested-by: Shuang Zhai <szhai2@cs.rochester.edu>
 Tested-by: Sofia Trinh <sofia.trinh@edi.works>
 Tested-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Barry Song <baohua@kernel.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Mel Gorman <mgorman@techsingularity.net>
