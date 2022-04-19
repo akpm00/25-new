@@ -3,8 +3,8 @@ Subject: mm/vmalloc: fix spinning drain_vmap_work after reading from /proc/vmcor
 
 Commit 3ee48b6af49c ("mm, x86: Saving vmcore with non-lazy freeing of
 vmas") introduced set_iounmap_nonlazy(), which sets vmap_lazy_nr to
-lazy_max_pages() + 1, ensuring that any future vunmaps() immediately
-purges the vmap areas instead of doing it lazily.
+lazy_max_pages() + 1, ensuring that any future vunmaps() immediately purge
+the vmap areas instead of doing it lazily.
 
 Commit 690467c81b1a ("mm/vmalloc: Move draining areas out of caller
 context") moved the purging from the vunmap() caller to a worker thread. 
@@ -36,16 +36,23 @@ the time that set_iounmap_nonlazy() was called, this bug is avoided.)
 This can be reproduced with anything that reads from /proc/vmcore multiple
 times.  E.g., vmcore-dmesg /proc/vmcore.
 
-A simple way to "fix" this would be to make set_iounmap_nonlazy() set
-vmap_lazy_nr to lazy_max_pages() instead of lazy_max_pages() + 1.  But, I
-think it'd be better to get rid of this hack of clobbering vmap_lazy_nr. 
-Instead, this fix makes __copy_oldmem_page() explicitly drain the vmap
-areas itself.
+It turns out that improvements to vmap() over the years have obsoleted the
+need for this "optimization".  I benchmarked `dd if=/proc/vmcore
+of=/dev/null` with 4k and 1M read sizes on a system with a 32GB vmcore. 
+The test was run on 5.17, 5.18-rc1 with a fix that avoided the hang, and
+5.18-rc1 with set_iounmap_nonlazy() removed entirely:
 
-Link: https://lkml.kernel.org/r/75014514645de97f2d9e087aa3df0880ea311b77.1649187356.git.osandov@fb.com
-Fixes: 3ee48b6af49c ("mm, x86: Saving vmcore with non-lazy freeing of vmas")
+  |5.17  |5.18+fix|5.18+removal
+4k|40.86s|  40.09s|      26.73s
+1M|24.47s|  23.98s|      21.84s
+
+The removal was the fastest (by a wide margin with 4k reads). This patch
+removes set_iounmap_nonlazy().
+
+Link: https://lkml.kernel.org/r/52f819991051f9b865e9ce25605509bfdbacadcd.1649277321.git.osandov@fb.com
+Fixes: 690467c81b1a  ("mm/vmalloc: Move draining areas out of caller context")
 Signed-off-by: Omar Sandoval <osandov@fb.com>
+Acked-by: Chris Down <chris@chrisdown.name>
 Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Cliff Wickman <cpw@sgi.com>
-Cc: Baoquan He <bhe@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Baoquan He <bhe@redhat.com>
