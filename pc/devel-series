@@ -1335,7 +1335,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
-linux-next-git-rejects.patch
 #NEXT_PATCHES_START linux-next-post
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-urgent
@@ -1443,3 +1442,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]mm-kmemleak-take-a-full-lowmem-check-in-kmemleak__phys.patch
 #[withdrawn]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #[merged]lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead.patch
+#[obsolete]linux-next-git-rejects.patch

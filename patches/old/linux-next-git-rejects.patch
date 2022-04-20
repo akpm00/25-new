@@ -4,31 +4,23 @@ Subject: linux-next-git-rejects
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/xattr.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/arch/x86/kvm/x86.c~linux-next-git-rejects
-+++ a/arch/x86/kvm/x86.c
-@@ -3101,15 +3101,6 @@ static int kvm_guest_time_update(struct
- 
- 	vcpu->hv_clock.flags = pvclock_flags;
- 
+--- a/fs/xattr.c~linux-next-git-rejects
++++ a/fs/xattr.c
+@@ -566,13 +566,6 @@ int setxattr_copy(const char __user *nam
+ 			error = PTR_ERR(ctx->kvalue);
+ 			ctx->kvalue = NULL;
+ 		}
 -<<<<<<< HEAD
--	if (vcpu->pv_time_enabled)
--		kvm_setup_pvclock_page(v, &vcpu->pv_time, 0);
--	if (vcpu->xen.vcpu_info_set)
--		kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_info_cache,
--				       offsetof(struct compat_vcpu_info, time));
--	if (vcpu->xen.vcpu_time_info_set)
--		kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
+-		if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
+-		    (strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
+-			posix_acl_fix_xattr_from_user(mnt_userns, d_inode(d),
+-						      kvalue, size);
 -=======
- 	if (vcpu->pv_time.active)
- 		kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
- 	if (vcpu->xen.vcpu_info_cache.active)
-@@ -3117,7 +3108,6 @@ static int kvm_guest_time_update(struct
- 					offsetof(struct compat_vcpu_info, time));
- 	if (vcpu->xen.vcpu_time_info_cache.active)
- 		kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
 ->>>>>>> linux-next/akpm-base
- 	kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
- 	return 0;
- }
+ 	}
+ 
+ 	return error;
 _
