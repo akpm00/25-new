@@ -1,0 +1,28 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/uffd: move USERFAULTFD configs into mm/
+
+We used to have USERFAULTFD configs stored in init/.  It makes sense as a
+start because that's the default place for storing syscall related
+configs.
+
+However userfaultfd evolved a bit in the past few years and some more
+config options were added.  They're no longer related to syscalls and
+start to be not suitable to be kept in the init/ directory anymore,
+because they're pure mm concepts.
+
+But it's not ideal either to keep the userfaultfd configs separate from
+each other.  Hence this patch moves the userfaultfd configs under init/ to
+be under mm/ so that we'll start to group all userfaultfd configs
+together.
+
+We do have quite a few examples of syscall related configs that are not
+put under init/Kconfig: FTRACE_SYSCALLS, SWAP, FILE_LOCKING,
+MEMFD_CREATE..  They all reside in the dir where they're more suitable for
+the concept.  So it seems there's no restriction to keep the role of
+having syscall related CONFIG_* under init/ only.
+
+Link: https://lkml.kernel.org/r/20220420144823.35277-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>

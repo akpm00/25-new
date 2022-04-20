@@ -41,6 +41,7 @@ Signed-off-by: Joel Savitz <jsavitz@redhat.com>
 Signed-off-by: Nico Pache <npache@redhat.com>
 Co-developed-by: Joel Savitz <jsavitz@redhat.com>
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Rafael Aquini <aquini@redhat.com>
 Cc: Waiman Long <longman@redhat.com>
 Cc: Herton R. Krzesinski <herton@redhat.com>
@@ -52,7 +53,6 @@ Cc: Ben Segall <bsegall@google.com>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
 Cc: David Rientjes <rientjes@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Davidlohr Bueso <dave@stgolabs.net>
 Cc: Peter Zijlstra <peterz@infradead.org>

@@ -35,7 +35,6 @@ selftest-vm-support-xfail-in-mremap_test.patch
 selftest-vm-add-skip-support-to-mremap_test.patch
 #
 #mm/oom-kill
-#oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch: acks?
 oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
 #
 #mm/kasan
@@ -88,6 +87,7 @@ tools-vm-page_owner_sortc-provide-allocator-labelling-and-update-cull-and-sort-o
 #
 tools-vm-page_owner_sortc-avoid-repeated-judgments.patch
 #
+mm-page_ownerc-use-get_task_comm-to-record-task-command-name-with-the-protection-of-task_lock.patch
 #
 #
 #
@@ -170,6 +170,9 @@ maintainers-add-corresponding-kselftests-to-cgroup-entry.patch
 maintainers-add-corresponding-kselftests-to-memcg-entry.patch
 #
 #mm/selftests
+selftests-vm-bring-common-functions-to-a-new-file.patch
+selftests-vm-add-test-for-soft-dirty-pte-bit.patch
+#
 #mm/pagemap
 mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
 #
@@ -256,6 +259,7 @@ radix-tree-test-suite-add-lockdep_is_held-to-header.patch
 mips-rename-mt_init-to-mips_mt_init.patch
 maple-tree-add-new-data-structure.patch
 maple-tree-add-new-data-structure-fix.patch
+maple-tree-add-new-data-structure-fix-2.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
 mm-add-vma-iterator.patch
@@ -353,6 +357,12 @@ hugetlb-fix-return-value-of-__setup-handlers.patch
 hugetlb-clean-up-hugetlb_cma_reserve.patch
 #
 #mm/dax
+mm-sparse-vmemmap-add-a-pgmap-argument-to-section-activation.patch
+mm-sparse-vmemmap-refactor-core-of-vmemmap_populate_basepages-to-helper.patch
+mm-hugetlb_vmemmap-move-comment-block-to-documentation-vm.patch
+mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps.patch
+mm-page_alloc-reuse-tail-struct-pages-for-compound-devmaps.patch
+#
 #mm/userfaultfd
 mm-remove-stub-for-non_swap_entry.patch
 #
@@ -392,6 +402,8 @@ mm-enable-pte-markers-by-default-fix.patch
 selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
 #
 userfaultfd-selftests-use-swap-instead-of-open-coding-it.patch
+#
+mm-uffd-move-userfaultfd-configs-into-mm.patch
 #
 #mm/vmscan
 mm-vmscan-reclaim-only-affects-managed_zones.patch

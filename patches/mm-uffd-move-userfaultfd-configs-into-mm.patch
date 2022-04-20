@@ -1,0 +1,95 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/uffd: move USERFAULTFD configs into mm/
+
+We used to have USERFAULTFD configs stored in init/.  It makes sense as a
+start because that's the default place for storing syscall related
+configs.
+
+However userfaultfd evolved a bit in the past few years and some more
+config options were added.  They're no longer related to syscalls and
+start to be not suitable to be kept in the init/ directory anymore,
+because they're pure mm concepts.
+
+But it's not ideal either to keep the userfaultfd configs separate from
+each other.  Hence this patch moves the userfaultfd configs under init/ to
+be under mm/ so that we'll start to group all userfaultfd configs
+together.
+
+We do have quite a few examples of syscall related configs that are not
+put under init/Kconfig: FTRACE_SYSCALLS, SWAP, FILE_LOCKING,
+MEMFD_CREATE..  They all reside in the dir where they're more suitable for
+the concept.  So it seems there's no restriction to keep the role of
+having syscall related CONFIG_* under init/ only.
+
+Link: https://lkml.kernel.org/r/20220420144823.35277-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ init/Kconfig |   17 -----------------
+ mm/Kconfig   |   17 +++++++++++++++++
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+--- a/init/Kconfig~mm-uffd-move-userfaultfd-configs-into-mm
++++ a/init/Kconfig
+@@ -1667,16 +1667,6 @@ config ADVISE_SYSCALLS
+ 	  applications use these syscalls, you can disable this option to save
+ 	  space.
+ 
+-config HAVE_ARCH_USERFAULTFD_WP
+-	bool
+-	help
+-	  Arch has userfaultfd write protection support
+-
+-config HAVE_ARCH_USERFAULTFD_MINOR
+-	bool
+-	help
+-	  Arch has userfaultfd minor fault support
+-
+ config MEMBARRIER
+ 	bool "Enable membarrier() system call" if EXPERT
+ 	default y
+@@ -1741,13 +1731,6 @@ config KALLSYMS_BASE_RELATIVE
+ 
+ # syscall, maps, verifier
+ 
+-config USERFAULTFD
+-	bool "Enable userfaultfd() system call"
+-	depends on MMU
+-	help
+-	  Enable the userfaultfd() system call that allows to intercept and
+-	  handle page faults in userland.
+-
+ config ARCH_HAS_MEMBARRIER_CALLBACKS
+ 	bool
+ 
+--- a/mm/Kconfig~mm-uffd-move-userfaultfd-configs-into-mm
++++ a/mm/Kconfig
+@@ -909,6 +909,23 @@ config ANON_VMA_NAME
+ 	  area from being merged with adjacent virtual memory areas due to the
+ 	  difference in their name.
+ 
++config USERFAULTFD
++	bool "Enable userfaultfd() system call"
++	depends on MMU
++	help
++	  Enable the userfaultfd() system call that allows to intercept and
++	  handle page faults in userland.
++
++config HAVE_ARCH_USERFAULTFD_WP
++	bool
++	help
++	  Arch has userfaultfd write protection support
++
++config HAVE_ARCH_USERFAULTFD_MINOR
++	bool
++	help
++	  Arch has userfaultfd minor fault support
++
+ config PTE_MARKER
+ 	bool
+ 
+_

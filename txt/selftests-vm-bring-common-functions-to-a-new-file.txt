@@ -1,0 +1,12 @@
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: selftests: vm: bring common functions to a new file
+
+Bring common functions to a new file while keeping code as much same as
+possible.  These functions can be used in the new tests.  This helps in
+avoiding code duplication.
+
+Link: https://lkml.kernel.org/r/20220420084036.4101604-1-usama.anjum@collabora.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Will Deacon <will@kernel.org>

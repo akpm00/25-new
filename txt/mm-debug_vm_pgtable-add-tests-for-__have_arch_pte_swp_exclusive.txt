@@ -5,6 +5,7 @@ Let's test that __HAVE_ARCH_PTE_SWP_EXCLUSIVE works as expected.
 
 Link: https://lkml.kernel.org/r/20220329164329.208407-3-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc: Borislav Petkov <bp@alien8.de>
@@ -38,5 +39,4 @@ Cc: Roman Gushchin <guro@fb.com>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Will Deacon <will@kernel.org>

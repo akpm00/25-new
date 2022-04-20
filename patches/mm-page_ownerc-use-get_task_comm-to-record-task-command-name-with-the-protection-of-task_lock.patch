@@ -1,0 +1,42 @@
+From: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Subject: mm/page_owner.c: use get_task_comm() to record task command name with the protection of task_lock()
+
+I noticed that it is advised to access task command name with
+[gs]et_task_comm() in the comment of task_struct->comm, which is safer
+with the protection of task_lock().
+
+Relative comment in include/linux/sched.h is as follows:
+
+/*
+ * executable name, excluding path.
+ *
+ * - normally initialized setup_new_exec()
+ * - access it with [gs]et_task_comm()
+ * - lock it with task_lock()
+*/
+
+Link: https://lkml.kernel.org/r/20220420122817.67181-1-caoyixuan2019@email.szu.edu.cn
+Signed-off-by: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_owner.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/mm/page_owner.c~mm-page_ownerc-use-get_task_comm-to-record-task-command-name-with-the-protection-of-task_lock
++++ a/mm/page_owner.c
+@@ -168,8 +168,7 @@ static inline void __set_page_owner_hand
+ 		page_owner->pid = current->pid;
+ 		page_owner->tgid = current->tgid;
+ 		page_owner->ts_nsec = local_clock();
+-		strlcpy(page_owner->comm, current->comm,
+-			sizeof(page_owner->comm));
++		get_task_comm(page_owner->comm, current);
+ 		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
+ 		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+ 
+_

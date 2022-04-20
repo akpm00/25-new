@@ -1,0 +1,40 @@
+From: Joao Martins <joao.m.martins@oracle.com>
+Subject: mm/sparse-vmemmap: improve memory savings for compound devmaps
+
+A compound devmap is a dev_pagemap with @vmemmap_shift > 0 and it means
+that pages are mapped at a given huge page alignment and utilize uses
+compound pages as opposed to order-0 pages.
+
+Take advantage of the fact that most tail pages look the same (except the
+first two) to minimize struct page overhead.  Allocate a separate page for
+the vmemmap area which contains the head page and separate for the next 64
+pages.  The rest of the subsections then reuse this tail vmemmap page to
+initialize the rest of the tail pages.
+
+Sections are arch-dependent (e.g.  on x86 it's 64M, 128M or 512M) and when
+initializing compound devmap with big enough @vmemmap_shift (e.g.  1G PUD)
+it may cross multiple sections.  The vmemmap code needs to consult @pgmap
+so that multiple sections that all map the same tail data can refer back
+to the first copy of that data for a given gigantic page.
+
+On compound devmaps with 2M align, this mechanism lets 6 pages be saved
+out of the 8 necessary PFNs necessary to set the subsection's 512 struct
+pages being mapped.  On a 1G compound devmap it saves 4094 pages.
+
+Altmap isn't supported yet, given various restrictions in altmap pfn
+allocator, thus fallback to the already in use vmemmap_populate().  It is
+worth noting that altmap for devmap mappings was there to relieve the
+pressure of inordinate amounts of memmap space to map terabytes of pmem. 
+With compound pages the motivation for altmaps for pmem gets reduced.
+
+Link: https://lkml.kernel.org/r/20220420155310.9712-5-joao.m.martins@oracle.com
+Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Jane Chu <jane.chu@oracle.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>

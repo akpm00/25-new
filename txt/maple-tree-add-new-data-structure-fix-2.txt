@@ -1,0 +1,9 @@
+From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Subject: maple_tree: Fix potential insufficient nodes on mas_spanning_rebalance()
+
+When a spanning store occurs at a non-root node but causes an insufficient
+leave, mas_spanning_rebalance() was not detecting it as a non-root node. 
+This only happened when the spanning write was detected at the root node.
+
+Link: https://lkml.kernel.org/r/20220420134737.yuhkl6znauwpp7j5@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
