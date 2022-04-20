@@ -27,12 +27,6 @@ userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 mm-hugetlbfs-allow-for-high-userspace-addresses.patch
 #
 #mm/mremap
-#selftest-vm-verify-mmap-addr-in-mremap_test.patch: https://lkml.kernel.org/r/eb48d665-1a8b-50cb-00d5-95d8b8cf5625@linuxfoundation.org
-selftest-vm-verify-mmap-addr-in-mremap_test.patch
-#selftest-vm-verify-remap-destination-address-in-mremap_test.patch: https://lkml.kernel.org/r/7b1c0a82-f7c3-4f60-ccb3-893caf4221f9@oracle.com https://lkml.kernel.org/r/3a062d04-b35c-868a-cd94-5d57fef68813@linuxfoundation.org
-selftest-vm-verify-remap-destination-address-in-mremap_test.patch
-selftest-vm-support-xfail-in-mremap_test.patch
-selftest-vm-add-skip-support-to-mremap_test.patch
 #
 #mm/oom-kill
 oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
@@ -1455,3 +1449,7 @@ kselftest-vm-override-targets-from-arguments.patch
 #[withdrawn]selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #[merged]lib-irq_poll-add-local_bh_disable-in-irq_poll_cpu_dead.patch
 #[obsolete]linux-next-git-rejects.patch
+#[to-be-updated]selftest-vm-verify-mmap-addr-in-mremap_test.patch
+#[to-be-updated]selftest-vm-verify-remap-destination-address-in-mremap_test.patch
+#[to-be-updated]selftest-vm-support-xfail-in-mremap_test.patch
+#[to-be-updated]selftest-vm-add-skip-support-to-mremap_test.patch
