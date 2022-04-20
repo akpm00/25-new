@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  arch/arm64/kernel/elfcore.c |   16 ++++++++++------
  1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/arch/arm64/kernel/elfcore.c~arm64-remove-mmap-linked-list-from-vdso-fix
+--- a/arch/arm64/kernel/elfcore.c~arm64-change-elfcore-for_each_mte_vma-to-use-vma-iterator
 +++ a/arch/arm64/kernel/elfcore.c
 @@ -8,9 +8,9 @@
  #include <asm/cpufeature.h>

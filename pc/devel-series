@@ -280,7 +280,7 @@ mm-mmap-move-mmap_region-below-do_munmap.patch
 mm-mmap-reorganize-munmap-to-use-maple-states.patch
 mm-mmap-change-do_brk_munmap-to-use-do_mas_align_munmap.patch
 arm64-remove-mmap-linked-list-from-vdso.patch
-arm64-remove-mmap-linked-list-from-vdso-fix.patch
+arm64-change-elfcore-for_each_mte_vma-to-use-vma-iterator.patch
 parisc-remove-mmap-linked-list-from-cache-handling.patch
 powerpc-remove-mmap-linked-list-walks.patch
 s390-remove-vma-linked-list-walks.patch
@@ -388,6 +388,7 @@ mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
 mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch
 #mm-enable-pte-markers-by-default.patch: https://lkml.kernel.org/r/Yl7RrKV5mXtNAAzi@cmpxchg.org
 mm-enable-pte-markers-by-default.patch
+mm-enable-pte-markers-by-default-fix.patch
 selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
 #
 userfaultfd-selftests-use-swap-instead-of-open-coding-it.patch

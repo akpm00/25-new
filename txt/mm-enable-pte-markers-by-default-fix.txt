@@ -1,0 +1,17 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: mm/uffd: hide PTE_MARKER option
+
+The PTE_MARKER option should not need to be exposed to the kernel builder,
+keep it internal and remove the prompt so it won't be seen.
+
+Instead, make the PTE_MARKER_UFFD_WP option to explicitly choose
+PTE_MARKER when necessary.
+
+While PTE_MARKER_UFFD_WP will still prompt to user, change the wording so
+that it'll not mention PTE_MARKER at all but renaming it to "Userfaultfd
+write protection support for shmem/hugetlbfs".
+
+Link: https://lkml.kernel.org/r/20220419202531.27415-1-peterx@redhat.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>

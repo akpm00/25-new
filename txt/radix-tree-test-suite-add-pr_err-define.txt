@@ -4,7 +4,7 @@ Subject: radix tree test suite: add pr_err define
 Patch series "Introducing the Maple Tree".
 
 
-This patch (of 70):
+This patch (of 71):
 
 define pr_err to printk
 
