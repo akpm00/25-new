@@ -41,11 +41,14 @@ Cc: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mmap.c  |    6 ++++++
+ mm/shmem.c |    4 ----
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
 --- a/mm/mmap.c~mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged
 +++ a/mm/mmap.c
-@@ -2682,6 +2682,12 @@ cannot_expand:
- 		i_mmap_unlock_write(vma->vm_file->f_mapping);
+@@ -1846,6 +1846,12 @@ unsigned long mmap_region(struct file *f
+ 			goto free_vma;
  	}
  
 +	/*
@@ -54,9 +57,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	 */
 +	khugepaged_enter_vma(vma, vma->vm_flags);
 +
+ 	vma_link(mm, vma, prev, rb_link, rb_parent);
  	/* Once vma denies write, undo our temporary denial count */
  unmap_writable:
- 	if (file && vm_flags & VM_SHARED)
 --- a/mm/shmem.c~mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged
 +++ a/mm/shmem.c
 @@ -34,7 +34,6 @@

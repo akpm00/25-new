@@ -18,6 +18,11 @@ Cc: Zi Yan <ziy@nvidia.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/khugepaged.h |    8 ++++----
+ mm/khugepaged.c            |   26 +++++++++-----------------
+ mm/mmap.c                  |    8 ++++----
+ mm/shmem.c                 |   12 ++----------
+ 4 files changed, 19 insertions(+), 35 deletions(-)
 
 --- a/include/linux/khugepaged.h~mm-khugepaged-introduce-khugepaged_enter_vma-helper
 +++ a/include/linux/khugepaged.h
@@ -88,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void __khugepaged_exit(struct mm_struct *mm)
 --- a/mm/mmap.c~mm-khugepaged-introduce-khugepaged_enter_vma-helper
 +++ a/mm/mmap.c
-@@ -1086,7 +1086,7 @@ struct vm_area_struct *vma_merge(struct
+@@ -1223,7 +1223,7 @@ struct vm_area_struct *vma_merge(struct
  					 end, prev->vm_pgoff, NULL, prev);
  		if (err)
  			return NULL;
@@ -97,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return prev;
  	}
  
-@@ -1113,7 +1113,7 @@ struct vm_area_struct *vma_merge(struct
+@@ -1250,7 +1250,7 @@ struct vm_area_struct *vma_merge(struct
  		}
  		if (err)
  			return NULL;
@@ -106,24 +111,24 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return area;
  	}
  
-@@ -2012,7 +2012,7 @@ int expand_upwards(struct vm_area_struct
+@@ -2450,7 +2450,7 @@ int expand_upwards(struct vm_area_struct
  		}
  	}
  	anon_vma_unlock_write(vma->anon_vma);
 -	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 +	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	validate_mm(mm);
  	return error;
  }
- #endif /* CONFIG_STACK_GROWSUP || CONFIG_IA64 */
-@@ -2088,7 +2088,7 @@ int expand_downwards(struct vm_area_stru
+@@ -2528,7 +2528,7 @@ int expand_downwards(struct vm_area_stru
  		}
  	}
  	anon_vma_unlock_write(vma->anon_vma);
 -	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 +	khugepaged_enter_vma(vma, vma->vm_flags);
+ 	validate_mm(mm);
  	return error;
  }
- 
 --- a/mm/shmem.c~mm-khugepaged-introduce-khugepaged_enter_vma-helper
 +++ a/mm/shmem.c
 @@ -2240,11 +2240,7 @@ static int shmem_mmap(struct file *file,

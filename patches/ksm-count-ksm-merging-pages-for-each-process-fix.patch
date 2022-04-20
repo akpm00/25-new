@@ -25,8 +25,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm_types.h~ksm-count-ksm-merging-pages-for-each-process-fix
 +++ a/include/linux/mm_types.h
-@@ -670,8 +670,8 @@ struct mm_struct {
- #endif /* CONFIG_LRU_GEN */
+@@ -651,8 +651,8 @@ struct mm_struct {
+ #endif
  #ifdef CONFIG_KSM
  		/*
 -		 * Represet how many pages of this process are

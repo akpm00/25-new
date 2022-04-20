@@ -33,10 +33,15 @@ Cc: Nadav Amit <nadav.amit@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mm.h        |   10 +++++++
+ include/linux/mm_inline.h |   43 +++++++++++++++++++++++++++++++
+ mm/memory.c               |   49 +++++++++++++++++++++++++++++++++---
+ mm/rmap.c                 |    8 +++++
+ 4 files changed, 107 insertions(+), 3 deletions(-)
 
 --- a/include/linux/mm.h~mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed
 +++ a/include/linux/mm.h
-@@ -3442,4 +3442,14 @@ madvise_set_anon_name(struct mm_struct *
+@@ -3431,4 +3431,14 @@ madvise_set_anon_name(struct mm_struct *
  }
  #endif
  
@@ -119,7 +124,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include <trace/events/kmem.h>
  
-@@ -1315,6 +1316,7 @@ copy_page_range(struct vm_area_struct *d
+@@ -1306,6 +1307,7 @@ copy_page_range(struct vm_area_struct *d
  struct zap_details {
  	struct folio *single_folio;	/* Locked folio to be unmapped */
  	bool even_cows;			/* Zap COWed private pages too? */
@@ -127,7 +132,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  };
  
  /* Whether we should zap all COWed (private) pages too */
-@@ -1343,6 +1345,29 @@ static inline bool should_zap_page(struc
+@@ -1334,6 +1336,29 @@ static inline bool should_zap_page(struc
  	return !PageAnon(page);
  }
  
@@ -157,7 +162,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static unsigned long zap_pte_range(struct mmu_gather *tlb,
  				struct vm_area_struct *vma, pmd_t *pmd,
  				unsigned long addr, unsigned long end,
-@@ -1380,6 +1405,8 @@ again:
+@@ -1371,6 +1396,8 @@ again:
  			ptent = ptep_get_and_clear_full(mm, addr, pte,
  							tlb->fullmm);
  			tlb_remove_tlb_entry(tlb, pte, addr);
@@ -166,7 +171,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			if (unlikely(!page))
  				continue;
  
-@@ -1410,6 +1437,13 @@ again:
+@@ -1401,6 +1428,13 @@ again:
  			page = pfn_swap_entry_to_page(entry);
  			if (unlikely(!should_zap_page(details, page)))
  				continue;
@@ -180,7 +185,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			rss[mm_counter(page)]--;
  			if (is_device_private_entry(entry))
  				page_remove_rmap(page, vma, false);
-@@ -1426,8 +1460,10 @@ again:
+@@ -1417,8 +1451,10 @@ again:
  			if (!should_zap_page(details, page))
  				continue;
  			rss[mm_counter(page)]--;
@@ -193,7 +198,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		} else if (is_hwpoison_entry(entry)) {
  			if (!should_zap_cows(details))
  				continue;
-@@ -1436,6 +1472,7 @@ again:
+@@ -1427,6 +1463,7 @@ again:
  			WARN_ON_ONCE(1);
  		}
  		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
@@ -201,7 +206,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	} while (pte++, addr += PAGE_SIZE, addr != end);
  
  	add_mm_rss_vec(mm, rss);
-@@ -1646,13 +1683,18 @@ void unmap_vmas(struct mmu_gather *tlb,
+@@ -1637,12 +1674,17 @@ void unmap_vmas(struct mmu_gather *tlb,
  		unsigned long end_addr)
  {
  	struct mmu_notifier_range range;
@@ -210,18 +215,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		/* Careful - we need to zap private pages too! */
 +		.even_cows = true,
 +	};
- 	MA_STATE(mas, mt, vma->vm_end, vma->vm_end);
  
  	mmu_notifier_range_init(&range, MMU_NOTIFY_UNMAP, 0, vma, vma->vm_mm,
  				start_addr, end_addr);
  	mmu_notifier_invalidate_range_start(&range);
- 	do {
+ 	for ( ; vma && vma->vm_start < end_addr; vma = vma->vm_next)
 -		unmap_single_vma(tlb, vma, start_addr, end_addr, NULL);
 +		unmap_single_vma(tlb, vma, start_addr, end_addr, &details);
- 	} while ((vma = mas_find(&mas, end_addr - 1)) != NULL);
  	mmu_notifier_invalidate_range_end(&range);
  }
-@@ -3449,6 +3491,7 @@ void unmap_mapping_folio(struct folio *f
+ 
+@@ -3434,6 +3476,7 @@ void unmap_mapping_folio(struct folio *f
  
  	details.even_cows = false;
  	details.single_folio = folio;
