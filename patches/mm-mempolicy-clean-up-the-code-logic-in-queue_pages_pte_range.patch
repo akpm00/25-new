@@ -1,0 +1,57 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mempolicy: clean up the code logic in queue_pages_pte_range
+
+Since commit e5947d23edd8 ("mm: mempolicy: don't have to split pmd for
+huge zero page"), THP is never splited in queue_pages_pmd.  Thus 2 is
+never returned now.  We can remove such unnecessary ret != 2 check and
+clean up the relevant comment.  Minor improvements in readability.
+
+Link: https://lkml.kernel.org/r/20220419122234.45083-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mempolicy.c |   12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
+
+--- a/mm/mempolicy.c~mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range
++++ a/mm/mempolicy.c
+@@ -442,12 +442,11 @@ static inline bool queue_pages_required(
+ }
+ 
+ /*
+- * queue_pages_pmd() has four possible return values:
++ * queue_pages_pmd() has three possible return values:
+  * 0 - pages are placed on the right node or queued successfully, or
+  *     special page is met, i.e. huge zero page.
+  * 1 - there is unmovable page, and MPOL_MF_MOVE* & MPOL_MF_STRICT were
+  *     specified.
+- * 2 - THP was split.
+  * -EIO - is migration entry or only MPOL_MF_STRICT was specified and an
+  *        existing page was already on a node that does not follow the
+  *        policy.
+@@ -509,18 +508,13 @@ static int queue_pages_pte_range(pmd_t *
+ 	struct page *page;
+ 	struct queue_pages *qp = walk->private;
+ 	unsigned long flags = qp->flags;
+-	int ret;
+ 	bool has_unmovable = false;
+ 	pte_t *pte, *mapped_pte;
+ 	spinlock_t *ptl;
+ 
+ 	ptl = pmd_trans_huge_lock(pmd, vma);
+-	if (ptl) {
+-		ret = queue_pages_pmd(pmd, ptl, addr, end, walk);
+-		if (ret != 2)
+-			return ret;
+-	}
+-	/* THP was split, fall through to pte walk */
++	if (ptl)
++		return queue_pages_pmd(pmd, ptl, addr, end, walk);
+ 
+ 	if (pmd_trans_unstable(pmd))
+ 		return 0;
+_

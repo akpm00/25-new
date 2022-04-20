@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/core-test: add a kunit test case for ops registration
+
+This commit adds a simple kunit test case for DAMON operations
+registration feature.
+
+Link: https://lkml.kernel.org/r/20220419122225.290518-1-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

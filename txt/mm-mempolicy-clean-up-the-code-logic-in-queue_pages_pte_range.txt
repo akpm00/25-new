@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/mempolicy: clean up the code logic in queue_pages_pte_range
+
+Since commit e5947d23edd8 ("mm: mempolicy: don't have to split pmd for
+huge zero page"), THP is never splited in queue_pages_pmd.  Thus 2 is
+never returned now.  We can remove such unnecessary ret != 2 check and
+clean up the relevant comment.  Minor improvements in readability.
+
+Link: https://lkml.kernel.org/r/20220419122234.45083-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Michal Hocko <mhocko@suse.com>

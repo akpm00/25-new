@@ -1,0 +1,32 @@
+From: Alistair Popple <apopple@nvidia.com>
+Subject: mm/mmu_notifier.c: fix race in mmu_interval_notifier_remove()
+
+In some cases it is possible for mmu_interval_notifier_remove() to race
+with mn_tree_inv_end() allowing it to return while the notifier data
+structure is still in use.  Consider the following sequence:
+
+CPU0 - mn_tree_inv_end()            CPU1 - mmu_interval_notifier_remove()
+----------------------------------- ------------------------------------
+                                    spin_lock(subscriptions->lock);
+                                    seq = subscriptions->invalidate_seq;
+spin_lock(subscriptions->lock);     spin_unlock(subscriptions->lock);
+subscriptions->invalidate_seq++;
+                                    wait_event(invalidate_seq != seq);
+                                    return;
+interval_tree_remove(interval_sub); kfree(interval_sub);
+spin_unlock(subscriptions->lock);
+wake_up_all();
+
+As the wait_event() condition is true it will return immediately.  This
+can lead to use-after-free type errors if the caller frees the data
+structure containing the interval notifier subscription while it is still
+on a deferred list.  Fix this by taking the appropriate lock when reading
+invalidate_seq to ensure proper synchronisation.
+
+Link: https://lkml.kernel.org/r/20220420043734.476348-1-apopple@nvidia.com
+Fixes: 99cb252f5e68 ("mm/mmu_notifier: add an interval tree notifier")
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Ralph Campbell <rcampbell@nvidia.com>

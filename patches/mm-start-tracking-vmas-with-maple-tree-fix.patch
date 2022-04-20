@@ -1,0 +1,29 @@
+From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Subject: mm: fix commit "mm: start tracking VMAs with maple tree"
+
+Hold the lock for the destruction of the maple tree to avoid lockdep
+issues - and potentially process_mrelease.
+
+Link: https://lkml.kernel.org/r/20220420134336.bny7wza3ez2ldjsd@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Yu Zhao <yuzhao@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mmap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/mmap.c~mm-start-tracking-vmas-with-maple-tree-fix
++++ a/mm/mmap.c
+@@ -3319,9 +3319,9 @@ void exit_mmap(struct mm_struct *mm)
+ 		cond_resched();
+ 	}
+ 	mm->mmap = NULL;
+-	mmap_write_unlock(mm);
+ 	trace_exit_mmap(mm);
+ 	__mt_destroy(&mm->mm_mt);
++	mmap_write_unlock(mm);
+ 	vm_unacct_memory(nr_accounted);
+ }
+ 
+_

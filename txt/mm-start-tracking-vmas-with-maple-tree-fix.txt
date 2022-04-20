@@ -1,0 +1,9 @@
+From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Subject: mm: fix commit "mm: start tracking VMAs with maple tree"
+
+Hold the lock for the destruction of the maple tree to avoid lockdep
+issues - and potentially process_mrelease.
+
+Link: https://lkml.kernel.org/r/20220420134336.bny7wza3ez2ldjsd@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Yu Zhao <yuzhao@google.com>

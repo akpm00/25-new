@@ -1,0 +1,15 @@
+From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: selftest/vm: verify mmap addr in mremap_test
+
+Avoid calling mmap with requested addresses that are less than the
+system's mmap_min_addr.  When run as root, mmap returns EACCES when trying
+to map addresses < mmap_min_addr.  This is not one of the error codes for
+the condition to retry the mmap in the test.  Rather than arbitrarily
+retrying on EACCES, don't attempt an mmap until addr > vm.mmap_min_addr.
+
+Add a munmap call after an alignment check as the mappings are retained
+after the retry and can reach the vm.max_map_count sysctl.
+
+Link: https://lkml.kernel.org/r/20220420215721.4868-1-sidhartha.kumar@oracle.com
+Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>

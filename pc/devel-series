@@ -27,6 +27,10 @@ userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 mm-hugetlbfs-allow-for-high-userspace-addresses.patch
 #
 #mm/mremap
+selftest-vm-verify-mmap-addr-in-mremap_test.patch
+selftest-vm-verify-remap-destination-address-in-mremap_test.patch
+selftest-vm-support-xfail-in-mremap_test.patch
+selftest-vm-add-skip-support-to-mremap_test.patch
 #
 #mm/oom-kill
 oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
@@ -43,6 +47,14 @@ kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
 #
 #mm/highmem
 mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+#
+#mm/hmm
+#mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch: -stable?
+mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch
+#
+#mm/pagealloc
+#mm-calc-the-right-pfn-if-page-size-is-not-4k.patch: -stable?
+mm-calc-the-right-pfn-if-page-size-is-not-4k.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -165,6 +177,7 @@ maintainers-add-corresponding-kselftests-to-memcg-entry.patch
 #
 #mm/selftests
 selftests-vm-bring-common-functions-to-a-new-file.patch
+#selftests-vm-add-test-for-soft-dirty-pte-bit.patch: TBU
 selftests-vm-add-test-for-soft-dirty-pte-bit.patch
 #
 #mm/pagemap
@@ -256,6 +269,7 @@ maple-tree-add-new-data-structure-fix.patch
 maple-tree-add-new-data-structure-fix-2.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
+mm-start-tracking-vmas-with-maple-tree-fix.patch
 mm-add-vma-iterator.patch
 mmap-use-the-vma-iterator-in-count_vma_pages_range.patch
 mm-mmap-use-the-maple-tree-in-find_vma-instead-of-the-rbtree.patch
@@ -454,9 +468,8 @@ mm-compaction-use-helper-isolation_suitable.patch
 drivers-base-nodec-fix-compaction-sysfs-file-leak.patch
 #
 #mm/mempolicy
-#mm-mempolicy-fix-potential-mpol_new-leak-in-shared_policy_replace.patch: https://lkml.kernel.org/r/Yi9w7TCYbj+OLGXJ@dhcp22.suse.cz
-#
-#mm-mempolicy-convert-from-atomic_t-to-refcount_t-on-mempolicy-refcnt.patch: bloat!
+#mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range.patch: acks?
+mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range.patch
 #
 #mm/mempool
 #mm/memblock
@@ -548,6 +561,8 @@ zram-add-a-huge_idle-writeback-mode.patch
 damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
 #
 selftests-damon-add-damon-to-selftests-root-makefile.patch
+#
+mm-damon-core-test-add-a-kunit-test-case-for-ops-registration.patch
 #
 #mm/swap2
 #mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: acks? https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal
