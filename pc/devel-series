@@ -52,10 +52,6 @@ mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
 #mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch: -stable?
 mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch
 #
-#mm/pagealloc
-#mm-calc-the-right-pfn-if-page-size-is-not-4k.patch: -stable?
-mm-calc-the-right-pfn-if-page-size-is-not-4k.patch
-#
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
 #proc-kpageflags-do-not-use-uninitialized-struct-pages.patch: Dan issues
@@ -244,6 +240,8 @@ mm-discard-__gfp_atomic.patch
 mm-page_alloc-simplify-pageblock-migratetype-check-in-__free_one_page.patch
 mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation.patch
 mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4.patch
+#
+mm-calc-the-right-pfn-if-page-size-is-not-4k.patch
 #
 #mm/memory-failure
 mm-remove-unnecessary-void-conversions.patch
@@ -565,7 +563,7 @@ selftests-damon-add-damon-to-selftests-root-makefile.patch
 mm-damon-core-test-add-a-kunit-test-case-for-ops-registration.patch
 #
 #mm/swap2
-#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: acks? https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal
+#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal TBU
 mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
 #
 #mm/tools
