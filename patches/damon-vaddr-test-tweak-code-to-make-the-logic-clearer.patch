@@ -13,6 +13,8 @@ Reviewed-by: SeongJae Park <sj@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/damon/vaddr-test.h |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 --- a/mm/damon/vaddr-test.h~damon-vaddr-test-tweak-code-to-make-the-logic-clearer
 +++ a/mm/damon/vaddr-test.h

@@ -49,7 +49,6 @@ kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
 mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
 #
 #mm/hmm
-#mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch: -stable?
 mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch
 #
 #proc
@@ -443,6 +442,7 @@ mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
 #
 mm-vmscan-fix-comment-for-isolate_lru_pages.patch
 #
+#mm-do-not-call-add_nr_deferred-with-zero-deferred.patch: https://lkml.kernel.org/r/CAHbLzkqCxFAbOPtyWOapSdPQ=hYewhr0insxi7G4fjwmC4H-Uw@mail.gmail.com
 mm-do-not-call-add_nr_deferred-with-zero-deferred.patch
 #
 #mm/proc

@@ -19,6 +19,9 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/Kconfig |    3 ---
+ mm/mmap.c  |   13 ++-----------
+ 2 files changed, 2 insertions(+), 14 deletions(-)
 
 --- a/mm/Kconfig~mm-mmap-drop-arch_filter_pgprot
 +++ a/mm/Kconfig

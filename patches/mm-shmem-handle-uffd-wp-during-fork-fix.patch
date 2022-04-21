@@ -11,6 +11,8 @@ Acked-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/mm/memory.c~mm-shmem-handle-uffd-wp-during-fork-fix
 +++ a/mm/memory.c

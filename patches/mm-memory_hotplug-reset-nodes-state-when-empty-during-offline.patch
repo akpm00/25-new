@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/memory_hotplug.h~mm-memory_hotplug-reset-nodes-state-when-empty-during-offline
 +++ a/include/linux/memory_hotplug.h
-@@ -317,7 +317,7 @@ extern void set_zone_contiguous(struct z
+@@ -319,7 +319,7 @@ extern void set_zone_contiguous(struct z
  extern void clear_zone_contiguous(struct zone *zone);
  
  #ifdef CONFIG_MEMORY_HOTPLUG
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern int add_memory_resource(int nid, struct resource *resource,
 --- a/mm/memory_hotplug.c~mm-memory_hotplug-reset-nodes-state-when-empty-during-offline
 +++ a/mm/memory_hotplug.c
-@@ -1158,18 +1158,18 @@ static void reset_node_present_pages(pg_
+@@ -1159,18 +1159,18 @@ static void reset_node_present_pages(pg_
  /* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
  static pg_data_t __ref *hotadd_init_pgdat(int nid)
  {
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * The node we allocated has no zone fallback lists. For avoiding
-@@ -1177,15 +1177,6 @@ static pg_data_t __ref *hotadd_init_pgda
+@@ -1178,15 +1178,6 @@ static pg_data_t __ref *hotadd_init_pgda
  	 */
  	build_all_zonelists(pgdat);
  
@@ -97,7 +97,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return pgdat;
  }
  
-@@ -1764,6 +1755,30 @@ static void node_states_clear_node(int n
+@@ -1765,6 +1756,30 @@ static void node_states_clear_node(int n
  		node_clear_state(node, N_MEMORY);
  }
  
@@ -128,7 +128,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int count_system_ram_pages_cb(unsigned long start_pfn,
  				     unsigned long nr_pages, void *data)
  {
-@@ -1923,10 +1938,9 @@ int __ref offline_pages(unsigned long st
+@@ -1924,10 +1939,9 @@ int __ref offline_pages(unsigned long st
  	}
  
  	node_states_clear_node(node, &arg);
@@ -144,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/page_alloc.c~mm-memory_hotplug-reset-nodes-state-when-empty-during-offline
 +++ a/mm/page_alloc.c
-@@ -6355,6 +6355,13 @@ static DEFINE_PER_CPU(struct per_cpu_pag
+@@ -6346,6 +6346,13 @@ static DEFINE_PER_CPU(struct per_cpu_pag
  static DEFINE_PER_CPU(struct per_cpu_zonestat, boot_zonestats);
  DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
  
@@ -158,7 +158,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void __build_all_zonelists(void *data)
  {
  	int nid;
-@@ -7463,7 +7470,7 @@ static void __meminit pgdat_init_interna
+@@ -7469,7 +7476,7 @@ static void __meminit pgdat_init_interna
  	lruvec_init(&pgdat->__lruvec);
  }
  
@@ -167,7 +167,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  							unsigned long remaining_pages)
  {
  	atomic_long_set(&zone->managed_pages, remaining_pages);
-@@ -7476,46 +7483,6 @@ static void __meminit zone_init_internal
+@@ -7482,46 +7489,6 @@ static void __meminit zone_init_internal
  }
  
  /*

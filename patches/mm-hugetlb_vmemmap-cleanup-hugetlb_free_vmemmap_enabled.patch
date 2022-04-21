@@ -13,6 +13,11 @@ Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/arm64/mm/flush.c      |    2 +-
+ include/linux/page-flags.h |   12 ++++++------
+ mm/hugetlb_vmemmap.c       |   10 +++++-----
+ mm/memory_hotplug.c        |    2 +-
+ 4 files changed, 13 insertions(+), 13 deletions(-)
 
 --- a/arch/arm64/mm/flush.c~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
 +++ a/arch/arm64/mm/flush.c

@@ -11,6 +11,7 @@ can remove the xas_load() validation under the i_pages lock.
 
 Link: https://lkml.kernel.org/r/eb2fbbeaef2b1714097b9dec457426d682ee0635.1649676424.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: "Huang, Ying" <ying.huang@intel.com>
 Cc: Muchun Song <songmuchun@bytedance.com>

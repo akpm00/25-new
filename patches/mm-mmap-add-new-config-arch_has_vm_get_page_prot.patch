@@ -56,6 +56,9 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/Kconfig |    3 +++
+ mm/mmap.c  |    2 ++
+ 2 files changed, 5 insertions(+)
 
 --- a/mm/Kconfig~mm-mmap-add-new-config-arch_has_vm_get_page_prot
 +++ a/mm/Kconfig

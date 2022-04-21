@@ -21,7 +21,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-calc-the-right-pfn-if-page-size-is-not-4k
 +++ a/mm/page_alloc.c
-@@ -7870,7 +7870,7 @@ static void __init find_zone_movable_pfn
+@@ -7813,7 +7813,7 @@ static void __init find_zone_movable_pfn
  
  			usable_startpfn = memblock_region_memory_base_pfn(r);
  

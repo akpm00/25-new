@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
 --- a/mm/page_alloc.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/page_alloc.c
-@@ -4639,6 +4639,8 @@ static void wake_all_kswapds(unsigned in
+@@ -4630,6 +4630,8 @@ static void wake_all_kswapds(unsigned in
  
  	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
  					ac->nodemask) {

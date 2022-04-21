@@ -43,7 +43,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/arch/x86/include/asm/pgtable_types.h~mm-mprotect-do-not-flush-when-not-required-architecturally
 +++ a/arch/x86/include/asm/pgtable_types.h
-@@ -115,9 +115,11 @@
+@@ -110,9 +110,11 @@
  #if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
  #define _PAGE_NX	(_AT(pteval_t, 1) << _PAGE_BIT_NX)
  #define _PAGE_DEVMAP	(_AT(u64, 1) << _PAGE_BIT_DEVMAP)

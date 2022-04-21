@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-handle-pte-markers-in-page-faults
 +++ a/mm/hugetlb.c
-@@ -5412,7 +5412,8 @@ static inline vm_fault_t hugetlb_handle_
+@@ -5425,7 +5425,8 @@ static inline vm_fault_t hugetlb_handle_
  static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
  			struct vm_area_struct *vma,
  			struct address_space *mapping, pgoff_t idx,
@@ -42,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct hstate *h = hstate_vma(vma);
  	vm_fault_t ret = VM_FAULT_SIGBUS;
-@@ -5539,7 +5540,8 @@ retry:
+@@ -5552,7 +5553,8 @@ retry:
  
  	ptl = huge_pte_lock(h, mm, ptep);
  	ret = 0;
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto backout;
  
  	if (anon_rmap) {
-@@ -5549,6 +5551,12 @@ retry:
+@@ -5562,6 +5564,12 @@ retry:
  		page_dup_file_rmap(page, true);
  	new_pte = make_huge_pte(vma, page, ((vma->vm_flags & VM_WRITE)
  				&& (vma->vm_flags & VM_SHARED)));
@@ -65,7 +65,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	set_huge_pte_at(mm, haddr, ptep, new_pte);
  
  	hugetlb_count_add(pages_per_huge_page(h), mm);
-@@ -5666,8 +5674,10 @@ vm_fault_t hugetlb_fault(struct mm_struc
+@@ -5679,8 +5687,10 @@ vm_fault_t hugetlb_fault(struct mm_struc
  	mutex_lock(&hugetlb_fault_mutex_table[hash]);
  
  	entry = huge_ptep_get(ptep);

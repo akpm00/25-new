@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory_hotplug.c~mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes
 +++ a/mm/memory_hotplug.c
-@@ -1185,7 +1185,7 @@ static void hotadd_init_pgdat(int nid)
+@@ -1176,7 +1176,7 @@ static void hotadd_init_pgdat(int nid)
   *
   * Returns:
   * 1 -> The node has been initialized.

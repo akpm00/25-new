@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		DIRECT_MAP_LEVEL3_SPLIT,
 --- a/mm/memory.c~mm-vmstat-add-events-for-ksm-cow
 +++ a/mm/memory.c
-@@ -3444,6 +3444,10 @@ copy:
+@@ -3456,6 +3456,10 @@ copy:
  	get_page(vmf->page);
  
  	pte_unmap_unlock(vmf->pte, vmf->ptl);

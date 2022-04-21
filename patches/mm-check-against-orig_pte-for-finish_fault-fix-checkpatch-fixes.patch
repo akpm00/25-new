@@ -23,10 +23,12 @@ Cc: Peter Xu <peterx@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 --- a/mm/memory.c~mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes
 +++ a/mm/memory.c
-@@ -4196,9 +4196,8 @@ void do_set_pte(struct vm_fault *vmf, st
+@@ -4181,9 +4181,8 @@ void do_set_pte(struct vm_fault *vmf, st
  
  static bool vmf_pte_changed(struct vm_fault *vmf)
  {

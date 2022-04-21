@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/mm/hugetlb.c~mm-hugetlb-handle-uffdio_writeprotect
 +++ a/mm/hugetlb.c
-@@ -6207,7 +6207,8 @@ long follow_hugetlb_page(struct mm_struc
+@@ -6220,7 +6220,8 @@ long follow_hugetlb_page(struct mm_struc
  }
  
  unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
@@ -63,7 +63,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct mm_struct *mm = vma->vm_mm;
  	unsigned long start = address;
-@@ -6217,6 +6218,8 @@ unsigned long hugetlb_change_protection(
+@@ -6230,6 +6231,8 @@ unsigned long hugetlb_change_protection(
  	unsigned long pages = 0;
  	bool shared_pmd = false;
  	struct mmu_notifier_range range;
@@ -72,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * In the case of shared PMDs, the area to flush could be beyond
-@@ -6263,6 +6266,10 @@ unsigned long hugetlb_change_protection(
+@@ -6276,6 +6279,10 @@ unsigned long hugetlb_change_protection(
  					entry = make_readable_migration_entry(
  								swp_offset(entry));
  				newpte = swp_entry_to_pte(entry);
@@ -83,7 +83,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				set_huge_swap_pte_at(mm, address, ptep,
  						     newpte, huge_page_size(h));
  				pages++;
-@@ -6277,6 +6284,10 @@ unsigned long hugetlb_change_protection(
+@@ -6290,6 +6297,10 @@ unsigned long hugetlb_change_protection(
  			old_pte = huge_ptep_modify_prot_start(vma, address, ptep);
  			pte = huge_pte_modify(old_pte, newprot);
  			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);

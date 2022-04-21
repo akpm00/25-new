@@ -21,6 +21,8 @@ Cc: Yuhong Feng <yuhongf@szu.edu.cn>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ tools/vm/page_owner_sort.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 --- a/tools/vm/page_owner_sort.c~tools-vm-page_owner_sortc-avoid-repeated-judgments
 +++ a/tools/vm/page_owner_sort.c

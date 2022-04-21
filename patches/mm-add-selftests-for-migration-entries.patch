@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  TEST_GEN_FILES += mlock-random-test
  TEST_GEN_FILES += mlock2-tests
  TEST_GEN_FILES += mremap_dontunmap
-@@ -149,6 +150,8 @@ $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXT
+@@ -154,6 +155,8 @@ $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXT
  
  $(OUTPUT)/ksm_tests: LDLIBS += -lnuma
  

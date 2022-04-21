@@ -13,6 +13,21 @@ Cc: David Hildenbrand <david@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ Documentation/admin-guide/kernel-parameters.txt |    4 +--
+ Documentation/admin-guide/mm/hugetlbpage.rst    |    2 -
+ arch/arm64/Kconfig                              |    2 -
+ arch/arm64/mm/flush.c                           |    2 -
+ arch/x86/Kconfig                                |    2 -
+ arch/x86/mm/init_64.c                           |    2 -
+ fs/Kconfig                                      |   16 +++++++-------
+ include/linux/hugetlb.h                         |    2 -
+ include/linux/mm.h                              |    2 -
+ include/linux/page-flags.h                      |    6 ++---
+ mm/Makefile                                     |    2 -
+ mm/hugetlb_vmemmap.c                            |    4 +--
+ mm/hugetlb_vmemmap.h                            |    4 +--
+ mm/sparse-vmemmap.c                             |    4 +--
+ 14 files changed, 27 insertions(+), 27 deletions(-)
 
 --- a/arch/arm64/Kconfig~mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap
 +++ a/arch/arm64/Kconfig
@@ -135,7 +150,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_CGROUP_HUGETLB
 --- a/include/linux/mm.h~mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap
 +++ a/include/linux/mm.h
-@@ -3201,7 +3201,7 @@ static inline void print_vma_addr(char *
+@@ -3189,7 +3189,7 @@ static inline void print_vma_addr(char *
  }
  #endif
  

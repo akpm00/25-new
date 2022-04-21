@@ -48,6 +48,8 @@ Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/kasan/quarantine.c |   40 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
 
 --- a/mm/kasan/quarantine.c~kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel
 +++ a/mm/kasan/quarantine.c

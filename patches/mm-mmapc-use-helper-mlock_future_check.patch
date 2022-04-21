@@ -14,7 +14,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mmap.c~mm-mmapc-use-helper-mlock_future_check
 +++ a/mm/mmap.c
-@@ -2372,15 +2372,8 @@ static int acct_stack_growth(struct vm_a
+@@ -2354,15 +2354,8 @@ static int acct_stack_growth(struct vm_a
  		return -ENOMEM;
  
  	/* mlock limit tests */

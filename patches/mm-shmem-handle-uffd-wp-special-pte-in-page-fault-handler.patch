@@ -160,7 +160,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/* copy-on-write page */
  	if (write && !(vma->vm_flags & VM_SHARED)) {
  		inc_mm_counter_fast(vma->vm_mm, MM_ANONPAGES);
-@@ -4340,9 +4379,21 @@ static vm_fault_t do_fault_around(struct
+@@ -4348,9 +4387,21 @@ static vm_fault_t do_fault_around(struct
  	return vmf->vma->vm_ops->map_pages(vmf, start_pgoff, end_pgoff);
  }
  
@@ -183,7 +183,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vm_fault_t ret = 0;
  
  	/*
-@@ -4350,12 +4401,10 @@ static vm_fault_t do_read_fault(struct v
+@@ -4358,12 +4409,10 @@ static vm_fault_t do_read_fault(struct v
  	 * if page by the offset is not ready to be mapped (cold cache or
  	 * something).
  	 */

@@ -14,6 +14,8 @@ Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/proc/task_mmu.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 --- a/fs/proc/task_mmu.c~mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch
 +++ a/fs/proc/task_mmu.c

@@ -12,6 +12,8 @@ Cc: Zqiang <qiang1.zhang@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/kasan/quarantine.c |   52 +++++++++++++++++++++++-----------------
+ 1 file changed, 31 insertions(+), 21 deletions(-)
 
 --- a/mm/kasan/quarantine.c~kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix
 +++ a/mm/kasan/quarantine.c

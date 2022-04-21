@@ -23,6 +23,8 @@ Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/kasan/quarantine.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
 --- a/mm/kasan/quarantine.c~kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time
 +++ a/mm/kasan/quarantine.c

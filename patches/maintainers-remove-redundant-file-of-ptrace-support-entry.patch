@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/MAINTAINERS~maintainers-remove-redundant-file-of-ptrace-support-entry
 +++ a/MAINTAINERS
-@@ -15959,7 +15959,6 @@ F:	include/asm-generic/syscall.h
+@@ -15965,7 +15965,6 @@ F:	include/asm-generic/syscall.h
  F:	include/linux/ptrace.h
  F:	include/linux/regset.h
  F:	include/uapi/linux/ptrace.h

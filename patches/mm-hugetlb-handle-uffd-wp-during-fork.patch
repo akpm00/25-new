@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
 --- a/mm/hugetlb.c~mm-hugetlb-handle-uffd-wp-during-fork
 +++ a/mm/hugetlb.c
-@@ -4706,23 +4706,24 @@ hugetlb_install_page(struct vm_area_stru
+@@ -4719,23 +4719,24 @@ hugetlb_install_page(struct vm_area_stru
  }
  
  int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
@@ -85,7 +85,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mmu_notifier_invalidate_range_start(&range);
  		mmap_assert_write_locked(src);
  		raw_write_seqcount_begin(&src->write_protect_seq);
-@@ -4736,12 +4737,12 @@ int copy_hugetlb_page_range(struct mm_st
+@@ -4749,12 +4750,12 @@ int copy_hugetlb_page_range(struct mm_st
  		i_mmap_lock_read(mapping);
  	}
  
@@ -100,7 +100,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (!dst_pte) {
  			ret = -ENOMEM;
  			break;
-@@ -4776,6 +4777,7 @@ again:
+@@ -4789,6 +4790,7 @@ again:
  		} else if (unlikely(is_hugetlb_entry_migration(entry) ||
  				    is_hugetlb_entry_hwpoisoned(entry))) {
  			swp_entry_t swp_entry = pte_to_swp_entry(entry);
@@ -108,7 +108,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  			if (!is_readable_migration_entry(swp_entry) && cow) {
  				/*
-@@ -4785,10 +4787,21 @@ again:
+@@ -4798,10 +4800,21 @@ again:
  				swp_entry = make_readable_migration_entry(
  							swp_offset(swp_entry));
  				entry = swp_entry_to_pte(swp_entry);
@@ -130,7 +130,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		} else {
  			entry = huge_ptep_get(src_pte);
  			ptepage = pte_page(entry);
-@@ -4806,20 +4819,21 @@ again:
+@@ -4819,20 +4832,21 @@ again:
  			 */
  			if (!PageAnon(ptepage)) {
  				page_dup_file_rmap(ptepage, true);
@@ -155,7 +155,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  						    npages);
  				put_page(ptepage);
  
-@@ -4829,13 +4843,13 @@ again:
+@@ -4842,13 +4856,13 @@ again:
  				spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
  				entry = huge_ptep_get(src_pte);
  				if (!pte_same(src_pte_old, entry)) {

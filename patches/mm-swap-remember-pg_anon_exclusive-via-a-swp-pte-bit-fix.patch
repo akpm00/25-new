@@ -6,6 +6,8 @@ Link: https://lkml.kernel.org/r/ac725bcb-313a-4fff-250a-68ba9a8f85fb@redhat.com
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/mm/memory.c~mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit-fix
 +++ a/mm/memory.c

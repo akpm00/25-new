@@ -56,7 +56,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
 --- a/mm/hugetlb.c~mm-hugetlb-take-care-of-uffdio_copy_mode_wp
 +++ a/mm/hugetlb.c
-@@ -5795,7 +5795,8 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+@@ -5808,7 +5808,8 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
  			    unsigned long dst_addr,
  			    unsigned long src_addr,
  			    enum mcopy_atomic_mode mode,
@@ -66,7 +66,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	bool is_continue = (mode == MCOPY_ATOMIC_CONTINUE);
  	struct hstate *h = hstate_vma(dst_vma);
-@@ -5925,7 +5926,12 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+@@ -5938,7 +5939,12 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
  		goto out_release_unlock;
  
  	ret = -EEXIST;
@@ -80,7 +80,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto out_release_unlock;
  
  	if (vm_shared) {
-@@ -5935,17 +5941,28 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+@@ -5948,17 +5954,28 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
  		hugepage_add_new_anon_rmap(page, dst_vma, dst_addr);
  	}
  

@@ -1,21 +1,33 @@
 From: Peter Xu <peterx@redhat.com>
 Subject: mm: check against orig_pte for finish_fault()
 
-We used to check against none pte in finish_fault(), with the assumption
-that the orig_pte is always none pte.
+This patch allows do_fault() to trigger on !pte_none() cases too.  This
+prepares for the pte markers to be handled by do_fault() just like none
+pte.
 
-This change prepares us to be able to call do_fault() on !none ptes.  For
-example, we should allow that to happen for pte marker so that we can
-restore information out of the pte markers.
+To achieve this, instead of unconditionally check against pte_none() in
+finish_fault(), we may hit the case that the orig_pte was some pte marker
+so what we want to do is to replace the pte marker with some valid pte
+entry.  Then if orig_pte was set we'd want to check the current *pte
+(under pgtable lock) against orig_pte rather than none pte.
 
-Let's change the "pte_none" check into detecting changes since we fetched
-orig_pte.  One trivial thing to take care of here is, when pmd==NULL for
-the pgtable we may not initialize orig_pte at all in handle_pte_fault().
+Right now there's no solid way to safely reference orig_pte because when
+pmd is not allocated handle_pte_fault() will not initialize orig_pte, so
+it's not safe to reference it.
 
-By default orig_pte will be all zeros however the problem is not all
-architectures are using all-zeros for a none pte.  pte_clear() will be the
-right thing to use here so that we'll always have a valid orig_pte value
-for the whole handle_pte_fault() call.
+There's another solution proposed before this patch to do pte_clear() for
+vmf->orig_pte for pmd==NULL case, however it turns out it'll break arm32
+because arm32 could have assumption that pte_t* pointer will always reside
+on a real ram32 pgtable, not any kernel stack variable.
+
+To solve this, we add a new flag FAULT_FLAG_ORIG_PTE_VALID, and it'll be
+set along with orig_pte when there is valid orig_pte, or it'll be cleared
+when orig_pte was not initialized.
+
+It'll be updated every time we call handle_pte_fault(), so e.g.  if a page
+fault retry happened it'll be properly updated along with orig_pte.
+
+[1] https://lore.kernel.org/lkml/710c48c9-406d-e4c5-a394-10501b951316@samsung.com/
 
 Link: https://lkml.kernel.org/r/20220405014836.14077-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
@@ -30,6 +42,7 @@ Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

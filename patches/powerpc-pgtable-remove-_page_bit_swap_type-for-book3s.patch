@@ -13,7 +13,6 @@ SWP_TYPE_MASK.
 
 Link: https://lkml.kernel.org/r/20220329164329.208407-8-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 Cc: Borislav Petkov <bp@alien8.de>

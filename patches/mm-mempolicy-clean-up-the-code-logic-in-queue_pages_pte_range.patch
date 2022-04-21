@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mempolicy.c~mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range
 +++ a/mm/mempolicy.c
-@@ -442,12 +442,11 @@ static inline bool queue_pages_required(
+@@ -441,12 +441,11 @@ static inline bool queue_pages_required(
  }
  
  /*
@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * -EIO - is migration entry or only MPOL_MF_STRICT was specified and an
   *        existing page was already on a node that does not follow the
   *        policy.
-@@ -509,18 +508,13 @@ static int queue_pages_pte_range(pmd_t *
+@@ -508,18 +507,13 @@ static int queue_pages_pte_range(pmd_t *
  	struct page *page;
  	struct queue_pages *qp = walk->private;
  	unsigned long flags = qp->flags;

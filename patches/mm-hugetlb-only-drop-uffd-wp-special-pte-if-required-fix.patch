@@ -9,10 +9,15 @@ Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/hugetlbfs/inode.c    |    2 +-
+ include/linux/hugetlb.h |    6 +++---
+ mm/hugetlb.c            |    6 +++---
+ mm/memory.c             |    2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
 --- a/fs/hugetlbfs/inode.c~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix
 +++ a/fs/hugetlbfs/inode.c
-@@ -405,7 +405,7 @@ static void remove_huge_page(struct page
+@@ -406,7 +406,7 @@ static void remove_huge_page(struct page
  
  static void
  hugetlb_vmdelete_list(struct rb_root_cached *root, pgoff_t start, pgoff_t end,
@@ -48,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/mm/hugetlb.c~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix
 +++ a/mm/hugetlb.c
-@@ -4962,7 +4962,7 @@ int move_hugetlb_page_tables(struct vm_a
+@@ -4960,7 +4960,7 @@ int move_hugetlb_page_tables(struct vm_a
  
  static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
  				   unsigned long start, unsigned long end,
@@ -57,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct mm_struct *mm = vma->vm_mm;
  	unsigned long address;
-@@ -5096,7 +5096,7 @@ static void __unmap_hugepage_range(struc
+@@ -5094,7 +5094,7 @@ static void __unmap_hugepage_range(struc
  void __unmap_hugepage_range_final(struct mmu_gather *tlb,
  			  struct vm_area_struct *vma, unsigned long start,
  			  unsigned long end, struct page *ref_page,
@@ -66,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
  
-@@ -5115,7 +5115,7 @@ void __unmap_hugepage_range_final(struct
+@@ -5113,7 +5113,7 @@ void __unmap_hugepage_range_final(struct
  
  void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
  			  unsigned long end, struct page *ref_page,

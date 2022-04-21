@@ -22,6 +22,8 @@ Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory-failure.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 --- a/mm/memory-failure.c~mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable
 +++ a/mm/memory-failure.c

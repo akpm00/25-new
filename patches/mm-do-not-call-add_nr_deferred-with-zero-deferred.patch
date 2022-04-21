@@ -28,6 +28,7 @@ totally fine.
 
 Link: https://lkml.kernel.org/r/20220416004104.4089743-1-roman.gushchin@linux.dev
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Dave Chinner <dchinner@redhat.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>
@@ -41,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/vmscan.c~mm-do-not-call-add_nr_deferred-with-zero-deferred
 +++ a/mm/vmscan.c
-@@ -808,7 +808,10 @@ static unsigned long do_shrink_slab(stru
+@@ -797,7 +797,10 @@ static unsigned long do_shrink_slab(stru
  	 * move the unused scan count back into the shrinker in a
  	 * manner that handles concurrent updates.
  	 */

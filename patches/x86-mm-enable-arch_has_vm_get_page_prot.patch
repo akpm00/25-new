@@ -21,6 +21,12 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/x86/Kconfig                 |    2 -
+ arch/x86/include/asm/pgtable.h   |    5 ----
+ arch/x86/include/uapi/asm/mman.h |   14 -----------
+ arch/x86/mm/Makefile             |    2 -
+ arch/x86/mm/pgprot.c             |   35 +++++++++++++++++++++++++++++
+ 5 files changed, 37 insertions(+), 21 deletions(-)
 
 --- a/arch/x86/include/asm/pgtable.h~x86-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/x86/include/asm/pgtable.h

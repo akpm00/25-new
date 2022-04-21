@@ -19,10 +19,12 @@ Cc: Wei Yang <richard.weiyang@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/memory_hotplug.c |   20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 --- a/mm/memory_hotplug.c~mm-memory_hotplug-reset-nodes-state-when-empty-during-offline-fix
 +++ a/mm/memory_hotplug.c
-@@ -1145,16 +1145,6 @@ failed_addition:
+@@ -1146,16 +1146,6 @@ failed_addition:
  	return ret;
  }
  
@@ -39,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG */
  static pg_data_t __ref *hotadd_init_pgdat(int nid)
  {
-@@ -1755,6 +1745,16 @@ static void node_states_clear_node(int n
+@@ -1756,6 +1746,16 @@ static void node_states_clear_node(int n
  		node_clear_state(node, N_MEMORY);
  }
  

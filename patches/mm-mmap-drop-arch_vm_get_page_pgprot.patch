@@ -22,6 +22,9 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mman.h |    4 ----
+ mm/mmap.c            |    4 +---
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
 --- a/include/linux/mman.h~mm-mmap-drop-arch_vm_get_page_pgprot
 +++ a/include/linux/mman.h

@@ -32,6 +32,7 @@ Fixes: 761ad8d7c7b5 ("mm: hwpoison: introduce memory_failure_hugetlb()")
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Cc: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: <stable@vger.kernel.org>
@@ -85,7 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline int arch_memory_failure(unsigned long pfn, int flags)
 --- a/mm/hugetlb.c~mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb
 +++ a/mm/hugetlb.c
-@@ -6782,6 +6782,16 @@ int get_hwpoison_huge_page(struct page *
+@@ -6785,6 +6785,16 @@ int get_hwpoison_huge_page(struct page *
  	return ret;
  }
  

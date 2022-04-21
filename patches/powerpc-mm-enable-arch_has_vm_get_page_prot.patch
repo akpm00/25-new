@@ -21,6 +21,10 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/powerpc/Kconfig               |    1 +
+ arch/powerpc/include/asm/mman.h    |   12 ------------
+ arch/powerpc/mm/book3s64/pgtable.c |   17 +++++++++++++++++
+ 3 files changed, 18 insertions(+), 12 deletions(-)
 
 --- a/arch/powerpc/include/asm/mman.h~powerpc-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/powerpc/include/asm/mman.h

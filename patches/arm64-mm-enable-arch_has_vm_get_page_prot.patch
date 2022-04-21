@@ -21,6 +21,10 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/arm64/Kconfig            |    1 +
+ arch/arm64/include/asm/mman.h |   24 ------------------------
+ arch/arm64/mm/mmap.c          |   25 +++++++++++++++++++++++++
+ 3 files changed, 26 insertions(+), 24 deletions(-)
 
 --- a/arch/arm64/include/asm/mman.h~arm64-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/arm64/include/asm/mman.h

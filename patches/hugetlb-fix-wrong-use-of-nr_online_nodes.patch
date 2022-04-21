@@ -15,8 +15,22 @@ Certain systems are designed to have sparse/discontiguous nodes.  In this
 case, nr_online_nodes can not be used to walk through numa node.  Also, a
 valid node may be greater than nr_online_nodes.
 
-However, in hugetlb, it is assumed that nodes are contiguous.  Recheck all
-the places that use nr_online_nodes, and repair them one by one.
+However, in hugetlb, it is assumed that nodes are contiguous.
+
+For sparse/discontiguous nodes, the current code may treat a valid node
+as invalid, and will fail to allocate all hugepages on a valid node that
+"nid >= nr_online_nodes".
+
+As David suggested:
+
+	if (tmp >= nr_online_nodes)
+		goto invalid;
+
+Just imagine node 0 and node 2 are online, and node 1 is offline. 
+Assuming that "node < 2" is valid is wrong.  
+
+Recheck all the places that use nr_online_nodes, and repair them one by
+one.
 
 Link: https://lkml.kernel.org/r/20220413032915.251254-1-liupeng256@huawei.com
 Link: https://lkml.kernel.org/r/20220413032915.251254-2-liupeng256@huawei.com
@@ -26,14 +40,18 @@ Fixes: e79ce9832316 ("hugetlbfs: fix a truncation issue in hugepages parameter")
 Fixes: f9317f77a6e0 ("hugetlb: clean up potential spectre issue warnings")
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
 Suggested-by: David Hildenbrand <david@redhat.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/hugetlb.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 --- a/mm/hugetlb.c~hugetlb-fix-wrong-use-of-nr_online_nodes
 +++ a/mm/hugetlb.c

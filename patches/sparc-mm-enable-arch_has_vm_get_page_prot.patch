@@ -22,6 +22,10 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/sparc/Kconfig            |    1 +
+ arch/sparc/include/asm/mman.h |    6 ------
+ arch/sparc/mm/init_64.c       |   12 ++++++++++++
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
 --- a/arch/sparc/include/asm/mman.h~sparc-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/sparc/include/asm/mman.h
