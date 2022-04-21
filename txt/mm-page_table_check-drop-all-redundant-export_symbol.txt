@@ -1,0 +1,11 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/page_table_check: drop all redundant EXPORT_SYMBOL()
+
+Function definitions need not be exported via EXPORT_SYMBOL() mechanism. 
+In this case these functions just get called only inside their wrappers. 
+Even __page_table_check_zero() gets called without such an export.  Just
+drop all these redundant EXPORT_SYMBOL()s.
+
+Link: https://lkml.kernel.org/r/20220421070631.1273879-1-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>

@@ -23,6 +23,11 @@ structure containing the interval notifier subscription while it is still
 on a deferred list.  Fix this by taking the appropriate lock when reading
 invalidate_seq to ensure proper synchronisation.
 
+I observed this whilst running stress testing during some development. 
+You do have to be pretty unlucky, but it leads to the usual problems of
+use-after-free (memory corruption, kernel crash, difficult to diagnose
+WARN_ON, etc).
+
 Link: https://lkml.kernel.org/r/20220420043734.476348-1-apopple@nvidia.com
 Fixes: 99cb252f5e68 ("mm/mmu_notifier: add an interval tree notifier")
 Signed-off-by: Alistair Popple <apopple@nvidia.com>

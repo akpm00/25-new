@@ -9,6 +9,7 @@ origin.patch
 #mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: maybe TBU https://lkml.kernel.org/r/5b665bcd-57f8-85ae-b0c4-c055875dbfff@oracle.com
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
+#mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch: check review
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
 #mm/memcg
@@ -97,6 +98,8 @@ mm-page_table_check-move-pxx_user_accessible_page-into-x86.patch
 mm-page_table_check-add-hooks-to-public-helpers.patch
 arm64-mm-add-support-for-page-table-check.patch
 riscv-mm-add-support-for-page-table-check.patch
+#
+mm-page_table_check-drop-all-redundant-export_symbol.patch
 #
 #mm/folios
 #mm/pagecache

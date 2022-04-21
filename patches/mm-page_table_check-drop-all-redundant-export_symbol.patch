@@ -1,0 +1,60 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/page_table_check: drop all redundant EXPORT_SYMBOL()
+
+Function definitions need not be exported via EXPORT_SYMBOL() mechanism. 
+In this case these functions just get called only inside their wrappers. 
+Even __page_table_check_zero() gets called without such an export.  Just
+drop all these redundant EXPORT_SYMBOL()s.
+
+Link: https://lkml.kernel.org/r/20220421070631.1273879-1-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_table_check.c |    5 -----
+ 1 file changed, 5 deletions(-)
+
+--- a/mm/page_table_check.c~mm-page_table_check-drop-all-redundant-export_symbol
++++ a/mm/page_table_check.c
+@@ -150,7 +150,6 @@ void __page_table_check_pte_clear(struct
+ 				       PAGE_SIZE >> PAGE_SHIFT);
+ 	}
+ }
+-EXPORT_SYMBOL(__page_table_check_pte_clear);
+ 
+ void __page_table_check_pmd_clear(struct mm_struct *mm, unsigned long addr,
+ 				  pmd_t pmd)
+@@ -163,7 +162,6 @@ void __page_table_check_pmd_clear(struct
+ 				       PMD_SIZE >> PAGE_SHIFT);
+ 	}
+ }
+-EXPORT_SYMBOL(__page_table_check_pmd_clear);
+ 
+ void __page_table_check_pud_clear(struct mm_struct *mm, unsigned long addr,
+ 				  pud_t pud)
+@@ -176,7 +174,6 @@ void __page_table_check_pud_clear(struct
+ 				       PUD_SIZE >> PAGE_SHIFT);
+ 	}
+ }
+-EXPORT_SYMBOL(__page_table_check_pud_clear);
+ 
+ void __page_table_check_pte_set(struct mm_struct *mm, unsigned long addr,
+ 				pte_t *ptep, pte_t pte)
+@@ -206,7 +203,6 @@ void __page_table_check_pmd_set(struct m
+ 				     pmd_write(pmd));
+ 	}
+ }
+-EXPORT_SYMBOL(__page_table_check_pmd_set);
+ 
+ void __page_table_check_pud_set(struct mm_struct *mm, unsigned long addr,
+ 				pud_t *pudp, pud_t pud)
+@@ -221,7 +217,6 @@ void __page_table_check_pud_set(struct m
+ 				     pud_write(pud));
+ 	}
+ }
+-EXPORT_SYMBOL(__page_table_check_pud_set);
+ 
+ void __page_table_check_pte_clear_range(struct mm_struct *mm,
+ 					unsigned long addr,
+_
