@@ -58,6 +58,7 @@ Reported-by: Abaci <abaci@linux.alibaba.com>
 Suggested-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Oscar Salvador <osalvador@suse.de>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>

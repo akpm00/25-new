@@ -33,7 +33,7 @@ Reproducer: https://gitlab.com/jsavitz/oom_futex_reproducer
 
 Based on a patch by Michal Hocko.
 
-[1] https://elixir.bootlin.com/glibc/latest/source/nptl/allocatestack.c#L370
+[1] https://elixir.bootlin.com/glibc/glibc-2.35/source/nptl/allocatestack.c#L370
 
 Link: https://lkml.kernel.org/r/20220414144042.677008-1-npache@redhat.com
 Fixes: 212925802454 ("mm: oom: let oom_reap_task and exit_mmap run concurrently")
@@ -41,6 +41,7 @@ Signed-off-by: Joel Savitz <jsavitz@redhat.com>
 Signed-off-by: Nico Pache <npache@redhat.com>
 Co-developed-by: Joel Savitz <jsavitz@redhat.com>
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Rafael Aquini <aquini@redhat.com>
 Cc: Waiman Long <longman@redhat.com>

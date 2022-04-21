@@ -2,25 +2,15 @@ origin.patch
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START mainline-later (next week, approximately)
-#
 #mm/memory-failure
-#mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch: maybe TBU https://lkml.kernel.org/r/5b665bcd-57f8-85ae-b0c4-c055875dbfff@oracle.com
 mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.patch
 #
-#mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch: check review
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
 #mm/memcg
 memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 #
-#mm/mlock
-#mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch: Willy alternative?
-mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
-#
 #mm/userfaultfd
-#userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch: acks? check review
 userfaultfd-mark-uffd_wp-regardless-of-vm_write-flag.patch
 #
 #mm/hugetlbfs
@@ -36,19 +26,20 @@ selftest-vm-add-skip-support-to-mremap_test.patch
 oom_killc-futex-delay-the-oom-reaper-to-allow-time-for-proper-futex-cleanup.patch
 #
 #mm/kasan
-#kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch: acks?
-kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
-#
-#maintainers-add-vincenzo-frascino-to-kasan-reviewers.patch: acks?
 maintainers-add-vincenzo-frascino-to-kasan-reviewers.patch
 #
 #kcov
 kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
 #
-#mm/highmem
-#
 #mm/hmm
 mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch
+#
+#NEXT_PATCHES_END
+#NEXT_PATCHES_START mainline-later (next week, approximately)
+#
+#mm/kasan
+#kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch: acks?
+kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -1489,3 +1480,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
 #[to-be-updated]documentation-vm-include-kernel-doc-from-highmem-internalh.patch
 #[failures]mm-page_ownerc-use-get_task_comm-to-record-task-command-name-with-the-protection-of-task_lock.patch
+#[alternative-merged]mm-munlock-remove-fields-to-fix-htmldocs-warnings.patch
