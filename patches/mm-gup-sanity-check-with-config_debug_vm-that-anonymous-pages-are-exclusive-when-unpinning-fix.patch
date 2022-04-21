@@ -1,0 +1,55 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix
+
+s/VM_BUG_ON/VM_BUG_ON_PAGE/, per Vlastimil
+
+Link: https://lkml.kernel.org/r/31b37b7c-a969-eec2-bdff-a7e4dca9b770@redhat.com
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/gup.c         |    4 ++--
+ mm/huge_memory.c |    4 ++--
+ mm/hugetlb.c     |    4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+--- a/mm/gup.c~mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix
++++ a/mm/gup.c
+@@ -564,8 +564,8 @@ retry:
+ 		goto out;
+ 	}
+ 
+-	VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
+-		  !PageAnonExclusive(page));
++	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++			!PageAnonExclusive(page), page);
+ 
+ 	/* try_grab_page() does nothing unless FOLL_GET or FOLL_PIN is set. */
+ 	if (unlikely(!try_grab_page(page, flags))) {
+--- a/mm/huge_memory.c~mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix
++++ a/mm/huge_memory.c
+@@ -1392,8 +1392,8 @@ struct page *follow_trans_huge_pmd(struc
+ 	if (!pmd_write(*pmd) && gup_must_unshare(flags, page))
+ 		return ERR_PTR(-EMLINK);
+ 
+-	VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
+-		  !PageAnonExclusive(page));
++	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++			!PageAnonExclusive(page), page);
+ 
+ 	if (!try_grab_page(page, flags))
+ 		return ERR_PTR(-ENOMEM);
+--- a/mm/hugetlb.c~mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix
++++ a/mm/hugetlb.c
+@@ -6100,8 +6100,8 @@ long follow_hugetlb_page(struct mm_struc
+ 		pfn_offset = (vaddr & ~huge_page_mask(h)) >> PAGE_SHIFT;
+ 		page = pte_page(huge_ptep_get(pte));
+ 
+-		VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
+-			  !PageAnonExclusive(page));
++		VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++				!PageAnonExclusive(page), page);
+ 
+ 		/*
+ 		 * If subpage information not requested, update counters
+_

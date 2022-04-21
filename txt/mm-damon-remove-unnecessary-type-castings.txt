@@ -1,0 +1,9 @@
+From: Yu Zhe <yuzhe@nfschina.com>
+Subject: mm/damon: remove unnecessary type castings
+
+Remove unnecessary void* type castings.
+
+Link: https://lkml.kernel.org/r/20220421153056.8474-1-yuzhe@nfschina.com
+Signed-off-by: Yu Zhe <yuzhe@nfschina.com>
+Cc: SeongJae Park <sj@kernel.org>
+Cc: liqiong <liqiong@nfschina.com>

@@ -1,0 +1,7 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix
+
+s/VM_BUG_ON/VM_BUG_ON_PAGE/, per Vlastimil
+
+Link: https://lkml.kernel.org/r/31b37b7c-a969-eec2-bdff-a7e4dca9b770@redhat.com
+Cc: Vlastimil Babka <vbabka@suse.cz>

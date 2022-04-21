@@ -1,0 +1,25 @@
+From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: Documentation/vm: rework "Temporary Virtual Mappings"
+
+Extend and rework the "Temporary Virtual Mappings" section of the
+highmem.rst documentation.
+
+Despite the local kmaps were introduced by Thomas Gleixner in October
+2020, documentation was still missing information about them.  These
+additions rely largely on Gleixner's patches, Jonathan Corbet's LWN
+articles, comments by Ira Weiny and Matthew Wilcox, and in-code comments
+from ./include/linux/highmem.h.
+
+1) Add a paragraph to document kmap_local_page().
+2) Reorder the list of functions by decreasing order of preference of
+   use.
+3) Rework part of the kmap() entry in list.
+
+Link: https://lkml.kernel.org/r/20220421180200.16901-5-fmdefrancesco@gmail.com
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>

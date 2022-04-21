@@ -1,0 +1,25 @@
+From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: mm/highmem: fix kernel-doc warnings in highmem*.h
+
+`scripts/kernel-doc -none include/linux/highmem*` reports the following
+warnings:
+
+include/linux/highmem.h:160: warning: expecting prototype for kunmap_atomic(). Prototype was for nr_free_highpages() instead
+include/linux/highmem-internal.h:256: warning: Function parameter or member '__addr' not described in 'kunmap_atomic'
+include/linux/highmem-internal.h:256: warning: Excess function parameter 'addr' description in 'kunmap_atomic'
+
+Fix these warnings by (1) move the kernel-doc comments from highmem.h to
+highmem-internal.h (which is the file were the kunmap_atomic() macro is
+actually defined), (2) merge it with the comment which already was in
+highmem-internal.h, and (3) use correct parameter names.
+
+Link: https://lkml.kernel.org/r/20220418175638.30018-1-fmdefrancesco@gmail.com
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>

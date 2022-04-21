@@ -1,0 +1,23 @@
+From: Tong Tiangen <tongtiangen@huawei.com>
+Subject: riscv: mm: add support for page table check
+
+As commit d283d422c6c4 ("x86: mm: add x86_64 support for page table
+check"), add some necessary page table check hooks into routines that
+modify user page tables.
+
+Link: https://lkml.kernel.org/r/20220421082042.1167967-6-tongtiangen@huawei.com
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Guohanjun <guohanjun@huawei.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>

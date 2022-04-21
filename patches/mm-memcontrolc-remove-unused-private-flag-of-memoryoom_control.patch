@@ -1,0 +1,46 @@
+From: Lu Jialin <lujialin4@huawei.com>
+Subject: mm/memcontrol.c: remove unused private flag of memory.oom_control
+
+There is no use for the private value, __OOM_TYPE and OOM notifier
+OOM_CONTROL.  Therefore remove them to make the code clean.
+
+Link: https://lkml.kernel.org/r/20220421122755.40899-1-lujialin4@huawei.com
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    4 ----
+ 1 file changed, 4 deletions(-)
+
+--- a/mm/memcontrol.c~mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control
++++ a/mm/memcontrol.c
+@@ -210,7 +210,6 @@ static struct move_charge_struct {
+ enum res_type {
+ 	_MEM,
+ 	_MEMSWAP,
+-	_OOM_TYPE,
+ 	_KMEM,
+ 	_TCP,
+ };
+@@ -218,8 +217,6 @@ enum res_type {
+ #define MEMFILE_PRIVATE(x, val)	((x) << 16 | (val))
+ #define MEMFILE_TYPE(val)	((val) >> 16 & 0xffff)
+ #define MEMFILE_ATTR(val)	((val) & 0xffff)
+-/* Used for OOM notifier */
+-#define OOM_CONTROL		(0)
+ 
+ /*
+  * Iteration constructs for visiting all cgroups (under a tree).  If
+@@ -4888,7 +4885,6 @@ static struct cftype mem_cgroup_legacy_f
+ 		.name = "oom_control",
+ 		.seq_show = mem_cgroup_oom_control_read,
+ 		.write_u64 = mem_cgroup_oom_control_write,
+-		.private = MEMFILE_PRIVATE(_OOM_TYPE, OOM_CONTROL),
+ 	},
+ 	{
+ 		.name = "pressure_level",
+_

@@ -12,7 +12,6 @@ mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb.pa
 mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 #
 #mm/memcg
-#memcg-sync-flush-only-if-periodic-flush-is-delayed.patch: check review https://lkml.kernel.org/r/20220314125709.GA12347@blackbody.suse.cz
 memcg-sync-flush-only-if-periodic-flush-is-delayed.patch
 #
 #mm/mlock
@@ -46,7 +45,6 @@ maintainers-add-vincenzo-frascino-to-kasan-reviewers.patch
 kcov-dont-generate-a-warning-on-vm_insert_pages-failure.patch
 #
 #mm/highmem
-mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
 #
 #mm/hmm
 mm-mmu_notifierc-fix-race-in-mmu_interval_notifier_remove.patch
@@ -88,13 +86,17 @@ tools-vm-page_owner_sortc-provide-allocator-labelling-and-update-cull-and-sort-o
 #
 tools-vm-page_owner_sortc-avoid-repeated-judgments.patch
 #
-mm-page_ownerc-use-get_task_comm-to-record-task-command-name-with-the-protection-of-task_lock.patch
 #
 #
 #
 #mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch.patch: more info
 mm-smaps_rollup-return-empty-file-for-kthreads-instead-of-esrch.patch
 #
+mm-page_table_check-using-pxd_size-instead-of-pxd_page_size.patch
+mm-page_table_check-move-pxx_user_accessible_page-into-x86.patch
+mm-page_table_check-add-hooks-to-public-helpers.patch
+arm64-mm-add-support-for-page-table-check.patch
+riscv-mm-add-support-for-page-table-check.patch
 #
 #mm/folios
 #mm/pagecache
@@ -120,6 +122,7 @@ mm-support-gup-triggered-unsharing-of-anonymous-pages.patch
 mm-support-gup-triggered-unsharing-of-anonymous-pages-fix.patch
 mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page.patch
 mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning.patch
+mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix.patch
 #
 mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit.patch
 mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit-fix.patch
@@ -169,6 +172,10 @@ kselftests-memcg-update-the-oom-group-leaf-events-test.patch
 kselftests-memcg-speed-up-the-memoryhigh-test.patch
 maintainers-add-corresponding-kselftests-to-cgroup-entry.patch
 maintainers-add-corresponding-kselftests-to-memcg-entry.patch
+#
+mm-memcontrolc-make-cgroup_memory_noswap-static.patch
+#
+mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control.patch
 #
 #mm/selftests
 selftests-vm-bring-common-functions-to-a-new-file.patch
@@ -224,6 +231,11 @@ mm-vmalloc-fix-a-comment.patch
 #
 #mm/documentation
 documentation-sysctl-document-page_lock_unfairness.patch
+#
+mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
+documentation-vm-remove-using-kmap-atomic-from-highmemrst.patch
+documentation-vm-rework-temporary-virtual-mappings.patch
 #
 #mm/initialization
 #mm/pagealloc
@@ -396,6 +408,7 @@ mm-hugetlb-allow-uffd-wr-protect-none-ptes.patch
 #mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch: https://lkml.kernel.org/r/202204140108.DeRAhWEn-lkp@intel.com
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix.patch
+mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix.patch
 mm-hugetlb-handle-uffd-wp-during-fork.patch
 mm-shmem-handle-uffd-wp-during-fork-fix.patch
 mm-khugepaged-dont-recycle-vma-pgtable-if-uffd-wp-registered.patch
@@ -466,7 +479,6 @@ mm-compaction-use-helper-isolation_suitable.patch
 drivers-base-nodec-fix-compaction-sysfs-file-leak.patch
 #
 #mm/mempolicy
-#mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range.patch: acks?
 mm-mempolicy-clean-up-the-code-logic-in-queue_pages_pte_range.patch
 #
 #mm/mempool
@@ -561,6 +573,11 @@ damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
 selftests-damon-add-damon-to-selftests-root-makefile.patch
 #
 mm-damon-core-test-add-a-kunit-test-case-for-ops-registration.patch
+#
+mm-damon-remove-unnecessary-type-castings.patch
+#
+#mm-damon-reclaim-fix-the-timer-always-stays-active.patch: acks?
+mm-damon-reclaim-fix-the-timer-always-stays-active.patch
 #
 #mm/swap2
 #mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal TBU
@@ -1466,3 +1483,6 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftest-vm-verify-remap-destination-address-in-mremap_test.patch
 #[to-be-updated]selftest-vm-support-xfail-in-mremap_test.patch
 #[to-be-updated]selftest-vm-add-skip-support-to-mremap_test.patch
+#[to-be-updated]mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+#[to-be-updated]documentation-vm-include-kernel-doc-from-highmem-internalh.patch
+#[failures]mm-page_ownerc-use-get_task_comm-to-record-task-command-name-with-the-protection-of-task_lock.patch

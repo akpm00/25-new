@@ -12,4 +12,4 @@ after the retry and can reach the vm.max_map_count sysctl.
 
 Link: https://lkml.kernel.org/r/20220420215721.4868-1-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>

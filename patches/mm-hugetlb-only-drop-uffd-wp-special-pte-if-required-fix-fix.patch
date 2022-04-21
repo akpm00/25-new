@@ -1,0 +1,37 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
+
+move zap_flags_t from mm.h to mm_types.h to fix build issues
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h       |    2 --
+ include/linux/mm_types.h |    2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/include/linux/mm.h~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
++++ a/include/linux/mm.h
+@@ -3431,8 +3431,6 @@ madvise_set_anon_name(struct mm_struct *
+ }
+ #endif
+ 
+-typedef unsigned int __bitwise zap_flags_t;
+-
+ /*
+  * Whether to drop the pte markers, for example, the uffd-wp information for
+  * file-backed memory.  This should only be specified when we will completely
+--- a/include/linux/mm_types.h~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
++++ a/include/linux/mm_types.h
+@@ -850,4 +850,6 @@ enum fault_flag {
+ 	FAULT_FLAG_ORIG_PTE_VALID =	1 << 11,
+ };
+ 
++typedef unsigned int __bitwise zap_flags_t;
++
+ #endif /* _LINUX_MM_TYPES_H */
+_

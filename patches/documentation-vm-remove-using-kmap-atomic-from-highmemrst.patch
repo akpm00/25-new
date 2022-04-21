@@ -1,0 +1,68 @@
+From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: Documentation/vm: remove "Using kmap-atomic" from highmem.rst.
+
+The use of kmap_atomic() is deprecated in favor of kmap_local_page().  For
+this reason the "Using kmap_atomic" section in highmem.rst is obsolete and
+unnecessary.
+
+Therefore, just remove it.
+
+Link: https://lkml.kernel.org/r/20220421180200.16901-4-fmdefrancesco@gmail.com
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/vm/highmem.rst |   35 ---------------------------------
+ 1 file changed, 35 deletions(-)
+
+--- a/Documentation/vm/highmem.rst~documentation-vm-remove-using-kmap-atomic-from-highmemrst
++++ a/Documentation/vm/highmem.rst
+@@ -72,41 +72,6 @@ The kernel contains several ways of crea
+   It may be assumed that k[un]map_atomic() won't fail.
+ 
+ 
+-Using kmap_atomic
+-=================
+-
+-When and where to use kmap_atomic() is straightforward.  It is used when code
+-wants to access the contents of a page that might be allocated from high memory
+-(see __GFP_HIGHMEM), for example a page in the pagecache.  The API has two
+-functions, and they can be used in a manner similar to the following::
+-
+-	/* Find the page of interest. */
+-	struct page *page = find_get_page(mapping, offset);
+-
+-	/* Gain access to the contents of that page. */
+-	void *vaddr = kmap_atomic(page);
+-
+-	/* Do something to the contents of that page. */
+-	memset(vaddr, 0, PAGE_SIZE);
+-
+-	/* Unmap that page. */
+-	kunmap_atomic(vaddr);
+-
+-Note that the kunmap_atomic() call takes the result of the kmap_atomic() call
+-not the argument.
+-
+-If you need to map two pages because you want to copy from one page to
+-another you need to keep the kmap_atomic calls strictly nested, like::
+-
+-	vaddr1 = kmap_atomic(page1);
+-	vaddr2 = kmap_atomic(page2);
+-
+-	memcpy(vaddr1, vaddr2, PAGE_SIZE);
+-
+-	kunmap_atomic(vaddr2);
+-	kunmap_atomic(vaddr1);
+-
+-
+ Cost of Temporary Mappings
+ ==========================
+ 
+_

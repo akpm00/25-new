@@ -1,0 +1,12 @@
+From: Lu Jialin <lujialin4@huawei.com>
+Subject: mm/memcontrol.c: remove unused private flag of memory.oom_control
+
+There is no use for the private value, __OOM_TYPE and OOM notifier
+OOM_CONTROL.  Therefore remove them to make the code clean.
+
+Link: https://lkml.kernel.org/r/20220421122755.40899-1-lujialin4@huawei.com
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>

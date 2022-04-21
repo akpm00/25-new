@@ -1,0 +1,23 @@
+From: Tong Tiangen <tongtiangen@huawei.com>
+Subject: mm: page_table_check: add hooks to public helpers
+
+Move ptep_clear() to the include/linux/pgtable.h and add page table check
+relate hooks to some helpers, it's prepare for support page table check
+feature on new architecture.
+
+Link: https://lkml.kernel.org/r/20220421082042.1167967-4-tongtiangen@huawei.com
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Guohanjun <guohanjun@huawei.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>

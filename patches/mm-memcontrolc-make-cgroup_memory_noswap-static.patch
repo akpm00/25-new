@@ -1,0 +1,44 @@
+From: Lu Jialin <lujialin4@huawei.com>
+Subject: mm/memcontrol.c: make cgroup_memory_noswap static
+
+cgroup_memory_noswap is only used in mm/memcontrol.c, therefore just make
+it static, and remove export in include/linux/memcontrol.h
+
+Link: https://lkml.kernel.org/r/20220421124736.62180-1-lujialin4@huawei.com
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/memcontrol.h |    4 ----
+ mm/memcontrol.c            |    2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+--- a/include/linux/memcontrol.h~mm-memcontrolc-make-cgroup_memory_noswap-static
++++ a/include/linux/memcontrol.h
+@@ -937,10 +937,6 @@ struct mem_cgroup *mem_cgroup_get_oom_gr
+ 					    struct mem_cgroup *oom_domain);
+ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+-extern bool cgroup_memory_noswap;
+-#endif
+-
+ void folio_memcg_lock(struct folio *folio);
+ void folio_memcg_unlock(struct folio *folio);
+ void lock_page_memcg(struct page *page);
+--- a/mm/memcontrol.c~mm-memcontrolc-make-cgroup_memory_noswap-static
++++ a/mm/memcontrol.c
+@@ -90,7 +90,7 @@ static bool cgroup_memory_nokmem __ro_af
+ 
+ /* Whether the swap controller is active */
+ #ifdef CONFIG_MEMCG_SWAP
+-bool cgroup_memory_noswap __ro_after_init;
++static bool cgroup_memory_noswap __ro_after_init;
+ #else
+ #define cgroup_memory_noswap		1
+ #endif
+_

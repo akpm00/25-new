@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
+
+move zap_flags_t from mm.h to mm_types.h to fix build issues
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

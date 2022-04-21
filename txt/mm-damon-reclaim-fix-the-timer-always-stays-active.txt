@@ -1,0 +1,10 @@
+From: Hailong Tu <tuhailong@gmail.com>
+Subject: mm/damon/reclaim: fix the timer always stays active
+
+The timer stays active even if the reclaim mechanism is never enabled.  It
+is unnecessary overhead can be completely avoided by using
+module_param_cb() for enabled flag.
+
+Link: https://lkml.kernel.org/r/20220421125910.1052459-1-tuhailong@gmail.com
+Signed-off-by: Hailong Tu <tuhailong@gmail.com>
+Cc: SeongJae Park <sj@kernel.org>
