@@ -1,0 +1,26 @@
+From: Yosry Ahmed <yosryahmed@google.com>
+Subject: selftests: cgroup: return -errno from cg_read()/cg_write() on failure
+
+Currently, cg_read()/cg_write() returns 0 on success and -1 on failure. 
+Modify them to return the -errno on failure.
+
+Link: https://lkml.kernel.org/r/20220421234426.3494842-3-yosryahmed@google.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chen Wandun <chenwandun@huawei.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "Michal Koutný" <mkoutny@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>

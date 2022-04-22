@@ -1,0 +1,13 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: net: decnet: use time_is_before_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-11-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc: Yajun Deng <yajun.deng@linux.dev>

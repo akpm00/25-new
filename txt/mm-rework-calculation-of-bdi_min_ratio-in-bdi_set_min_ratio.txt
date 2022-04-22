@@ -1,0 +1,11 @@
+From: Chen Wandun <chenwandun@huawei.com>
+Subject: mm: rework calculation of bdi_min_ratio in bdi_set_min_ratio
+
+In function bdi_set_min_ratio, min_ratio is unsigned int, it will
+result underflow when setting min_ratio below bdi->min_ratio, it
+is confusing. Rework it, no functional change.
+
+Link: https://lkml.kernel.org/r/20220422095159.2858305-1-chenwandun@huawei.com
+Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Jens Axboe <axboe@kernel.dk>

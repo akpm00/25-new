@@ -1,0 +1,19 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: net: wireless: marvell: use time_is_before_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-8-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: Ganapathi Bhat <ganapathi017@gmail.com>
+Cc: Sharvari Harisangam <sharvari.harisangam@nxp.com>
+Cc: Xinming Hu <huxinming820@gmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Zheyu Ma <zheyuma97@gmail.com>

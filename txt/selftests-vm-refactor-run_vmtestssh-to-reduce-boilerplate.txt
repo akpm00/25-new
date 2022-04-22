@@ -1,0 +1,21 @@
+From: Axel Rasmussen <axelrasmussen@google.com>
+Subject: selftests: vm: refactor run_vmtests.sh to reduce boilerplate
+
+Previously, each test printed out its own header, dealt with its own
+return code, etc.  By just putting this standard stuff in a function, we
+can delete > 300 lines from the script.
+
+This also makes adding future tests easier. And, it gets rid of various
+inconsistencies that already exist:
+
+- Some tests correctly deal with ksft_skip, but others don't.
+- Some tests just print the executable name, others print arguments, and
+  yet others print some comment in the header.
+- Most tests print out a header with two separator lines, but not the
+  HMM smoke test or the memfd_secret test, which only print one.
+- We had a redundant "exit" at the end, with all the boilerplate it's an
+  easy oversight.
+
+Link: https://lkml.kernel.org/r/20220421224928.1848230-1-axelrasmussen@google.com
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Cc: Shuah Khan <shuah@kernel.org>

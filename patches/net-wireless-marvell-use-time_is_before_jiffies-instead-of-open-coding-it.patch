@@ -1,0 +1,59 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: net: wireless: marvell: use time_is_before_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-8-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: Ganapathi Bhat <ganapathi017@gmail.com>
+Cc: Sharvari Harisangam <sharvari.harisangam@nxp.com>
+Cc: Xinming Hu <huxinming820@gmail.com>
+Cc: Kalle Valo <kvalo@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/net/wireless/marvell/mwifiex/tdls.c |    4 ++--
+ drivers/net/wireless/marvell/mwl8k.c        |    3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+--- a/drivers/net/wireless/marvell/mwifiex/tdls.c~net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it
++++ a/drivers/net/wireless/marvell/mwifiex/tdls.c
+@@ -1436,8 +1436,8 @@ void mwifiex_check_auto_tdls(struct time
+ 
+ 	spin_lock_bh(&priv->auto_tdls_lock);
+ 	list_for_each_entry(tdls_peer, &priv->auto_tdls_list, list) {
+-		if ((jiffies - tdls_peer->rssi_jiffies) >
+-		    (MWIFIEX_AUTO_TDLS_IDLE_TIME * HZ)) {
++		if (time_is_before_jiffies(tdls_peer->rssi_jiffies +
++		    (MWIFIEX_AUTO_TDLS_IDLE_TIME * HZ))) {
+ 			tdls_peer->rssi = 0;
+ 			tdls_peer->do_discover = true;
+ 			priv->check_tdls_tx = true;
+--- a/drivers/net/wireless/marvell/mwl8k.c~net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it
++++ a/drivers/net/wireless/marvell/mwl8k.c
+@@ -24,6 +24,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/firmware.h>
+ #include <linux/workqueue.h>
++#include <linux/jiffies.h>
+ 
+ #define MWL8K_DESC	"Marvell TOPDOG(R) 802.11 Wireless Network Driver"
+ #define MWL8K_NAME	KBUILD_MODNAME
+@@ -1880,7 +1881,7 @@ static inline void mwl8k_tx_count_packet
+ 	 * packets ever exceeds the ampdu_min_traffic threshold, we will allow
+ 	 * an ampdu stream to be started.
+ 	 */
+-	if (jiffies - tx_stats->start_time > HZ) {
++	if (time_is_before_jiffies(tx_stats->start_time + HZ)) {
+ 		tx_stats->pkts = 0;
+ 		tx_stats->start_time = 0;
+ 	} else
+_

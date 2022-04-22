@@ -1,0 +1,38 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: timekeeping: use time_is_before_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-10-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/time/timekeeping.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/kernel/time/timekeeping.c~timekeeping-use-time_is_before_jiffies-instead-of-open-coding-it
++++ a/kernel/time/timekeeping.c
+@@ -216,7 +216,7 @@ static void timekeeping_check_update(str
+ 	}
+ 
+ 	if (tk->underflow_seen) {
+-		if (jiffies - tk->last_warning > WARNING_FREQ) {
++		if (time_is_before_jiffies(tk->last_warning + WARNING_FREQ)) {
+ 			printk_deferred("WARNING: Underflow in clocksource '%s' observed, time update ignored.\n", name);
+ 			printk_deferred("         Please report this, consider using a different clocksource, if possible.\n");
+ 			printk_deferred("         Your kernel is probably still fine.\n");
+@@ -226,7 +226,7 @@ static void timekeeping_check_update(str
+ 	}
+ 
+ 	if (tk->overflow_seen) {
+-		if (jiffies - tk->last_warning > WARNING_FREQ) {
++		if (time_is_before_jiffies(tk->last_warning + WARNING_FREQ)) {
+ 			printk_deferred("WARNING: Overflow in clocksource '%s' observed, time update capped.\n", name);
+ 			printk_deferred("         Please report this, consider using a different clocksource, if possible.\n");
+ 			printk_deferred("         Your kernel is probably still fine.\n");
+_

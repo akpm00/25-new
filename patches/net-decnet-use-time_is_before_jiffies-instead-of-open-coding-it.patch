@@ -1,0 +1,39 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: net: decnet: use time_is_before_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-11-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ net/decnet/dn_route.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/net/decnet/dn_route.c~net-decnet-use-time_is_before_jiffies-instead-of-open-coding-it
++++ a/net/decnet/dn_route.c
+@@ -70,6 +70,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/times.h>
+ #include <linux/export.h>
++#include <linux/jiffies.h>
+ #include <asm/errno.h>
+ #include <net/net_namespace.h>
+ #include <net/netlink.h>
+@@ -201,7 +202,7 @@ static void dn_dst_check_expire(struct t
+ 		}
+ 		spin_unlock(&dn_rt_hash_table[i].lock);
+ 
+-		if ((jiffies - now) > 0)
++		if (time_is_before_jiffies(now))
+ 			break;
+ 	}
+ 
+_

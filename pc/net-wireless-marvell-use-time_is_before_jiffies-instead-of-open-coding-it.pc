@@ -1,0 +1,2 @@
+drivers/net/wireless/marvell/mwifiex/tdls.c
+drivers/net/wireless/marvell/mwl8k.c

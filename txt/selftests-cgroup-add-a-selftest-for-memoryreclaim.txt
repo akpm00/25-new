@@ -1,0 +1,26 @@
+From: Yosry Ahmed <yosryahmed@google.com>
+Subject: selftests: cgroup: add a selftest for memory.reclaim
+
+Add a new test for memory.reclaim that verifies that the interface
+correctly reclaims memory as intended, from both anon and file pages.
+
+Link: https://lkml.kernel.org/r/20220421234426.3494842-5-yosryahmed@google.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Chen Wandun <chenwandun@huawei.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Greg Thelen <gthelen@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "Michal Koutný" <mkoutny@suse.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc: Wei Xu <weixugc@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>

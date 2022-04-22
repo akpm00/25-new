@@ -1,0 +1,10 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: block: xen: use time_is_before_eq_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-2-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: "Roger Pau Monné" <roger.pau@citrix.com>
+Cc: Jens Axboe <axboe@kernel.dk>

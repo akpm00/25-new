@@ -1,0 +1,45 @@
+From: David Vernet <void@manifault.com>
+Subject: cgroup: removing racy check in test_memcg_sock()
+
+test_memcg_sock() in the cgroup memcg tests, verifies expected memory
+accounting for sockets.  The test forks a process which functions as a TCP
+server, and sends large buffers back and forth between itself (as the TCP
+client) and the forked TCP server.  While doing so, it verifies that
+memory.current and memory.stat.sock look correct.
+
+There is currently a check in tcp_client() which asserts memory.current >=
+memory.stat.sock.  This check is racy, as between memory.current and
+memory.stat.sock being queried, a packet could come in which causes
+mem_cgroup_charge_skmem() to be invoked.  This could cause
+memory.stat.sock to exceed memory.current.  Reversing the order of
+querying doesn't address the problem either, as memory may be reclaimed
+between the two calls.  Instead, this patch just removes that assertion
+altogether, and instead relies on the values_close() check that follows to
+validate the expected accounting.
+
+Link: https://lkml.kernel.org/r/20220422155728.3055914-5-void@manifault.com
+Signed-off-by: David Vernet <void@manifault.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tejun Heo <tj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/cgroup/test_memcontrol.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c~cgroup-removing-racy-check-in-test_memcg_sock
++++ a/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -993,9 +993,6 @@ static int tcp_client(const char *cgroup
+ 		if (current < 0 || sock < 0)
+ 			goto close_sk;
+ 
+-		if (current < sock)
+-			goto close_sk;
+-
+ 		if (values_close(current, sock, 10)) {
+ 			ret = KSFT_PASS;
+ 			break;
+_

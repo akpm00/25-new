@@ -1,0 +1,25 @@
+From: David Vernet <void@manifault.com>
+Subject: cgroup: fix racy check in alloc_pagecache_max_30M() helper function
+
+alloc_pagecache_max_30M() in the cgroup memcg tests performs a 50MB
+pagecache allocation, which it expects to be capped at 30MB due to the
+calling process having a memory.high setting of 30MB.  After the
+allocation, the function contains a check that verifies that MB(29) <
+memory.current <= MB(30).  This check can actually fail
+non-deterministically.
+
+The testcases that use this function are test_memcg_high() and
+test_memcg_max(), which set memory.min and memory.max to 30MB respectively
+for the cgroup under test.  The allocation can slightly exceed this number
+in both cases, and for memory.max, the process performing the allocation
+will not have the OOM killer invoked as it's performing a pagecache
+allocation.  This patchset therefore updates the above check to instead
+use the verify_close() helper function.
+
+Link: https://lkml.kernel.org/r/20220422155728.3055914-6-void@manifault.com
+Signed-off-by: David Vernet <void@manifault.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Tejun Heo <tj@kernel.org>

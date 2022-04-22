@@ -1,0 +1,20 @@
+From: Yury Norov <yury.norov@gmail.com>
+Subject: mm/gup: fix comments to pin_user_pages_*()
+
+pin_user_pages API forces FOLL_PIN in gup_flags, which means that the API
+requires struct page **pages to be provided (not NULL).  However, the
+comment to pin_user_pages() clearly allows for passing in a NULL @pages
+argument.
+
+Remove the incorrect comments, and add WARN_ON_ONCE(!pages) calls to
+enforce the API.
+
+It has been independently spotted by Minchan Kim and confirmed with
+John Hubbard:
+
+https://lore.kernel.org/all/YgWA0ghrrzHONehH@google.com/
+
+Link: https://lkml.kernel.org/r/20220422015839.1274328-1-yury.norov@gmail.com
+Signed-off-by: Yury Norov (NVIDIA) <yury.norov@gmail.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Minchan Kim <minchan@kernel.org>

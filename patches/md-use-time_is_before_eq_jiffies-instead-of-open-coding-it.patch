@@ -1,0 +1,38 @@
+From: Wang Qing <wangqing@vivo.com>
+Subject: md: use time_is_before_eq_jiffies() instead of open coding it
+
+Use the helper function time_is_{before,after}_jiffies() to improve code
+readability.
+
+Link: https://lkml.kernel.org/r/1650621172-66967-7-git-send-email-wangqing@vivo.com
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/md/dm-writecache.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/drivers/md/dm-writecache.c~md-use-time_is_before_eq_jiffies-instead-of-open-coding-it
++++ a/drivers/md/dm-writecache.c
+@@ -16,6 +16,7 @@
+ #include <linux/pfn_t.h>
+ #include <linux/libnvdimm.h>
+ #include <linux/delay.h>
++#include <linux/jiffies.h>
+ #include "dm-io-tracker.h"
+ 
+ #define DM_MSG_PREFIX "writecache"
+@@ -1971,8 +1972,8 @@ restart:
+ 	while (!list_empty(&wc->lru) &&
+ 	       (wc->writeback_all ||
+ 		wc->freelist_size + wc->writeback_size <= wc->freelist_low_watermark ||
+-		(jiffies - container_of(wc->lru.prev, struct wc_entry, lru)->age >=
+-		 wc->max_age - wc->max_age / MAX_AGE_DIV))) {
++		time_is_before_eq_jiffies(container_of(wc->lru.prev, struct wc_entry,
++		lru)->age + wc->max_age - wc->max_age / MAX_AGE_DIV)) {
+ 
+ 		n_walked++;
+ 		if (unlikely(n_walked > WRITEBACK_LATENCY) &&
+_
