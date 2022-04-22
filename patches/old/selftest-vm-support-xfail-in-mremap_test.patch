@@ -3,13 +3,14 @@ Subject: selftest/vm: support xfail in mremap_test
 
 Use ksft_test_result_xfail for the tests which are expected to fail.
 
-Link: https://lkml.kernel.org/r/20220414171529.62058-4-sidhartha.kumar@oracle.com
+Link: https://lkml.kernel.org/r/20220420215721.4868-3-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: <stable@vger.kernel.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ tools/testing/selftests/vm/mremap_test.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/tools/testing/selftests/vm/mremap_test.c~selftest-vm-support-xfail-in-mremap_test
 +++ a/tools/testing/selftests/vm/mremap_test.c

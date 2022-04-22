@@ -1,10 +1,9 @@
 From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 Subject: selftest/vm: add skip support to mremap_test
 
-Allow the mremap test to be skipped due to errors such as failing to find
-a valid remap region and failure to parse the mmap_min_addr sysctl.
+Allow the mremap test to be skipped due to errors such as failing to parse
+the mmap_min_addr sysctl.
 
-Link: https://lkml.kernel.org/r/20220414171529.62058-5-sidhartha.kumar@oracle.com
+Link: https://lkml.kernel.org/r/20220420215721.4868-4-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-Cc: <stable@vger.kernel.org>

@@ -1,21 +1,15 @@
 From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 Subject: selftest/vm: verify remap destination address in mremap_test
 
-Because mremap does not have a NOREPLACE flag, it can destroy existing
-mappings.  This can cause a segfault if regions such as text are
-destroyed.
+Because mremap does not have a MAP_FIXED_NOREPLACE flag, it can destroy
+existing mappings.  This causes a segfault when regions such as text are
+remapped and the permissions are changed.
 
-This happens because with the MREMAP_FIXED flag used by the test, the
-text region, which fell in the range of the remap region, got unmapped.
-This caused a segfault when trying to fetch the next instruction after
-the mremap() call.
+Verify the requested mremap destination address does not overlap any
+existing mappings by using mmap's MAP_FIXED_NOREPLACE flag.  Keep
+incrementing the destination address until a valid mapping is found or
+fail the current test once the max address is reached.
 
-Verify the requested mremap destination address does not
-overlap any existing mappings by using mmap's FIXED_NOREPLACE flag and
-checking for the EEXIST error code.  Keep incrementing the destination
-address until a valid mapping is found or max address is reached.
-
-Link: https://lkml.kernel.org/r/20220414171529.62058-3-sidhartha.kumar@oracle.com
+Link: https://lkml.kernel.org/r/20220420215721.4868-2-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: <stable@vger.kernel.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>

@@ -27,21 +27,23 @@ A newly introduced function, try_memory_failure_hugetlb(), always takes
 hugetlb_lock (even for non-hugetlb pages).  That can be improved, but
 memory_failure() is rare in principle, so should not be a big problem.
 
-Link: https://lkml.kernel.org/r/20220404092131.751733-1-naoya.horiguchi@linux.dev
+Link: https://lkml.kernel.org/r/20220408135323.1559401-2-naoya.horiguchi@linux.dev
 Fixes: 761ad8d7c7b5 ("mm: hwpoison: introduce memory_failure_hugetlb()")
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Reported-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Yang Shi <shy828301@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  include/linux/hugetlb.h |    6 +
- include/linux/mm.h      |    8 +
+ include/linux/mm.h      |    8 ++
  mm/hugetlb.c            |   10 ++
- mm/memory-failure.c     |  153 +++++++++++++++++++++++++++-----------
- 4 files changed, 135 insertions(+), 42 deletions(-)
+ mm/memory-failure.c     |  145 ++++++++++++++++++++++++++------------
+ 4 files changed, 127 insertions(+), 42 deletions(-)
 
 --- a/include/linux/hugetlb.h~mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb
 +++ a/include/linux/hugetlb.h
@@ -84,7 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline int arch_memory_failure(unsigned long pfn, int flags)
 --- a/mm/hugetlb.c~mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb
 +++ a/mm/hugetlb.c
-@@ -6782,6 +6782,16 @@ int get_hwpoison_huge_page(struct page *
+@@ -6785,6 +6785,16 @@ int get_hwpoison_huge_page(struct page *
  	return ret;
  }
  
@@ -103,22 +105,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	spin_lock_irq(&hugetlb_lock);
 --- a/mm/memory-failure.c~mm-hwpoison-fix-race-between-hugetlb-free-demotion-and-memory_failure_hugetlb
 +++ a/mm/memory-failure.c
-@@ -1498,50 +1498,121 @@ static int try_to_split_thp_page(struct
+@@ -1498,50 +1498,113 @@ static int try_to_split_thp_page(struct
  	return 0;
  }
  
 -static int memory_failure_hugetlb(unsigned long pfn, int flags)
 +/*
 + * Called from hugetlb code with hugetlb_lock held.
-+ * If a hugepage is successfully grabbed (so it's determined to handle
-+ * the error as a hugepage error), returns with holding the page lock.
 + *
 + * Return values:
 + *   0             - free hugepage
 + *   1             - in-use hugepage
 + *   2             - not a hugepage
 + *   -EBUSY        - the hugepage is busy (try to retry)
-+ *   -EOPNOTSUPP   - error handling is cancelled due to hwpoison_filter()
 + *   -EHWPOISON    - the hugepage is already hwpoisoned
 + */
 +int __get_huge_page_for_hwpoison(unsigned long pfn, int flags)
@@ -143,25 +142,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		goto out;
 +	}
 +
-+	lock_page(head);
-+
-+	if (hwpoison_filter(page)) {
-+		ret = -EOPNOTSUPP;
-+		goto unlock;
-+	}
-+
 +	if (TestSetPageHWPoison(head)) {
 +		ret = -EHWPOISON;
-+		goto unlock;
++		goto out;
 +	}
 +
-+	/* keep locking page. */
 +	return ret;
-+unlock:
-+	unlock_page(head);
++out:
 +	if (count_increased)
 +		put_page(head);
-+out:
 +	return ret;
 +}
 +
@@ -169,8 +158,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +/*
 + * Taking refcount of hugetlb pages needs extra care about race conditions
 + * with basic operations like hugepage allocation/free/demotion.
-+ * So all necessary prechecks for hwpoison (like pinning, testing/setting
-+ * PageHWPoison, and hwpoison_filter) are done in single hugetlb_lock range.
++ * So some of prechecks for hwpoison (pinning, and testing/setting
++ * PageHWPoison) should be done in single hugetlb_lock range.
 + */
 +static int try_memory_failure_hugetlb(unsigned long pfn, int flags, int *hugetlb)
  {
@@ -193,22 +182,29 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	if (res == 2) { /* fallback to normal page handling */
 +		*hugetlb = 0;
 +		return 0;
-+	} else if (res == -EOPNOTSUPP) {
-+		return res;
 +	} else if (res == -EHWPOISON) {
 +		pr_err("Memory failure: %#lx: already hardware poisoned\n", pfn);
 +		if (flags & MF_ACTION_REQUIRED) {
 +			head = compound_head(p);
  			res = kill_accessing_process(current, page_to_pfn(head), flags);
 +		}
-+		return res;
+ 		return res;
 +	} else if (res == -EBUSY) {
 +		if (retry) {
 +			retry = false;
 +			goto retry;
 +		}
 +		action_result(pfn, MF_MSG_UNKNOWN, MF_IGNORED);
- 		return res;
++		return res;
++	}
++
++	head = compound_head(p);
++	lock_page(head);
++
++	if (hwpoison_filter(p)) {
++		ClearPageHWPoison(head);
++		res = -EOPNOTSUPP;
++		goto out;
  	}
  
  	num_poisoned_pages_inc();
@@ -234,8 +230,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		} else if (res < 0) {
 -			action_result(pfn, MF_MSG_UNKNOWN, MF_IGNORED);
 -			return -EBUSY;
-+	head = compound_head(p);
-+
 +	/*
 +	 * Handling free hugepage.  The possible race with hugepage allocation
 +	 * or demotion can be prevented by PageHWPoison flag.
@@ -256,7 +250,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * The page could have changed compound pages due to race window.
  	 * If this happens just bail out.
-@@ -1554,14 +1625,6 @@ static int memory_failure_hugetlb(unsign
+@@ -1554,14 +1617,6 @@ static int memory_failure_hugetlb(unsign
  
  	page_flags = head->flags;
  
@@ -271,7 +265,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * TODO: hwpoison for pud-sized hugetlb doesn't work right now, so
  	 * simply disable it. In order to make it work properly, we need
-@@ -1588,6 +1651,12 @@ out:
+@@ -1588,6 +1643,12 @@ out:
  	unlock_page(head);
  	return res;
  }
@@ -284,7 +278,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
  		struct dev_pagemap *pgmap)
-@@ -1712,6 +1781,7 @@ int memory_failure(unsigned long pfn, in
+@@ -1712,6 +1773,7 @@ int memory_failure(unsigned long pfn, in
  	int res = 0;
  	unsigned long page_flags;
  	bool retry = true;
@@ -292,7 +286,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (!sysctl_memory_failure_recovery)
  		panic("Memory failure on page %lx", pfn);
-@@ -1739,10 +1809,9 @@ int memory_failure(unsigned long pfn, in
+@@ -1739,10 +1801,9 @@ int memory_failure(unsigned long pfn, in
  	}
  
  try_again:
