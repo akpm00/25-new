@@ -221,6 +221,8 @@ mm-mremap-avoid-unneeded-do_munmap-call.patch
 #mm/vmalloc
 mm-vmalloc-fix-a-comment.patch
 #
+vmap-dont-allow-invalid-pages.patch
+#
 #mm/documentation
 documentation-sysctl-document-page_lock_unfairness.patch
 #
