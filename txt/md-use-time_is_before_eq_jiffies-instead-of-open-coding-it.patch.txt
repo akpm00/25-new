@@ -1,0 +1,6 @@
+
+
+Alasdair Kergon <agk@redhat.com>
+Mike Snitzer <snitzer@kernel.org>
+dm-devel@redhat.com
+linux-kernel@vger.kernel.org

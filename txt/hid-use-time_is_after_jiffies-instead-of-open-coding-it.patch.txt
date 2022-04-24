@@ -1,0 +1,10 @@
+
+
+Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Jiri Kosina <jikos@kernel.org>
+Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Ye Xiang <xiang.ye@intel.com>
+"Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+Even Xu <even.xu@intel.com>
+linux-input@vger.kernel.org
+linux-kernel@vger.kernel.org

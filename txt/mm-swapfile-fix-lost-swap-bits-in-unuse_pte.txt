@@ -1,0 +1,22 @@
+From: Miaohe Lin <linmiaohe@huawei.com> Subject: mm/swapfile: fix lost
+swap bits in unuse_pte()
+
+This is observed by code review only but not any real report.
+
+When we turn off swapping we could have lost the bits stored in the swap
+ptes.  The new rmap-exclusive bit is fine since that turned into a page
+flag, but not for soft-dirty and uffd-wp.  Add them.
+
+Link: https://lkml.kernel.org/r/20220424091105.48374-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: Peter Xu <peterx@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Howells <dhowells@redhat.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

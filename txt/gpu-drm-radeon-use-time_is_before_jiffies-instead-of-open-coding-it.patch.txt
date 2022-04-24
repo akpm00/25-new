@@ -1,0 +1,13 @@
+
+
+Alex Deucher <alexander.deucher@amd.com>
+"Christian König" <christian.koenig@amd.com>
+"Pan, Xinhui" <Xinhui.Pan@amd.com>
+David Airlie <airlied@linux.ie>
+Daniel Vetter <daniel@ffwll.ch>
+Jean Delvare <jdelvare@suse.com>
+Guenter Roeck <linux@roeck-us.net>
+amd-gfx@lists.freedesktop.org
+dri-devel@lists.freedesktop.org
+linux-kernel@vger.kernel.org
+linux-hwmon@vger.kernel.org
