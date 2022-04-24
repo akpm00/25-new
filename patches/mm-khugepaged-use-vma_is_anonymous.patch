@@ -1,0 +1,35 @@
+From: xu xin <xu.xin16@zte.com.cn>
+Subject: mm/khugepaged: use vma_is_anonymous
+
+Clean up the vma->vm_ops usage.  Use vma_is_anonymous instead of
+vma->vm_ops to make it more understandable.
+
+Link: https://lkml.kernel.org/r/20220424071642.3234971-1-xu.xin16@zte.com.cn
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/khugepaged.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/khugepaged.c~mm-khugepaged-use-vma_is_anonymous
++++ a/mm/khugepaged.c
+@@ -466,7 +466,7 @@ static bool hugepage_vma_check(struct vm
+ 	if (file_thp_enabled(vma))
+ 		return true;
+ 
+-	if (!vma->anon_vma || vma->vm_ops)
++	if (!vma->anon_vma || !vma_is_anonymous(vma))
+ 		return false;
+ 	if (vma_is_temporary_stack(vma))
+ 		return false;
+@@ -982,7 +982,7 @@ static int hugepage_vma_revalidate(struc
+ 	if (!hugepage_vma_check(vma, vma->vm_flags))
+ 		return SCAN_VMA_CHECK;
+ 	/* Anon VMA expected */
+-	if (!vma->anon_vma || vma->vm_ops)
++	if (!vma->anon_vma || !vma_is_anonymous(vma))
+ 		return SCAN_VMA_CHECK;
+ 	return 0;
+ }
+_

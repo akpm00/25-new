@@ -1,0 +1,8 @@
+From: xu xin <xu.xin16@zte.com.cn>
+Subject: mm/khugepaged: use vma_is_anonymous
+
+Clean up the vma->vm_ops usage.  Use vma_is_anonymous instead of
+vma->vm_ops to make it more understandable.
+
+Link: https://lkml.kernel.org/r/20220424071642.3234971-1-xu.xin16@zte.com.cn
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
