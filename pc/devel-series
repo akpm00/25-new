@@ -155,12 +155,18 @@ mm-memcontrolc-make-cgroup_memory_noswap-static.patch
 #
 mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control.patch
 #
-#
+#memcg-introduce-per-memcg-reclaim-interface.patch+N: TBU
 memcg-introduce-per-memcg-reclaim-interface.patch
 selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
 selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
 #selftests-cgroup-add-a-selftest-for-memoryreclaim.patch: TBU, https://lkml.kernel.org/r/CAJD7tkbhjJDNXcAmiAkGT8RCvBSz=SAfh7JR3AJysSz29hcEgw@mail.gmail.com
 selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
+#
+cgroups-refactor-children-cgroups-in-memcg-tests.patch
+cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
+cgroup-account-for-memory_localevents-in-test_memcg_oom_group_leaf_events.patch
+cgroup-removing-racy-check-in-test_memcg_sock.patch
+cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function.patch
 #
 #mm/selftests
 selftests-vm-bring-common-functions-to-a-new-file.patch
@@ -924,6 +930,8 @@ proc-sysctl-make-protected_-world-readable.patch
 #NEXT_PATCHES_START v850
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START misc
+net-unexport-csum_and_copy_fromto_user.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sparse
 #NEXT_PATCHES_END

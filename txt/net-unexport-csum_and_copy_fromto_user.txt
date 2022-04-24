@@ -1,0 +1,13 @@
+From: Christoph Hellwig <hch@lst.de>
+Subject: net: unexport csum_and_copy_{from,to}_user
+
+csum_and_copy_from_user and csum_and_copy_to_user are exported by a few
+architectures, but not actually used in modular code.  Drop the exports.
+
+Link: https://lkml.kernel.org/r/20220421070440.1282704-1-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Cc: David Miller <davem@davemloft.net>

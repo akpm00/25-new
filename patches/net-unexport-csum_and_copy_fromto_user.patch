@@ -1,0 +1,77 @@
+From: Christoph Hellwig <hch@lst.de>
+Subject: net: unexport csum_and_copy_{from,to}_user
+
+csum_and_copy_from_user and csum_and_copy_to_user are exported by a few
+architectures, but not actually used in modular code.  Drop the exports.
+
+Link: https://lkml.kernel.org/r/20220421070440.1282704-1-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Cc: David Miller <davem@davemloft.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/alpha/lib/csum_partial_copy.c   |    1 -
+ arch/m68k/lib/checksum.c             |    2 --
+ arch/powerpc/lib/checksum_wrappers.c |    2 --
+ arch/x86/lib/csum-wrappers_64.c      |    2 --
+ 4 files changed, 7 deletions(-)
+
+--- a/arch/alpha/lib/csum_partial_copy.c~net-unexport-csum_and_copy_fromto_user
++++ a/arch/alpha/lib/csum_partial_copy.c
+@@ -353,7 +353,6 @@ csum_and_copy_from_user(const void __use
+ 		return 0;
+ 	return __csum_and_copy(src, dst, len);
+ }
+-EXPORT_SYMBOL(csum_and_copy_from_user);
+ 
+ __wsum
+ csum_partial_copy_nocheck(const void *src, void *dst, int len)
+--- a/arch/m68k/lib/checksum.c~net-unexport-csum_and_copy_fromto_user
++++ a/arch/m68k/lib/checksum.c
+@@ -265,8 +265,6 @@ csum_and_copy_from_user(const void __use
+ 	return sum;
+ }
+ 
+-EXPORT_SYMBOL(csum_and_copy_from_user);
+-
+ 
+ /*
+  * copy from kernel space while checksumming, otherwise like csum_partial
+--- a/arch/powerpc/lib/checksum_wrappers.c~net-unexport-csum_and_copy_fromto_user
++++ a/arch/powerpc/lib/checksum_wrappers.c
+@@ -24,7 +24,6 @@ __wsum csum_and_copy_from_user(const voi
+ 	user_read_access_end();
+ 	return csum;
+ }
+-EXPORT_SYMBOL(csum_and_copy_from_user);
+ 
+ __wsum csum_and_copy_to_user(const void *src, void __user *dst, int len)
+ {
+@@ -38,4 +37,3 @@ __wsum csum_and_copy_to_user(const void
+ 	user_write_access_end();
+ 	return csum;
+ }
+-EXPORT_SYMBOL(csum_and_copy_to_user);
+--- a/arch/x86/lib/csum-wrappers_64.c~net-unexport-csum_and_copy_fromto_user
++++ a/arch/x86/lib/csum-wrappers_64.c
+@@ -32,7 +32,6 @@ csum_and_copy_from_user(const void __use
+ 	user_access_end();
+ 	return sum;
+ }
+-EXPORT_SYMBOL(csum_and_copy_from_user);
+ 
+ /**
+  * csum_and_copy_to_user - Copy and checksum to user space.
+@@ -57,7 +56,6 @@ csum_and_copy_to_user(const void *src, v
+ 	user_access_end();
+ 	return sum;
+ }
+-EXPORT_SYMBOL(csum_and_copy_to_user);
+ 
+ /**
+  * csum_partial_copy_nocheck - Copy and checksum.
+_
