@@ -48,7 +48,6 @@ mm.patch
 #mm/kmemleak
 #mm/kasan
 kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel.patch
-kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch
 #
 kasan-mark-kasan_vmalloc-flags-as-kasan_vmalloc_flags_t.patch
 #
@@ -1527,3 +1526,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]cgroup-account-for-memory_localevents-in-test_memcg_oom_group_leaf_events.patch
 #[to-be-updated]cgroup-removing-racy-check-in-test_memcg_sock.patch
 #[to-be-updated]cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function.patch
+#[folded-merged]kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch

@@ -38,6 +38,7 @@ replaced with sleepbale rt-spinlock, so the above problem is triggered.
 Fix it by moving the qlist_free_allfrom() from IPI interrupt context to
 task context when PREEMPT_RT is enabled.
 
+[akpm@linux-foundation.org: reduce ifdeffery]
 Link: https://lkml.kernel.org/r/20220401134649.2222485-1-qiang1.zhang@intel.com
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Acked-by: Dmitry Vyukov <dvyukov@google.com>
