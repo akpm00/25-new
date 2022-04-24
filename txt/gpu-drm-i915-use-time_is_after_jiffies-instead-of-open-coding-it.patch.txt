@@ -1,0 +1,17 @@
+
+
+Jani Nikula <jani.nikula@linux.intel.com>
+Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Rodrigo Vivi <rodrigo.vivi@intel.com>
+Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+David Airlie <airlied@linux.ie>
+Daniel Vetter <daniel@ffwll.ch>
+Matt Roper <matthew.d.roper@intel.com>
+Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Andi Shyti <andi.shyti@linux.intel.com>
+Matthew Brost <matthew.brost@intel.com>
+"Michał Winiarski" <michal.winiarski@intel.com>
+Matthew Auld <matthew.auld@intel.com>
+intel-gfx@lists.freedesktop.org
+dri-devel@lists.freedesktop.org
+linux-kernel@vger.kernel.org
