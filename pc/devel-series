@@ -155,6 +155,7 @@ mm-memcontrolc-make-cgroup_memory_noswap-static.patch
 #
 mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control.patch
 #
+#cgroups-refactor-children-cgroups-in-memcg-tests.patch: https://lkml.kernel.org/r/YmM0b+3thMZaXVDb@carbon
 cgroups-refactor-children-cgroups-in-memcg-tests.patch
 cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
 cgroup-account-for-memory_localevents-in-test_memcg_oom_group_leaf_events.patch
@@ -164,6 +165,7 @@ cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function.patch
 memcg-introduce-per-memcg-reclaim-interface.patch
 selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
 selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
+#selftests-cgroup-add-a-selftest-for-memoryreclaim.patch: TBU, https://lkml.kernel.org/r/CAJD7tkbhjJDNXcAmiAkGT8RCvBSz=SAfh7JR3AJysSz29hcEgw@mail.gmail.com
 selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
 #
 #mm/selftests
@@ -574,8 +576,6 @@ mm-damon-remove-unnecessary-type-castings.patch
 mm-damon-reclaim-fix-the-timer-always-stays-active.patch
 #
 #mm/swap2
-#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch: https://lkml.kernel.org/r/87tuapk9n7.fsf@nvdebian.thelocal TBU
-mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
 #
 #mm/tools
 #
@@ -1508,3 +1508,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]riscv-mm-add-support-for-page-table-check.patch
 #[to-be-updated]mm-page_table_check-drop-all-redundant-export_symbol.patch
 #[withdrawn]mm-do-not-call-add_nr_deferred-with-zero-deferred.patch
+#[to-be-updated]mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch

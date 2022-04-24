@@ -8,3 +8,4 @@ Link: https://lkml.kernel.org/r/20220418202017.3583638-1-yuanchu@google.com
 Fixes: b348eb7abd09 ("mm/damon: add user space selftests")
 Signed-off-by: Yuanchu Xie <yuanchu@google.com>
 Reviewed-by: SeongJae Park <sj@kernel.org>
+Acked-by: David Rientjes <rientjes@google.com>
