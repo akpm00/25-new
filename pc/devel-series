@@ -130,7 +130,6 @@ vfs-add-fmode_can_odirect-file-flag.patch
 #
 #mm/shmem
 mm-shmem-make-shmem_init-return-void.patch
-mm-shmem-make-shmem_init-return-void-fix.patch
 #
 #mm/frontswap
 #mm/memremap
@@ -1527,3 +1526,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]cgroup-removing-racy-check-in-test_memcg_sock.patch
 #[to-be-updated]cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function.patch
 #[folded-merged]kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch
+#[folded-merged]mm-shmem-make-shmem_init-return-void-fix.patch
