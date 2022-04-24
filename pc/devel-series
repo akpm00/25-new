@@ -129,6 +129,9 @@ mm-submit-multipage-reads-for-swp_fs_ops-swap-space.patch
 mm-submit-multipage-write-for-swp_fs_ops-swap-space.patch
 vfs-add-fmode_can_odirect-file-flag.patch
 #
+mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
+mm-swapfile-fix-lost-swap-bits-in-unuse_pte.patch
+#
 #mm/shmem
 mm-shmem-make-shmem_init-return-void.patch
 mm-shmem-make-shmem_init-return-void-fix.patch
@@ -517,6 +520,8 @@ mm-untangle-config-dependencies-for-demote-on-reclaim.patch
 #mm/mmap
 #mm/madvise
 mm-madvise-fix-potential-pte_unmap_unlock-pte-error.patch
+#
+mm-madvise-free-hwpoison-and-swapin-error-entry-in-madvise_free_pte_range.patch
 #
 #mm/virtio
 #mm/util
