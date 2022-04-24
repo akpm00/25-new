@@ -1,0 +1,8 @@
+
+
+Anil Gurumurthy <anil.gurumurthy@qlogic.com>
+Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
+"James E.J. Bottomley" <jejb@linux.ibm.com>
+"Martin K. Petersen" <martin.petersen@oracle.com>
+linux-scsi@vger.kernel.org
+linux-kernel@vger.kernel.org
