@@ -1,0 +1,9 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: fixup! mm: Teach core mm about pte markers
+
+userfaultfd.c needs swapops.h
+
+Link: https://lkml.kernel.org/r/YmRlVj3cdizYJsr0@xz-m1.local
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

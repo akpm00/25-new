@@ -1,0 +1,31 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm: hugetlb: add missing cache flushing in hugetlb_unshare_all_pmds()
+
+Missed calling flush_cache_range() before removing the sharing PMD
+entrires, otherwise data consistence issue may be occurred on some
+architectures whose caches are strict and require a virtual–>physical
+translation to exist for a virtual address.  Thus add it.
+
+Link: https://lkml.kernel.org/r/419b0e777c9e6d1454dcd906e0f5b752a736d335.1650781755.git.baolin.wang@linux.alibaba.com
+Fixes: 6dfeaff93be1 ("hugetlb/userfaultfd: unshare all pmds for hugetlbfs when register wp")
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hugetlb.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/mm/hugetlb.c~mm-hugetlb-add-missing-cache-flushing-in-hugetlb_unshare_all_pmds
++++ a/mm/hugetlb.c
+@@ -6941,6 +6941,7 @@ void hugetlb_unshare_all_pmds(struct vm_
+ 	if (start >= end)
+ 		return;
+ 
++	flush_cache_range(vma, start, end);
+ 	/*
+ 	 * No need to call adjust_range_if_pmd_sharing_possible(), because
+ 	 * we have already done the PUD_SIZE alignment.
+_

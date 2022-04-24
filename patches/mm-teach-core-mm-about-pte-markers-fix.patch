@@ -1,0 +1,26 @@
+From: Peter Xu <peterx@redhat.com>
+Subject: fixup! mm: Teach core mm about pte markers
+
+userfaultfd.c needs swapops.h
+
+Link: https://lkml.kernel.org/r/YmRlVj3cdizYJsr0@xz-m1.local
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/userfaultfd.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/fs/userfaultfd.c~mm-teach-core-mm-about-pte-markers-fix
++++ a/fs/userfaultfd.c
+@@ -29,6 +29,7 @@
+ #include <linux/ioctl.h>
+ #include <linux/security.h>
+ #include <linux/hugetlb.h>
++#include <linux/swapops.h>
+ 
+ int sysctl_unprivileged_userfaultfd __read_mostly;
+ 
+_
