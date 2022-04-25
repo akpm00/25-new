@@ -138,12 +138,6 @@ mm-memcontrolc-make-cgroup_memory_noswap-static.patch
 #
 mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control.patch
 #
-#memcg-introduce-per-memcg-reclaim-interface.patch+N: TBU
-memcg-introduce-per-memcg-reclaim-interface.patch
-selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
-selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
-#selftests-cgroup-add-a-selftest-for-memoryreclaim.patch: TBU, https://lkml.kernel.org/r/CAJD7tkbhjJDNXcAmiAkGT8RCvBSz=SAfh7JR3AJysSz29hcEgw@mail.gmail.com
-selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
 #
 cgroups-refactor-children-cgroups-in-memcg-tests.patch
 cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
@@ -1537,3 +1531,7 @@ kselftest-vm-override-targets-from-arguments.patch
 #[folded-merged]kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch
 #[folded-merged]mm-shmem-make-shmem_init-return-void-fix.patch
 #[nacked]timekeeping-use-time_is_before_jiffies-instead-of-open-coding-it.patch
+#[to-be-updated]memcg-introduce-per-memcg-reclaim-interface.patch
+#[to-be-updated]selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
+#[to-be-updated]selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
+#[to-be-updated]selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
