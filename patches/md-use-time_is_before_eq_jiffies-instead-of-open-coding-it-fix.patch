@@ -1,0 +1,26 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: md-use-time_is_before_eq_jiffies-instead-of-open-coding-it-fix
+
+add missed parenthesis
+
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: Wang Qing <wangqing@vivo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/md/dm-writecache.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/md/dm-writecache.c~md-use-time_is_before_eq_jiffies-instead-of-open-coding-it-fix
++++ a/drivers/md/dm-writecache.c
+@@ -1973,7 +1973,7 @@ restart:
+ 	       (wc->writeback_all ||
+ 		wc->freelist_size + wc->writeback_size <= wc->freelist_low_watermark ||
+ 		time_is_before_eq_jiffies(container_of(wc->lru.prev, struct wc_entry,
+-		lru)->age + wc->max_age - wc->max_age / MAX_AGE_DIV)) {
++		lru)->age + wc->max_age - wc->max_age / MAX_AGE_DIV))) {
+ 
+ 		n_walked++;
+ 		if (unlikely(n_walked > WRITEBACK_LATENCY) &&
+_
