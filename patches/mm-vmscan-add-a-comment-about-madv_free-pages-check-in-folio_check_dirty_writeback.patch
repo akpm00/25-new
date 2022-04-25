@@ -1,0 +1,43 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: add a comment about MADV_FREE pages check in folio_check_dirty_writeback
+
+Patch series "A few cleanup and fixup patches for vmscan
+
+This series contains a few patches to remove obsolete comment, introduce
+helper to remove duplicated code and so no.  Also we take all base pages
+of THP into account in rare race condition.  More details can be found in
+the respective changelogs.
+
+
+This patch (of 6):
+
+The MADV_FREE pages check in folio_check_dirty_writeback is a bit hard to
+follow.  Add a comment to make the code clear.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-2-linmiaohe@huawei.com
+Suggested-by: Huang, Ying <ying.huang@intel.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- a/mm/vmscan.c~mm-vmscan-add-a-comment-about-madv_free-pages-check-in-folio_check_dirty_writeback
++++ a/mm/vmscan.c
+@@ -1435,7 +1435,10 @@ static void folio_check_dirty_writeback(
+ 
+ 	/*
+ 	 * Anonymous pages are not handled by flushers and must be written
+-	 * from reclaim context. Do not stall reclaim based on them
++	 * from reclaim context. Do not stall reclaim based on them.
++	 * MADV_FREE anonymous pages are put into inactive file list too.
++	 * They could be mistakenly treated as file lru. So further anon
++	 * test is needed.
+ 	 */
+ 	if (!folio_is_file_lru(folio) ||
+ 	    (folio_test_anon(folio) && !folio_test_swapbacked(folio))) {
+_

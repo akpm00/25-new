@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: take min_slab_pages into account when try to call shrink_node
+
+Since commit 6b4f7799c6a5 ("mm: vmscan: invoke slab shrinkers from
+shrink_zone()"), slab reclaim and lru page reclaim are done together in
+the shrink_node.  So we should take min_slab_pages into account when try
+to call shrink_node.
+
+Link: https://lkml.kernel.org/r/20220425112118.20924-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>

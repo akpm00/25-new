@@ -1,0 +1,34 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: take all base pages of THP into account when race with speculative reference
+
+If the page has buffers, shrink_page_list will try to free the buffer
+mappings associated with the page and try to free the page as well.  In
+the rare race with speculative reference, the page will be freed shortly
+by speculative reference.  But nr_reclaimed is not incremented correctly
+when we come across the THP.  We need to account all the base pages in
+this case.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/vmscan.c~mm-vmscan-take-all-base-pages-of-thp-into-account-when-race-with-speculative-reference
++++ a/mm/vmscan.c
+@@ -1884,7 +1884,7 @@ retry:
+ 					 * increment nr_reclaimed here (and
+ 					 * leave it off the LRU).
+ 					 */
+-					nr_reclaimed++;
++					nr_reclaimed += nr_pages;
+ 					continue;
+ 				}
+ 			}
+_

@@ -1,0 +1,14 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: introduce helper function reclaim_page_list()
+
+Introduce helper function reclaim_page_list() to eliminate the duplicated
+code of doing shrink_page_list() and putback_lru_page.  Also we can
+separate node reclaim from node page list operation this way.  No
+functional change intended.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Oscar Salvador <osalvador@suse.de>

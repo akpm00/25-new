@@ -1,0 +1,34 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: activate swap-backed executable folios after first usage
+
+We should activate swap-backed executable folios (e.g.  tmpfs) after first
+usage so that executable code gets yet better chance to stay in memory.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: Huang, Ying <ying.huang@intel.com>
+Reviewed-by: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-activate-swap-backed-executable-folios-after-first-usage
++++ a/mm/vmscan.c
+@@ -1412,9 +1412,9 @@ static enum page_references folio_check_
+ 			return PAGEREF_ACTIVATE;
+ 
+ 		/*
+-		 * Activate file-backed executable folios after first usage.
++		 * Activate executable folios after first usage.
+ 		 */
+-		if ((vm_flags & VM_EXEC) && !folio_test_swapbacked(folio))
++		if (vm_flags & VM_EXEC)
+ 			return PAGEREF_ACTIVATE;
+ 
+ 		return PAGEREF_KEEP;
+_

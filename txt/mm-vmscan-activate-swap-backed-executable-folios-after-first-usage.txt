@@ -1,0 +1,13 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: activate swap-backed executable folios after first usage
+
+We should activate swap-backed executable folios (e.g.  tmpfs) after first
+usage so that executable code gets yet better chance to stay in memory.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: Huang, Ying <ying.huang@intel.com>
+Reviewed-by: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Oscar Salvador <osalvador@suse.de>

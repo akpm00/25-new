@@ -1,0 +1,30 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: use helper folio_is_file_lru()
+
+Use helper folio_is_file_lru() to check whether folio is file lru.  Minor
+readability improvement.
+
+Link: https://lkml.kernel.org/r/20220425111232.23182-7-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/vmscan.c~mm-vmscan-use-helper-folio_is_file_lru
++++ a/mm/vmscan.c
+@@ -1421,7 +1421,7 @@ static enum page_references folio_check_
+ 	}
+ 
+ 	/* Reclaim if clean, defer dirty folios to writeback */
+-	if (referenced_folio && !folio_test_swapbacked(folio))
++	if (referenced_folio && folio_is_file_lru(folio))
+ 		return PAGEREF_RECLAIM_CLEAN;
+ 
+ 	return PAGEREF_RECLAIM;
+_

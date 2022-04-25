@@ -6,6 +6,8 @@
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time-fix.patch
 #
+#mm/mommu
+mm-nommuc-provide-vmalloc_huge-for-config_mmu=n.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
@@ -550,6 +552,7 @@ zram-add-a-huge_idle-writeback-mode.patch
 #mm/damon
 damon-vaddr-test-tweak-code-to-make-the-logic-clearer.patch
 #
+#selftests-damon-add-damon-to-selftests-root-makefile.patch: https://lkml.kernel.org/r/f6cc50f0-318f-097f-af13-271a2fb4d645@linuxfoundation.org
 selftests-damon-add-damon-to-selftests-root-makefile.patch
 #
 mm-damon-core-test-add-a-kunit-test-case-for-ops-registration.patch
@@ -580,6 +583,24 @@ mm-migration-reduce-the-rcu-lock-duration.patch
 mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch
 mm-migration-return-errno-when-isolate_huge_page-failed.patch
 mm-migration-fix-potential-pte_unmap-on-an-not-mapped-pte.patch
+#
+#mm/memcg
+memcg-introduce-per-memcg-reclaim-interface.patch
+selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
+selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
+selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
+#
+#mm/vmscan
+#mm-vmscan-take-min_slab_pages-into-account-when-try-to-call-shrink_node.patch: acks?
+mm-vmscan-take-min_slab_pages-into-account-when-try-to-call-shrink_node.patch
+#
+mm-vmscan-add-a-comment-about-madv_free-pages-check-in-folio_check_dirty_writeback.patch
+mm-vmscan-introduce-helper-function-reclaim_page_list.patch
+#mm-vmscan-activate-swap-backed-executable-folios-after-first-usage.patch: check with Joonsoo
+mm-vmscan-activate-swap-backed-executable-folios-after-first-usage.patch
+mm-vmscan-take-all-base-pages-of-thp-into-account-when-race-with-speculative-reference.patch
+mm-vmscan-remove-obsolete-comment-in-kswapd_run.patch
+mm-vmscan-use-helper-folio_is_file_lru.patch
 #
 # mmend
 #
@@ -911,8 +932,6 @@ fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
-#proc-sysctl-make-protected_-world-readable.patch: mcgrof request
-proc-sysctl-make-protected_-world-readable.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START uml
 #NEXT_PATCHES_END
@@ -1340,6 +1359,7 @@ fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super.patch
 #NEXT_PATCHES_START ipc
 ipc-sem-remove-redundant-assignments.patch
 #
+#ipc-update-semtimedop-to-use-hrtimer.patch: acks?
 ipc-update-semtimedop-to-use-hrtimer.patch
 #
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
@@ -1535,3 +1555,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftests-cgroup-return-errno-from-cg_read-cg_write-on-failure.patch
 #[to-be-updated]selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
 #[to-be-updated]selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
+#[obsolete]proc-sysctl-make-protected_-world-readable.patch

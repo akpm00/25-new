@@ -1,0 +1,28 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm/nommu.c: provide vmalloc_huge() for CONFIG_MMU=n
+
+Fixes: f2edd118d02dd ("page_alloc: use vmalloc_huge for large system hash")
+Reported-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Song Liu <song@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/nommu.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/mm/nommu.c~mm-nommuc-provide-vmalloc_huge-for-config_mmu=n
++++ a/mm/nommu.c
+@@ -226,6 +226,12 @@ void *vmalloc(unsigned long size)
+ }
+ EXPORT_SYMBOL(vmalloc);
+ 
++void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
++{
++	return vmalloc(size);
++}
++EXPORT_SYMBOL(vmalloc_huge);
++
+ /*
+  *	vzalloc - allocate virtually contiguous memory with zero fill
+  *
+_
