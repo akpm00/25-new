@@ -1,0 +1,27 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm: page_isolation: check specified range for unmovable pages
+
+Enable set_migratetype_isolate() to check specified range for unmovable
+pages during isolation to prepare arbitrary range page isolation.  The
+functionality will take effect in upcoming commits by adjusting the
+callers of start_isolate_page_range(), which uses
+set_migratetype_isolate().
+
+For example, alloc_contig_range(), which calls start_isolate_page_range(),
+accepts unaligned ranges, but because page isolation is currently done at
+MAX_ORDER_NR_PAEGS granularity, pages that are out of the specified range
+but withint MAX_ORDER_NR_PAEGS alignment might be attempted for isolation
+and the failure of isolating these unrelated pages fails the whole
+operation undesirably.
+
+Link: https://lkml.kernel.org/r/20220425143118.2850746-3-zi.yan@sent.com
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Eric Ren <renzhengeek@gmail.com>
+Cc: kernel test robot <lkp@intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>

@@ -72,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* Maximum size of the global queue. */
  static unsigned long quarantine_max_size;
  
-@@ -308,17 +319,37 @@ static void qlist_move_cache(struct qlis
+@@ -308,10 +319,31 @@ static void qlist_move_cache(struct qlis
  	}
  }
  
@@ -105,6 +105,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct qlist_head *q;
  
  	q = this_cpu_ptr(&cpu_quarantine);
+@@ -322,8 +354,7 @@ static void per_cpu_remove_cache(void *a
+ 	 */
  	if (READ_ONCE(q->offline))
  		return;
 -	qlist_move_cache(q, &to_free, cache);
@@ -113,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /* Free all quarantined objects belonging to cache. */
-@@ -336,6 +367,21 @@ void kasan_quarantine_remove_cache(struc
+@@ -341,6 +372,21 @@ void kasan_quarantine_remove_cache(struc
  	 */
  	on_each_cpu(per_cpu_remove_cache, cache, 1);
  

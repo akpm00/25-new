@@ -1,31 +1,16 @@
-origin.patch
+#origin.patch
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
-#mm/memory-failure
-#
-#
-#mm/memcg
-#
-#mm/userfaultfd
-#
-#mm/hugetlbfs
-#
-#mm/mremap
-#
-#mm/oom-kill
-#
 #mm/kasan
+kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
+kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time-fix.patch
 #
-#kcov
-#
-#mm/hmm
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
 #
-#mm/kasan
-kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
+#cpusets
 #
 #proc
 proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
@@ -587,6 +572,20 @@ mm-swapfile-fix-lost-swap-bits-in-unuse_pte.patch
 #
 #mm/tools
 #
+#mm/cma
+#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch+N: acks?
+mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch
+mm-page_isolation-check-specified-range-for-unmovable-pages.patch
+mm-make-alloc_contig_range-work-at-pageblock-granularity.patch
+mm-page_isolation-enable-arbitrary-range-page-isolation.patch
+mm-cma-use-pageblock_order-as-the-single-alignment.patch
+drivers-virtio_mem-use-pageblock-size-as-the-minimum-virtio_mem-size.patch
+#
+#mm/migration
+mm-migration-reduce-the-rcu-lock-duration.patch
+mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch
+mm-migration-return-errno-when-isolate_huge_page-failed.patch
+mm-migration-fix-potential-pte_unmap-on-an-not-mapped-pte.patch
 #
 # mmend
 #
@@ -1359,6 +1358,17 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START splice
 #NEXT_PATCHES_END
+#NEXT_PATCHES_START stackleak
+arm64-stackleak-fix-current_top_of_stack.patch
+stackleak-move-skip_erasing-check-earlier.patch
+stackleak-rework-stack-low-bound-handling.patch
+stackleak-clarify-variable-names.patch
+stackleak-rework-stack-high-bound-handling.patch
+stackleak-remove-redundant-check.patch
+stackleak-add-on-off-stack-variants.patch
+arm64-entry-use-stackleak_erase_on_task_stack.patch
+#
+#NEXT_PATCHES_END
 #NEXT_PATCHES_START sysrq
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START lkdtm
@@ -1395,7 +1405,6 @@ hid-use-time_is_after_jiffies-instead-of-open-coding-it.patch
 md-use-time_is_before_eq_jiffies-instead-of-open-coding-it.patch
 net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 scsi-bfa-use-time_is_before_jiffies-instead-of-open-coding-it.patch
-timekeeping-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 net-decnet-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 #
 #kselftest-vm-override-targets-from-arguments.patch: TBU
@@ -1527,3 +1536,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function.patch
 #[folded-merged]kasan-fix-sleeping-function-called-from-invalid-context-on-rt-kernel-fix.patch
 #[folded-merged]mm-shmem-make-shmem_init-return-void-fix.patch
+#[nacked]timekeeping-use-time_is_before_jiffies-instead-of-open-coding-it.patch

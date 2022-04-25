@@ -1,0 +1,17 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: drivers: virtio_mem: use pageblock size as the minimum virtio_mem size.
+
+alloc_contig_range() now only needs to be aligned to pageblock_nr_pages,
+drop virtio_mem size requirement that it needs to be MAX_ORDER_NR_PAGES.
+
+Link: https://lkml.kernel.org/r/20220425143118.2850746-7-zi.yan@sent.com
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Eric Ren <renzhengeek@gmail.com>
+Cc: kernel test robot <lkp@intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>

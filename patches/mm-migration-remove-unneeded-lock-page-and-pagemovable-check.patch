@@ -1,0 +1,43 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/migration: remove unneeded lock page and PageMovable check
+
+When non-lru movable page was freed from under us, __ClearPageMovable must
+have been done.  Even if it's not done, ClearPageIsolated here won't hurt
+as page will be freed anyway.  So we can thus remove unneeded lock page
+and PageMovable check here.
+
+Link: https://lkml.kernel.org/r/20220425132723.34824-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+--- a/mm/migrate.c~mm-migration-remove-unneeded-lock-page-and-pagemovable-check
++++ a/mm/migrate.c
+@@ -1093,12 +1093,8 @@ static int unmap_and_move(new_page_t get
+ 		/* page was freed from under us. So we are done. */
+ 		ClearPageActive(page);
+ 		ClearPageUnevictable(page);
+-		if (unlikely(__PageMovable(page))) {
+-			lock_page(page);
+-			if (!PageMovable(page))
+-				ClearPageIsolated(page);
+-			unlock_page(page);
+-		}
++		if (unlikely(__PageMovable(page)))
++			ClearPageIsolated(page);
+ 		goto out;
+ 	}
+ 
+_

@@ -1,0 +1,26 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm: make alloc_contig_range work at pageblock granularity
+
+alloc_contig_range() worked at MAX_ORDER_NR_PAGES granularity to avoid
+merging pageblocks with different migratetypes.  It might unnecessarily
+convert extra pageblocks at the beginning and at the end of the range. 
+Change alloc_contig_range() to work at pageblock granularity.
+
+Special handling is needed for free pages and in-use pages across the
+boundaries of the range specified by alloc_contig_range().  Because these
+partially isolated pages causes free page accounting issues.  The free
+pages will be split and freed into separate migratetype lists; the in-use
+pages will be migrated then the freed pages will be handled in the
+aforementioned way.
+
+Link: https://lkml.kernel.org/r/20220425143118.2850746-4-zi.yan@sent.com
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Eric Ren <renzhengeek@gmail.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>

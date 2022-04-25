@@ -1,0 +1,21 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/migration: return errno when isolate_huge_page failed
+
+We might fail to isolate huge page due to e.g.  the page is under
+migration which cleared HPageMigratable.  So we should return -EBUSY in
+this case rather than always return 1 which could confuse the user.  Also
+we make the prototype of isolate_huge_page consistent with
+isolate_lru_page to improve the readability.
+
+Link: https://lkml.kernel.org/r/20220425132723.34824-4-linmiaohe@huawei.com
+Fixes: e8db67eb0ded ("mm: migrate: move_pages() supports thp migration")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Suggested-by: Huang Ying <ying.huang@intel.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>

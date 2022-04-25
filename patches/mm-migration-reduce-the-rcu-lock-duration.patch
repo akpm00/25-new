@@ -1,0 +1,57 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/migration: reduce the rcu lock duration
+
+Patch series "A few cleanup and fixup patches for migration", v2.
+
+This series contains a few patches to remove unneeded lock page and
+PageMovable check, reduce the rcu lock duration.  Also we fix potential
+pte_unmap on an not mapped pte.  More details can be found in the
+respective changelogs.
+
+
+This patch (of 4):
+
+rcu_read_lock is required by grabbing the task refcount but it's not
+needed for ptrace_may_access.  So we could release the rcu lock after task
+refcount is successfully grabbed to reduce the rcu holding time.
+
+Link: https://lkml.kernel.org/r/20220425132723.34824-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220425132723.34824-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Huang Ying <ying.huang@intel.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/mm/migrate.c~mm-migration-reduce-the-rcu-lock-duration
++++ a/mm/migrate.c
+@@ -1902,17 +1902,16 @@ static struct mm_struct *find_mm_struct(
+ 		return ERR_PTR(-ESRCH);
+ 	}
+ 	get_task_struct(task);
++	rcu_read_unlock();
+ 
+ 	/*
+ 	 * Check if this process has the right to modify the specified
+ 	 * process. Use the regular "ptrace_may_access()" checks.
+ 	 */
+ 	if (!ptrace_may_access(task, PTRACE_MODE_READ_REALCREDS)) {
+-		rcu_read_unlock();
+ 		mm = ERR_PTR(-EPERM);
+ 		goto out;
+ 	}
+-	rcu_read_unlock();
+ 
+ 	mm = ERR_PTR(security_task_movememory(task));
+ 	if (IS_ERR(mm))
+_

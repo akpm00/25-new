@@ -1,0 +1,10 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time-fix
+
+add comment, per Zqiang
+
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Zqiang <qiang1.zhang@intel.com>
