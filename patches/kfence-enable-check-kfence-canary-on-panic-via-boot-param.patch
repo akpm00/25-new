@@ -1,0 +1,98 @@
+From: huangshaobo <huangshaobo6@huawei.com>
+Subject: kfence: enable check kfence canary on panic via boot param
+
+Out-of-bounds accesses that aren't caught by a guard page will result in
+corruption of canary memory.  In pathological cases, where an object has
+certain alignment requirements, an out-of-bounds access might never be
+caught by the guard page.  Such corruptions, however, are only detected on
+kfree() normally.  If the bug causes the kernel to panic before kfree(),
+KFENCE has no opportunity to report the issue.  Such corruptions may also
+indicate failing memory or other faults.
+
+To provide some more information in such cases, add the option to check
+canary bytes on panic.  This might help narrow the search for the panic
+cause; but, due to only having the allocation stack trace, such reports
+are difficult to use to diagnose an issue alone.  In most cases, such
+reports are inactionable, and is therefore an opt-in feature (disabled by
+default).
+
+Link: https://lkml.kernel.org/r/20220425022456.44300-1-huangshaobo6@huawei.com
+Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+Suggested-by: chenzefeng <chenzefeng2@huawei.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>
+Cc: Wangbing <wangbing6@huawei.com>
+Cc: Jubin Zhong <zhongjubin@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kfence/core.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+--- a/mm/kfence/core.c~kfence-enable-check-kfence-canary-on-panic-via-boot-param
++++ a/mm/kfence/core.c
+@@ -21,6 +21,8 @@
+ #include <linux/log2.h>
+ #include <linux/memblock.h>
+ #include <linux/moduleparam.h>
++#include <linux/notifier.h>
++#include <linux/panic_notifier.h>
+ #include <linux/random.h>
+ #include <linux/rcupdate.h>
+ #include <linux/sched/clock.h>
+@@ -99,6 +101,10 @@ module_param_named(skip_covered_thresh,
+ static bool kfence_deferrable __read_mostly = IS_ENABLED(CONFIG_KFENCE_DEFERRABLE);
+ module_param_named(deferrable, kfence_deferrable, bool, 0444);
+ 
++/* If true, check all canary bytes on panic. */
++static bool kfence_check_on_panic;
++module_param_named(check_on_panic, kfence_check_on_panic, bool, 0444);
++
+ /* The pool of pages used for guard pages and objects. */
+ char *__kfence_pool __read_mostly;
+ EXPORT_SYMBOL(__kfence_pool); /* Export for test modules. */
+@@ -727,6 +733,31 @@ static int __init kfence_debugfs_init(vo
+ 
+ late_initcall(kfence_debugfs_init);
+ 
++/* === Panic Notifier ====================================================== */
++
++static void kfence_check_all_canary(void)
++{
++	int i;
++
++	for (i = 0; i < CONFIG_KFENCE_NUM_OBJECTS; i++) {
++		struct kfence_metadata *meta = &kfence_metadata[i];
++
++		if (meta->state == KFENCE_OBJECT_ALLOCATED)
++			for_each_canary(meta, check_canary_byte);
++	}
++}
++
++static int kfence_check_canary_callback(struct notifier_block *nb,
++					unsigned long reason, void *arg)
++{
++	kfence_check_all_canary();
++	return NOTIFY_OK;
++}
++
++static struct notifier_block kfence_check_canary_notifier = {
++	.notifier_call = kfence_check_canary_callback,
++};
++
+ /* === Allocation Gate Timer ================================================ */
+ 
+ static struct delayed_work kfence_timer;
+@@ -804,6 +835,9 @@ static void kfence_init_enable(void)
+ 	else
+ 		INIT_DELAYED_WORK(&kfence_timer, toggle_allocation_gate);
+ 
++	if (kfence_check_on_panic)
++		atomic_notifier_chain_register(&panic_notifier_list, &kfence_check_canary_notifier);
++
+ 	WRITE_ONCE(kfence_enabled, true);
+ 	queue_delayed_work(system_unbound_wq, &kfence_timer, 0);
+ 
+_

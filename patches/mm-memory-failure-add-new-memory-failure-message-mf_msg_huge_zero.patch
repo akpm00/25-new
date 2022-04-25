@@ -1,0 +1,62 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/memory-failure: add new memory failure message MF_MSG_HUGE_ZERO
+
+Memory failure just gets ignored for global huge_zero_page even without a
+split attempt.  But corresponding memory failure message
+MF_MSG_UNSPLIT_THP is misleading as if the THP page could not be split
+during memory failure handling.  This adds a new message MF_MSG_HUGE_ZERO
+indicating that memory got ignored for being a huge zero page.
+
+Link: https://lkml.kernel.org/r/20220425080306.1771480-1-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h      |    1 +
+ include/ras/ras_event.h |    1 +
+ mm/memory-failure.c     |    3 ++-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+--- a/include/linux/mm.h~mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero
++++ a/include/linux/mm.h
+@@ -3275,6 +3275,7 @@ enum mf_action_page_type {
+ 	MF_MSG_SLAB,
+ 	MF_MSG_DIFFERENT_COMPOUND,
+ 	MF_MSG_HUGE,
++	MF_MSG_HUGE_ZERO,
+ 	MF_MSG_FREE_HUGE,
+ 	MF_MSG_NON_PMD_HUGE,
+ 	MF_MSG_UNMAP_FAILED,
+--- a/include/ras/ras_event.h~mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero
++++ a/include/ras/ras_event.h
+@@ -359,6 +359,7 @@ TRACE_EVENT(aer_event,
+ 	EM ( MF_MSG_SLAB, "kernel slab page" )				\
+ 	EM ( MF_MSG_DIFFERENT_COMPOUND, "different compound page after locking" ) \
+ 	EM ( MF_MSG_HUGE, "huge page" )					\
++	EM ( MF_MSG_HUGE_ZERO, "huge zero page" )			\
+ 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
+ 	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
+ 	EM ( MF_MSG_UNMAP_FAILED, "unmapping failed page" )		\
+--- a/mm/memory-failure.c~mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero
++++ a/mm/memory-failure.c
+@@ -719,6 +719,7 @@ static const char * const action_page_ty
+ 	[MF_MSG_SLAB]			= "kernel slab page",
+ 	[MF_MSG_DIFFERENT_COMPOUND]	= "different compound page after locking",
+ 	[MF_MSG_HUGE]			= "huge page",
++	[MF_MSG_HUGE_ZERO]		= "huge zero page",
+ 	[MF_MSG_FREE_HUGE]		= "free huge page",
+ 	[MF_MSG_NON_PMD_HUGE]		= "non-pmd-sized huge page",
+ 	[MF_MSG_UNMAP_FAILED]		= "unmapping failed page",
+@@ -1859,7 +1860,7 @@ try_again:
+ 		 * TODO: Handle memory failure of huge_zero_page thoroughly.
+ 		 */
+ 		if (is_huge_zero_page(hpage)) {
+-			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
++			action_result(pfn, MF_MSG_HUGE_ZERO, MF_IGNORED);
+ 			res = -EBUSY;
+ 			goto unlock_mutex;
+ 		}
+_

@@ -1,0 +1,31 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kfence-enable-check-kfence-canary-on-panic-via-boot-param-fix
+
+add __read_mostly, per Marco
+
+Cc: Alexander Potapenko <glider@google.com>
+Cc: chenzefeng <chenzefeng2@huawei.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: huangshaobo <huangshaobo6@huawei.com>
+Cc: Jubin Zhong <zhongjubin@huawei.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Wangbing <wangbing6@huawei.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kfence/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/kfence/core.c~kfence-enable-check-kfence-canary-on-panic-via-boot-param-fix
++++ a/mm/kfence/core.c
+@@ -102,7 +102,7 @@ static bool kfence_deferrable __read_mos
+ module_param_named(deferrable, kfence_deferrable, bool, 0444);
+ 
+ /* If true, check all canary bytes on panic. */
+-static bool kfence_check_on_panic;
++static bool kfence_check_on_panic __read_mostly;
+ module_param_named(check_on_panic, kfence_check_on_panic, bool, 0444);
+ 
+ /* The pool of pages used for guard pages and objects. */
+_

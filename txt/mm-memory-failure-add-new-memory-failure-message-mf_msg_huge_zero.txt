@@ -1,0 +1,14 @@
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: mm/memory-failure: add new memory failure message MF_MSG_HUGE_ZERO
+
+Memory failure just gets ignored for global huge_zero_page even without a
+split attempt.  But corresponding memory failure message
+MF_MSG_UNSPLIT_THP is misleading as if the THP page could not be split
+during memory failure handling.  This adds a new message MF_MSG_HUGE_ZERO
+indicating that memory got ignored for being a huge zero page.
+
+Link: https://lkml.kernel.org/r/20220425080306.1771480-1-anshuman.khandual@arm.com
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

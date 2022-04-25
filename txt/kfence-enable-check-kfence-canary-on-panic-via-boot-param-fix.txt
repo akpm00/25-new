@@ -1,0 +1,13 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kfence-enable-check-kfence-canary-on-panic-via-boot-param-fix
+
+add __read_mostly, per Marco
+
+Cc: Alexander Potapenko <glider@google.com>
+Cc: chenzefeng <chenzefeng2@huawei.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: huangshaobo <huangshaobo6@huawei.com>
+Cc: Jubin Zhong <zhongjubin@huawei.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Wangbing <wangbing6@huawei.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>

@@ -1,0 +1,3 @@
+arch/x86/kernel/crash_dump_64.c
+fs/proc/vmcore.c
+include/linux/crash_dump.h

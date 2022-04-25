@@ -1,0 +1,12 @@
+arch/arm64/kernel/crash_dump.c
+arch/arm/kernel/crash_dump.c
+arch/ia64/kernel/crash_dump.c
+arch/mips/kernel/crash_dump.c
+arch/powerpc/kernel/crash_dump.c
+arch/riscv/kernel/crash_dump.c
+arch/s390/kernel/crash_dump.c
+arch/sh/kernel/crash_dump.c
+arch/x86/kernel/crash_dump_32.c
+arch/x86/kernel/crash_dump_64.c
+fs/proc/vmcore.c
+include/linux/crash_dump.h

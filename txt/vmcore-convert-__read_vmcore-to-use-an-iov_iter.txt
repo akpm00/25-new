@@ -1,0 +1,10 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmcore: convert __read_vmcore to use an iov_iter
+
+This gets rid of copy_to() and let us use proc_read_iter() instead of
+proc_read().
+
+Link: https://lkml.kernel.org/r/20220408090636.560886-3-bhe@redhat.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

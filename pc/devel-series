@@ -7,7 +7,6 @@ kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time-fix.patch
 #
 #mm/mommu
-mm-nommuc-provide-vmalloc_huge-for-config_mmu=n.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
@@ -602,6 +601,13 @@ mm-vmscan-take-all-base-pages-of-thp-into-account-when-race-with-speculative-ref
 mm-vmscan-remove-obsolete-comment-in-kswapd_run.patch
 mm-vmscan-use-helper-folio_is_file_lru.patch
 #
+#mm/memory-failure
+mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero.patch
+#
+#mm/mfence
+kfence-enable-check-kfence-canary-on-panic-via-boot-param.patch
+kfence-enable-check-kfence-canary-on-panic-via-boot-param-fix.patch
+#
 # mmend
 #
 #NEXT_PATCHES_END mm
@@ -929,6 +935,10 @@ proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes.patc
 #
 fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body.patch
 fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix.patch
+#
+vmcore-convert-copy_oldmem_page-to-take-an-iov_iter.patch
+vmcore-convert-__read_vmcore-to-use-an-iov_iter.patch
+vmcore-convert-read_from_oldmem-to-take-an-iov_iter.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysctl
@@ -1556,3 +1566,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory.patch
 #[to-be-updated]selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
 #[obsolete]proc-sysctl-make-protected_-world-readable.patch
+#[alternative-merged]mm-nommuc-provide-vmalloc_huge-for-config_mmu=n.patch

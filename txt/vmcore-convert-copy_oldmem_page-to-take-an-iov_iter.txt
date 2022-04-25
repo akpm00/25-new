@@ -1,0 +1,28 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmcore: convert copy_oldmem_page() to take an iov_iter
+
+Patch series "Convert vmcore to use an iov_iter", v5.
+
+For some reason several people have been sending bad patches to fix
+compiler warnings in vmcore recently.  Here's how it should be done. 
+Compile-tested only on x86.  As noted in the first patch, s390 should take
+this conversion a bit further, but I'm not inclined to do that work
+myself.
+
+
+This patch (of 3):
+
+Instead of passing in a 'buf' and 'userbuf' argument, pass in an iov_iter.
+s390 needs more work to pass the iov_iter down further, or refactor, but
+I'd be more comfortable if someone who can test on s390 did that work.
+
+It's more convenient to convert the whole of read_from_oldmem() to take an
+iov_iter at the same time, so rename it to read_from_oldmem_iter() and add
+a temporary read_from_oldmem() wrapper that creates an iov_iter.
+
+Link: https://lkml.kernel.org/r/20220408090636.560886-1-bhe@redhat.com
+Link: https://lkml.kernel.org/r/20220408090636.560886-2-bhe@redhat.com
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Heiko Carstens <hca@linux.ibm.com>

@@ -1,0 +1,27 @@
+From: huangshaobo <huangshaobo6@huawei.com>
+Subject: kfence: enable check kfence canary on panic via boot param
+
+Out-of-bounds accesses that aren't caught by a guard page will result in
+corruption of canary memory.  In pathological cases, where an object has
+certain alignment requirements, an out-of-bounds access might never be
+caught by the guard page.  Such corruptions, however, are only detected on
+kfree() normally.  If the bug causes the kernel to panic before kfree(),
+KFENCE has no opportunity to report the issue.  Such corruptions may also
+indicate failing memory or other faults.
+
+To provide some more information in such cases, add the option to check
+canary bytes on panic.  This might help narrow the search for the panic
+cause; but, due to only having the allocation stack trace, such reports
+are difficult to use to diagnose an issue alone.  In most cases, such
+reports are inactionable, and is therefore an opt-in feature (disabled by
+default).
+
+Link: https://lkml.kernel.org/r/20220425022456.44300-1-huangshaobo6@huawei.com
+Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+Suggested-by: chenzefeng <chenzefeng2@huawei.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>
+Cc: Wangbing <wangbing6@huawei.com>
+Cc: Jubin Zhong <zhongjubin@huawei.com>
