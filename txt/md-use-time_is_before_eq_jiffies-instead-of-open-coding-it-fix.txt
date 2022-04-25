@@ -1,0 +1,8 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: md-use-time_is_before_eq_jiffies-instead-of-open-coding-it-fix
+
+add missed parenthesis
+
+Cc: Alasdair Kergon <agk@redhat.com>
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: Wang Qing <wangqing@vivo.com>
