@@ -1,4 +1,4 @@
-#origin.patch
+origin.patch
 #NEXT_PATCHES_START linus
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START next-for-linus
@@ -602,7 +602,6 @@ mm-vmscan-remove-obsolete-comment-in-kswapd_run.patch
 mm-vmscan-use-helper-folio_is_file_lru.patch
 #
 #mm/memory-failure
-mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero.patch
 #
 #mm/mfence
 kfence-enable-check-kfence-canary-on-panic-via-boot-param.patch
@@ -1568,3 +1567,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[failures]net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 #[failures]scsi-bfa-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 #[failures]net-decnet-use-time_is_before_jiffies-instead-of-open-coding-it.patch
+#[to-be-updated]mm-memory-failure-add-new-memory-failure-message-mf_msg_huge_zero.patch
