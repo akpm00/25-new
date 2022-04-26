@@ -1,5 +1,5 @@
-From: Miaohe Lin <linmiaohe@huawei.com> Subject: mm/swapfile: fix lost
-swap bits in unuse_pte()
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swapfile: fix lost swap bits in unuse_pte()
 
 This is observed by code review only but not any real report.
 

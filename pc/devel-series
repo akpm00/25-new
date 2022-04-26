@@ -110,6 +110,7 @@ mm-reclaim-mustnt-enter-fs-for-swp_fs_ops-swap-space.patch
 mm-introduce-swap_rw-and-use-it-for-reads-from-swp_fs_ops-swap-space.patch
 mm-perform-async-writes-to-swp_fs_ops-swap-space-using-swap_rw.patch
 doc-update-documentation-for-swap_activate-and-swap_rw.patch
+#mm-submit-multipage-reads-for-swp_fs_ops-swap-space.patch: https://lkml.kernel.org/r/165093831774.1648.3187486020864614234@noble.neil.brown.name
 mm-submit-multipage-reads-for-swp_fs_ops-swap-space.patch
 mm-submit-multipage-write-for-swp_fs_ops-swap-space.patch
 vfs-add-fmode_can_odirect-file-flag.patch
