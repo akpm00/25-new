@@ -8,8 +8,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  fs/io_uring.c                        |   12 -
  sound/soc/atmel/sam9g20_wm8731.c     |    5 
  sound/soc/codecs/cs35l41-lib.c       |    4 
- sound/soc/codecs/wm8731.c            |  178 -------------------------
- 5 files changed, 203 deletions(-)
+ sound/soc/codecs/wm8731.c            |  180 -------------------------
+ 5 files changed, 1 insertion(+), 204 deletions(-)
 
 --- a/drivers/gpu/drm/radeon/radeon_sync.c~linux-next-git-rejects
 +++ a/drivers/gpu/drm/radeon/radeon_sync.c
@@ -95,6 +95,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			otp_val = (otp_mem[word_offset] &
 --- a/sound/soc/codecs/wm8731.c~linux-next-git-rejects
 +++ a/sound/soc/codecs/wm8731.c
+@@ -602,7 +602,7 @@ int wm8731_init(struct device *dev, stru
+ 	ret = wm8731_reset(wm8731->regmap);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Failed to issue reset: %d\n", ret);
+-		goto err;
++		goto err_regulator_enable;
+ 	}
+ 
+ 	/* Clear POWEROFF, keep everything else disabled */
 @@ -619,9 +619,6 @@ int wm8731_init(struct device *dev, stru
  
  	regcache_mark_dirty(wm8731->regmap);

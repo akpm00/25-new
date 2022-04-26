@@ -38,10 +38,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  arch/s390/kernel/crash_dump.c    |   13 ++++--
  arch/sh/kernel/crash_dump.c      |   29 ++-------------
  arch/x86/kernel/crash_dump_32.c  |   29 ++-------------
- arch/x86/kernel/crash_dump_64.c  |   37 ++++---------------
+ arch/x86/kernel/crash_dump_64.c  |   41 +++++-----------------
  fs/proc/vmcore.c                 |   54 ++++++++++++++++++-----------
  include/linux/crash_dump.h       |    9 ++--
- 12 files changed, 89 insertions(+), 258 deletions(-)
+ 12 files changed, 91 insertions(+), 260 deletions(-)
 
 --- a/arch/arm64/kernel/crash_dump.c~vmcore-convert-copy_oldmem_page-to-take-an-iov_iter
 +++ a/arch/arm64/kernel/crash_dump.c
@@ -484,7 +484,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				  bool encrypted)
  {
  	void  *vaddr;
-@@ -29,44 +29,25 @@ static ssize_t __copy_oldmem_page(unsign
+@@ -29,46 +29,27 @@ static ssize_t __copy_oldmem_page(unsign
  	if (!vaddr)
  		return -ENOMEM;
  
@@ -519,7 +519,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +ssize_t copy_oldmem_page(struct iov_iter *iter, unsigned long pfn, size_t csize,
 +			 unsigned long offset)
  {
- 	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, false);
+-	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, false);
++	return __copy_oldmem_page(iter, pfn, csize, offset, false);
  }
  
 -/**
@@ -533,8 +534,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +ssize_t copy_oldmem_page_encrypted(struct iov_iter *iter, unsigned long pfn,
 +				   size_t csize, unsigned long offset)
  {
- 	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, true);
+-	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, true);
++	return __copy_oldmem_page(iter, pfn, csize, offset, true);
  }
+ 
+ ssize_t elfcorehdr_read(char *buf, size_t count, u64 *ppos)
 --- a/fs/proc/vmcore.c~vmcore-convert-copy_oldmem_page-to-take-an-iov_iter
 +++ a/fs/proc/vmcore.c
 @@ -26,6 +26,7 @@

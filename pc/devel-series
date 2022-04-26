@@ -1422,14 +1422,6 @@ mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #NEXT_PATCHES_START post-linux-next
 #
 #cleanups
-block-xen-use-time_is_before_eq_jiffies-instead-of-open-coding-it.patch
-gpu-drm-i915-use-time_is_after_jiffies-instead-of-open-coding-it.patch
-gpu-drm-radeon-use-time_is_before_jiffies-instead-of-open-coding-it.patch
-hid-use-time_is_after_jiffies-instead-of-open-coding-it.patch
-md-use-time_is_before_eq_jiffies-instead-of-open-coding-it.patch
-net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it.patch
-scsi-bfa-use-time_is_before_jiffies-instead-of-open-coding-it.patch
-net-decnet-use-time_is_before_jiffies-instead-of-open-coding-it.patch
 #
 #kselftest-vm-override-targets-from-arguments.patch: TBU
 kselftest-vm-override-targets-from-arguments.patch
@@ -1567,3 +1559,12 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]selftests-cgroup-add-a-selftest-for-memoryreclaim.patch
 #[obsolete]proc-sysctl-make-protected_-world-readable.patch
 #[alternative-merged]mm-nommuc-provide-vmalloc_huge-for-config_mmu=n.patch
+#[failures]block-xen-use-time_is_before_eq_jiffies-instead-of-open-coding-it.patch
+#[failures]gpu-drm-i915-use-time_is_after_jiffies-instead-of-open-coding-it.patch
+#[failures]gpu-drm-radeon-use-time_is_before_jiffies-instead-of-open-coding-it.patch
+#[failures]hid-use-time_is_after_jiffies-instead-of-open-coding-it.patch
+#[failures]md-use-time_is_before_eq_jiffies-instead-of-open-coding-it.patch
+#[failures]md-use-time_is_before_eq_jiffies-instead-of-open-coding-it-fix.patch
+#[failures]net-wireless-marvell-use-time_is_before_jiffies-instead-of-open-coding-it.patch
+#[failures]scsi-bfa-use-time_is_before_jiffies-instead-of-open-coding-it.patch
+#[failures]net-decnet-use-time_is_before_jiffies-instead-of-open-coding-it.patch
