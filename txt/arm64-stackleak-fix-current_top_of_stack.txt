@@ -1,0 +1,133 @@
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: arm64: stackleak: fix current_top_of_stack()
+
+Patch series "stackleak: fixes and rework".
+
+This series reworks the stackleak code.  The first patch fixes some latent
+issues on arm64, and the subsequent patches improve the code to improve
+clarity and permit better code generation.
+
+I started working on this as a tangent from rework to arm64's stacktrace
+code.  Looking at users of the `on_*_stack()` helpers I noticed that the
+assembly generated for stackleak was particularly awful as it performed a
+lot of redundant work and also called instrumentable code, which isn't
+sound.
+
+The first patch fixes the major issues on arm64, and is Cc'd to stable for
+backporting.
+
+The second patch is a trivial optimization for when stackleak is
+dynamically disabled.
+
+The subsequent patches rework the way stackleak manipulates the stack
+boundary values.  This is partically for clarity (e.g.  with separate
+'low' and 'high' boundary variables), and also permits the compiler to
+generate more optimal assembly by generating the high and low bounds from
+the same base.
+
+Patch 5 changes the way that `current->lowest_stack` is reset prior to
+return to userspace.  The existing code uses an undocumented offset
+relative to the top of the stack which doesn't make much sense (as thie
+sometimes falls within the task's pt_regs, or sometimes adds 600+ bytes to
+erase upon the next exit to userspace).  For now I've removed the offset
+entirely.
+
+Patch 7 adds stackleak_erase_on_task_stack() and
+stackleak_erase_off_task_stack() that can be used when a caller knows
+they're always on or off the task stack respectively, avoiding redundant
+logic to check this and generate the high boundary value.  On arm64 we
+always call stackleak_erase() while on the task stack, so this is used in
+patch 8.
+
+Testing the series on arm64 with a QEMU HVF VM on an M1 Macbook Pro with a
+few microbenchmarks shows a small but measureable improvement when
+stackleak is enabled (relative to v5.18-rc1):
+
+* Calling getpid 1^22 times in a loop (avg 50 runs)
+  
+  Before: 0.652099387 seconds ( +-  0.13% )
+  After:  0.641005661 seconds ( +-  0.13% )
+
+  ~1.7% time decrease
+
+* perf bench sched pipe (single run)
+
+  Before: 2.138 seconds total
+  After:  2.118 seconds total
+
+  ~0.93% time decrease
+
+I also tested "perf bench sched messaging" but the noise outweighed the
+difference.
+
+While the improvement is small, I think the improvement to clarity and
+code generation is a win regardless.
+
+
+This patch (of 8):
+
+Due to some historical confusion, arm64's current_top_of_stack() isn't
+what the stackleak code expects.  This could in theory result in a number
+of problems, and practically results in an unnecessary performance hit. 
+We can avoid this by aligning the arm64 implementation with the x86
+implementation.
+
+The arm64 implementation of current_top_of_stack() was added specifically
+for stackleak in commit:
+
+  0b3e336601b82c6a ("arm64: Add support for STACKLEAK gcc plugin")
+
+This was intended to be equivalent to the x86 implementation, but the
+implementation, semantics, and performance characteristics differ wildly:
+
+* On x86, current_top_of_stack() returns the top of the current task's
+  task stack, regardless of which stack is in active use.
+
+  The implementation accesses a percpu variable which the x86 entry code
+  maintains, and returns the location immediately above the pt_regs on
+  the task stack (above which x86 has some padding).
+
+* On arm64 current_top_of_stack() returns the top of the stack in active
+  use (i.e. the one which is currently being used).
+
+  The implementation checks the SP against a number of
+  potentially-accessible stacks, and will BUG() if no stack is found.
+
+The core stackleak_erase() code determines the upper bound of stack to
+erase with:
+
+| if (on_thread_stack())
+|         boundary = current_stack_pointer;
+| else
+|         boundary = current_top_of_stack();
+
+On arm64 stackleak_erase() is always called on a task stack, and
+on_thread_stack() should always be true.  On x86, stackleak_erase() is
+mostly called on a trampoline stack, and is sometimes called on a task
+stack.
+
+Currently, this results in a lot of unnecessary code being generated for
+arm64 for the impossible !on_thread_stack() case.  Some of this is
+inlined, bloating stackleak_erase(), while portions of this are left
+out-of-line and permitted to be instrumented (which would be a functional
+problem if that code were reachable).
+
+As a first step towards improving this, this patch aligns arm64's
+implementation of current_top_of_stack() with x86's, always returning the
+top of the current task's stack.  With GCC 11.1.0 this results in the bulk
+of the unnecessary code being removed, including all of the out-of-line
+instrumentable code.
+
+While I don't believe there's a functional problem in practice I've marked
+this as a fix since the semantic was clearly wrong, the fix itself is
+simple, and other code might rely upon this in future.
+
+Link: https://lkml.kernel.org/r/20220425115603.781311-1-mark.rutland@arm.com
+Link: https://lkml.kernel.org/r/20220425115603.781311-2-mark.rutland@arm.com
+Fixes: 0b3e336601b82c6a ("arm64: Add support for STACKLEAK gcc plugin")
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Popov <alex.popov@linux.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Will Deacon <will@kernel.org>
