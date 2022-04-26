@@ -1399,14 +1399,6 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_START splice
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START stackleak
-arm64-stackleak-fix-current_top_of_stack.patch
-stackleak-move-skip_erasing-check-earlier.patch
-stackleak-rework-stack-low-bound-handling.patch
-stackleak-clarify-variable-names.patch
-stackleak-rework-stack-high-bound-handling.patch
-stackleak-remove-redundant-check.patch
-stackleak-add-on-off-stack-variants.patch
-arm64-entry-use-stackleak_erase_on_task_stack.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START sysrq
@@ -1658,3 +1650,11 @@ kselftest-vm-override-targets-from-arguments.patch
 #[to-be-updated]mm-remove-the-vma-linked-list.patch
 #[to-be-updated]mm-mmap-drop-range_has_overlap-function.patch
 #[to-be-updated]mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
+#[merged]arm64-stackleak-fix-current_top_of_stack.patch
+#[merged]stackleak-move-skip_erasing-check-earlier.patch
+#[merged]stackleak-rework-stack-low-bound-handling.patch
+#[merged]stackleak-clarify-variable-names.patch
+#[merged]stackleak-rework-stack-high-bound-handling.patch
+#[merged]stackleak-remove-redundant-check.patch
+#[merged]stackleak-add-on-off-stack-variants.patch
+#[merged]arm64-entry-use-stackleak_erase_on_task_stack.patch
