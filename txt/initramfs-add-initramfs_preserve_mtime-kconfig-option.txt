@@ -1,0 +1,38 @@
+From: David Disseldorp <ddiss@suse.de>
+Subject: initramfs: add INITRAMFS_PRESERVE_MTIME Kconfig option
+
+initramfs cpio mtime preservation, as implemented in commit 889d51a10712
+("initramfs: add option to preserve mtime from initramfs cpio images"),
+uses a linked list to defer directory mtime processing until after all
+other items in the cpio archive have been processed.  This is done to
+ensure that parent directory mtimes aren't overwritten via subsequent
+child creation.
+
+The lkml link below indicates that the mtime retention use case was for
+embedded devices with applications running exclusively out of initramfs,
+where the 32-bit mtime value provided a rough file version identifier. 
+Linux distributions which discard an extracted initramfs immediately after
+the root filesystem has been mounted may want to avoid the unnecessary
+overhead.
+
+This change adds a new INITRAMFS_PRESERVE_MTIME Kconfig option, which can
+be used to disable on-by-default mtime retention and in turn speed up
+initramfs extraction, particularly for cpio archives with large directory
+counts.
+
+Benchmarks with a one million directory cpio archive extracted 20 times
+demonstrated: mean extraction time (s) std dev INITRAMFS_PRESERVE_MTIME=y
+3.808 0.006 INITRAMFS_PRESERVE_MTIME unset 3.056 0.004
+
+The above extraction times were measured using ftrace (initcall_finish -
+initcall_start) values for populate_rootfs() with initramfs_async
+disabled.
+
+[ddiss@suse.de: rebase atop dir_entry.name flexible array member and drop  separate initramfs_mtime.h header]
+Link: https://lkml.org/lkml/2008/9/3/424
+Link: https://lkml.kernel.org/r/20220404093429.27570-4-ddiss@suse.de
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>

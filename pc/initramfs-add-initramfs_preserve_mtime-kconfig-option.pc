@@ -1,0 +1,2 @@
+init/initramfs.c
+init/Kconfig

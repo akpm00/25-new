@@ -1,0 +1,12 @@
+From: David Disseldorp <ddiss@suse.de>
+Subject: initramfs: make dir_entry.name a flexible array member
+
+dir_entry.name is currently allocated via a separate kstrdup().  Change it
+to a flexible array member and allocate it along with struct dir_entry.
+
+Link: https://lkml.kernel.org/r/20220404093429.27570-3-ddiss@suse.de
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Martin Wilck <mwilck@suse.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>

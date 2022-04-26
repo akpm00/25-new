@@ -1,0 +1,29 @@
+From: David Disseldorp <ddiss@suse.de>
+Subject: initramfs: refactor do_header() cpio magic checks
+
+Patch series "initramfs: "crc" cpio format and INITRAMFS_PRESERVE_MTIME", v7.
+
+This patchset does some minor initramfs refactoring and allows cpio entry
+mtime preservation to be disabled via a new Kconfig
+INITRAMFS_PRESERVE_MTIME option.
+
+Patches 4/6 to 6/6 implement support for creation and extraction of "crc"
+cpio archives, which carry file data checksums.  Basic tests for this
+functionality can be found at https://github.com/rapido-linux/rapido/pull/163
+
+
+This patch (of 6):
+
+do_header() is called for each cpio entry and fails if the first six bytes
+don't match "newc" magic.  The magic check includes a special case error
+message if POSIX.1 ASCII (cpio -H odc) magic is detected.  This special
+case POSIX.1 check can be nested under the "newc" mismatch code path to
+avoid calling memcmp() twice in a non-error case.
+
+Link: https://lkml.kernel.org/r/20220404093429.27570-1-ddiss@suse.de
+Link: https://lkml.kernel.org/r/20220404093429.27570-2-ddiss@suse.de
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Reviewed-by: Martin Wilck <mwilck@suse.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Matthew Wilcox <willy@infradead.org>

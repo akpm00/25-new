@@ -1,0 +1,14 @@
+From: David Disseldorp <ddiss@suse.de>
+Subject: initramfs: support cpio extraction with file checksums
+
+Add support for extraction of checksum-enabled "070702" cpio archives,
+specified in Documentation/driver-api/early-userspace/buffer-format.rst. 
+Fail extraction if the calculated file data checksum doesn't match the
+value carried in the header.
+
+Link: https://lkml.kernel.org/r/20220404093429.27570-7-ddiss@suse.de
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Martin Wilck <mwilck@suse.com>

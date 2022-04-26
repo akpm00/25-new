@@ -496,6 +496,7 @@ mm-swapfile-fix-lost-swap-bits-in-unuse_pte.patch
 #
 #mm/cma
 #mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch+N: acks?
+#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch: https://lkml.kernel.org/r/20220426201855.GA1014@qian
 mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch
 mm-page_isolation-check-specified-range-for-unmovable-pages.patch
 mm-make-alloc_contig_range-work-at-pageblock-granularity.patch
@@ -1371,6 +1372,13 @@ fs-sysv-check-sbi-s_firstdatazone-in-complete_read_super.patch
 #NEXT_PATCHES_START inflate
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START initramfs
+initramfs-refactor-do_header-cpio-magic-checks.patch
+initramfs-make-dir_entryname-a-flexible-array-member.patch
+initramfs-add-initramfs_preserve_mtime-kconfig-option.patch
+gen_init_cpio-fix-short-read-file-handling.patch
+gen_init_cpio-support-file-checksum-archiving.patch
+initramfs-support-cpio-extraction-with-file-checksums.patch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START inittmpfs
 #NEXT_PATCHES_END

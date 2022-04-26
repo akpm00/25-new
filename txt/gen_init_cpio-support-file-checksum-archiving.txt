@@ -1,0 +1,13 @@
+From: David Disseldorp <ddiss@suse.de>
+Subject: gen_init_cpio: support file checksum archiving
+
+Documentation/driver-api/early-userspace/buffer-format.rst includes the
+specification for checksum-enabled cpio archives.  Implement support for
+this format in gen_init_cpio via a new '-c' parameter.
+
+Link: https://lkml.kernel.org/r/20220404093429.27570-6-ddiss@suse.de
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: Martin Wilck <mwilck@suse.com>
