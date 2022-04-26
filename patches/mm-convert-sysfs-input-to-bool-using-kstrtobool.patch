@@ -1,0 +1,55 @@
+From: Jagdish Gediya <jvgediya@linux.ibm.com>
+Subject: mm: convert sysfs input to bool using kstrtobool()
+
+Sysfs input conversion to corrosponding bool value e.g.  "false" or "0" to
+false, "true" or "1" to true are currently handled through strncmp at
+multiple places.  Use kstrtobool() to convert sysfs input to bool value.
+
+Link: https://lkml.kernel.org/r/20220426180203.70782-2-jvgediya@linux.ibm.com
+Signed-off-by: Jagdish Gediya <jvgediya@linux.ibm.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c    |    6 +-----
+ mm/swap_state.c |    6 +-----
+ 2 files changed, 2 insertions(+), 10 deletions(-)
+
+--- a/mm/migrate.c~mm-convert-sysfs-input-to-bool-using-kstrtobool
++++ a/mm/migrate.c
+@@ -2534,11 +2534,7 @@ static ssize_t numa_demotion_enabled_sto
+ 					   struct kobj_attribute *attr,
+ 					   const char *buf, size_t count)
+ {
+-	if (!strncmp(buf, "true", 4) || !strncmp(buf, "1", 1))
+-		numa_demotion_enabled = true;
+-	else if (!strncmp(buf, "false", 5) || !strncmp(buf, "0", 1))
+-		numa_demotion_enabled = false;
+-	else
++	if (kstrtobool(buf, &numa_demotion_enabled))
+ 		return -EINVAL;
+ 
+ 	return count;
+--- a/mm/swap_state.c~mm-convert-sysfs-input-to-bool-using-kstrtobool
++++ a/mm/swap_state.c
+@@ -874,11 +874,7 @@ static ssize_t vma_ra_enabled_store(stru
+ 				      struct kobj_attribute *attr,
+ 				      const char *buf, size_t count)
+ {
+-	if (!strncmp(buf, "true", 4) || !strncmp(buf, "1", 1))
+-		enable_vma_readahead = true;
+-	else if (!strncmp(buf, "false", 5) || !strncmp(buf, "0", 1))
+-		enable_vma_readahead = false;
+-	else
++	if (kstrtobool(buf, &enable_vma_readahead))
+ 		return -EINVAL;
+ 
+ 	return count;
+_

@@ -1,0 +1,56 @@
+From: Jagdish Gediya <jvgediya@linux.ibm.com>
+Subject: lib/kstrtox.c: add "false"/"true" support to kstrtobool()
+
+At many places in kernel, It is necessary to convert sysfs input to
+corrosponding bool value e.g.  "false" or "0" need to be converted to bool
+false, "true" or "1" need to be converted to bool true, places where such
+conversion is needed currently check the input string manually,
+kstrtobool() can be utilized at such places but currently it doesn't have
+support to accept "false"/"true".
+
+Add support to accept "false"/"true" as valid string in kstrtobool().
+
+Link: https://lkml.kernel.org/r/20220426180203.70782-1-jvgediya@linux.ibm.com
+Signed-off-by: Jagdish Gediya <jvgediya@linux.ibm.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/kstrtox.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- a/lib/kstrtox.c~lib-kstrtoxc-add-false-true-support-to-kstrtobool
++++ a/lib/kstrtox.c
+@@ -340,7 +340,7 @@ EXPORT_SYMBOL(kstrtos8);
+  * @s: input string
+  * @res: result
+  *
+- * This routine returns 0 iff the first character is one of 'Yy1Nn0', or
++ * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
+  * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
+  * pointed to by res is updated upon finding a match.
+  */
+@@ -353,11 +353,15 @@ int kstrtobool(const char *s, bool *res)
+ 	switch (s[0]) {
+ 	case 'y':
+ 	case 'Y':
++	case 't':
++	case 'T':
+ 	case '1':
+ 		*res = true;
+ 		return 0;
+ 	case 'n':
+ 	case 'N':
++	case 'f':
++	case 'F':
+ 	case '0':
+ 		*res = false;
+ 		return 0;
+_

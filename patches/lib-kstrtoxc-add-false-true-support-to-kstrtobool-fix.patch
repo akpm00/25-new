@@ -1,0 +1,25 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: lib-kstrtoxc-add-false-true-support-to-kstrtobool-fix
+
+undo s/iff/if/, per Matthew
+
+Cc: Jagdish Gediya <jvgediya@linux.ibm.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/kstrtox.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/kstrtox.c~lib-kstrtoxc-add-false-true-support-to-kstrtobool-fix
++++ a/lib/kstrtox.c
+@@ -340,7 +340,7 @@ EXPORT_SYMBOL(kstrtos8);
+  * @s: input string
+  * @res: result
+  *
+- * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
++ * This routine returns 0 iff the first character is one of 'YyTt1NnFf0', or
+  * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
+  * pointed to by res is updated upon finding a match.
+  */
+_

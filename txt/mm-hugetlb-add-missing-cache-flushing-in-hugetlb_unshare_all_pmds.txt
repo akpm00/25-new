@@ -10,5 +10,5 @@ Link: https://lkml.kernel.org/r/419b0e777c9e6d1454dcd906e0f5b752a736d335.1650781
 Fixes: 6dfeaff93be1 ("hugetlb/userfaultfd: unshare all pmds for hugetlbfs when register wp")
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Peter Xu <peterx@redhat.com>

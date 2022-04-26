@@ -1,0 +1,7 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: lib-kstrtoxc-add-false-true-support-to-kstrtobool-fix
+
+undo s/iff/if/, per Matthew
+
+Cc: Jagdish Gediya <jvgediya@linux.ibm.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>

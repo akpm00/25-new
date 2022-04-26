@@ -1,0 +1,32 @@
+From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: mm/highmem: VM_BUG_ON() if offset + len > PAGE_SIZE
+
+Add VM_BUG_ON() bounds checking to make sure that, if "offset + len>
+PAGE_SIZE", memset() does not corrupt data in adjacent pages.
+
+Mainly to match all the similar functions in highmem.h.
+
+Link: https://lkml.kernel.org/r/20220426193020.8710-1-fmdefrancesco@gmail.com
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Peter Collingbourne <pcc@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/highmem.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/include/linux/highmem.h~mm-highmem-vm_bug_on-if-offset-len-page_size
++++ a/include/linux/highmem.h
+@@ -349,6 +349,8 @@ static inline void memcpy_to_page(struct
+ static inline void memzero_page(struct page *page, size_t offset, size_t len)
+ {
+ 	char *addr = kmap_local_page(page);
++
++	VM_BUG_ON(offset + len > PAGE_SIZE);
+ 	memset(addr + offset, 0, len);
+ 	flush_dcache_page(page);
+ 	kunmap_local(addr);
+_
