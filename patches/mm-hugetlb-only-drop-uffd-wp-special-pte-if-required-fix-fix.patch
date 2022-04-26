@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * file-backed memory.  This should only be specified when we will completely
 --- a/include/linux/mm_types.h~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
 +++ a/include/linux/mm_types.h
-@@ -850,4 +850,6 @@ enum fault_flag {
+@@ -856,4 +856,6 @@ enum fault_flag {
  	FAULT_FLAG_ORIG_PTE_VALID =	1 << 11,
  };
  

@@ -4,7 +4,7 @@ Subject: mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation-v4
 updates per David
 
 Link: https://lkml.kernel.org/r/20220401230804.1658207-2-zi.yan@sent.com
-Link: https://lore.kernel.org/linux-mm/CAHk-=3Dwji_AmYygZMTsPMdJ7XksMt7kOur8oDfDdniBRMjm4VkQ@mail.gmail.com/
+Link: https://lore.kernel.org/linux-mm/CAHk-=wji_AmYygZMTsPMdJ7XksMt7kOur8oDfDdniBRMjm4VkQ@mail.gmail.com/
 Link: https://lkml.kernel.org/r/7236E7CA-B5F1-4C04-AB85-E86FA3E9A54B@nvidia.com
 Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Zi Yan <ziy@nvidia.com>

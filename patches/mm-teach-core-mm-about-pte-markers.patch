@@ -91,7 +91,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (required_fault)
 --- a/mm/memcontrol.c~mm-teach-core-mm-about-pte-markers
 +++ a/mm/memcontrol.c
-@@ -5644,10 +5644,14 @@ static enum mc_target_type get_mctgt_typ
+@@ -5640,10 +5640,14 @@ static enum mc_target_type get_mctgt_typ
  
  	if (pte_present(ptent))
  		page = mc_handle_present_pte(vma, addr, ptent);

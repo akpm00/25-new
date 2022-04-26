@@ -7,6 +7,7 @@ avoiding code duplication.
 
 Link: https://lkml.kernel.org/r/20220420084036.4101604-1-usama.anjum@collabora.com
 Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Gabriel Krisman Bertazi <krisman@collabora.com>
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Will Deacon <will@kernel.org>

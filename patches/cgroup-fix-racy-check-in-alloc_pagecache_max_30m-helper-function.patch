@@ -31,7 +31,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c~cgroup-fix-racy-check-in-alloc_pagecache_max_30m-helper-function
 +++ a/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -568,9 +568,14 @@ static int alloc_pagecache_max_30M(const
+@@ -564,9 +564,14 @@ static int alloc_pagecache_max_30M(const
  {
  	size_t size = MB(50);
  	int ret = -1;
@@ -47,7 +47,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	fd = get_temp_fd();
  	if (fd < 0)
  		return -1;
-@@ -579,7 +584,7 @@ static int alloc_pagecache_max_30M(const
+@@ -575,7 +580,7 @@ static int alloc_pagecache_max_30M(const
  		goto cleanup;
  
  	current = cg_read_long(cgroup, "memory.current");

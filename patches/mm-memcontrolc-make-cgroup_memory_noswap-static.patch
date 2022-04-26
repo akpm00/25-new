@@ -9,6 +9,7 @@ Signed-off-by: Lu Jialin <lujialin4@huawei.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
