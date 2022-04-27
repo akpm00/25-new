@@ -1,0 +1,13 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mlock: use maple state in apply_mlockall_flags()
+
+The vma iterator is for simple cases.  Since mlock_fixup() can cause the
+tree to change and thus requires the maple state to be reset,
+apply_mlockall_flags() is not a simple case.  Use a maple state and call
+mas_pause() instead.
+
+Link: https://lkml.kernel.org/r/20220427165139.5s3qcj2u5vqrvwlc@revolver
+Fixes: 0d43186b36c1 (mm/mlock: use vma iterator and instead of vma linked list)
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

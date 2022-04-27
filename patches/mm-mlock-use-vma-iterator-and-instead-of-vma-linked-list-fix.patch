@@ -1,0 +1,48 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mlock: use maple state in apply_mlockall_flags()
+
+The vma iterator is for simple cases.  Since mlock_fixup() can cause the
+tree to change and thus requires the maple state to be reset,
+apply_mlockall_flags() is not a simple case.  Use a maple state and call
+mas_pause() instead.
+
+Link: https://lkml.kernel.org/r/20220427165139.5s3qcj2u5vqrvwlc@revolver
+Fixes: 0d43186b36c1 (mm/mlock: use vma iterator and instead of vma linked list)
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mlock.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/mm/mlock.c~mm-mlock-use-vma-iterator-and-instead-of-vma-linked-list-fix
++++ a/mm/mlock.c
+@@ -660,7 +660,7 @@ SYSCALL_DEFINE2(munlock, unsigned long,
+  */
+ static int apply_mlockall_flags(int flags)
+ {
+-	VMA_ITERATOR(vmi, current->mm, 0);
++	MA_STATE(mas, &current->mm->mm_mt, 0, 0);
+ 	struct vm_area_struct *vma, *prev = NULL;
+ 	vm_flags_t to_add = 0;
+ 
+@@ -681,7 +681,7 @@ static int apply_mlockall_flags(int flag
+ 			to_add |= VM_LOCKONFAULT;
+ 	}
+ 
+-	for_each_vma(vmi, vma) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		vm_flags_t newflags;
+ 
+ 		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
+@@ -689,6 +689,7 @@ static int apply_mlockall_flags(int flag
+ 
+ 		/* Ignore errors */
+ 		mlock_fixup(vma, &prev, vma->vm_start, vma->vm_end, newflags);
++		mas_pause(&mas);
+ 		cond_resched();
+ 	}
+ out:
+_

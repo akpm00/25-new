@@ -539,6 +539,7 @@ radix-tree-test-suite-add-support-for-slab-bulk-apis.patch
 radix-tree-test-suite-add-lockdep_is_held-to-header.patch
 mips-rename-mt_init-to-mips_mt_init.patch
 maple-tree-add-new-data-structure.patch
+maple-tree-add-new-data-structure-fix.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
 mm-add-vma-iterator.patch
@@ -578,6 +579,7 @@ fs-proc-base-use-maple-tree-iterators-in-place-of-linked-list.patch
 fs-proc-task_mmu-stop-using-linked-list-and-highest_vm_end.patch
 #userfaultfd-use-maple-tree-iterator-to-iterate-vmas.patch: https://lkml.kernel.org/r/000000000000f28f0005dda29992@google.com
 userfaultfd-use-maple-tree-iterator-to-iterate-vmas.patch
+userfaultfd-use-maple-tree-iterator-to-iterate-vmas-fix.patch
 ipc-shm-use-vma-iterator-instead-of-linked-list.patch
 acct-use-vma-iterator-instead-of-linked-list.patch
 perf-use-vma-iterator.patch
@@ -591,6 +593,7 @@ mm-madvise-use-vma_find-instead-of-vma-linked-list.patch
 mm-memcontrol-stop-using-mm-highest_vm_end.patch
 mm-mempolicy-use-vma-iterator-maple-state-instead-of-vma-linked-list.patch
 mm-mlock-use-vma-iterator-and-instead-of-vma-linked-list.patch
+mm-mlock-use-vma-iterator-and-instead-of-vma-linked-list-fix.patch
 mm-mprotect-use-maple-tree-navigation-instead-of-vma-linked-list.patch
 mm-mremap-use-vma_find_intersection-instead-of-vma-linked-list.patch
 mm-msync-use-vma_find-instead-of-vma-linked-list.patch
@@ -604,7 +607,6 @@ mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
 mapletree-vs-khugepaged.patch
-maple_tree-fix-mas_store_prealloc-documentation.patch
 #
 #mglru
 #mm-x86-arm64-add-arch_has_hw_pte_young.patch

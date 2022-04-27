@@ -1,0 +1,10 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: fs/userfaultfd: fix maple state in userfaultfd_register()
+
+When VMAs are split/merged, the maple tree node may be replaced.  Re-walk
+the tree in such cases by calling mas_pause().
+
+Link: https://lkml.kernel.org/r/20220427154314.2o32gn46323hllnb@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

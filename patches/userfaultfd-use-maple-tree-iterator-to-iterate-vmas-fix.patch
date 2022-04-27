@@ -1,0 +1,44 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: fs/userfaultfd: fix maple state in userfaultfd_register()
+
+When VMAs are split/merged, the maple tree node may be replaced.  Re-walk
+the tree in such cases by calling mas_pause().
+
+Link: https://lkml.kernel.org/r/20220427154314.2o32gn46323hllnb@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/userfaultfd.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/fs/userfaultfd.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas-fix
++++ a/fs/userfaultfd.c
+@@ -1437,6 +1437,8 @@ static int userfaultfd_register(struct u
+ 				 ((struct vm_userfaultfd_ctx){ ctx }),
+ 				 anon_vma_name(vma));
+ 		if (prev) {
++			/* vma_merge() invalidated the mas */
++			mas_pause(&mas);
+ 			vma = prev;
+ 			goto next;
+ 		}
+@@ -1444,11 +1446,15 @@ static int userfaultfd_register(struct u
+ 			ret = split_vma(mm, vma, start, 1);
+ 			if (ret)
+ 				break;
++			/* split_vma() invalidated the mas */
++			mas_pause(&mas);
+ 		}
+ 		if (vma->vm_end > end) {
+ 			ret = split_vma(mm, vma, end, 0);
+ 			if (ret)
+ 				break;
++			/* split_vma() invalidated the mas */
++			mas_pause(&mas);
+ 		}
+ 	next:
+ 		/*
+_
