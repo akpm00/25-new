@@ -531,6 +531,7 @@ mm-convert-sysfs-input-to-bool-using-kstrtobool.patch
 mm-highmem-vm_bug_on-if-offset-len-page_size.patch
 #
 #mm/mapletree
+#radix-tree-test-suite-add-pr_err-define.patch+N: https://lkml.kernel.org/r/20220427202145.GA2047@qian
 radix-tree-test-suite-add-pr_err-define.patch
 radix-tree-test-suite-add-kmem_cache_set_non_kernel.patch
 radix-tree-test-suite-add-allocation-counts-and-size-to-kmem_cache.patch
@@ -651,6 +652,11 @@ mm-rmap-use-flush_cache_range-to-flush-cache-for-hugetlb-pages.patch
 #mm/tmpfs
 #mm-shmem-remove-duplicate-include-in-memoryc.patch: recheck
 mm-shmem-remove-duplicate-include-in-memoryc.patch
+#
+#mm/kasan
+printk-stop-including-cacheh-from-printkh.patch
+mm-make-minimum-slab-alignment-a-runtime-property.patch
+mm-make-minimum-slab-alignment-a-runtime-property-fix.patch
 #
 # mmend
 #

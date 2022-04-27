@@ -1,0 +1,37 @@
+From: Peter Collingbourne <pcc@google.com>
+Subject: printk: stop including cache.h from printk.h
+
+An inclusion of cache.h in printk.h was added in 2014 in commit
+c28aa1f0a847 ("printk/cache: mark printk_once test variable
+__read_mostly") in order to bring in the definition of __read_mostly.  The
+usage of __read_mostly was later removed in commit 3ec25826ae33 ("printk:
+Tie printk_once / printk_deferred_once into .data.once for reset") which
+made the inclusion of cache.h unnecessary, so remove it.
+
+We have a small amount of code that depended on the inclusion of cache.h
+from printk.h; fix that code to include the appropriate header.
+
+This fixes a circular inclusion on arm64 (linux/printk.h -> linux/cache.h
+-> asm/cache.h -> linux/kasan-enabled.h -> linux/static_key.h ->
+linux/jump_label.h -> linux/bug.h -> asm/bug.h -> linux/printk.h) that
+would otherwise be introduced by the next patch.
+
+Build tested using {allyesconfig,defconfig} x {arm64,x86_64}.
+
+Link: https://linux-review.googlesource.com/id/I8fd51f72c9ef1f2d6afd3b2cbc875aa4792c1fba
+Link: https://lkml.kernel.org/r/20220427195820.1716975-1-pcc@google.com
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>

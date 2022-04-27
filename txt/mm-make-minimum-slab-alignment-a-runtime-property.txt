@@ -1,0 +1,36 @@
+From: Peter Collingbourne <pcc@google.com>
+Subject: mm: make minimum slab alignment a runtime property
+
+When CONFIG_KASAN_HW_TAGS is enabled we currently increase the minimum
+slab alignment to 16.  This happens even if MTE is not supported in
+hardware or disabled via kasan=off, which creates an unnecessary memory
+overhead in those cases.  Eliminate this overhead by making the minimum
+slab alignment a runtime property and only aligning to 16 if KASAN is
+enabled at runtime.
+
+On a DragonBoard 845c (non-MTE hardware) with a kernel built with
+CONFIG_KASAN_HW_TAGS, waiting for quiescence after a full Android boot I
+see the following Slab measurements in /proc/meminfo (median of 3
+reboots):
+
+Before: 169020 kB
+After:  167304 kB
+
+Link: https://linux-review.googlesource.com/id/I752e725179b43b144153f4b6f584ceb646473ead
+Link: https://lkml.kernel.org/r/20220427195820.1716975-2-pcc@google.com
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Kees Cook <keescook@chromium.org>

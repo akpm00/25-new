@@ -1,0 +1,133 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-make-minimum-slab-alignment-a-runtime-property-fix
+
+make slab alignment type `unsigned int' to avoid casting
+
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Pekka Enberg <penberg@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/arm64/include/asm/cache.h |    2 +-
+ include/linux/slab.h           |    2 +-
+ mm/slab.c                      |    4 ++--
+ mm/slab_common.c               |    2 +-
+ mm/slob.c                      |   16 +++++++++++-----
+ 5 files changed, 16 insertions(+), 10 deletions(-)
+
+--- a/arch/arm64/include/asm/cache.h~mm-make-minimum-slab-alignment-a-runtime-property-fix
++++ a/arch/arm64/include/asm/cache.h
+@@ -58,7 +58,7 @@
+ #ifdef CONFIG_KASAN_SW_TAGS
+ #define ARCH_SLAB_MINALIGN	(1ULL << KASAN_SHADOW_SCALE_SHIFT)
+ #elif defined(CONFIG_KASAN_HW_TAGS)
+-static inline size_t arch_slab_minalign(void)
++static inline unsigned int arch_slab_minalign(void)
+ {
+ 	return kasan_hw_tags_enabled() ? MTE_GRANULE_SIZE :
+ 					 __alignof__(unsigned long long);
+--- a/include/linux/slab.h~mm-make-minimum-slab-alignment-a-runtime-property-fix
++++ a/include/linux/slab.h
+@@ -215,7 +215,7 @@ void kmem_dump_obj(void *object);
+  * of two and >= ARCH_SLAB_MINALIGN.
+  */
+ #ifndef arch_slab_minalign
+-static inline size_t arch_slab_minalign(void)
++static inline unsigned int arch_slab_minalign(void)
+ {
+ 	return ARCH_SLAB_MINALIGN;
+ }
+--- a/mm/slab.c~mm-make-minimum-slab-alignment-a-runtime-property-fix
++++ a/mm/slab.c
+@@ -3010,8 +3010,8 @@ static void *cache_alloc_debugcheck_afte
+ 	if (cachep->ctor && cachep->flags & SLAB_POISON)
+ 		cachep->ctor(objp);
+ 	if ((unsigned long)objp & (arch_slab_minalign() - 1)) {
+-		pr_err("0x%px: not aligned to arch_slab_minalign()=%d\n", objp,
+-		       (int)arch_slab_minalign());
++		pr_err("0x%px: not aligned to arch_slab_minalign()=%u\n", objp,
++		       arch_slab_minalign());
+ 	}
+ 	return objp;
+ }
+--- a/mm/slab_common.c~mm-make-minimum-slab-alignment-a-runtime-property-fix
++++ a/mm/slab_common.c
+@@ -154,7 +154,7 @@ static unsigned int calculate_alignment(
+ 		align = max(align, ralign);
+ 	}
+ 
+-	align = max_t(size_t, align, arch_slab_minalign());
++	align = max(align, arch_slab_minalign());
+ 
+ 	return ALIGN(align, sizeof(void *));
+ }
+--- a/mm/slob.c~mm-make-minimum-slab-alignment-a-runtime-property-fix
++++ a/mm/slob.c
+@@ -478,9 +478,11 @@ static __always_inline void *
+ __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
+ {
+ 	unsigned int *m;
+-	int minalign = max_t(size_t, ARCH_KMALLOC_MINALIGN, arch_slab_minalign());
++	unsigned int minalign;
+ 	void *ret;
+ 
++	minalign = max_t(unsigned int, ARCH_KMALLOC_MINALIGN,
++			 arch_slab_minalign());
+ 	gfp &= gfp_allowed_mask;
+ 
+ 	might_alloc(gfp);
+@@ -493,7 +495,7 @@ __do_kmalloc_node(size_t size, gfp_t gfp
+ 		 * kmalloc()'d objects.
+ 		 */
+ 		if (is_power_of_2(size))
+-			align = max(minalign, (int) size);
++			align = max_t(unsigned int, minalign, size);
+ 
+ 		if (!size)
+ 			return ZERO_SIZE_PTR;
+@@ -555,8 +557,11 @@ void kfree(const void *block)
+ 
+ 	sp = virt_to_folio(block);
+ 	if (folio_test_slab(sp)) {
+-		int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, arch_slab_minalign());
++		unsigned int align = max_t(unsigned int,
++					   ARCH_KMALLOC_MINALIGN,
++					   arch_slab_minalign());
+ 		unsigned int *m = (unsigned int *)(block - align);
++
+ 		slob_free(m, *m + align);
+ 	} else {
+ 		unsigned int order = folio_order(sp);
+@@ -573,7 +578,7 @@ EXPORT_SYMBOL(kfree);
+ size_t __ksize(const void *block)
+ {
+ 	struct folio *folio;
+-	int align;
++	unsigned int align;
+ 	unsigned int *m;
+ 
+ 	BUG_ON(!block);
+@@ -584,7 +589,8 @@ size_t __ksize(const void *block)
+ 	if (unlikely(!folio_test_slab(folio)))
+ 		return folio_size(folio);
+ 
+-	align = max_t(size_t, ARCH_KMALLOC_MINALIGN, arch_slab_minalign());
++	align = max_t(unsigned int, ARCH_KMALLOC_MINALIGN,
++		      arch_slab_minalign());
+ 	m = (unsigned int *)(block - align);
+ 	return SLOB_UNITS(*m) * SLOB_UNIT;
+ }
+_
