@@ -8,8 +8,8 @@ multiple places.  Use kstrtobool() to convert sysfs input to bool value.
 Link: https://lkml.kernel.org/r/20220426180203.70782-2-jvgediya@linux.ibm.com
 Signed-off-by: Jagdish Gediya <jvgediya@linux.ibm.com>
 Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: "Huang, Ying" <ying.huang@intel.com>
 Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>

@@ -1,0 +1,15 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm: rmap: use flush_cache_range() to flush cache for hugetlb pages
+
+Now we will use flush_cache_page() to flush cache for anonymous hugetlb
+pages when unmapping or migrating a hugetlb page mapping, but the
+flush_cache_page() only handles a PAGE_SIZE range on some architectures
+(like arm32, arc and so on), which will cause potential cache issues. 
+Thus change to use flush_cache_range() to cover the whole size of a
+hugetlb page.
+
+Link: https://lkml.kernel.org/r/dc903b378d1e2d26bbbe85409ab9d009631f175c.1651056365.git.baolin.wang@linux.alibaba.com
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Muchun Song <songmuchun@bytedance.com>

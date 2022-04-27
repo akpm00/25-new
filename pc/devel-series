@@ -13,12 +13,10 @@ kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-
 #mm/debug
 docs-vm-page_owner-use-literal-blocks-for-param-description.patch
 #
-#proc
-proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-#proc-kpageflags-do-not-use-uninitialized-struct-pages.patch: Dan issues
-proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
+revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
+mm-huge_memory-do-not-overkill-when-splitting-huge_zero_page.patch
 #
-#procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: acks?
+#procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: Kees ack?
 procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #NEXT_PATCHES_END
@@ -639,6 +637,15 @@ mm-memory_hotplug-use-pgprot_val-to-get-value-of-pgprot.patch
 #mm/vmscan
 mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration.patch
 mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration-fix.patch
+#
+#mm/pagemap
+mm-hugetlb-considering-pmd-sharing-when-flushing-cache-tlbs.patch
+mm-rmap-move-the-cache-flushing-to-the-correct-place-for-hugetlb-pmd-sharing.patch
+mm-rmap-use-flush_cache_range-to-flush-cache-for-hugetlb-pages.patch
+#
+#mm/tmpfs
+#mm-shmem-remove-duplicate-include-in-memoryc.patch: recheck
+mm-shmem-remove-duplicate-include-in-memoryc.patch
 #
 # mmend
 #
@@ -1694,3 +1701,5 @@ kselftest-vm-override-targets-from-arguments.patch
 #[folded-merged]kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time-fix.patch
 #[nacked]mm-vmscan-activate-swap-backed-executable-folios-after-first-usage.patch
 #[merged]coredump-fix-race-condition-between-mmget_not_zero-get_task_mm-and-core-dumping.patch
+#[obsolete]proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
+#[obsolete]proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
