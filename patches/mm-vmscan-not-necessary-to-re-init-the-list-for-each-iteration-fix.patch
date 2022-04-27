@@ -1,0 +1,26 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration-fix
+
+remove unneeded braces
+
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration-fix
++++ a/mm/vmscan.c
+@@ -2572,9 +2572,8 @@ unsigned long reclaim_pages(struct list_
+ 
+ 	while (!list_empty(page_list)) {
+ 		page = lru_to_page(page_list);
+-		if (nid == NUMA_NO_NODE) {
++		if (nid == NUMA_NO_NODE)
+ 			nid = page_to_nid(page);
+-		}
+ 
+ 		if (nid == page_to_nid(page)) {
+ 			ClearPageActive(page);
+_

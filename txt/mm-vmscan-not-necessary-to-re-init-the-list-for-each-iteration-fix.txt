@@ -1,0 +1,6 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration-fix
+
+remove unneeded braces
+
+Cc: Wei Yang <richard.weiyang@gmail.com>

@@ -1,0 +1,10 @@
+From: liusongtang <liusongtang@huawei.com>
+Subject: mm/memory_hotplug: use pgprot_val to get value of pgprot
+
+pgprot.pgprot is non-portable code.  It should be replaced by portable
+macro pgprot_val.
+
+Link: https://lkml.kernel.org/r/20220426071302.220646-1-liusongtang@huawei.com
+Signed-off-by: liusongtang <liusongtang@huawei.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Xiaoming Ni <nixiaoming@huawei.com>

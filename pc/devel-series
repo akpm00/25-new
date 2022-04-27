@@ -207,11 +207,6 @@ vmap-dont-allow-invalid-pages.patch
 #mm/documentation
 documentation-sysctl-document-page_lock_unfairness.patch
 #
-#mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch+N: TBU
-mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
-documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
-documentation-vm-remove-using-kmap-atomic-from-highmemrst.patch
-documentation-vm-rework-temporary-virtual-mappings.patch
 #
 #mm/initialization
 #mm/pagealloc
@@ -337,24 +332,6 @@ mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone-v2.patch
 mm-vmscan-sc-reclaim_idx-must-be-a-valid-zone-index.patch
 #
 mm-vmscan-remove-obsolete-comment-in-get_scan_count.patch
-#
-#mm-x86-arm64-add-arch_has_hw_pte_young.patch
-#mm-x86-add-config_arch_has_nonleaf_pmd_young.patch
-#mm-x86-add-config_arch_has_nonleaf_pmd_young-fix.patch
-#mm-vmscanc-refactor-shrink_node.patch
-#revert-include-linux-mm_inlineh-fold-__update_lru_size-into-its-sole-caller.patch
-#mm-multi-gen-lru-groundwork.patch
-#mm-multi-gen-lru-minimal-implementation.patch
-#mm-multi-gen-lru-exploit-locality-in-rmap.patch
-#mm-multi-gen-lru-support-page-table-walks.patch
-#mm-multi-gen-lru-optimize-multiple-memcgs.patch
-#mm-multi-gen-lru-kill-switch.patch
-#mm-multi-gen-lru-thrashing-prevention.patch
-#mm-multi-gen-lru-debugfs-interface.patch
-#mm-multi-gen-lru-admin-guide.patch
-#mm-multi-gen-lru-design-doc.patch
-#mglru-vs-maple-tree.patch
-#mglru-vs-maple-tree-fix.patch
 #
 mm-vmscan-fix-comment-for-current_may_throttle.patch
 mm-vmscan-fix-comment-for-current_may_throttle-fix.patch
@@ -615,7 +592,37 @@ mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
 #
+#mglru
+#mm-x86-arm64-add-arch_has_hw_pte_young.patch
+#mm-x86-add-config_arch_has_nonleaf_pmd_young.patch
+#mm-x86-add-config_arch_has_nonleaf_pmd_young-fix.patch
+#mm-vmscanc-refactor-shrink_node.patch
+#revert-include-linux-mm_inlineh-fold-__update_lru_size-into-its-sole-caller.patch
+#mm-multi-gen-lru-groundwork.patch
+#mm-multi-gen-lru-minimal-implementation.patch
+#mm-multi-gen-lru-exploit-locality-in-rmap.patch
+#mm-multi-gen-lru-support-page-table-walks.patch
+#mm-multi-gen-lru-optimize-multiple-memcgs.patch
+#mm-multi-gen-lru-kill-switch.patch
+#mm-multi-gen-lru-thrashing-prevention.patch
+#mm-multi-gen-lru-debugfs-interface.patch
+#mm-multi-gen-lru-admin-guide.patch
+#mm-multi-gen-lru-design-doc.patch
+#mglru-vs-maple-tree.patch
+#mglru-vs-maple-tree-fix.patch
 #
+#mm/damon
+mm-damon-core-add-a-function-for-damon_operations-registration-checks.patch
+mm-damon-sysfs-add-a-file-for-listing-available-monitoring-ops.patch
+selftets-damon-sysfs-test-existence-and-permission-of-avail_operations.patch
+docs-abiadmin-guide-damon-document-avail_operations-sysfs-file.patch
+#
+#mm/memory-hotplug
+mm-memory_hotplug-use-pgprot_val-to-get-value-of-pgprot.patch
+#
+#mm/vmscan
+mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration.patch
+mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration-fix.patch
 #
 # mmend
 #
@@ -1022,6 +1029,7 @@ lib-remove-back_str-initialization.patch
 #NEXT_PATCHES_START mmc
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START checkpatch
+#
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START crc
 #NEXT_PATCHES_END
@@ -1658,3 +1666,7 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]stackleak-remove-redundant-check.patch
 #[merged]stackleak-add-on-off-stack-variants.patch
 #[merged]arm64-entry-use-stackleak_erase_on_task_stack.patch
+#[to-be-updated]mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+#[to-be-updated]documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
+#[to-be-updated]documentation-vm-remove-using-kmap-atomic-from-highmemrst.patch
+#[to-be-updated]documentation-vm-rework-temporary-virtual-mappings.patch

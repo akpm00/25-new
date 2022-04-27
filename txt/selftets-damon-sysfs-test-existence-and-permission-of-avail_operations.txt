@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: selftets/damon/sysfs: test existence and permission of avail_operations
+
+This commit adds a selftest test case for ensuring the existence and the
+permission (read-only) of the 'avail_oprations' DAMON sysfs file.
+
+Link: https://lkml.kernel.org/r/20220426203843.45238-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

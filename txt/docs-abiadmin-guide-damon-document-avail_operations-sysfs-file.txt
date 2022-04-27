@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/{ABI,admin-guide}/damon: document 'avail_operations' sysfs file
+
+This commit updates the DAMON ABI and usage documents for the new sysfs
+file, 'avail_operations'.
+
+Link: https://lkml.kernel.org/r/20220426203843.45238-5-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

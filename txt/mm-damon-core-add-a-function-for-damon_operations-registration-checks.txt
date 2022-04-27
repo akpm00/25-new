@@ -1,0 +1,28 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/core: add a function for damon_operations registration checks
+
+Patch series "mm/damon: allow users know which monitoring ops are available".
+
+DAMON users can configure it for vaious address spaces including virtual
+address spaces and the physical address space by setting its monitoring
+operations set with appropriate one for their purpose.  However, there is
+no celan and simple way to know exactly which monitoring operations sets
+are available on the currently running kernel.
+
+This patchset adds functions for the purpose on DAMON's kernel API
+('damon_is_registered_ops()') and sysfs interface ('avail_operations' file
+under each context directory).
+
+
+This patch (of 4):
+
+To know if a specific 'damon_operations' is registered, users need to
+check the kernel config or try 'damon_select_ops()' with the ops of the
+question, and then see if it successes.  In the latter case, the user
+should also revert the change.  To make the process simple and convenient,
+this commit adds a function for checking if a specific 'damon_operations'
+is registered or not.
+
+Link: https://lkml.kernel.org/r/20220426203843.45238-1-sj@kernel.org
+Link: https://lkml.kernel.org/r/20220426203843.45238-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

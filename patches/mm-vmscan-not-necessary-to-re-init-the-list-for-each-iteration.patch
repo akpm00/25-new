@@ -1,0 +1,27 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: not necessary to re-init the list for each iteration
+
+node_page_list is defined with LIST_HEAD and be cleaned until
+list_empty.
+
+So it is not necessary to re-init it again.
+
+Link: https://lkml.kernel.org/r/20220426021743.21007-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/vmscan.c~mm-vmscan-not-necessary-to-re-init-the-list-for-each-iteration
++++ a/mm/vmscan.c
+@@ -2574,7 +2574,6 @@ unsigned long reclaim_pages(struct list_
+ 		page = lru_to_page(page_list);
+ 		if (nid == NUMA_NO_NODE) {
+ 			nid = page_to_nid(page);
+-			INIT_LIST_HEAD(&node_page_list);
+ 		}
+ 
+ 		if (nid == page_to_nid(page)) {
+_

@@ -1,0 +1,12 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: add a file for listing available monitoring ops
+
+DAMON programming interface users can know if specific monitoring ops set
+is registered or not using 'damon_is_registered_ops()', but there is no
+such method for the user space.  To help the case, this commit adds a new
+DAMON sysfs file called 'avail_operations' under each context directory
+for listing available monitoring ops.  Reading the file will list each
+registered monitoring ops on each line.
+
+Link: https://lkml.kernel.org/r/20220426203843.45238-3-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

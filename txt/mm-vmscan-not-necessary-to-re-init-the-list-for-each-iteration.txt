@@ -1,0 +1,10 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: not necessary to re-init the list for each iteration
+
+node_page_list is defined with LIST_HEAD and be cleaned until
+list_empty.
+
+So it is not necessary to re-init it again.
+
+Link: https://lkml.kernel.org/r/20220426021743.21007-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
