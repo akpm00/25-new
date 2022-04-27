@@ -591,6 +591,7 @@ riscv-use-vma-iterator-for-vdso.patch
 mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
+mapletree-vs-khugepaged.patch
 #
 #mglru
 #mm-x86-arm64-add-arch_has_hw_pte_young.patch
