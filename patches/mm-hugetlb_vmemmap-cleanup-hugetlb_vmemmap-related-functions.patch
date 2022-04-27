@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		flush_work(&free_hpage_work);
  }
  
-@@ -1739,7 +1739,7 @@ static void __prep_account_new_huge_page
+@@ -1737,7 +1737,7 @@ static void __prep_account_new_huge_page
  
  static void __prep_new_huge_page(struct hstate *h, struct page *page)
  {
@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	INIT_LIST_HEAD(&page->lru);
  	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
  	hugetlb_set_page_subpool(page, NULL);
-@@ -2112,7 +2112,7 @@ retry:
+@@ -2110,7 +2110,7 @@ retry:
  		 * Attempt to allocate vmemmmap here so that we can take
  		 * appropriate action on failure.
  		 */
@@ -80,7 +80,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (!rc) {
  			/*
  			 * Move PageHWPoison flag from head page to the raw
-@@ -3427,7 +3427,7 @@ static int demote_free_huge_page(struct
+@@ -3425,7 +3425,7 @@ static int demote_free_huge_page(struct
  	remove_hugetlb_page_for_demote(h, page, false);
  	spin_unlock_irq(&hugetlb_lock);
  

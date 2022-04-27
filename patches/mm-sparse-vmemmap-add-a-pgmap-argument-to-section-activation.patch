@@ -139,7 +139,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		unsigned long map_offset, struct vmem_altmap *altmap);
 --- a/include/linux/mm.h~mm-sparse-vmemmap-add-a-pgmap-argument-to-section-activation
 +++ a/include/linux/mm.h
-@@ -3198,7 +3198,8 @@ int vmemmap_remap_alloc(unsigned long st
+@@ -3154,7 +3154,8 @@ int vmemmap_remap_alloc(unsigned long st
  
  void *sparse_buffer_alloc(unsigned long size);
  struct page * __populate_section_memmap(unsigned long pfn,

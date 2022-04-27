@@ -37,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_alloc-reuse-tail-struct-pages-for-compound-devmaps
 +++ a/mm/page_alloc.c
-@@ -6588,6 +6588,21 @@ static void __ref __init_zone_device_pag
+@@ -6596,6 +6596,21 @@ static void __ref __init_zone_device_pag
  	}
  }
  
@@ -59,7 +59,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void __ref memmap_init_compound(struct page *head,
  				       unsigned long head_pfn,
  				       unsigned long zone_idx, int nid,
-@@ -6652,7 +6667,7 @@ void __ref memmap_init_zone_device(struc
+@@ -6660,7 +6675,7 @@ void __ref memmap_init_zone_device(struc
  			continue;
  
  		memmap_init_compound(page, pfn, zone_idx, nid, pgmap,

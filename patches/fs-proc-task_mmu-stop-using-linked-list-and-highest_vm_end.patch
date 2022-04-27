@@ -118,10 +118,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return -ESRCH;
  
 -	mm = priv->mm;
- 	if (!mm || !mmget_not_zero(mm))
+ 	if (!mm || !mmget_not_zero(mm)) {
+ 		ret = -ESRCH;
  		goto out_put_task;
- 
-@@ -892,8 +896,13 @@ static int show_smaps_rollup(struct seq_
+@@ -894,8 +898,13 @@ static int show_smaps_rollup(struct seq_
  		goto out_put_mm;
  
  	hold_task_mempolicy(priv);
@@ -136,7 +136,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		smap_gather_stats(vma, &mss, 0);
  		last_vma_end = vma->vm_end;
  
-@@ -902,6 +911,7 @@ static int show_smaps_rollup(struct seq_
+@@ -904,6 +913,7 @@ static int show_smaps_rollup(struct seq_
  		 * access it for write request.
  		 */
  		if (mmap_lock_is_contended(mm)) {
@@ -144,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			mmap_read_unlock(mm);
  			ret = mmap_read_lock_killable(mm);
  			if (ret) {
-@@ -945,7 +955,7 @@ static int show_smaps_rollup(struct seq_
+@@ -947,7 +957,7 @@ static int show_smaps_rollup(struct seq_
  			 *    contains last_vma_end.
  			 *    Iterate VMA' from last_vma_end.
  			 */
@@ -153,7 +153,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/* Case 3 above */
  			if (!vma)
  				break;
-@@ -959,11 +969,10 @@ static int show_smaps_rollup(struct seq_
+@@ -961,11 +971,10 @@ static int show_smaps_rollup(struct seq_
  				smap_gather_stats(vma, &mss, last_vma_end);
  		}
  		/* Case 2 above */
@@ -168,7 +168,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	seq_pad(m, ' ');
  	seq_puts(m, "[rollup]\n");
  
-@@ -1256,6 +1265,7 @@ static ssize_t clear_refs_write(struct f
+@@ -1258,6 +1267,7 @@ static ssize_t clear_refs_write(struct f
  		return -ESRCH;
  	mm = get_task_mm(task);
  	if (mm) {
@@ -176,7 +176,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct mmu_notifier_range range;
  		struct clear_refs_private cp = {
  			.type = type,
-@@ -1275,7 +1285,7 @@ static ssize_t clear_refs_write(struct f
+@@ -1277,7 +1287,7 @@ static ssize_t clear_refs_write(struct f
  		}
  
  		if (type == CLEAR_REFS_SOFT_DIRTY) {
@@ -185,7 +185,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				if (!(vma->vm_flags & VM_SOFTDIRTY))
  					continue;
  				vma->vm_flags &= ~VM_SOFTDIRTY;
-@@ -1287,8 +1297,7 @@ static ssize_t clear_refs_write(struct f
+@@ -1289,8 +1299,7 @@ static ssize_t clear_refs_write(struct f
  						0, NULL, mm, 0, -1UL);
  			mmu_notifier_invalidate_range_start(&range);
  		}

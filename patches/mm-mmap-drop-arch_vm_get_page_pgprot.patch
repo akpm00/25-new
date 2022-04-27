@@ -1,5 +1,5 @@
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: mm/mmap: Drop arch_vm_get_page_pgprot()
+Subject: mm/mmap: drop arch_vm_get_page_pgprot()
 
 There are no platforms left which use arch_vm_get_page_prot(). Just drop
 generic arch_vm_get_page_prot().

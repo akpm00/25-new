@@ -150,7 +150,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_CGROUP_HUGETLB
 --- a/include/linux/mm.h~mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap
 +++ a/include/linux/mm.h
-@@ -3189,7 +3189,7 @@ static inline void print_vma_addr(char *
+@@ -3145,7 +3145,7 @@ static inline void print_vma_addr(char *
  }
  #endif
  
@@ -161,7 +161,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  int vmemmap_remap_alloc(unsigned long start, unsigned long end,
 --- a/include/linux/page-flags.h~mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap
 +++ a/include/linux/page-flags.h
-@@ -199,13 +199,13 @@ enum pageflags {
+@@ -190,13 +190,13 @@ enum pageflags {
  
  #ifndef __GENERATING_BOUNDS_H
  

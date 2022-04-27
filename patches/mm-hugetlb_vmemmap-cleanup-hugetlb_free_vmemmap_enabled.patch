@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (test_bit(PG_dcache_clean, &page->flags))
 --- a/include/linux/page-flags.h~mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled
 +++ a/include/linux/page-flags.h
-@@ -201,16 +201,16 @@ enum pageflags {
+@@ -192,16 +192,16 @@ enum pageflags {
  
  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
  DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON,
@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * page is enabled, the head vmemmap page frame is reused and all of the tail
   * vmemmap addresses map to the head vmemmap page frame (furture details can
   * refer to the figure at the head of the mm/hugetlb_vmemmap.c).  In other
-@@ -227,7 +227,7 @@ static __always_inline bool hugetlb_free
+@@ -218,7 +218,7 @@ static __always_inline bool hugetlb_free
   */
  static __always_inline const struct page *page_fixed_fake_head(const struct page *page)
  {
@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return page;
  
  	/*
-@@ -256,7 +256,7 @@ static inline const struct page *page_fi
+@@ -247,7 +247,7 @@ static inline const struct page *page_fi
  	return page;
  }
  

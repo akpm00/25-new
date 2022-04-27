@@ -42,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swapops.h~mm-remove-stub-for-non_swap_entry
 +++ a/include/linux/swapops.h
-@@ -414,18 +414,10 @@ static inline void num_poisoned_pages_in
+@@ -387,18 +387,10 @@ static inline void num_poisoned_pages_in
  }
  #endif
  

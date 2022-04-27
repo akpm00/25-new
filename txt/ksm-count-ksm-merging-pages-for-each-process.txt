@@ -18,6 +18,7 @@ merging information of each process.
 We add a new proc file named as ksm_merging_pages under /proc/<pid>/ to
 indicate the involved ksm merging pages of this process.
 
+[akpm@linux-foundation.org: fix comment typo, remove BUG_ON()s]
 Link: https://lkml.kernel.org/r/20220325082318.2352853-1-xu.xin16@zte.com.cn
 Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 Reported-by: kernel test robot <lkp@intel.com>

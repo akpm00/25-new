@@ -117,7 +117,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 + +-----------+
 --- a/include/linux/mm.h~mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps
 +++ a/include/linux/mm.h
-@@ -3205,7 +3205,7 @@ p4d_t *vmemmap_p4d_populate(pgd_t *pgd,
+@@ -3161,7 +3161,7 @@ p4d_t *vmemmap_p4d_populate(pgd_t *pgd,
  pud_t *vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node);
  pmd_t *vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node);
  pte_t *vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
@@ -128,7 +128,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void *vmemmap_alloc_block_buf(unsigned long size, int node,
 --- a/mm/memremap.c~mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps
 +++ a/mm/memremap.c
-@@ -307,6 +307,7 @@ void *memremap_pages(struct dev_pagemap
+@@ -287,6 +287,7 @@ void *memremap_pages(struct dev_pagemap
  {
  	struct mhp_params params = {
  		.altmap = pgmap_altmap(pgmap),
