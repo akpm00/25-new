@@ -1,5 +1,5 @@
 From: Akira Yokosawa <akiyks@gmail.com>
-Subject: docs: vm/page_owner: Use literal blocks for param description
+Subject: docs: vm/page_owner: use literal blocks for param description
 
 Sphinx generates hard-to-read lists of parameters at the bottom of the
 page.  Fix them by putting literal-block markers of "::" in front of them.

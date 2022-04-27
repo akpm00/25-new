@@ -5,13 +5,11 @@ origin.patch
 #mm/kasan
 kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
 #
-#mm/mommu
+#mm/debug
+docs-vm-page_owner-use-literal-blocks-for-param-description.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mainline-later (next week, approximately)
-#
-#mm/debug
-docs-vm-page_owner-use-literal-blocks-for-param-description.patch
 #
 #mm/memory-failure
 revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
