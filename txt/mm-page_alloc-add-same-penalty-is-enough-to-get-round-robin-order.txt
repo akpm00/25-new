@@ -15,7 +15,10 @@ So it is fine to increase same penalty when we get the first node in the
 same distance group.  Since we just increase a constance of 1 to node
 penalty, it is not necessary to multiply MAX_NODE_LOAD for preference.
 
+[richard.weiyang@gmail.com: remove remove MAX_NODE_LOAD, per Vlastimil]
+  Link: https://lkml.kernel.org/r/20220412001319.7462-1-richard.weiyang@gmail.com
 Link: https://lkml.kernel.org/r/20220123013537.20491-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Acked-by: David Hildenbrand <david@redhat.com>

@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcg-mz-already-removed-from-rb_tree-if-not-null
 +++ a/mm/memcontrol.c
-@@ -3419,7 +3419,6 @@ unsigned long mem_cgroup_soft_limit_recl
+@@ -3418,7 +3418,6 @@ unsigned long mem_cgroup_soft_limit_recl
  						    gfp_mask, total_scanned);
  		nr_reclaimed += reclaimed;
  		spin_lock_irq(&mctz->lock);

@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void lock_page_memcg(struct page *page);
 --- a/mm/memcontrol.c~mm-memcontrolc-make-cgroup_memory_noswap-static
 +++ a/mm/memcontrol.c
-@@ -90,7 +90,7 @@ static bool cgroup_memory_nokmem __ro_af
+@@ -89,7 +89,7 @@ static bool cgroup_memory_nokmem __ro_af
  
  /* Whether the swap controller is active */
  #ifdef CONFIG_MEMCG_SWAP

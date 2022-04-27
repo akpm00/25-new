@@ -78,6 +78,8 @@ an wrong value.
 [1] https://lore.kernel.org/all/20210510030027.56044-1-songmuchun@bytedance.com/
 [2] https://lore.kernel.org/all/20210518091826.36937-1-songmuchun@bytedance.com/
 
+[songmuchun@bytedance.com: restructure the code comment inside flush_dcache_page()]
+  Link: https://lkml.kernel.org/r/20220414072646.21910-1-songmuchun@bytedance.com
 Link: https://lkml.kernel.org/r/20220331065640.5777-2-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Barry Song <baohua@kernel.org>

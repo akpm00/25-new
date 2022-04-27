@@ -2,7 +2,7 @@ From: Jagdish Gediya <jvgediya@linux.ibm.com>
 Subject: lib/kstrtox.c: add "false"/"true" support to kstrtobool()
 
 At many places in kernel, It is necessary to convert sysfs input to
-corrosponding bool value e.g.  "false" or "0" need to be converted to bool
+corresponding bool value e.g.  "false" or "0" need to be converted to bool
 false, "true" or "1" need to be converted to bool true, places where such
 conversion is needed currently check the input string manually,
 kstrtobool() can be utilized at such places but currently it doesn't have

@@ -19,7 +19,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcg-non-hierarchical-mode-is-deprecated
 +++ a/mm/memcontrol.c
-@@ -6588,9 +6588,6 @@ void mem_cgroup_calculate_protection(str
+@@ -6587,9 +6587,6 @@ void mem_cgroup_calculate_protection(str
  		return;
  
  	parent = parent_mem_cgroup(memcg);

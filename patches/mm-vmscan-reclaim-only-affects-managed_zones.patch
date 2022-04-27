@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/vmscan.c~mm-vmscan-reclaim-only-affects-managed_zones
 +++ a/mm/vmscan.c
-@@ -1032,7 +1032,7 @@ static bool skip_throttle_noprogress(pg_
+@@ -1031,7 +1031,7 @@ static bool skip_throttle_noprogress(pg_
  	for (i = 0; i < MAX_NR_ZONES; i++) {
  		struct zone *zone = pgdat->node_zones + i;
  
@@ -31,7 +31,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			continue;
  
  		reclaimable += zone_reclaimable_pages(zone);
-@@ -3929,7 +3929,7 @@ static bool pgdat_balanced(pg_data_t *pg
+@@ -3912,7 +3912,7 @@ static bool pgdat_balanced(pg_data_t *pg
  	}
  
  	/*

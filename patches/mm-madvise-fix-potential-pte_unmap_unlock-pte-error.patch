@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/madvise.c~mm-madvise-fix-potential-pte_unmap_unlock-pte-error
 +++ a/mm/madvise.c
-@@ -437,12 +437,12 @@ regular_page:
+@@ -432,12 +432,12 @@ regular_page:
  			if (split_huge_page(page)) {
  				unlock_page(page);
  				put_page(page);
@@ -35,7 +35,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pte--;
  			addr -= PAGE_SIZE;
  			continue;
-@@ -653,12 +653,12 @@ static int madvise_free_pte_range(pmd_t
+@@ -648,12 +648,12 @@ static int madvise_free_pte_range(pmd_t
  			if (split_huge_page(page)) {
  				unlock_page(page);
  				put_page(page);

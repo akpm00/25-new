@@ -14,6 +14,8 @@ This patch makes sure we pick up a managed zone for wakeup_kswapd().  And
 it also use managed_zone in migrate_balanced_pgdat() to get the proper
 zone.
 
+[richard.weiyang@gmail.com: adjust the usage in migrate_balanced_pgdat()]
+  Link: https://lkml.kernel.org/r/20220329010901.1654-2-richard.weiyang@gmail.com
 Link: https://lkml.kernel.org/r/20220327024101.10378-2-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
 Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
@@ -24,13 +26,31 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/migrate.c    |    2 +-
+ mm/migrate.c    |    6 +++---
  mm/page_alloc.c |    2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
 --- a/mm/migrate.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/migrate.c
-@@ -2044,7 +2044,7 @@ static int numamigrate_isolate_page(pg_d
+@@ -1969,7 +1969,7 @@ SYSCALL_DEFINE6(move_pages, pid_t, pid,
+ #ifdef CONFIG_NUMA_BALANCING
+ /*
+  * Returns true if this is a safe migration target node for misplaced NUMA
+- * pages. Currently it only checks the watermarks which crude
++ * pages. Currently it only checks the watermarks which is crude.
+  */
+ static bool migrate_balanced_pgdat(struct pglist_data *pgdat,
+ 				   unsigned long nr_migrate_pages)
+@@ -1979,7 +1979,7 @@ static bool migrate_balanced_pgdat(struc
+ 	for (z = pgdat->nr_zones - 1; z >= 0; z--) {
+ 		struct zone *zone = pgdat->node_zones + z;
+ 
+-		if (!populated_zone(zone))
++		if (!managed_zone(zone))
+ 			continue;
+ 
+ 		/* Avoid waking kswapd by allocating pages_to_migrate pages. */
+@@ -2032,7 +2032,7 @@ static int numamigrate_isolate_page(pg_d
  		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING))
  			return 0;
  		for (z = pgdat->nr_zones - 1; z >= 0; z--) {
@@ -41,13 +61,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		wakeup_kswapd(pgdat->node_zones + z, 0, order, ZONE_MOVABLE);
 --- a/mm/page_alloc.c~mm-vmscan-make-sure-wakeup_kswapd-with-managed-zone
 +++ a/mm/page_alloc.c
-@@ -4630,6 +4630,8 @@ static void wake_all_kswapds(unsigned in
+@@ -4629,6 +4629,8 @@ static void wake_all_kswapds(unsigned in
  
  	for_each_zone_zonelist_nodemask(zone, z, ac->zonelist, highest_zoneidx,
  					ac->nodemask) {
 +		if (!managed_zone(zone))
 +			continue;
- 		if (last_pgdat != zone->zone_pgdat) {
+ 		if (last_pgdat != zone->zone_pgdat)
  			wakeup_kswapd(zone, gfp_mask, order, highest_zoneidx);
- 			last_pgdat = zone->zone_pgdat;
+ 		last_pgdat = zone->zone_pgdat;
 _

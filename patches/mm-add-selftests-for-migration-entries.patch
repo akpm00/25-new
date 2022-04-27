@@ -1,5 +1,5 @@
 From: Alistair Popple <apopple@nvidia.com>
-Subject: mm: Add selftests for migration entries
+Subject: mm: add selftests for migration entries
 
 Add some basic migration tests and in particular tests that will
 stress both the pte and pmd migration entry wait paths.
@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  TEST_GEN_FILES += mlock-random-test
  TEST_GEN_FILES += mlock2-tests
  TEST_GEN_FILES += mremap_dontunmap
-@@ -154,6 +155,8 @@ $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXT
+@@ -149,6 +150,8 @@ $(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXT
  
  $(OUTPUT)/ksm_tests: LDLIBS += -lnuma
  

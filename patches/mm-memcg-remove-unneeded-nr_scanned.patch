@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcg-remove-unneeded-nr_scanned
 +++ a/mm/memcontrol.c
-@@ -3388,7 +3388,6 @@ unsigned long mem_cgroup_soft_limit_recl
+@@ -3387,7 +3387,6 @@ unsigned long mem_cgroup_soft_limit_recl
  	int loop = 0;
  	struct mem_cgroup_tree_per_node *mctz;
  	unsigned long excess;
@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (order > 0)
  		return 0;
-@@ -3416,11 +3415,9 @@ unsigned long mem_cgroup_soft_limit_recl
+@@ -3415,11 +3414,9 @@ unsigned long mem_cgroup_soft_limit_recl
  		if (!mz)
  			break;
  

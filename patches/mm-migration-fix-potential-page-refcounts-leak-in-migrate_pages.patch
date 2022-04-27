@@ -23,7 +23,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migration-fix-potential-page-refcounts-leak-in-migrate_pages
 +++ a/mm/migrate.c
-@@ -1446,6 +1446,14 @@ retry:
+@@ -1434,6 +1434,14 @@ retry:
  				}
  
  				nr_failed_pages += nr_subpages;

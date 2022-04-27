@@ -23,7 +23,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_alloc-simplify-pageblock-migratetype-check-in-__free_one_page
 +++ a/mm/page_alloc.c
-@@ -1054,7 +1054,6 @@ static inline void __free_one_page(struc
+@@ -1053,7 +1053,6 @@ static inline void __free_one_page(struc
  		int migratetype, fpi_t fpi_flags)
  {
  	struct capture_control *capc = task_capc(zone);
@@ -31,7 +31,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	unsigned long buddy_pfn;
  	unsigned long combined_pfn;
  	struct page *buddy;
-@@ -1070,8 +1069,7 @@ static inline void __free_one_page(struc
+@@ -1069,8 +1068,7 @@ static inline void __free_one_page(struc
  	VM_BUG_ON_PAGE(pfn & ((1 << order) - 1), page);
  	VM_BUG_ON_PAGE(bad_range(zone, page), page);
  
@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (compaction_capture(capc, page, order, migratetype)) {
  			__mod_zone_freepage_state(zone, -(1 << order),
  								migratetype);
-@@ -1082,6 +1080,22 @@ continue_merging:
+@@ -1081,6 +1079,22 @@ continue_merging:
  
  		if (!page_is_buddy(page, buddy, order))
  			goto done_merging;
@@ -64,7 +64,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/*
  		 * Our buddy is free or it is CONFIG_DEBUG_PAGEALLOC guard page,
  		 * merge with it and move up one order.
-@@ -1095,32 +1109,6 @@ continue_merging:
+@@ -1094,32 +1108,6 @@ continue_merging:
  		pfn = combined_pfn;
  		order++;
  	}

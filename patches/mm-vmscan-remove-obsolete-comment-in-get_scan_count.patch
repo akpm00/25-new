@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/vmscan.c~mm-vmscan-remove-obsolete-comment-in-get_scan_count
 +++ a/mm/vmscan.c
-@@ -2663,9 +2663,7 @@ enum scan_balance {
+@@ -2646,9 +2646,7 @@ enum scan_balance {
  
  /*
   * Determine how aggressively the anon and file LRU lists should be

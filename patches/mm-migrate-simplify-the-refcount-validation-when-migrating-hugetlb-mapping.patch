@@ -25,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migrate-simplify-the-refcount-validation-when-migrating-hugetlb-mapping
 +++ a/mm/migrate.c
-@@ -477,11 +477,6 @@ int migrate_huge_page_move_mapping(struc
+@@ -471,11 +471,6 @@ int migrate_huge_page_move_mapping(struc
  
  	xas_lock_irq(&xas);
  	expected_count = 2 + page_has_private(page);

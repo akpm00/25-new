@@ -18,7 +18,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcg-set-pos-explicitly-for-reclaim-and-reclaim
 +++ a/mm/memcontrol.c
-@@ -1014,9 +1014,6 @@ struct mem_cgroup *mem_cgroup_iter(struc
+@@ -1013,9 +1013,6 @@ struct mem_cgroup *mem_cgroup_iter(struc
  	if (!root)
  		root = root_mem_cgroup;
  
@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	rcu_read_lock();
  
  	if (reclaim) {
-@@ -1042,6 +1039,8 @@ struct mem_cgroup *mem_cgroup_iter(struc
+@@ -1041,6 +1038,8 @@ struct mem_cgroup *mem_cgroup_iter(struc
  			 */
  			(void)cmpxchg(&iter->position, pos, NULL);
  		}

@@ -16,6 +16,53 @@ than the rbtree so it has fewer cache misses.  The removal of the linked
 list between subsequent entries also reduces the cache misses and the need
 to pull in the previous and next VMA during many tree alterations.
 
+The benchmarks are around the same as they have always been.
+
+kernbench                      
+                               rb5.18-rc2             mt5.18-rc2
+Amean     user-2        862.24 (   0.00%)      861.45 *   0.09%*
+Amean     syst-2        136.65 (   0.00%)      141.58 *  -3.61%*
+Amean     elsp-2        505.38 (   0.00%)      507.99 *  -0.52%*
+Amean     user-4        890.24 (   0.00%)      888.34 *   0.21%*
+Amean     syst-4        140.64 (   0.00%)      145.32 *  -3.33%*
+Amean     elsp-4        264.34 (   0.00%)      265.76 *  -0.54%*
+Amean     user-8        952.30 (   0.00%)      947.57 *   0.50%*
+Amean     syst-8        145.52 (   0.00%)      147.79 *  -1.56%*
+Amean     elsp-8        145.02 (   0.00%)      145.38 *  -0.24%*
+Amean     user-16       920.83 (   0.00%)      918.95 *   0.20%*
+Amean     syst-16       135.37 (   0.00%)      138.99 *  -2.67%*
+Amean     elsp-16        75.03 (   0.00%)       75.25 *  -0.29%*
+Amean     user-32       970.98 (   0.00%)      969.01 *   0.20%*
+Amean     syst-32       144.75 (   0.00%)      148.58 *  -2.64%*
+Amean     elsp-32        44.10 (   0.00%)       44.64 *  -1.24%*
+Amean     user-64      1062.19 (   0.00%)     1060.30 *   0.18%*
+Amean     syst-64       154.24 (   0.00%)      157.58 *  -2.17%*
+Amean     elsp-64        28.88 (   0.00%)       29.10 *  -0.76%*
+Amean     user-128     1609.09 (   0.00%)     1612.19 *  -0.19%*
+Amean     syst-128      210.05 (   0.00%)      215.09 *  -2.40%*
+Amean     elsp-128       25.22 (   0.00%)       25.45 *  -0.94%*
+Amean     user-256     1767.37 (   0.00%)     1766.86 *   0.03%*
+Amean     syst-256      215.99 (   0.00%)      221.56 *  -2.58%*
+Amean     elsp-256       25.20 (   0.00%)       25.33 *  -0.54%*
+Amean     user-288     1772.73 (   0.00%)     1772.35 *   0.02%*
+Amean     syst-288      216.08 (   0.00%)      221.39 *  -2.45%*
+Amean     elsp-288       25.16 (   0.00%)       25.44 *  -1.13%*
+
+Increase in performance in the following micro-benchmarks in Hmean:
+- context_switch1-processes +14.74% to 2.22%
+
+Mixed results in the following micro-benchmarks in Hmean:
+- malloc1-threads +34.95% to -30.06%
+- malloc1-processes +2.73% to -23.65%
+- page_fault3-threads +19.84% to -11.55%
+- pthread_mutex1-threads +42.50% to -11.76%
+
+Decrease in performance in the following micro-benchmarks in Hmean:
+- brk1-processes -35.35% to -42.69%
+
+brk1-processes decrease is due to the test itself.  Since the VMA cannot
+be expanded, the test is actually inserting a new VMA.
+
 Link: https://lkml.kernel.org/r/20220426150616.3937571-8-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

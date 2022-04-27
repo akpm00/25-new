@@ -24,7 +24,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~revert-mm-memory-failurec-fix-race-with-changing-page-compound-again
 +++ a/include/linux/mm.h
-@@ -3292,7 +3292,6 @@ enum mf_action_page_type {
+@@ -3251,7 +3251,6 @@ enum mf_action_page_type {
  	MF_MSG_BUDDY,
  	MF_MSG_DAX,
  	MF_MSG_UNSPLIT_THP,
@@ -44,7 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
 --- a/mm/memory-failure.c~revert-mm-memory-failurec-fix-race-with-changing-page-compound-again
 +++ a/mm/memory-failure.c
-@@ -734,7 +734,6 @@ static const char * const action_page_ty
+@@ -733,7 +733,6 @@ static const char * const action_page_ty
  	[MF_MSG_BUDDY]			= "free buddy page",
  	[MF_MSG_DAX]			= "dax page",
  	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	[MF_MSG_UNKNOWN]		= "unknown page",
  };
  
-@@ -1606,16 +1605,6 @@ retry:
+@@ -1605,16 +1604,6 @@ retry:
  		return res == MF_RECOVERED ? 0 : -EBUSY;
  	}
  

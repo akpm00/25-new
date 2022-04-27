@@ -13,6 +13,7 @@ interrupt (per_cpu_remove_cache operation).
 
 So add a cpu_quarantine offline flags check in per_cpu_remove_cache().
 
+[akpm@linux-foundation.org: add comment, per Zqiang]
 Link: https://lkml.kernel.org/r/20220414025925.2423818-1-qiang1.zhang@intel.com
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
@@ -23,15 +24,20 @@ Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/kasan/quarantine.c |    2 ++
- 1 file changed, 2 insertions(+)
+ mm/kasan/quarantine.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
 --- a/mm/kasan/quarantine.c~kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time
 +++ a/mm/kasan/quarantine.c
-@@ -315,6 +315,8 @@ static void per_cpu_remove_cache(void *a
+@@ -315,6 +315,13 @@ static void per_cpu_remove_cache(void *a
  	struct qlist_head *q;
  
  	q = this_cpu_ptr(&cpu_quarantine);
++	/*
++	 * Ensure the ordering between the writing to q->offline and
++	 * per_cpu_remove_cache.  Prevent cpu_quarantine from being corrupted
++	 * by interrupt.
++	 */
 +	if (READ_ONCE(q->offline))
 +		return;
  	qlist_move_cache(q, &to_free, cache);

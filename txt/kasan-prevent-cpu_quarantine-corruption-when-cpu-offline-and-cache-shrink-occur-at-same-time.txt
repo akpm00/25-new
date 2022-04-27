@@ -13,6 +13,7 @@ interrupt (per_cpu_remove_cache operation).
 
 So add a cpu_quarantine offline flags check in per_cpu_remove_cache().
 
+[akpm@linux-foundation.org: add comment, per Zqiang]
 Link: https://lkml.kernel.org/r/20220414025925.2423818-1-qiang1.zhang@intel.com
 Signed-off-by: Zqiang <qiang1.zhang@intel.com>
 Reviewed-by: Dmitry Vyukov <dvyukov@google.com>

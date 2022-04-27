@@ -6,6 +6,7 @@ page_is_buddy() should be used to check its validity.  Add a helper
 function find_buddy_page_pfn() to find the buddy page and do the check
 together.
 
+[ziy@nvidia.com: updates per David]
 Link: https://lkml.kernel.org/r/20220401230804.1658207-2-zi.yan@sent.com
 Link: https://lore.kernel.org/linux-mm/CAHk-=wji_AmYygZMTsPMdJ7XksMt7kOur8oDfDdniBRMjm4VkQ@mail.gmail.com/
 Link: https://lkml.kernel.org/r/7236E7CA-B5F1-4C04-AB85-E86FA3E9A54B@nvidia.com

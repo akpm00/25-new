@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/rmap.h~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes
 +++ a/include/linux/rmap.h
-@@ -361,6 +361,9 @@ unsigned long page_address_in_vma(struct
+@@ -261,6 +261,9 @@ unsigned long page_address_in_vma(struct
   */
  int folio_mkclean(struct folio *);
  
@@ -98,7 +98,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   */
 --- a/mm/rmap.c~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes
 +++ a/mm/rmap.c
-@@ -930,12 +930,12 @@ int folio_referenced(struct folio *folio
+@@ -929,12 +929,12 @@ int folio_referenced(struct folio *folio
  	return pra.referenced;
  }
  
@@ -115,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * We have to assume the worse case ie pmd for invalidation. Note that
-@@ -943,16 +943,16 @@ static bool page_mkclean_one(struct foli
+@@ -942,16 +942,16 @@ static bool page_mkclean_one(struct foli
  	 */
  	mmu_notifier_range_init(&range, MMU_NOTIFY_PROTECTION_PAGE,
  				0, vma, vma->vm_mm, address,
@@ -137,7 +137,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  			if (!pte_dirty(*pte) && !pte_write(*pte))
  				continue;
-@@ -965,7 +965,7 @@ static bool page_mkclean_one(struct foli
+@@ -964,7 +964,7 @@ static bool page_mkclean_one(struct foli
  			ret = 1;
  		} else {
  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
@@ -146,7 +146,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pmd_t entry;
  
  			if (!pmd_dirty(*pmd) && !pmd_write(*pmd))
-@@ -992,11 +992,22 @@ static bool page_mkclean_one(struct foli
+@@ -991,11 +991,22 @@ static bool page_mkclean_one(struct foli
  		 * See Documentation/vm/mmu_notifier.rst
  		 */
  		if (ret)
@@ -170,7 +170,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return true;
  }
  
-@@ -1034,6 +1045,38 @@ int folio_mkclean(struct folio *folio)
+@@ -1033,6 +1044,38 @@ int folio_mkclean(struct folio *folio)
  EXPORT_SYMBOL_GPL(folio_mkclean);
  
  /**

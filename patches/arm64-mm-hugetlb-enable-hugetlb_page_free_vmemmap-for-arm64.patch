@@ -78,6 +78,8 @@ an wrong value.
 [1] https://lore.kernel.org/all/20210510030027.56044-1-songmuchun@bytedance.com/
 [2] https://lore.kernel.org/all/20210518091826.36937-1-songmuchun@bytedance.com/
 
+[songmuchun@bytedance.com: restructure the code comment inside flush_dcache_page()]
+  Link: https://lkml.kernel.org/r/20220414072646.21910-1-songmuchun@bytedance.com
 Link: https://lkml.kernel.org/r/20220331065640.5777-2-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Barry Song <baohua@kernel.org>
@@ -97,12 +99,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  arch/arm64/Kconfig    |    1 +
- arch/arm64/mm/flush.c |   13 +++++++++++++
- 2 files changed, 14 insertions(+)
+ arch/arm64/mm/flush.c |   14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
 
 --- a/arch/arm64/Kconfig~arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64
 +++ a/arch/arm64/Kconfig
-@@ -97,6 +97,7 @@ config ARM64
+@@ -96,6 +96,7 @@ config ARM64
  	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
  	select ARCH_WANT_FRAME_POINTERS
  	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
@@ -112,7 +114,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	select ARCH_HAS_UBSAN_SANITIZE_ALL
 --- a/arch/arm64/mm/flush.c~arm64-mm-hugetlb-enable-hugetlb_page_free_vmemmap-for-arm64
 +++ a/arch/arm64/mm/flush.c
-@@ -75,6 +75,19 @@ EXPORT_SYMBOL_GPL(__sync_icache_dcache);
+@@ -75,6 +75,20 @@ EXPORT_SYMBOL_GPL(__sync_icache_dcache);
   */
  void flush_dcache_page(struct page *page)
  {
@@ -122,9 +124,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	 * read-only when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP is enabled (more
 +	 * details can refer to vmemmap_remap_pte()).  Although
 +	 * __sync_icache_dcache() only set PG_dcache_clean flag on the head
-+	 * page struct, some tail page structs still can be seen the flag is
-+	 * set since the head vmemmap page frame is reused (more details can
-+	 * refer to the comments above page_fixed_fake_head()).
++	 * page struct, there is more than one page struct with PG_dcache_clean
++	 * associated with the HugeTLB page since the head vmemmap page frame
++	 * is reused (more details can refer to the comments above
++	 * page_fixed_fake_head()).
 +	 */
 +	if (hugetlb_free_vmemmap_enabled() && PageHuge(page))
 +		page = compound_head(page);

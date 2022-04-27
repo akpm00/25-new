@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory-failure.c~mm-hwpoison-put-page-in-already-hwpoisoned-case-with-mf_count_increased
 +++ a/mm/memory-failure.c
-@@ -1812,6 +1812,8 @@ try_again:
+@@ -1811,6 +1811,8 @@ try_again:
  		res = -EHWPOISON;
  		if (flags & MF_ACTION_REQUIRED)
  			res = kill_accessing_process(current, pfn, flags);

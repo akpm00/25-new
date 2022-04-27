@@ -6,6 +6,7 @@ page_is_buddy() should be used to check its validity.  Add a helper
 function find_buddy_page_pfn() to find the buddy page and do the check
 together.
 
+[ziy@nvidia.com: updates per David]
 Link: https://lkml.kernel.org/r/20220401230804.1658207-2-zi.yan@sent.com
 Link: https://lore.kernel.org/linux-mm/CAHk-=wji_AmYygZMTsPMdJ7XksMt7kOur8oDfDdniBRMjm4VkQ@mail.gmail.com/
 Link: https://lkml.kernel.org/r/7236E7CA-B5F1-4C04-AB85-E86FA3E9A54B@nvidia.com
@@ -71,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 + * For recording page's order, we use page_private(page).
 + */
 +static inline bool page_is_buddy(struct page *page, struct page *buddy,
-+							unsigned int order)
++				 unsigned int order)
 +{
 +	if (!page_is_guard(buddy) && !PageBuddy(buddy))
 +		return false;
@@ -116,8 +117,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static inline struct page *find_buddy_page_pfn(struct page *page,
 +			unsigned long pfn, unsigned int order, unsigned long *buddy_pfn)
 +{
-+	struct page *buddy;
 +	unsigned long __buddy_pfn = __find_buddy_pfn(pfn, order);
++	struct page *buddy;
 +
 +	buddy = page + (__buddy_pfn - pfn);
 +	if (buddy_pfn)
@@ -167,7 +168,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/page_alloc.c~mm-wrap-__find_buddy_pfn-with-a-necessary-buddy-page-validation
 +++ a/mm/page_alloc.c
-@@ -868,40 +868,6 @@ static inline void set_buddy_order(struc
+@@ -867,40 +867,6 @@ static inline void set_buddy_order(struc
  	__SetPageBuddy(page);
  }
  
@@ -208,14 +209,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #ifdef CONFIG_COMPACTION
  static inline struct capture_control *task_capc(struct zone *zone)
  {
-@@ -1010,18 +976,17 @@ static inline bool
+@@ -1009,18 +975,17 @@ static inline bool
  buddy_merge_likely(unsigned long pfn, unsigned long buddy_pfn,
  		   struct page *page, unsigned int order)
  {
 -	struct page *higher_page, *higher_buddy;
 -	unsigned long combined_pfn;
-+	struct page *higher_page;
 +	unsigned long higher_page_pfn;
++	struct page *higher_page;
  
  	if (order >= MAX_ORDER - 2)
  		return false;
@@ -233,7 +234,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -1075,10 +1040,9 @@ static inline void __free_one_page(struc
+@@ -1074,10 +1039,9 @@ static inline void __free_one_page(struc
  								migratetype);
  			return;
  		}

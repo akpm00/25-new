@@ -21,7 +21,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-hwpoison-separate-branch-for-free-and-in-use-hugepage
 +++ a/mm/hugetlb.c
-@@ -6831,7 +6831,9 @@ int get_hwpoison_huge_page(struct page *
+@@ -6776,7 +6776,9 @@ int get_hwpoison_huge_page(struct page *
  	spin_lock_irq(&hugetlb_lock);
  	if (PageHeadHuge(page)) {
  		*hugetlb = true;
@@ -34,7 +34,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			ret = -EBUSY;
 --- a/mm/memory-failure.c~mm-hugetlb-hwpoison-separate-branch-for-free-and-in-use-hugepage
 +++ a/mm/memory-failure.c
-@@ -1518,7 +1518,9 @@ int __get_huge_page_for_hwpoison(unsigne
+@@ -1517,7 +1517,9 @@ int __get_huge_page_for_hwpoison(unsigne
  	if (flags & MF_COUNT_INCREASED) {
  		ret = 1;
  		count_increased = true;

@@ -73,11 +73,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +				./page_owner_sort <input> <output> --sort=n,+pid,-tgid
 +				./page_owner_sort <input> <output> --sort=at
  
-    additional function:
+    additional function::
  
-@@ -164,9 +172,23 @@ Usage
- STANDARD FORMAT SPECIFIERS
+@@ -165,9 +173,23 @@ STANDARD FORMAT SPECIFIERS
  ==========================
+ ::
  
 +For --sort option:
 +

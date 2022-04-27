@@ -18,7 +18,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memcontrol.c~mm-memcontrolc-remove-unused-private-flag-of-memoryoom_control
 +++ a/mm/memcontrol.c
-@@ -210,7 +210,6 @@ static struct move_charge_struct {
+@@ -209,7 +209,6 @@ static struct move_charge_struct {
  enum res_type {
  	_MEM,
  	_MEMSWAP,
@@ -26,7 +26,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	_KMEM,
  	_TCP,
  };
-@@ -218,8 +217,6 @@ enum res_type {
+@@ -217,8 +216,6 @@ enum res_type {
  #define MEMFILE_PRIVATE(x, val)	((x) << 16 | (val))
  #define MEMFILE_TYPE(val)	((val) >> 16 & 0xffff)
  #define MEMFILE_ATTR(val)	((val) & 0xffff)
@@ -35,7 +35,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  /*
   * Iteration constructs for visiting all cgroups (under a tree).  If
-@@ -4888,7 +4885,6 @@ static struct cftype mem_cgroup_legacy_f
+@@ -4887,7 +4884,6 @@ static struct cftype mem_cgroup_legacy_f
  		.name = "oom_control",
  		.seq_show = mem_cgroup_oom_control_read,
  		.write_u64 = mem_cgroup_oom_control_write,

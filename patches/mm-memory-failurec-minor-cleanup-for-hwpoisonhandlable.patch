@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory-failure.c~mm-memory-failurec-minor-cleanup-for-hwpoisonhandlable
 +++ a/mm/memory-failure.c
-@@ -1179,13 +1179,11 @@ void ClearPageHWPoisonTakenOff(struct pa
+@@ -1178,13 +1178,11 @@ void ClearPageHWPoisonTakenOff(struct pa
   */
  static inline bool HWPoisonHandlable(struct page *page, unsigned long flags)
  {

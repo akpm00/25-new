@@ -1,5 +1,5 @@
 From: Alistair Popple <apopple@nvidia.com>
-Subject: mm: Add selftests for migration entries
+Subject: mm: add selftests for migration entries
 
 Add some basic migration tests and in particular tests that will
 stress both the pte and pmd migration entry wait paths.
