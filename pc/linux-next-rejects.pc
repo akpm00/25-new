@@ -1,1 +1,3 @@
 arch/x86/mm/Makefile
+drivers/base/memory.c
+tools/testing/selftests/Makefile

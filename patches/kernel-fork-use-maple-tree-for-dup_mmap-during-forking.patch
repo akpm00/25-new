@@ -53,8 +53,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	LIST_HEAD(uf);
  
  	uprobe_start_dup_mmap();
-@@ -615,7 +617,12 @@ static __latent_entropy int dup_mmap(str
- 	khugepaged_fork(mm, oldmm);
+@@ -617,7 +619,12 @@ static __latent_entropy int dup_mmap(str
+ 		goto out;
  
  	prev = NULL;
 -	for (mpnt = oldmm->mmap; mpnt; mpnt = mpnt->vm_next) {
@@ -67,7 +67,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct file *file;
  
  		if (mpnt->vm_flags & VM_DONTCOPY) {
-@@ -629,7 +636,7 @@ static __latent_entropy int dup_mmap(str
+@@ -631,7 +638,7 @@ static __latent_entropy int dup_mmap(str
  		 */
  		if (fatal_signal_pending(current)) {
  			retval = -EINTR;
@@ -76,7 +76,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  		if (mpnt->vm_flags & VM_ACCOUNT) {
  			unsigned long len = vma_pages(mpnt);
-@@ -695,7 +702,9 @@ static __latent_entropy int dup_mmap(str
+@@ -697,7 +704,9 @@ static __latent_entropy int dup_mmap(str
  		rb_parent = &tmp->vm_rb;
  
  		/* Link the vma into the MT */
@@ -87,7 +87,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		mm->map_count++;
  		if (!(tmp->vm_flags & VM_WIPEONFORK))
-@@ -705,10 +714,13 @@ static __latent_entropy int dup_mmap(str
+@@ -707,10 +716,13 @@ static __latent_entropy int dup_mmap(str
  			tmp->vm_ops->open(tmp);
  
  		if (retval)
@@ -102,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out:
  	mmap_write_unlock(mm);
  	flush_tlb_mm(oldmm);
-@@ -724,7 +736,7 @@ fail_nomem_policy:
+@@ -726,7 +738,7 @@ fail_nomem_policy:
  fail_nomem:
  	retval = -ENOMEM;
  	vm_unacct_memory(charge);

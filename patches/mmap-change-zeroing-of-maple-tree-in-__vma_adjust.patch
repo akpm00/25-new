@@ -44,9 +44,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct vm_area_struct *exporter = NULL, *importer = NULL;
 +	unsigned long ll_prev = vma->vm_start; /* linked list prev. */
  
- 	if (next && !insert) {
- 		if (end >= next->vm_end) {
-@@ -760,17 +761,27 @@ again:
+ 	mas_destroy(&mas);
+ 
+@@ -762,17 +763,27 @@ again:
  	}
  
  	if (start != vma->vm_start) {
@@ -79,7 +79,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		vma->vm_end = end;
  		if (!next)
  			mm->highest_vm_end = vm_end_gap(vma);
-@@ -805,7 +816,7 @@ again:
+@@ -807,7 +818,7 @@ again:
  		 * us to insert it before dropping the locks
  		 * (it may either follow vma or precede it).
  		 */

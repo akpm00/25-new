@@ -14,12 +14,12 @@ Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/mmap.c |  488 ++++++++++++++++++++++++++--------------------------
- 1 file changed, 244 insertions(+), 244 deletions(-)
+ mm/mmap.c |  476 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 238 insertions(+), 238 deletions(-)
 
 --- a/mm/mmap.c~mm-mmap-move-mmap_region-below-do_munmap
 +++ a/mm/mmap.c
-@@ -1734,250 +1734,6 @@ static inline int accountable_mapping(st
+@@ -1736,244 +1736,6 @@ static inline int accountable_mapping(st
  	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
  }
  
@@ -184,12 +184,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -			goto free_vma;
 -	}
 -
--	/*
--	 * vma_merge() calls khugepaged_enter_vma() either, the below
--	 * call covers the non-merge case.
--	 */
--	khugepaged_enter_vma(vma, vma->vm_flags);
--
 -	if (mas_preallocate(&mas, vma, GFP_KERNEL)) {
 -		error = -ENOMEM;
 -		if (file)
@@ -270,7 +264,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* unmapped_area() Find an area between the low_limit and the high_limit with
   * the correct alignment and offset, all from @info. Note: current->mm is used
   * for the search.
-@@ -2801,6 +2557,250 @@ int do_munmap(struct mm_struct *mm, unsi
+@@ -2797,6 +2559,244 @@ int do_munmap(struct mm_struct *mm, unsi
  	return __do_munmap(mm, start, len, uf, false);
  }
  
@@ -434,12 +428,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		else
 +			goto free_vma;
 +	}
-+
-+	/*
-+	 * vma_merge() calls khugepaged_enter_vma() either, the below
-+	 * call covers the non-merge case.
-+	 */
-+	khugepaged_enter_vma(vma, vma->vm_flags);
 +
 +	if (mas_preallocate(&mas, vma, GFP_KERNEL)) {
 +		error = -ENOMEM;

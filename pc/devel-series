@@ -154,77 +154,77 @@ procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #
 #mm/selftests
-selftest-vm-clarify-error-statement-in-gup_test.patch
-#
-selftests-vm-bring-common-functions-to-a-new-file.patch
-selftests-vm-add-test-for-soft-dirty-pte-bit.patch
-#
-selftests-vm-refactor-run_vmtestssh-to-reduce-boilerplate.patch
-selftests-vm-fix-shellcheck-warnings-in-run_vmtestssh.patch
-#
-#mm/pagemap
-mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
-#
-mm-mmu_gather-limit-free-batch-count-and-add-schedule-point-in-tlb_batch_pages_flush.patch
-#
-mm-debug_vm_pgtable-drop-protection_map-usage.patch
-mm-mmap-clarify-protection_map-indices.patch
-#
-mm-mmapc-use-helper-mlock_future_check.patch
-#
-mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
-powerpc-mm-enable-arch_has_vm_get_page_prot.patch
-arm64-mm-enable-arch_has_vm_get_page_prot.patch
-sparc-mm-enable-arch_has_vm_get_page_prot.patch
-x86-mm-enable-arch_has_vm_get_page_prot.patch
-mm-mmap-drop-arch_filter_pgprot.patch
-mm-mmap-drop-arch_vm_get_page_pgprot.patch
-#
-#mm/mremap
-mm-mremap-use-helper-mlock_future_check.patch
-#
-mm-mremap-avoid-unneeded-do_munmap-call.patch
-#
-#mm/pagealloc
-mm-calc-the-right-pfn-if-page-size-is-not-4k.patch
-#
-#mm/hugetlb
-mm-hugetlb_vmemmap-cleanup-hugetlb_vmemmap-related-functions.patch
-mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled.patch
-mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap.patch
-#
-#mm/dax
-mm-sparse-vmemmap-add-a-pgmap-argument-to-section-activation.patch
-mm-sparse-vmemmap-refactor-core-of-vmemmap_populate_basepages-to-helper.patch
-mm-hugetlb_vmemmap-move-comment-block-to-documentation-vm.patch
-mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps.patch
-mm-page_alloc-reuse-tail-struct-pages-for-compound-devmaps.patch
-#
-#mm/userfaultfd
-mm-remove-stub-for-non_swap_entry.patch
-#
-#mm/ksm
-ksm-count-ksm-merging-pages-for-each-process.patch
-#
-mm-vmstat-add-events-for-ksm-cow.patch
-#
-#mm/compaction
-mm-compaction-remove-unneeded-return-value-of-kcompactd_run.patch
-mm-compaction-remove-unneeded-pfn-update.patch
-mm-compaction-remove-unneeded-assignment-to-isolate_start_pfn.patch
-mm-compaction-clean-up-comment-for-sched-contention.patch
-mm-compaction-clean-up-comment-about-suitable-migration-target-recheck.patch
-mm-compaction-use-compact_cluster_max-in-compactionc.patch
-mm-compaction-use-helper-compound_nr-in-isolate_migratepages_block.patch
-mm-compaction-clean-up-comment-about-async-compaction-in-isolate_migratepages.patch
-mm-compaction-avoid-possible-null-pointer-dereference-in-kcompactd_cpu_online.patch
-mm-compaction-make-compaction_zonelist_suitable-return-false-when-compact_success.patch
-mm-compaction-simplify-the-code-in-__compact_finished.patch
-mm-compaction-make-sure-highest-is-above-the-min_pfn.patch
-#
-#mm/memory-hotplug
-drivers-base-memory-fix-an-unlikely-reference-counting-issue-in-__add_memory_block.patch
-#
+##selftest-vm-clarify-error-statement-in-gup_test.patch
+###
+##selftests-vm-bring-common-functions-to-a-new-file.patch
+##selftests-vm-add-test-for-soft-dirty-pte-bit.patch
+###
+##selftests-vm-refactor-run_vmtestssh-to-reduce-boilerplate.patch
+##selftests-vm-fix-shellcheck-warnings-in-run_vmtestssh.patch
+###
+###mm/pagemap
+##mm-use-mmap_assert_write_locked-instead-of-open-coding-it.patch
+###
+##mm-mmu_gather-limit-free-batch-count-and-add-schedule-point-in-tlb_batch_pages_flush.patch
+###
+##mm-debug_vm_pgtable-drop-protection_map-usage.patch
+##mm-mmap-clarify-protection_map-indices.patch
+###
+##mm-mmapc-use-helper-mlock_future_check.patch
+###
+##mm-mmap-add-new-config-arch_has_vm_get_page_prot.patch
+##powerpc-mm-enable-arch_has_vm_get_page_prot.patch
+##arm64-mm-enable-arch_has_vm_get_page_prot.patch
+##sparc-mm-enable-arch_has_vm_get_page_prot.patch
+##x86-mm-enable-arch_has_vm_get_page_prot.patch
+##mm-mmap-drop-arch_filter_pgprot.patch
+##mm-mmap-drop-arch_vm_get_page_pgprot.patch
+###
+###mm/mremap
+##mm-mremap-use-helper-mlock_future_check.patch
+###
+##mm-mremap-avoid-unneeded-do_munmap-call.patch
+###
+###mm/pagealloc
+##mm-calc-the-right-pfn-if-page-size-is-not-4k.patch
+###
+###mm/hugetlb
+##mm-hugetlb_vmemmap-cleanup-hugetlb_vmemmap-related-functions.patch
+##mm-hugetlb_vmemmap-cleanup-hugetlb_free_vmemmap_enabled.patch
+##mm-hugetlb_vmemmap-cleanup-config_hugetlb_page_free_vmemmap.patch
+###
+###mm/dax
+##mm-sparse-vmemmap-add-a-pgmap-argument-to-section-activation.patch
+##mm-sparse-vmemmap-refactor-core-of-vmemmap_populate_basepages-to-helper.patch
+##mm-hugetlb_vmemmap-move-comment-block-to-documentation-vm.patch
+##mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps.patch
+##mm-page_alloc-reuse-tail-struct-pages-for-compound-devmaps.patch
+###
+###mm/userfaultfd
+##mm-remove-stub-for-non_swap_entry.patch
+###
+###mm/ksm
+##ksm-count-ksm-merging-pages-for-each-process.patch
+###
+##mm-vmstat-add-events-for-ksm-cow.patch
+###
+###mm/compaction
+##mm-compaction-remove-unneeded-return-value-of-kcompactd_run.patch
+##mm-compaction-remove-unneeded-pfn-update.patch
+##mm-compaction-remove-unneeded-assignment-to-isolate_start_pfn.patch
+##mm-compaction-clean-up-comment-for-sched-contention.patch
+##mm-compaction-clean-up-comment-about-suitable-migration-target-recheck.patch
+##mm-compaction-use-compact_cluster_max-in-compactionc.patch
+##mm-compaction-use-helper-compound_nr-in-isolate_migratepages_block.patch
+##mm-compaction-clean-up-comment-about-async-compaction-in-isolate_migratepages.patch
+##mm-compaction-avoid-possible-null-pointer-dereference-in-kcompactd_cpu_online.patch
+##mm-compaction-make-compaction_zonelist_suitable-return-false-when-compact_success.patch
+##mm-compaction-simplify-the-code-in-__compact_finished.patch
+##mm-compaction-make-sure-highest-is-above-the-min_pfn.patch
+###
+###mm/memory-hotplug
+##drivers-base-memory-fix-an-unlikely-reference-counting-issue-in-__add_memory_block.patch
+###
 #
 #
 #
@@ -345,16 +345,6 @@ mm-discard-__gfp_atomic.patch
 #mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?
 mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
 #
-#sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch+N: https://lkml.kernel.org/r/YkuKbMbSecBVsa1k@casper.infradead.org
-sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
-mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
-mm-khugepaged-skip-dax-vma.patch
-mm-thp-only-regular-file-could-be-thp-eligible.patch
-mm-khugepaged-make-khugepaged_enter-void-function.patch
-mm-khugepaged-move-some-khugepaged_-functions-to-khugepagedc.patch
-mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
-#mm-khugepaged-introduce-khugepaged_enter_vma-helper-vs-maple-tree.patch
-mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 hugetlb-fix-wrong-use-of-nr_online_nodes.patch
 hugetlb-fix-wrong-use-of-nr_online_nodes-v4.patch
@@ -536,6 +526,7 @@ maple-tree-add-new-data-structure.patch
 maple-tree-add-new-data-structure-fix.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
+mm-start-tracking-vmas-with-maple-tree-fix.patch
 mm-add-vma-iterator.patch
 mmap-use-the-vma-iterator-in-count_vma_pages_range.patch
 mm-mmap-use-the-maple-tree-in-find_vma-instead-of-the-rbtree.patch
@@ -656,11 +647,6 @@ mm-make-minimum-slab-alignment-a-runtime-property-fix.patch
 #
 #NEXT_PATCHES_END mm
 #NEXT_PATCHES_START mm-stuck
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START mm-only
-info-task-hung-in-generic_file_write_iter.patch
-info-task-hung-in-generic_file_write-fix.patch
-kernel-hung_taskc-monitor-killed-tasks.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START acpi
 #NEXT_PATCHES_END
@@ -1271,8 +1257,6 @@ taskstats-version-12-with-thread-group-and-exe-info-fix.patch
 #
 kernel-make-taskstats-available-from-all-net-namespaces.patch
 #
-delayacct-track-delays-from-write-protect-copy.patch
-#
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START timerfd
@@ -1421,7 +1405,7 @@ initramfs-support-cpio-extraction-with-file-checksums.patch
 #NEXT_PATCHES_START ipc
 ipc-sem-remove-redundant-assignments.patch
 #
-#ipc-update-semtimedop-to-use-hrtimer.patch: acks?
+#ipc-update-semtimedop-to-use-hrtimer.patch: acks? https://lkml.kernel.org/r/87k0baw59j.ffs@tglx
 ipc-update-semtimedop-to-use-hrtimer.patch
 #
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
@@ -1451,6 +1435,7 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START linux-next-pre
 #NEXT_PATCHES_END
+stop.patch
 # next
 linux-next.patch
 linux-next-rejects.patch
@@ -1464,6 +1449,9 @@ mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #NEXT_PATCHES_START linux-next-resolution
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START post-linux-next
+#
+#taskstats
+delayacct-track-delays-from-write-protect-copy.patch
 #
 #cleanups
 #
@@ -1711,3 +1699,14 @@ kselftest-vm-override-targets-from-arguments.patch
 #[merged]kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-at-same-time.patch
 #[merged]docs-vm-page_owner-use-literal-blocks-for-param-description.patch
 #[folded-merged]ksm-count-ksm-merging-pages-for-each-process-fix.patch
+#[obsolete]info-task-hung-in-generic_file_write_iter.patch
+#[obsolete]info-task-hung-in-generic_file_write-fix.patch
+#[obsolete]kernel-hung_taskc-monitor-killed-tasks.patch
+#[nacked]sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
+#[nacked]mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
+#[nacked]mm-khugepaged-skip-dax-vma.patch
+#[nacked]mm-thp-only-regular-file-could-be-thp-eligible.patch
+#[nacked]mm-khugepaged-make-khugepaged_enter-void-function.patch
+#[nacked]mm-khugepaged-move-some-khugepaged_-functions-to-khugepagedc.patch
+#[nacked]mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
+#[nacked]mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch

@@ -16,15 +16,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 --- a/mm/khugepaged.c~mm-khugepaged-use-vma_is_anonymous
 +++ a/mm/khugepaged.c
 @@ -466,7 +466,7 @@ static bool hugepage_vma_check(struct vm
- 	if (file_thp_enabled(vma))
- 		return true;
+ 			S_ISREG(inode->i_mode);
+ 	}
  
 -	if (!vma->anon_vma || vma->vm_ops)
 +	if (!vma->anon_vma || !vma_is_anonymous(vma))
  		return false;
  	if (vma_is_temporary_stack(vma))
  		return false;
-@@ -982,7 +982,7 @@ static int hugepage_vma_revalidate(struc
+@@ -972,7 +972,7 @@ static int hugepage_vma_revalidate(struc
  	if (!hugepage_vma_check(vma, vma->vm_flags))
  		return SCAN_VMA_CHECK;
  	/* Anon VMA expected */
