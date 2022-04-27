@@ -1,0 +1,46 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/vaddr: register a damon_operations for fixed virtual address ranges monitoring
+
+Patch series "support fixed virtual address ranges monitoring".
+
+The monitoring operations set for virtual address spaces automatically
+updates the monitoring target regions to cover entire mappings of the
+virtual address spaces as much as possible.  Some users could have more
+information about their programs than kernel and therefore have interest
+in not entire regions but only specific regions.  For such cases, the
+automatic monitoring target regions updates are only unnecessary overhead
+or distractions.
+
+This patchset adds supports for the use case on DAMON's kernel API
+(DAMON_OPS_FVADDR) and sysfs interface ('fvaddr' keyword for 'operations'
+sysfs file).
+
+
+This patch (of 3):
+
+The monitoring operations set for virtual address spaces automatically
+updates the monitoring target regions to cover entire mappings of the
+virtual address spaces as much as possible.  Some users could have more
+information about their programs than kernel and therefore have interest
+in not entire regions but only specific regions.  For such cases, the
+automatic monitoring target regions updates are only unnecessary overheads
+or distractions.
+
+For such cases, DAMON's API users can simply set the '->init()' and
+'->update()' of the DAMON context's '->ops' NULL, and set the target
+monitoring regions when creating the context.  But, that would be a dirty
+hack.  Worse yet, the hack is unavailable for DAMON user space interface
+users.
+
+To support the use case in a clean way that can easily exported to the
+user space, this commit adds another monitoring operations set called
+'fvaddr', which is same to 'vaddr' but does not automatically update the
+monitoring regions.  Instead, it will only respect the virtual address
+regions which have explicitly passed at the initial context creation.
+
+Note that this commit leave sysfs interface not supporting the feature
+yet.  The support will be made in a following commit.
+
+Link: https://lkml.kernel.org/r/20220426231750.48822-1-sj@kernel.org
+Link: https://lkml.kernel.org/r/20220426231750.48822-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

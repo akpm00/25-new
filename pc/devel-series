@@ -13,8 +13,11 @@ kasan-prevent-cpu_quarantine-corruption-when-cpu-offline-and-cache-shrink-occur-
 #mm/debug
 docs-vm-page_owner-use-literal-blocks-for-param-description.patch
 #
+#mm/memory-failure
 revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 mm-huge_memory-do-not-overkill-when-splitting-huge_zero_page.patch
+#
+mm-hwpoison-use-pr_err-instead-of-dump_page-in-get_any_page.patch
 #
 #procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: Kees ack?
 procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
@@ -630,6 +633,10 @@ mm-damon-core-add-a-function-for-damon_operations-registration-checks.patch
 mm-damon-sysfs-add-a-file-for-listing-available-monitoring-ops.patch
 selftets-damon-sysfs-test-existence-and-permission-of-avail_operations.patch
 docs-abiadmin-guide-damon-document-avail_operations-sysfs-file.patch
+#
+mm-damon-vaddr-register-a-damon_operations-for-fixed-virtual-address-ranges-monitoring.patch
+mm-damon-sysfs-support-fixed-virtual-address-ranges-monitoring.patch
+docs-abiadmin-guide-damon-update-for-fixed-virtual-address-ranges-monitoring.patch
 #
 #mm/memory-hotplug
 mm-memory_hotplug-use-pgprot_val-to-get-value-of-pgprot.patch

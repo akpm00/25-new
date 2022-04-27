@@ -1,0 +1,9 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/{ABI,admin-guide}/damon: update for fixed virtual address ranges monitoring
+
+This commit documents the user space support of the newly added monitoring
+operations set for fixed virtual address ranges monitoring, namely
+'fvaddr', on the ABI and usage documents for DAMON.
+
+Link: https://lkml.kernel.org/r/20220426231750.48822-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
