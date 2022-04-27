@@ -138,7 +138,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct buffer_head *bh = buffers_to_free;
 --- a/include/linux/sched.h~info-task-hung-in-generic_file_write_iter
 +++ a/include/linux/sched.h
-@@ -1499,6 +1499,13 @@ struct task_struct {
+@@ -1498,6 +1498,13 @@ struct task_struct {
  	struct callback_head		l1d_flush_kill;
  #endif
  
@@ -154,7 +154,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * they are included in the randomized portion of task_struct.
 --- a/lib/Kconfig.debug~info-task-hung-in-generic_file_write_iter
 +++ a/lib/Kconfig.debug
-@@ -1840,6 +1840,12 @@ config IO_STRICT_DEVMEM
+@@ -1847,6 +1847,12 @@ config IO_STRICT_DEVMEM
  
  menu "$(SRCARCH) Debugging"
  

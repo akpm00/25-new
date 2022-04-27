@@ -20,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/highmem.h~mm-highmem-vm_bug_on-if-offset-len-page_size
 +++ a/include/linux/highmem.h
-@@ -349,6 +349,8 @@ static inline void memcpy_to_page(struct
+@@ -358,6 +358,8 @@ static inline void memcpy_to_page(struct
  static inline void memzero_page(struct page *page, size_t offset, size_t len)
  {
  	char *addr = kmap_local_page(page);
