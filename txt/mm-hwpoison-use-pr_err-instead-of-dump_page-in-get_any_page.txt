@@ -61,10 +61,10 @@ So replace dump_page() with safer one, pr_err().
 Link: https://lkml.kernel.org/r/20220427053220.719866-1-naoya.horiguchi@linux.dev
 Fixes: 74e8ee4708a8 ("mm: Turn head_compound_mapcount() into folio_entire_mapcount()")
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Christoph Hellwig <hch@infradead.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Jason Gunthorpe <jgg@nvidia.com>
 Cc: William Kucharski <william.kucharski@oracle.com>
 Cc: <stable@vger.kernel.org>

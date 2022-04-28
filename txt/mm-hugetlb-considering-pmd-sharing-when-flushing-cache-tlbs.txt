@@ -30,5 +30,5 @@ Link: https://lkml.kernel.org/r/0443c8cf20db554d3ff4b439b30e0ff26c0181dd.1651056
 Fixes: 550a7d60bd5e ("mm, hugepages: add mremap() support for hugepage backed vma")
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Mina Almasry <almasrymina@google.com>
-Cc: Muchun Song <songmuchun@bytedance.com>

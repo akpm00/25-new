@@ -58,4 +58,5 @@ Suggested-by: Yang Shi <shy828301@gmail.com>
 Reported-by: kernel test robot <lkp@intel.com>
 Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: <stable@vger.kernel.org>

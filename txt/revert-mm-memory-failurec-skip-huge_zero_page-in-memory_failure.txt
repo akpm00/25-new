@@ -44,5 +44,6 @@ Fixes: 6a46079cf57a ("HWPOISON: The high level memory error handler in the VM v7
 Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
 Suggested-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Cc: <stable@vger.kernel.org>
