@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/vmscan: use helper folio_is_file_lru()
+
+Use helper folio_is_file_lru() to check whether folio is file lru.  Minor
+readability improvement.
+
+Link: https://lkml.kernel.org/r/20220428105802.21389-1-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Huang, Ying <ying.huang@intel.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Oscar Salvador <osalvador@suse.de>

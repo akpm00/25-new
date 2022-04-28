@@ -265,14 +265,12 @@ mm-rmap-drop-compound-parameter-from-page_add_new_anon_rmap.patch
 mm-rmap-use-page_move_anon_rmap-when-reusing-a-mapped-pageanon-page-exclusively.patch
 mm-huge_memory-remove-outdated-vm_warn_on_once_page-from-unmap_page.patch
 mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages.patch
-#mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive.patch: TBU
 mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive.patch
 mm-gup-disallow-follow_pagefoll_pin.patch
-#mm-support-gup-triggered-unsharing-of-anonymous-pages.patch: https://lkml.kernel.org/r/9005b167-db08-c967-463b-5e0e092cbb6c@suse.cz
 mm-support-gup-triggered-unsharing-of-anonymous-pages.patch
-mm-support-gup-triggered-unsharing-of-anonymous-pages-fix.patch
 mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page.patch
 mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning.patch
+mm-support-gup-triggered-unsharing-of-anonymous-pages-fix.patch
 mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning-fix.patch
 #
 mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit.patch
@@ -494,6 +492,7 @@ mm-vmscan-introduce-helper-function-reclaim_page_list.patch
 mm-vmscan-take-all-base-pages-of-thp-into-account-when-race-with-speculative-reference.patch
 mm-vmscan-remove-obsolete-comment-in-kswapd_run.patch
 mm-vmscan-use-helper-folio_is_file_lru.patch
+mm-vmscan-use-helper-folio_is_file_lru-fix.patch
 #
 #mm/memory-failure
 #mm/mfence
