@@ -1,4 +1,0 @@
-include/linux/mm_types.h
-mm/huge_memory.c
-mm/hugetlb.c
-mm/memory.c

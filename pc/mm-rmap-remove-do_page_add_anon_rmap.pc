@@ -1,7 +1,0 @@
-include/linux/rmap.h
-mm/huge_memory.c
-mm/ksm.c
-mm/memory.c
-mm/migrate.c
-mm/rmap.c
-mm/swapfile.c
