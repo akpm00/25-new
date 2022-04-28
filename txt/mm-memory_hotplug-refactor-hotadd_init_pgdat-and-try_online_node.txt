@@ -20,6 +20,7 @@ call register_one_node() when !set_node_online.  For those who call
 try_online_node(), so set_node_online is true, a value other than zero
 means a failure (e.g: cpu_up() or find_and_online_cpu_nid()).
 
+[akpm@linux-foundation.org: coding-style cleanups]
 Link: https://lkml.kernel.org/r/20220307150725.6810-4-osalvador@suse.de
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Cc: David Hildenbrand <david@redhat.com>
