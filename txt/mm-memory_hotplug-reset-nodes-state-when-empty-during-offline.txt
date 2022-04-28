@@ -25,8 +25,11 @@ node_reset_state() is the function in charge of resetting pgdat's fields,
 and it is called when offline_pages() detects that the node becomes empty
 worth of memory.
 
+[yuehaibing@huawei.com: fix build warning without CONFIG_MEMORY_HOTREMOVE]
+  Link: https://lkml.kernel.org/r/20220408022402.29668-1-yuehaibing@huawei.com
 Link: https://lkml.kernel.org/r/20220307150725.6810-3-osalvador@suse.de
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Michal Hocko <mhocko@kernel.org>
