@@ -1420,6 +1420,7 @@ initramfs-support-cpio-extraction-with-file-checksums.patch
 #NEXT_PATCHES_START ipc
 ipc-sem-remove-redundant-assignments.patch
 #
+ipc-update-semtimedop-to-use-hrtimer.patch
 #
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch

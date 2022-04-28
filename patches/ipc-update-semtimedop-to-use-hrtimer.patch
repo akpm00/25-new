@@ -1,0 +1,73 @@
+From: Prakash Sangappa <prakash.sangappa@oracle.com>
+Subject: ipc: update semtimedop() to use hrtimer
+
+semtimedop() should be converted to use hrtimer like it has been done for
+most of the system calls with timeouts.  This system call already takes a
+struct timespec as an argument and can therefore provide finer granularity
+timed wait.
+
+Link: https://lkml.kernel.org/r/1651187881-2858-1-git-send-email-prakash.sangappa@oracle.com
+Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ ipc/sem.c |   23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+--- a/ipc/sem.c~ipc-update-semtimedop-to-use-hrtimer
++++ a/ipc/sem.c
+@@ -1993,7 +1993,9 @@ long __do_semtimedop(int semid, struct s
+ 	int max, locknum;
+ 	bool undos = false, alter = false, dupsop = false;
+ 	struct sem_queue queue;
+-	unsigned long dup = 0, jiffies_left = 0;
++	unsigned long dup = 0;
++	ktime_t expires, *exp = NULL;
++	bool timed_out = false;
+ 
+ 	if (nsops < 1 || semid < 0)
+ 		return -EINVAL;
+@@ -2001,12 +2003,11 @@ long __do_semtimedop(int semid, struct s
+ 		return -E2BIG;
+ 
+ 	if (timeout) {
+-		if (timeout->tv_sec < 0 || timeout->tv_nsec < 0 ||
+-			timeout->tv_nsec >= 1000000000L) {
+-			error = -EINVAL;
+-			goto out;
+-		}
+-		jiffies_left = timespec64_to_jiffies(timeout);
++		if (!timespec64_valid(timeout))
++			return -EINVAL;
++		expires = ktime_add_safe(ktime_get(),
++				timespec64_to_ktime(*timeout));
++		exp = &expires;
+ 	}
+ 
+ 
+@@ -2164,10 +2165,8 @@ long __do_semtimedop(int semid, struct s
+ 		sem_unlock(sma, locknum);
+ 		rcu_read_unlock();
+ 
+-		if (timeout)
+-			jiffies_left = schedule_timeout(jiffies_left);
+-		else
+-			schedule();
++		timed_out = !schedule_hrtimeout_range(exp,
++				current->timer_slack_ns, HRTIMER_MODE_ABS);
+ 
+ 		/*
+ 		 * fastpath: the semop has completed, either successfully or
+@@ -2208,7 +2207,7 @@ long __do_semtimedop(int semid, struct s
+ 		/*
+ 		 * If an interrupt occurred we have to clean up the queue.
+ 		 */
+-		if (timeout && jiffies_left == 0)
++		if (timed_out)
+ 			error = -EAGAIN;
+ 	} while (error == -EINTR && !signal_pending(current)); /* spurious */
+ 
+_
