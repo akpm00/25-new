@@ -1,0 +1,92 @@
+From: David Hildenbrand <david@redhat.com>
+Subject: mm/hugetlb: take src_mm->write_protect_seq in copy_hugetlb_page_range()
+
+Let's do it just like copy_page_range(), taking the seqlock and making
+sure the mmap_lock is held in write mode.
+
+This allows for add a VM_BUG_ON to page_needs_cow_for_dma() and properly
+synchronizes concurrent fork() with GUP-fast of hugetlb pages, which will
+be relevant for further changes.
+
+Link: https://lkml.kernel.org/r/20220428083441.37290-3-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Don Dutile <ddutile@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Liang Zhang <zhangliang5@huawei.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Oded Gabbay <oded.gabbay@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Pedro Demarchi Gomes <pedrodemargomes@gmail.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h |    4 ++++
+ mm/hugetlb.c       |    8 ++++++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
+--- a/include/linux/mm.h~mm-hugetlb-take-src_mm-write_protect_seq-in-copy_hugetlb_page_range
++++ a/include/linux/mm.h
+@@ -1576,6 +1576,8 @@ static inline bool page_maybe_dma_pinned
+ /*
+  * This should most likely only be called during fork() to see whether we
+  * should break the cow immediately for a page on the src mm.
++ *
++ * The caller has to hold the PT lock and the vma->vm_mm->->write_protect_seq.
+  */
+ static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
+ 					  struct page *page)
+@@ -1583,6 +1585,8 @@ static inline bool page_needs_cow_for_dm
+ 	if (!is_cow_mapping(vma->vm_flags))
+ 		return false;
+ 
++	VM_BUG_ON(!(raw_read_seqcount(&vma->vm_mm->write_protect_seq) & 1));
++
+ 	if (!test_bit(MMF_HAS_PINNED, &vma->vm_mm->flags))
+ 		return false;
+ 
+--- a/mm/hugetlb.c~mm-hugetlb-take-src_mm-write_protect_seq-in-copy_hugetlb_page_range
++++ a/mm/hugetlb.c
+@@ -4722,6 +4722,8 @@ int copy_hugetlb_page_range(struct mm_st
+ 					vma->vm_start,
+ 					vma->vm_end);
+ 		mmu_notifier_invalidate_range_start(&range);
++		mmap_assert_write_locked(src);
++		raw_write_seqcount_begin(&src->write_protect_seq);
+ 	} else {
+ 		/*
+ 		 * For shared mappings i_mmap_rwsem must be held to call
+@@ -4854,10 +4856,12 @@ again:
+ 		spin_unlock(dst_ptl);
+ 	}
+ 
+-	if (cow)
++	if (cow) {
++		raw_write_seqcount_end(&src->write_protect_seq);
+ 		mmu_notifier_invalidate_range_end(&range);
+-	else
++	} else {
+ 		i_mmap_unlock_read(mapping);
++	}
+ 
+ 	return ret;
+ }
+_
