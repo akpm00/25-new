@@ -1,0 +1,34 @@
+From: Niels Dossche <dossche.niels@gmail.com>
+Subject: mm: mremap: fix sign for EFAULT error return value
+
+The mremap syscall is supposed to return a pointer to the new virtual
+memory area on success, and a negative value of the error code in case of
+failure.  Currently, EFAULT is returned when the VMA is not found, instead
+of -EFAULT.  The users of this syscall will therefore believe the syscall
+succeeded in case the VMA didn't exist, as it returns a pointer to address
+0xe (0xe being the value of EFAULT).  Fix the sign of the error value.
+
+Link: https://lkml.kernel.org/r/20220427224439.23828-2-dossche.niels@gmail.com
+Fixes: 550a7d60bd5e ("mm, hugepages: add mremap() support for hugepage backed vma")
+Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/mremap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/mremap.c~mm-mremap-fix-sign-for-efault-error-return-value
++++ a/mm/mremap.c
+@@ -941,7 +941,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, a
+ 		return -EINTR;
+ 	vma = vma_lookup(mm, addr);
+ 	if (!vma) {
+-		ret = EFAULT;
++		ret = -EFAULT;
+ 		goto out;
+ 	}
+ 
+_

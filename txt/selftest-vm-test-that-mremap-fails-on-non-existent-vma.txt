@@ -1,0 +1,10 @@
+From: Niels Dossche <dossche.niels@gmail.com>
+Subject: selftest/vm: test that mremap fails on non-existent vma
+
+Add a regression test that validates that mremap fails for vma's that
+don't exist.
+
+Link: https://lkml.kernel.org/r/20220427224439.23828-3-dossche.niels@gmail.com
+Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>

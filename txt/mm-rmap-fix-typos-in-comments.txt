@@ -1,0 +1,7 @@
+From: Adrian Huang <ahuang12@lenovo.com>
+Subject: mm/rmap: Fix typos in comments
+
+Fix spelling/grammar mistakes in comments.
+
+Link: https://lkml.kernel.org/r/20220428061522.666-1-adrianhuang0701@gmail.com
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>

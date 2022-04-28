@@ -1,0 +1,31 @@
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: scripts/bloat-o-meter: filter out vermagic as it is not relevant
+
+Seeing it as a false positive increase at the top is just noise:
+
+   linux-head$./scripts/bloat-o-meter ../pre/vmlinux ../post/vmlinux
+   add/remove: 0/571 grow/shrink: 1/9 up/down: 20/-64662 (-64642)
+   Function                                     old     new   delta
+   vermagic                                      49      69     +20
+
+Since it really doesn't "grow", it makes sense to filter it out.
+
+Link: https://lkml.kernel.org/r/20220428035824.7934-1-paul.gortmaker@windriver.com
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ scripts/bloat-o-meter |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/scripts/bloat-o-meter~scripts-bloat-o-meter-filter-out-vermagic-as-it-is-not-relevant
++++ a/scripts/bloat-o-meter
+@@ -36,6 +36,7 @@ def getsizes(file, format):
+                 if name.startswith("__se_compat_sys"): continue
+                 if name.startswith("__addressable_"): continue
+                 if name == "linux_banner": continue
++                if name == "vermagic": continue
+                 # statics and some other optimizations adds random .NUMBER
+                 name = re_NUMBER.sub('', name)
+                 sym[name] = sym.get(name, 0) + int(size, 16)
+_

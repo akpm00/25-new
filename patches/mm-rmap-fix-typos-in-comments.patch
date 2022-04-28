@@ -1,0 +1,34 @@
+From: Adrian Huang <ahuang12@lenovo.com>
+Subject: mm/rmap: Fix typos in comments
+
+Fix spelling/grammar mistakes in comments.
+
+Link: https://lkml.kernel.org/r/20220428061522.666-1-adrianhuang0701@gmail.com
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/rmap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/rmap.c~mm-rmap-fix-typos-in-comments
++++ a/mm/rmap.c
+@@ -299,7 +299,7 @@ int anon_vma_clone(struct vm_area_struct
+ 		 * Reuse existing anon_vma if its degree lower than two,
+ 		 * that means it has no vma and only one anon_vma child.
+ 		 *
+-		 * Do not chose parent anon_vma, otherwise first child
++		 * Do not choose parent anon_vma, otherwise first child
+ 		 * will always reuse it. Root anon_vma is never reused:
+ 		 * it has self-parent reference and at least one child.
+ 		 */
+@@ -2257,7 +2257,7 @@ static bool folio_make_device_exclusive(
+ 
+ /**
+  * make_device_exclusive_range() - Mark a range for exclusive use by a device
+- * @mm: mm_struct of assoicated target process
++ * @mm: mm_struct of associated target process
+  * @start: start of the region to mark for exclusive device access
+  * @end: end address of region
+  * @pages: returns the pages which were successfully marked for exclusive access
+_

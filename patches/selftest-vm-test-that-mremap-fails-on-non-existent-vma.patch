@@ -1,0 +1,32 @@
+From: Niels Dossche <dossche.niels@gmail.com>
+Subject: selftest/vm: test that mremap fails on non-existent vma
+
+Add a regression test that validates that mremap fails for vma's that
+don't exist.
+
+Link: https://lkml.kernel.org/r/20220427224439.23828-3-dossche.niels@gmail.com
+Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ tools/testing/selftests/vm/hugepage-mremap.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--- a/tools/testing/selftests/vm/hugepage-mremap.c~selftest-vm-test-that-mremap-fails-on-non-existent-vma
++++ a/tools/testing/selftests/vm/hugepage-mremap.c
+@@ -178,6 +178,12 @@ int main(int argc, char *argv[])
+ 
+ 	munmap(addr, length);
+ 
++	addr = mremap(addr, length, length, 0);
++	if (addr != MAP_FAILED) {
++		printf("mremap: Expected failure, but call succeeded\n");
++		exit(1);
++	}
++
+ 	close(fd);
+ 	unlink(argv[argc-1]);
+ 
+_

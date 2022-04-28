@@ -1,15 +1,16 @@
 mm-stable.patch
-#NEXT_PATCHES_START linus
+#NEXT_PATCHES_START mm-hotfixes-stable
 #NEXT_PATCHES_END
-#NEXT_PATCHES_START next-for-linus
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START mainline-later (next week, approximately)
+#NEXT_PATCHES_START mm-hotfixes-unstable
 #
 #mm/memory-failure
 revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
 mm-huge_memory-do-not-overkill-when-splitting-huge_zero_page.patch
 #
 mm-hwpoison-use-pr_err-instead-of-dump_page-in-get_any_page.patch
+#
+#mm/mremap
+mm-mremap-fix-sign-for-efault-error-return-value.patch
 #
 #procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: Kees ack?
 procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
@@ -340,7 +341,7 @@ mm-discard-__gfp_atomic.patch
 #
 #mm/mlock
 #mm/hugetlb
-#mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks? check review
+#mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks? check review https://lkml.kernel.org/r/CAHbLzkoVdxyxKopu7D=VzvnHoiA=KYgxVWwwZwahzTcfXfcg5g@mail.gmail.com
 mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
 #
 #
@@ -641,6 +642,14 @@ mm-make-minimum-slab-alignment-a-runtime-property-fix.patch
 #mm/pagemap
 mm-mmap-delete-dead-code-in-do_brk_flags.patch
 #
+#mm/swap
+mm-swapops-make-is_pmd_migration_entry-more-strict.patch
+#
+#mm/rmap
+mm-rmap-fix-typos-in-comments.patch
+#
+#mm/mremap
+selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
 # mmend
 #
@@ -766,6 +775,8 @@ ia64-replace-comments-with-c99-initializers.patch
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START scripts
 scripts-decode_stacktracesh-support-old-bash-version.patch
+#
+scripts-bloat-o-meter-filter-out-vermagic-as-it-is-not-relevant.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START kernfs

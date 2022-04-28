@@ -1,0 +1,14 @@
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: scripts/bloat-o-meter: filter out vermagic as it is not relevant
+
+Seeing it as a false positive increase at the top is just noise:
+
+   linux-head$./scripts/bloat-o-meter ../pre/vmlinux ../post/vmlinux
+   add/remove: 0/571 grow/shrink: 1/9 up/down: 20/-64662 (-64642)
+   Function                                     old     new   delta
+   vermagic                                      49      69     +20
+
+Since it really doesn't "grow", it makes sense to filter it out.
+
+Link: https://lkml.kernel.org/r/20220428035824.7934-1-paul.gortmaker@windriver.com
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
