@@ -1405,8 +1405,6 @@ initramfs-support-cpio-extraction-with-file-checksums.patch
 #NEXT_PATCHES_START ipc
 ipc-sem-remove-redundant-assignments.patch
 #
-#ipc-update-semtimedop-to-use-hrtimer.patch: acks? https://lkml.kernel.org/r/87k0baw59j.ffs@tglx
-ipc-update-semtimedop-to-use-hrtimer.patch
 #
 #ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch: acks?
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
@@ -1710,3 +1708,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[nacked]mm-khugepaged-move-some-khugepaged_-functions-to-khugepagedc.patch
 #[nacked]mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
 #[nacked]mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
+#[to-be-updated]ipc-update-semtimedop-to-use-hrtimer.patch

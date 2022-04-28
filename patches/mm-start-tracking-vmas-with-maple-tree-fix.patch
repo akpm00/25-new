@@ -18,9 +18,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mmap.c~mm-start-tracking-vmas-with-maple-tree-fix
 +++ a/mm/mmap.c
-@@ -864,6 +864,7 @@ int __vma_adjust(struct vm_area_struct *
- 	MA_STATE(mas, &mm->mm_mt, 0, 0);
- 	struct vm_area_struct *exporter = NULL, *importer = NULL;
+@@ -1151,6 +1151,7 @@ again:
+ 	if (insert && file)
+ 		uprobe_mmap(insert);
  
 +	mas_destroy(&mas);
  	validate_mm(mm);
