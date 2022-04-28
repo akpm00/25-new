@@ -1,7 +1,0 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mapletree-vs-khugepaged
-
-Fix mapletree for patch series "Make khugepaged collapse readonly FS THP
-more consistent", v3.
-
-Cc: Liam R. Howlett <Liam.Howlett@oracle.com>

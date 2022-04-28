@@ -342,7 +342,7 @@ mm-discard-__gfp_atomic.patch
 #
 #mm/mlock
 #mm/hugetlb
-#mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks?
+#mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch: acks? check review
 mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
 #
 #
@@ -424,11 +424,6 @@ mm-uffd-move-userfaultfd-configs-into-mm.patch
 #mm/virtio
 #mm/util
 #mm/memory-hotplug
-mm-page_alloc-do-not-calculate-nodes-total-pages-and-memmap-pages-when-empty.patch
-mm-memory_hotplug-reset-nodes-state-when-empty-during-offline.patch
-mm-memory_hotplug-reset-nodes-state-when-empty-during-offline-fix.patch
-mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node.patch
-mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes.patch
 #
 #
 #mm/zswap
@@ -468,7 +463,7 @@ mm-madvise-free-hwpoison-and-swapin-error-entry-in-madvise_free_pte_range.patch
 #
 #mm/cma
 #mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch+N: acks?
-#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch: https://lkml.kernel.org/r/20220426201855.GA1014@qian
+#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch: https://lkml.kernel.org/r/20220426201855.GA1014@qian https://lkml.kernel.org/r/20220428161911.GB182@qian
 mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch
 mm-page_isolation-check-specified-range-for-unmovable-pages.patch
 mm-make-alloc_contig_range-work-at-pageblock-granularity.patch
@@ -540,6 +535,7 @@ mmap-change-zeroing-of-maple-tree-in-__vma_adjust.patch
 xen-use-vma_lookup-in-privcmd_ioctl_mmap.patch
 mm-optimize-find_exact_vma-to-use-vma_lookup.patch
 mm-khugepaged-optimize-collapse_pte_mapped_thp-by-using-vma_lookup.patch
+#mm-mmap-change-do_brk_flags-to-expand-existing-vma-and-add-do_brk_munmap.patch: https://lkml.kernel.org/r/20220428160949.GA2923383@roeck-us.net
 mm-mmap-change-do_brk_flags-to-expand-existing-vma-and-add-do_brk_munmap.patch
 mm-use-maple-tree-operations-for-find_vma_intersection.patch
 mm-mmap-use-advanced-maple-tree-api-for-mmap_region.patch
@@ -586,12 +582,12 @@ mm-oom_kill-use-maple-tree-iterators-instead-of-vma-linked-list.patch
 mm-pagewalk-use-vma_find-instead-of-vma-linked-list.patch
 mm-swapfile-use-vma-iterator-instead-of-vma-linked-list.patch
 i915-use-the-vma-iterator.patch
+#nommu-remove-uses-of-vma-linked-list.patch: https://lkml.kernel.org/r/20220428160511.GA2897430@roeck-us.net
 nommu-remove-uses-of-vma-linked-list.patch
 riscv-use-vma-iterator-for-vdso.patch
 mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
-mapletree-vs-khugepaged.patch
 #
 #mglru
 #mm-x86-arm64-add-arch_has_hw_pte_young.patch
@@ -642,6 +638,9 @@ mm-shmem-remove-duplicate-include-in-memoryc.patch
 printk-stop-including-cacheh-from-printkh.patch
 mm-make-minimum-slab-alignment-a-runtime-property.patch
 mm-make-minimum-slab-alignment-a-runtime-property-fix.patch
+#
+#mm/pagemap
+mm-mmap-delete-dead-code-in-do_brk_flags.patch
 #
 # mmend
 #
@@ -866,6 +865,11 @@ ocfs2-replace-usage-of-found-with-dedicated-list-iterator-variable.patch
 #
 ocfs2-remove-usage-of-list-iterator-variable-after-the-loop-body.patch
 #
+ocfs2-fix-mounting-crash-if-journal-is-not-alloced.patch
+ocfs2-change-return-type-of-ocfs2_resmap_init.patch
+ocfs2-ocfs2_initialize_super-does-cleanup-job-before-return-error.patch
+ocfs2-ocfs2_mount_volume-does-cleanup-job-before-return-error.patch
+ocfs2-rewrite-error-handling-of-ocfs2_fill_super.patch
 #
 #ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch: https://lkml.kernel.org/r/5821fd0f-2018-dc1b-a5c0-f948a7debff4@linux.alibaba.com
 ocfs2-reflink-deadlock-when-clone-file-to-the-same-directory-simultaneously.patch
@@ -1709,3 +1713,8 @@ kselftest-vm-override-targets-from-arguments.patch
 #[nacked]mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
 #[nacked]mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #[to-be-updated]ipc-update-semtimedop-to-use-hrtimer.patch
+#[folded-merged]mm-memory_hotplug-reset-nodes-state-when-empty-during-offline-fix.patch
+#[folded-merged]mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node-checkpatch-fixes.patch
+#[to-be-updated]mm-page_alloc-do-not-calculate-nodes-total-pages-and-memmap-pages-when-empty.patch
+#[to-be-updated]mm-memory_hotplug-reset-nodes-state-when-empty-during-offline.patch
+#[to-be-updated]mm-memory_hotplug-refactor-hotadd_init_pgdat-and-try_online_node.patch

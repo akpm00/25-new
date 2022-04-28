@@ -1,0 +1,12 @@
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: mm/mmap: delete dead code in do_brk_flags()
+
+This code can't be reached.  It's harmless but it leads to a Smatch
+warning:
+
+    mm/mmap.c:3040 do_brk_flags() warn: ignoring unreachable code.
+
+Link: https://lkml.kernel.org/r/YmqHrpo/cBBq6lHf@kili
+Fixes: d2bbe46ab3b9 ("mm/mmap: change do_brk_flags() to expand existing VMA and add do_brk_munmap()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
