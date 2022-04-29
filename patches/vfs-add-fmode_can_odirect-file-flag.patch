@@ -26,6 +26,7 @@ Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -79,7 +80,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return res;
  }
  
-@@ -540,7 +542,6 @@ const struct address_space_operations nf
+@@ -536,7 +538,6 @@ const struct address_space_operations nf
  	.write_end = nfs_write_end,
  	.invalidate_folio = nfs_invalidate_folio,
  	.releasepage = nfs_release_page,

@@ -6,12 +6,19 @@ search the tree after walking to a specific value.  It is more efficient
 to only walk to the requested value since privcmd_ioctl_mmap() will exit
 the loop if vm_start != msg->va.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-22-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-21-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ drivers/xen/privcmd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/xen/privcmd.c~xen-use-vma_lookup-in-privcmd_ioctl_mmap
 +++ a/drivers/xen/privcmd.c

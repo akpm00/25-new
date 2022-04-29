@@ -1,4 +1,4 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: cxl: remove vma linked list walk
 
 Use the VMA iterator instead.  This requires a little restructuring of the
@@ -6,13 +6,19 @@ surrounding code to hoist the mm to the caller.  That turns
 cxl_prefault_one() into a trivial function, so call cxl_fault_segment()
 directly.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-39-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-39-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ drivers/misc/cxl/fault.c |   45 ++++++++++++-------------------------
+ 1 file changed, 15 insertions(+), 30 deletions(-)
 
 --- a/drivers/misc/cxl/fault.c~cxl-remove-vma-linked-list-walk
 +++ a/drivers/misc/cxl/fault.c

@@ -5,11 +5,19 @@ Add functions to get the number of allocations, and total allocations from
 a kmem_cache.  Also add a function to get the allocated size and a way to
 zero the total allocations.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-4-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-4-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ tools/testing/radix-tree/linux.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 --- a/tools/testing/radix-tree/linux.c~radix-tree-test-suite-add-allocation-counts-and-size-to-kmem_cache
 +++ a/tools/testing/radix-tree/linux.c
@@ -46,10 +54,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	cachep->nr_tallocated = 0;
 +}
 +
- void *kmem_cache_alloc(struct kmem_cache *cachep, int gfp)
+ void *kmem_cache_alloc_lru(struct kmem_cache *cachep, struct list_lru *lru,
+ 		int gfp)
  {
- 	void *p;
-@@ -62,7 +84,9 @@ void *kmem_cache_alloc(struct kmem_cache
+@@ -63,7 +85,9 @@ void *kmem_cache_alloc_lru(struct kmem_c
  			memset(p, 0, cachep->size);
  	}
  
@@ -59,7 +67,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (kmalloc_verbose)
  		printf("Allocating %p from slab\n", p);
  	return p;
-@@ -72,6 +96,7 @@ void kmem_cache_free(struct kmem_cache *
+@@ -73,6 +97,7 @@ void kmem_cache_free(struct kmem_cache *
  {
  	assert(objp);
  	uatomic_dec(&nr_allocated);
@@ -67,7 +75,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (kmalloc_verbose)
  		printf("Freeing %p to slab\n", objp);
  	pthread_mutex_lock(&cachep->lock);
-@@ -97,6 +122,8 @@ kmem_cache_create(const char *name, unsi
+@@ -98,6 +123,8 @@ kmem_cache_create(const char *name, unsi
  	ret->size = size;
  	ret->align = align;
  	ret->nr_objs = 0;

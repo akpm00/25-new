@@ -1,29 +1,29 @@
 From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Subject: mm: fix commit "mm: start tracking VMAs with maple tree"
+Subject: mm/mmap: fix __vma_adjust() memory leak
 
-Hold the lock for the destruction of the maple tree to avoid lockdep
-issues - and potentially process_mrelease.
+When shifting the arg pages, the maple state may be left with allocated
+memory.  Free the memory by calling mas_destroy() unconditionally at the
+end of the function.
 
-Link: https://lkml.kernel.org/r/20220420134336.bny7wza3ez2ldjsd@revolver
+Link: https://lkml.kernel.org/r/20220427224134.yurrplclbhmnrloj@revolver
+Fixes: bd6a1fd58daf (mm: start tracking VMAs with maple tree)
 Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Reported-by: Yu Zhao <yuzhao@google.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/mmap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/mmap.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/mm/mmap.c~mm-start-tracking-vmas-with-maple-tree-fix
 +++ a/mm/mmap.c
-@@ -3319,9 +3319,9 @@ void exit_mmap(struct mm_struct *mm)
- 		cond_resched();
- 	}
- 	mm->mmap = NULL;
--	mmap_write_unlock(mm);
- 	trace_exit_mmap(mm);
- 	__mt_destroy(&mm->mm_mt);
-+	mmap_write_unlock(mm);
- 	vm_unacct_memory(nr_accounted);
- }
+@@ -1151,6 +1151,7 @@ again:
+ 	if (insert && file)
+ 		uprobe_mmap(insert);
+ 
++	mas_destroy(&mas);
+ 	validate_mm(mm);
+ 	validate_mm_mt(mm);
  
 _

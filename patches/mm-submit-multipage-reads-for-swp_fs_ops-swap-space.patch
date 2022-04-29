@@ -23,6 +23,7 @@ Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -82,7 +83,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/mm/memory.c~mm-submit-multipage-reads-for-swp_fs_ops-swap-space
 +++ a/mm/memory.c
-@@ -3629,7 +3629,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3633,7 +3633,7 @@ vm_fault_t do_swap_page(struct vm_fault
  
  				/* To provide entry to swap_readpage() */
  				set_page_private(page, entry.val);

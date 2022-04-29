@@ -1,20 +1,26 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: fork: use VMA iterator
 
 The VMA iterator is faster than the linked list and removing the linked
 list will shrink the vm_area_struct.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-51-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-51-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ kernel/fork.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 --- a/kernel/fork.c~fork-use-vma-iterator
 +++ a/kernel/fork.c
-@@ -1288,13 +1288,16 @@ int replace_mm_exe_file(struct mm_struct
+@@ -1286,13 +1286,16 @@ int replace_mm_exe_file(struct mm_struct
  	/* Forbid mm->exe_file change if old file still mapped. */
  	old_exe_file = get_mm_exe_file(mm);
  	if (old_exe_file) {

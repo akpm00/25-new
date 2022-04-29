@@ -9,3 +9,5 @@ Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: NeilBrown <neilb@suse.de>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Miaohe Lin <linmiaohe@huawei.com>

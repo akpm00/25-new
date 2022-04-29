@@ -35,3 +35,4 @@ Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Miaohe Lin <linmiaohe@huawei.com>

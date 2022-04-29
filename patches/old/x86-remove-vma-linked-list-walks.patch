@@ -1,15 +1,21 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: x86: remove vma linked list walks
 
 Use the VMA iterator instead.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-37-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-37-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/x86/entry/vdso/vma.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 --- a/arch/x86/entry/vdso/vma.c~x86-remove-vma-linked-list-walks
 +++ a/arch/x86/entry/vdso/vma.c

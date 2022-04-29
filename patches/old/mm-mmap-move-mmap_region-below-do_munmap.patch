@@ -3,15 +3,23 @@ Subject: mm/mmap: move mmap_region() below do_munmap()
 
 Relocation of code for the next commit.  There should be no changes here.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-30-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-29-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mmap.c |  476 ++++++++++++++++++++++++++--------------------------
+ 1 file changed, 238 insertions(+), 238 deletions(-)
 
 --- a/mm/mmap.c~mm-mmap-move-mmap_region-below-do_munmap
 +++ a/mm/mmap.c
-@@ -1709,236 +1709,6 @@ static inline int accountable_mapping(st
+@@ -1736,244 +1736,6 @@ static inline int accountable_mapping(st
  	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
  }
  
@@ -176,6 +184,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -			goto free_vma;
 -	}
 -
+-	if (mas_preallocate(&mas, vma, GFP_KERNEL)) {
+-		error = -ENOMEM;
+-		if (file)
+-			goto unmap_and_free_vma;
+-		else
+-			goto free_vma;
+-	}
+-
 -	if (vma->vm_file)
 -		i_mmap_lock_write(vma->vm_file->f_mapping);
 -
@@ -248,7 +264,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* unmapped_area() Find an area between the low_limit and the high_limit with
   * the correct alignment and offset, all from @info. Note: current->mm is used
   * for the search.
-@@ -2770,6 +2540,236 @@ int do_munmap(struct mm_struct *mm, unsi
+@@ -2797,6 +2559,244 @@ int do_munmap(struct mm_struct *mm, unsi
  	return __do_munmap(mm, start, len, uf, false);
  }
  
@@ -407,6 +423,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	/* Allow architectures to sanity-check the vm_flags */
 +	if (!arch_validate_flags(vma->vm_flags)) {
 +		error = -EINVAL;
++		if (file)
++			goto unmap_and_free_vma;
++		else
++			goto free_vma;
++	}
++
++	if (mas_preallocate(&mas, vma, GFP_KERNEL)) {
++		error = -ENOMEM;
 +		if (file)
 +			goto unmap_and_free_vma;
 +		else

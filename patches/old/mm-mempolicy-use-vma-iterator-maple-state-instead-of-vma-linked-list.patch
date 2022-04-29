@@ -9,12 +9,19 @@ address higher than the last VMA.  The code was written in a way that
 allowed no VMA updates to occur and still return success.  There should be
 no functional change to this scenario with the new code.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-58-Liam.Howlett@oracle.com
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/20220426150616.3937571-58-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mempolicy.c |   56 ++++++++++++++++++++++++++---------------------
+ 1 file changed, 32 insertions(+), 24 deletions(-)
 
 --- a/mm/mempolicy.c~mm-mempolicy-use-vma-iterator-maple-state-instead-of-vma-linked-list
 +++ a/mm/mempolicy.c
@@ -30,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mpol_rebind_policy(vma->vm_policy, new);
  	mmap_write_unlock(mm);
  }
-@@ -662,7 +663,7 @@ static unsigned long change_prot_numa(st
+@@ -656,7 +657,7 @@ static unsigned long change_prot_numa(st
  static int queue_pages_test_walk(unsigned long start, unsigned long end,
  				struct mm_walk *walk)
  {
@@ -39,7 +46,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct queue_pages *qp = walk->private;
  	unsigned long endvma = vma->vm_end;
  	unsigned long flags = qp->flags;
-@@ -677,9 +678,10 @@ static int queue_pages_test_walk(unsigne
+@@ -671,9 +672,10 @@ static int queue_pages_test_walk(unsigne
  			/* hole at head side of range */
  			return -EFAULT;
  	}
@@ -51,7 +58,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/* hole at middle or tail of range */
  		return -EFAULT;
  
-@@ -793,26 +795,24 @@ static int vma_replace_policy(struct vm_
+@@ -787,26 +789,24 @@ static int vma_replace_policy(struct vm_
  static int mbind_range(struct mm_struct *mm, unsigned long start,
  		       unsigned long end, struct mempolicy *new_pol)
  {
@@ -88,7 +95,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		pgoff = vma->vm_pgoff +
  			((vmstart - vma->vm_start) >> PAGE_SHIFT);
-@@ -821,6 +821,8 @@ static int mbind_range(struct mm_struct
+@@ -815,6 +815,8 @@ static int mbind_range(struct mm_struct
  				 new_pol, vma->vm_userfaultfd_ctx,
  				 anon_vma_name(vma));
  		if (prev) {
@@ -97,7 +104,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			vma = prev;
  			goto replace;
  		}
-@@ -828,19 +830,24 @@ static int mbind_range(struct mm_struct
+@@ -822,19 +824,25 @@ static int mbind_range(struct mm_struct
  			err = split_vma(vma->vm_mm, vma, vmstart, 1);
  			if (err)
  				goto out;
@@ -108,7 +115,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			err = split_vma(vma->vm_mm, vma, vmend, 0);
  			if (err)
  				goto out;
-+			/* mas_pause() unnecessary as the loop is ending */
++			/* split_vma() invalidated the mas */
++			mas_pause(&mas);
  		}
 - replace:
 +replace:
@@ -124,7 +132,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return err;
  }
  
-@@ -1055,6 +1062,7 @@ static int migrate_to_node(struct mm_str
+@@ -1049,6 +1057,7 @@ static int migrate_to_node(struct mm_str
  			   int flags)
  {
  	nodemask_t nmask;
@@ -132,7 +140,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	LIST_HEAD(pagelist);
  	int err = 0;
  	struct migration_target_control mtc = {
-@@ -1070,8 +1078,9 @@ static int migrate_to_node(struct mm_str
+@@ -1064,8 +1073,9 @@ static int migrate_to_node(struct mm_str
  	 * need migration.  Between passing in the full user address
  	 * space range and MPOL_MF_DISCONTIG_OK, this call can not fail.
  	 */
@@ -143,7 +151,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			flags | MPOL_MF_DISCONTIG_OK, &pagelist);
  
  	if (!list_empty(&pagelist)) {
-@@ -1201,14 +1210,13 @@ static struct page *new_page(struct page
+@@ -1195,14 +1205,13 @@ static struct page *new_page(struct page
  	struct folio *dst, *src = page_folio(page);
  	struct vm_area_struct *vma;
  	unsigned long address;
@@ -160,7 +168,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	if (folio_test_hugetlb(src))
-@@ -1486,6 +1494,7 @@ SYSCALL_DEFINE4(set_mempolicy_home_node,
+@@ -1480,6 +1489,7 @@ SYSCALL_DEFINE4(set_mempolicy_home_node,
  	unsigned long vmend;
  	unsigned long end;
  	int err = -ENOENT;
@@ -168,7 +176,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	start = untagged_addr(start);
  	if (start & ~PAGE_MASK)
-@@ -1511,9 +1520,7 @@ SYSCALL_DEFINE4(set_mempolicy_home_node,
+@@ -1505,9 +1515,7 @@ SYSCALL_DEFINE4(set_mempolicy_home_node,
  	if (end == start)
  		return 0;
  	mmap_write_lock(mm);

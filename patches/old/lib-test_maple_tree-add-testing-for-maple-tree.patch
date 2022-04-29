@@ -1,19 +1,28 @@
-From: Liam Howlett <liam.howlett@oracle.com>
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 Subject: lib/test_maple_tree: add testing for maple tree
 
 This is a test suite that uses the radix test infrastructure.  It has
 been split into its own commit to allow for easier review of the maple
 tree code.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-9-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-9-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ lib/test_maple_tree.c             |37854 ++++++++++++++++++++++++++++
+ tools/testing/radix-tree/Makefile |    9 
+ 2 files changed, 37861 insertions(+), 2 deletions(-)
 
 --- /dev/null
 +++ a/lib/test_maple_tree.c
-@@ -0,0 +1,37810 @@
+@@ -0,0 +1,37854 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * test_maple_tree.c: Test the maple tree API
@@ -35738,6 +35747,50 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	/*mt_dump(mt); */
 +	mt_validate(mt);
 +}
++
++static void mas_dfs_preorder(struct ma_state *mas)
++{
++
++	struct maple_enode *prev;
++	unsigned char end, slot = 0;
++
++	if (mas_is_start(mas)) {
++		mas_start(mas);
++		return;
++	}
++
++	if (mte_is_leaf(mas->node) && mte_is_root(mas->node))
++		goto done;
++
++walk_up:
++	end = mas_data_end(mas);
++	if (mte_is_leaf(mas->node) ||
++	    (slot > end)) {
++		if (mte_is_root(mas->node))
++			goto done;
++
++		slot = mte_parent_slot(mas->node) + 1;
++		mas_ascend(mas);
++		goto walk_up;
++	}
++
++	prev = mas->node;
++	mas->node = mas_get_slot(mas, slot);
++	if (!mas->node || slot > end) {
++		if (mte_is_root(prev))
++			goto done;
++
++		mas->node = prev;
++		slot = mte_parent_slot(mas->node) + 1;
++		mas_ascend(mas);
++		goto walk_up;
++	}
++
++	return;
++done:
++	mas->node = MAS_NONE;
++}
++
 +
 +static void check_dfs_preorder(struct maple_tree *mt)
 +{

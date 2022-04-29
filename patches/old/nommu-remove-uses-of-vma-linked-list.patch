@@ -4,17 +4,23 @@ Subject: nommu: remove uses of VMA linked list
 Use the maple tree or VMA iterator instead.  This is faster and will allow
 us to shrink the VMA.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-67-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-67-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/nommu.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 --- a/mm/nommu.c~nommu-remove-uses-of-vma-linked-list
 +++ a/mm/nommu.c
-@@ -1381,6 +1381,7 @@ static int shrink_vma(struct mm_struct *
+@@ -1383,6 +1383,7 @@ static int shrink_vma(struct mm_struct *
   */
  int do_munmap(struct mm_struct *mm, unsigned long start, size_t len, struct list_head *uf)
  {
@@ -22,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct vm_area_struct *vma;
  	unsigned long end;
  	int ret;
-@@ -1392,7 +1393,7 @@ int do_munmap(struct mm_struct *mm, unsi
+@@ -1394,7 +1395,7 @@ int do_munmap(struct mm_struct *mm, unsi
  	end = start + len;
  
  	/* find the first potentially overlapping VMA */
@@ -31,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma) {
  		static int limit;
  		if (limit < 5) {
-@@ -1411,7 +1412,7 @@ int do_munmap(struct mm_struct *mm, unsi
+@@ -1413,7 +1414,7 @@ int do_munmap(struct mm_struct *mm, unsi
  				return -EINVAL;
  			if (end == vma->vm_end)
  				goto erase_whole_vma;
@@ -40,7 +46,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		} while (vma);
  		return -EINVAL;
  	} else {
-@@ -1460,6 +1461,7 @@ SYSCALL_DEFINE2(munmap, unsigned long, a
+@@ -1462,6 +1463,7 @@ SYSCALL_DEFINE2(munmap, unsigned long, a
   */
  void exit_mmap(struct mm_struct *mm)
  {
@@ -48,7 +54,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct vm_area_struct *vma;
  
  	if (!mm)
-@@ -1467,12 +1469,17 @@ void exit_mmap(struct mm_struct *mm)
+@@ -1469,12 +1471,17 @@ void exit_mmap(struct mm_struct *mm)
  
  	mm->total_vm = 0;
  

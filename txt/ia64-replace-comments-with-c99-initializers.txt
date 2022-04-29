@@ -1,5 +1,5 @@
 From: Benjamin Stürz <benni@stuerz.xyz>
-Subject: ia64: Replace comments with C99 initializers
+Subject: ia64: replace comments with C99 initializers
 
 This replaces comments with C99's designated initializers because the
 kernel supports them now.

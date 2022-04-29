@@ -3,16 +3,23 @@ Subject: mm/madvise: use vma_find() instead of vma linked list
 
 madvise_walk_vmas() no longer uses linked list.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-56-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-56-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/madvise.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/mm/madvise.c~mm-madvise-use-vma_find-instead-of-vma-linked-list
 +++ a/mm/madvise.c
-@@ -1232,7 +1232,7 @@ int madvise_walk_vmas(struct mm_struct *
+@@ -1235,7 +1235,7 @@ int madvise_walk_vmas(struct mm_struct *
  		if (start >= end)
  			break;
  		if (prev)

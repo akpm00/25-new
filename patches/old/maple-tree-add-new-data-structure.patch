@@ -16,13 +16,79 @@ than the rbtree so it has fewer cache misses.  The removal of the linked
 list between subsequent entries also reduces the cache misses and the need
 to pull in the previous and next VMA during many tree alterations.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-8-Liam.Howlett@oracle.com
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+The benchmarks are around the same as they have always been.
+
+kernbench                      
+                               rb5.18-rc2             mt5.18-rc2
+Amean     user-2        862.24 (   0.00%)      861.45 *   0.09%*
+Amean     syst-2        136.65 (   0.00%)      141.58 *  -3.61%*
+Amean     elsp-2        505.38 (   0.00%)      507.99 *  -0.52%*
+Amean     user-4        890.24 (   0.00%)      888.34 *   0.21%*
+Amean     syst-4        140.64 (   0.00%)      145.32 *  -3.33%*
+Amean     elsp-4        264.34 (   0.00%)      265.76 *  -0.54%*
+Amean     user-8        952.30 (   0.00%)      947.57 *   0.50%*
+Amean     syst-8        145.52 (   0.00%)      147.79 *  -1.56%*
+Amean     elsp-8        145.02 (   0.00%)      145.38 *  -0.24%*
+Amean     user-16       920.83 (   0.00%)      918.95 *   0.20%*
+Amean     syst-16       135.37 (   0.00%)      138.99 *  -2.67%*
+Amean     elsp-16        75.03 (   0.00%)       75.25 *  -0.29%*
+Amean     user-32       970.98 (   0.00%)      969.01 *   0.20%*
+Amean     syst-32       144.75 (   0.00%)      148.58 *  -2.64%*
+Amean     elsp-32        44.10 (   0.00%)       44.64 *  -1.24%*
+Amean     user-64      1062.19 (   0.00%)     1060.30 *   0.18%*
+Amean     syst-64       154.24 (   0.00%)      157.58 *  -2.17%*
+Amean     elsp-64        28.88 (   0.00%)       29.10 *  -0.76%*
+Amean     user-128     1609.09 (   0.00%)     1612.19 *  -0.19%*
+Amean     syst-128      210.05 (   0.00%)      215.09 *  -2.40%*
+Amean     elsp-128       25.22 (   0.00%)       25.45 *  -0.94%*
+Amean     user-256     1767.37 (   0.00%)     1766.86 *   0.03%*
+Amean     syst-256      215.99 (   0.00%)      221.56 *  -2.58%*
+Amean     elsp-256       25.20 (   0.00%)       25.33 *  -0.54%*
+Amean     user-288     1772.73 (   0.00%)     1772.35 *   0.02%*
+Amean     syst-288      216.08 (   0.00%)      221.39 *  -2.45%*
+Amean     elsp-288       25.16 (   0.00%)       25.44 *  -1.13%*
+
+Increase in performance in the following micro-benchmarks in Hmean:
+- context_switch1-processes +14.74% to 2.22%
+
+Mixed results in the following micro-benchmarks in Hmean:
+- malloc1-threads +34.95% to -30.06%
+- malloc1-processes +2.73% to -23.65%
+- page_fault3-threads +19.84% to -11.55%
+- pthread_mutex1-threads +42.50% to -11.76%
+
+Decrease in performance in the following micro-benchmarks in Hmean:
+- brk1-processes -35.35% to -42.69%
+
+brk1-processes decrease is due to the test itself.  Since the VMA cannot
+be expanded, the test is actually inserting a new VMA.
+
+Link: https://lkml.kernel.org/r/20220426150616.3937571-8-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Tested-by: David Howells <dhowells@redhat.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ Documentation/core-api/index.rst                   |    1 
+ Documentation/core-api/maple_tree.rst              |  218 
+ MAINTAINERS                                        |   12 
+ include/linux/maple_tree.h                         |  685 +
+ include/trace/events/maple_tree.h                  |  123 
+ init/main.c                                        |    2 
+ lib/Kconfig.debug                                  |   15 
+ lib/Makefile                                       |    3 
+ lib/maple_tree.c                                   | 6964 +++++++++++
+ tools/testing/radix-tree/.gitignore                |    2 
+ tools/testing/radix-tree/generated/autoconf.h      |    1 
+ tools/testing/radix-tree/linux/maple_tree.h        |    7 
+ tools/testing/radix-tree/maple.c                   |   59 
+ tools/testing/radix-tree/trace/events/maple_tree.h |    3 
+ 14 files changed, 8094 insertions(+), 1 deletion(-)
 
 --- a/Documentation/core-api/index.rst~maple-tree-add-new-data-structure
 +++ a/Documentation/core-api/index.rst
@@ -257,7 +323,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 --- /dev/null
 +++ a/include/linux/maple_tree.h
-@@ -0,0 +1,682 @@
+@@ -0,0 +1,685 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +#ifndef _LINUX_MAPLE_TREE_H
 +#define _LINUX_MAPLE_TREE_H
@@ -714,8 +780,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +void *mas_store(struct ma_state *mas, void *entry);
 +void *mas_erase(struct ma_state *mas);
 +int mas_store_gfp(struct ma_state *mas, void *entry, gfp_t gfp);
++void mas_store_prealloc(struct ma_state *mas, void *entry);
 +void *mas_find(struct ma_state *mas, unsigned long max);
 +void *mas_find_rev(struct ma_state *mas, unsigned long min);
++int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp);
 +
 +bool mas_nomem(struct ma_state *mas, gfp_t gfp);
 +void mas_pause(struct ma_state *mas);
@@ -921,6 +989,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +extern atomic_t maple_tree_tests_passed;
 +
 +void mt_dump(const struct maple_tree *mt);
++void mt_validate(struct maple_tree *mt);
 +#define MT_BUG_ON(tree, x) do {						\
 +	atomic_inc(&maple_tree_tests_run);				\
 +	if (x) {							\
@@ -1129,7 +1198,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
 --- /dev/null
 +++ a/lib/maple_tree.c
-@@ -0,0 +1,6979 @@
+@@ -0,0 +1,6964 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
 + * Maple Tree implementation
@@ -1205,6 +1274,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +#define ma_enode_ptr(x) ((struct maple_enode *)(x))
 +static struct kmem_cache *maple_node_cache;
 +
++#ifdef CONFIG_DEBUG_MAPLE_TREE
 +static const unsigned long mt_max[] = {
 +	[maple_dense]		= MAPLE_NODE_SLOTS,
 +	[maple_leaf_64]		= ULONG_MAX,
@@ -1212,6 +1282,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	[maple_arange_64]	= ULONG_MAX,
 +};
 +#define mt_node_max(x) mt_max[mte_node_type(x)]
++#endif
 +
 +static const unsigned char mt_slots[] = {
 +	[maple_dense]		= MAPLE_NODE_SLOTS,
@@ -2338,6 +2409,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	unsigned long success = allocated;
 +	unsigned int requested = mas_alloc_req(mas);
 +	unsigned int count;
++	void **slots = NULL;
++	unsigned int max_req = 0;
 +
 +	if (!requested)
 +		return;
@@ -2346,7 +2419,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	if (!allocated || mas->alloc->node_count == MAPLE_ALLOC_SLOTS - 1) {
 +		node = (struct maple_alloc *)mt_alloc_one(gfp);
 +		if (!node)
-+			goto nomem;
++			goto nomem_one;
 +
 +		if (allocated)
 +			node->slot[0] = mas->alloc;
@@ -2358,20 +2431,20 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	node = mas->alloc;
 +	while (requested) {
-+		void **slots = (void **)&node->slot;
-+		unsigned int max_req = MAPLE_NODE_SLOTS - 1;
-+
++		max_req = MAPLE_NODE_SLOTS - 1;
 +		if (node->slot[0]) {
 +			unsigned int offset = node->node_count + 1;
 +
 +			slots = (void **)&node->slot[offset];
 +			max_req -= offset;
++		} else {
++			slots = (void **)&node->slot;
 +		}
 +
-+		count = mt_alloc_bulk(gfp, min(requested, max_req),
-+				      slots);
++		max_req = min(requested, max_req);
++		count = mt_alloc_bulk(gfp, max_req, slots);
 +		if (!count)
-+			goto nomem;
++			goto nomem_bulk;
 +
 +		node->node_count += count;
 +		/* zero indexed. */
@@ -2385,7 +2458,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	}
 +	mas->alloc->total = success;
 +	return;
-+nomem:
++
++nomem_bulk:
++	/* Clean up potential freed allocations on bulk failure */
++	memset(slots, 0, max_req * sizeof(unsigned long));
++nomem_one:
 +	mas_set_alloc_req(mas, requested);
 +	if (mas->alloc && !(((unsigned long)mas->alloc & 0x1)))
 +		mas->alloc->total = success;
@@ -4020,7 +4097,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	mast->free = &free;
 +	mast->destroy = &destroy;
 +	l_mas.node = r_mas.node = m_mas.node = MAS_NONE;
-+	if (!mas_is_root_limits(mas) &&
++	if (!mas_is_root_limits(mast->orig_l) &&
 +	    unlikely(mast->bn->b_end <= mt_min_slots[mast->bn->type])) {
 +		/*
 +		 * Do not free the current node as it may be freed in a bulk
@@ -6437,10 +6514,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	return offset;
 +}
 +
-+static void **mas_dead_walk(struct ma_state *mas, unsigned char offset)
++static void __rcu **mas_dead_walk(struct ma_state *mas, unsigned char offset)
 +{
 +	struct maple_node *node, *next;
-+	void **slots = NULL;
++	void __rcu **slots = NULL;
 +
 +	next = mas_mn(mas);
 +	do {
@@ -6554,7 +6631,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		if ((offset < mt_slots[type]) && (slots[offset])) {
 +			struct maple_enode *parent = mas.node;
 +
-+			mas.node = slots[offset];
++			mas.node = mas_slot_locked(&mas, slots, offset);
 +			slots = mas_destroy_descend(&mas, parent, offset);
 +		}
 +		node = mas_mn(&mas);
@@ -6672,6 +6749,44 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		return xa_err(mas->node);
 +
 +	return 0;
++}
++
++/**
++ * mas_store_prealloc() - Store a value into the tree using memeory
++ * preallocated in the maple state.
++ * @mas: The maple state
++ * @entry: The entry to store.
++ */
++void mas_store_prealloc(struct ma_state *mas, void *entry)
++{
++	MA_WR_STATE(wr_mas, mas, entry);
++
++	mas_wr_store_setup(&wr_mas);
++	trace_ma_write(__func__, mas, 0, entry);
++	mas_wr_store_entry(&wr_mas);
++	BUG_ON(mas_is_err(mas));
++	mas_destroy(mas);
++}
++
++/**
++ * mas_preallocate() - Preallocate enough nodes for a store operation
++ * @mas: The maple state
++ * @entry: The entry that will be stored
++ *
++ * Return: 0 on success, -ENOMEM if memory could not be allocated.
++ */
++int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp)
++{
++
++	mas_set_alloc_req(mas, 1 + mas_mt_height(mas) * 3);
++	mas_alloc_nodes(mas, gfp);
++	if (likely(mas->node != MA_ERROR(-ENOMEM)))
++		return 0;
++
++	mas_set_alloc_req(mas, 0);
++	mas_destroy(mas);
++	mas->node = MAS_START;
++	return -ENOMEM;
 +}
 +
 +/*
@@ -7503,68 +7618,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +}
 +
 +
-+#ifdef CONFIG_MAPLE_SEARCH
-+/* mas limits not adjusted */
-+static void mas_dfs_preorder(struct ma_state *mas)
-+{
-+
-+	struct maple_enode *prev;
-+	unsigned char end, slot = 0;
-+
-+	if (mas_is_start(mas)) {
-+		mas_start(mas);
-+		return;
-+	}
-+
-+	if (mte_is_leaf(mas->node) && mte_is_root(mas->node))
-+		goto done;
-+
-+walk_up:
-+	end = mas_data_end(mas);
-+	if (mte_is_leaf(mas->node) ||
-+	    (slot > end)) {
-+		if (mte_is_root(mas->node))
-+			goto done;
-+
-+		slot = mte_parent_slot(mas->node) + 1;
-+		mas_ascend(mas);
-+		goto walk_up;
-+	}
-+
-+	prev = mas->node;
-+	mas->node = mas_get_slot(mas, slot);
-+	if (!mas->node || slot > end) {
-+		if (mte_is_root(prev))
-+			goto done;
-+
-+		mas->node = prev;
-+		slot = mte_parent_slot(mas->node) + 1;
-+		mas_ascend(mas);
-+		goto walk_up;
-+	}
-+
-+	return;
-+done:
-+	mas->node = MAS_NONE;
-+}
-+#ifdef CONFIG_MAPLE_EXTRAS
-+static void mas_bfs_preorder(struct ma_state *mas)
-+{
-+
-+	if (mas_is_start(mas)) {
-+		mas_start(mas);
-+		return;
-+	}
-+
-+	if (mte_is_leaf(mas->node) && mte_is_root(mas->node)) {
-+		mas->node = MAS_NONE;
-+		return;
-+	}
-+
-+}
-+#endif /* CONFIG_MAPLE_EXTRAS */
-+#endif /* CONFIG_MAPLE_SEARCH */
-+
 +/*
 + * mas_first_entry() - Go the first leaf and find the first entry.
 + * @mas: the maple state.
@@ -7666,9 +7719,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +}
 +
 +/* Tree validations */
-+void mt_dump_node(const struct maple_tree *mt, void *entry, unsigned long min,
-+		unsigned long max, unsigned int depth);
-+void mt_dump_range(unsigned long min, unsigned long max, unsigned int depth)
++static void mt_dump_node(const struct maple_tree *mt, void *entry,
++		unsigned long min, unsigned long max, unsigned int depth);
++static void mt_dump_range(unsigned long min, unsigned long max,
++			  unsigned int depth)
 +{
 +	static const char spaces[] = "                                ";
 +
@@ -7678,8 +7732,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		pr_info("%.*s%lu-%lu: ", depth * 2, spaces, min, max);
 +}
 +
-+void mt_dump_entry(void *entry, unsigned long min, unsigned long max,
-+		unsigned int depth)
++static void mt_dump_entry(void *entry, unsigned long min, unsigned long max,
++			  unsigned int depth)
 +{
 +	mt_dump_range(min, max, depth);
 +
@@ -7694,8 +7748,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		pr_cont(""MA_PTR"\n", entry);
 +}
 +
-+void mt_dump_range64(const struct maple_tree *mt, void *entry,
-+		unsigned long min, unsigned long max, unsigned int depth)
++static void mt_dump_range64(const struct maple_tree *mt, void *entry,
++			unsigned long min, unsigned long max, unsigned int depth)
 +{
 +	struct maple_range_64 *node = &mte_to_node(entry)->mr64;
 +	bool leaf = mte_is_leaf(entry);
@@ -7733,8 +7787,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	}
 +}
 +
-+void mt_dump_arange64(const struct maple_tree *mt, void *entry,
-+		unsigned long min, unsigned long max, unsigned int depth)
++static void mt_dump_arange64(const struct maple_tree *mt, void *entry,
++			unsigned long min, unsigned long max, unsigned int depth)
 +{
 +	struct maple_arange_64 *node = &mte_to_node(entry)->ma64;
 +	bool leaf = mte_is_leaf(entry);
@@ -7775,8 +7829,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	}
 +}
 +
-+void mt_dump_node(const struct maple_tree *mt, void *entry, unsigned long min,
-+		unsigned long max, unsigned int depth)
++static void mt_dump_node(const struct maple_tree *mt, void *entry,
++		unsigned long min, unsigned long max, unsigned int depth)
 +{
 +	struct maple_node *node = mte_to_node(entry);
 +	unsigned int type = mte_node_type(entry);
@@ -7825,7 +7879,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 + * Calculate the maximum gap in a node and check if that's what is reported in
 + * the parent (unless root).
 + */
-+void mas_validate_gaps(struct ma_state *mas)
++static void mas_validate_gaps(struct ma_state *mas)
 +{
 +	struct maple_enode *mte = mas->node;
 +	struct maple_node *p_mn;
@@ -7910,7 +7964,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		  ma_gaps(p_mn, mas_parent_enum(mas, mte))[p_slot] != max_gap);
 +}
 +
-+void mas_validate_parent_slot(struct ma_state *mas)
++static void mas_validate_parent_slot(struct ma_state *mas)
 +{
 +	struct maple_node *parent;
 +	struct maple_enode *node;
@@ -7943,7 +7997,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	}
 +}
 +
-+void mas_validate_child_slot(struct ma_state *mas)
++static void mas_validate_child_slot(struct ma_state *mas)
 +{
 +	enum maple_type type = mte_node_type(mas->node);
 +	void __rcu **slots = ma_slots(mte_to_node(mas->node), type);
@@ -7981,7 +8035,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +/*
 + * Validate all pivots are within mas->min and mas->max.
 + */
-+void mas_validate_limits(struct ma_state *mas)
++static void mas_validate_limits(struct ma_state *mas)
 +{
 +	int i;
 +	unsigned long prev_piv = 0;
@@ -8031,7 +8085,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	}
 +}
 +
-+void mt_validate_nulls(struct maple_tree *mt)
++static void mt_validate_nulls(struct maple_tree *mt)
 +{
 +	void *entry, *last = (void *)1;
 +	unsigned char offset = 0;
@@ -8111,7 +8165,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +#endif /* CONFIG_DEBUG_MAPLE_TREE */
 --- a/MAINTAINERS~maple-tree-add-new-data-structure
 +++ a/MAINTAINERS
-@@ -11659,6 +11659,18 @@ L:	linux-man@vger.kernel.org
+@@ -11663,6 +11663,18 @@ L:	linux-man@vger.kernel.org
  S:	Maintained
  W:	http://www.kernel.org/doc/man-pages
  

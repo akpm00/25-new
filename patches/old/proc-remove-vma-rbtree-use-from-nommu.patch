@@ -4,13 +4,19 @@ Subject: proc: remove VMA rbtree use from nommu
 These users of the rbtree should probably have been walks of the linked
 list, but convert them to use walks of the maple tree.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-19-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-18-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/proc/task_nommu.c |   45 +++++++++++++++++++----------------------
+ 1 file changed, 21 insertions(+), 24 deletions(-)
 
 --- a/fs/proc/task_nommu.c~proc-remove-vma-rbtree-use-from-nommu
 +++ a/fs/proc/task_nommu.c

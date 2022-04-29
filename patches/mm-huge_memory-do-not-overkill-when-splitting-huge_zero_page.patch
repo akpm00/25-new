@@ -51,12 +51,14 @@ but memory failure is a valid caller.  So we tend to replace the BUG to
 WARN + returning -EBUSY, and thus the panic above won't happen again.
 
 Link: https://lkml.kernel.org/r/f35f8b97377d5d3ede1bc5ac3114da888c57cbce.1651052574.git.xuyu@linux.alibaba.com
-Fixes: d173d5417fb ("mm/memory-failure.c: skip huge_zero_page in memory_failure()")
+Fixes: d173d5417fb6 ("mm/memory-failure.c: skip huge_zero_page in memory_failure()")
 Fixes: 6a46079cf57a ("HWPOISON: The high level memory error handler in the VM v7")
 Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
 Suggested-by: Yang Shi <shy828301@gmail.com>
 Reported-by: kernel test robot <lkp@intel.com>
 Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

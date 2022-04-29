@@ -2,7 +2,7 @@ From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 Subject: kernel/fork: use maple tree for dup_mmap() during forking
 
 The maple tree was already tracking VMAs in this function by an earlier
-commit, but the rbtree iterator was being used to iterate the list. 
+commit, but the rbtree iterator was being used to iterate the list.
 Change the iterator to use a maple tree native iterator and switch to the
 maple tree advanced API to avoid multiple walks of the tree during insert
 operations.  Unexport the now-unused vma_store() function.
@@ -13,17 +13,25 @@ assume the worst-case node requirements.  The VM_DONT_COPY flag does not
 allow for the most efficient copy method of the tree and so a bulk loading
 algorithm is used.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-17-Liam.Howlett@oracle.com
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/20220426150616.3937571-16-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mm.h |    2 --
+ kernel/fork.c      |   24 ++++++++++++++++++------
+ mm/mmap.c          |    2 +-
+ 3 files changed, 19 insertions(+), 9 deletions(-)
 
 --- a/include/linux/mm.h~kernel-fork-use-maple-tree-for-dup_mmap-during-forking
 +++ a/include/linux/mm.h
-@@ -2610,8 +2610,6 @@ extern bool arch_has_descending_max_zone
+@@ -2607,8 +2607,6 @@ extern bool arch_has_descending_max_zone
  /* nommu.c */
  extern atomic_long_t mmap_pages_allocated;
  extern int nommu_shrink_inode_mappings(struct inode *, size_t, size_t);
@@ -105,7 +113,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline int mm_alloc_pgd(struct mm_struct *mm)
 --- a/mm/mmap.c~kernel-fork-use-maple-tree-for-dup_mmap-during-forking
 +++ a/mm/mmap.c
-@@ -759,7 +759,7 @@ static inline void vma_mt_szero(struct m
+@@ -756,7 +756,7 @@ static inline void vma_mt_szero(struct m
   * @mm: The struct_mm
   * @vma: The vm_area_struct to store in the maple tree.
   */

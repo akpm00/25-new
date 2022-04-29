@@ -1,0 +1,22 @@
+From: NeilBrown <neilb@suse.de>
+Subject: mm: handle THP in swap_*page_fs()
+
+Pages passed to swap_readpage()/swap_writepage() are not necessarily all
+the same size - there may be transparent-huge-pages involves.
+
+The BIO paths of swap_*page() handle this correctly, but the SWP_FS_OPS
+path does not.
+
+So we need to use thp_size() to find the size, not just assume PAGE_SIZE,
+and we need to track the total length of the request, not just assume it
+is "page * PAGE_SIZE".
+
+Link: https://lkml.kernel.org/r/165119301488.15698.9457662928942765453.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reported-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

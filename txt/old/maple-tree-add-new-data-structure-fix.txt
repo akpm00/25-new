@@ -1,5 +1,8 @@
 From: Liam Howlett <liam.howlett@oracle.com>
-Subject: maple_tree: clean up after bulk allocation failure in mas_alloc_nodes()
+Subject: maple_tree: fix mas_store_prealloc() documentation
 
-Link: https://lkml.kernel.org/r/20220419155055.qf52xpcftqb3r5nj@revolver
-Cc: Yu Zhao <yuzhao@google.com>
+Add gfp flags to the docs
+
+Link: https://lkml.kernel.org/r/20220427141528.4thdegotfheuhfdu@revolver
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>

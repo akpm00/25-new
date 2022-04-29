@@ -1,15 +1,23 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: powerpc: remove mmap linked list walks
 
 Use the VMA iterator instead.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-35-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-35-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/powerpc/kernel/vdso.c              |    6 +++---
+ arch/powerpc/mm/book3s32/tlb.c          |   11 ++++++-----
+ arch/powerpc/mm/book3s64/subpage_prot.c |   13 ++-----------
+ 3 files changed, 11 insertions(+), 19 deletions(-)
 
 --- a/arch/powerpc/kernel/vdso.c~powerpc-remove-mmap-linked-list-walks
 +++ a/arch/powerpc/kernel/vdso.c

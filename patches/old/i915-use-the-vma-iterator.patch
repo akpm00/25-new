@@ -3,13 +3,19 @@ Subject: i915: use the VMA iterator
 
 Replace the linked list in probe_range() with the VMA iterator.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-66-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-66-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 --- a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c~i915-use-the-vma-iterator
 +++ a/drivers/gpu/drm/i915/gem/i915_gem_userptr.c

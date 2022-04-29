@@ -16,7 +16,11 @@ than the rbtree so it has fewer cache misses.  The removal of the linked
 list between subsequent entries also reduces the cache misses and the need
 to pull in the previous and next VMA during many tree alterations.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-8-Liam.Howlett@oracle.com
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/20220426150616.3937571-8-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Tested-by: David Howells <dhowells@redhat.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>

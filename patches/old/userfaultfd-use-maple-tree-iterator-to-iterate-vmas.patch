@@ -4,15 +4,25 @@ Subject: userfaultfd: use maple tree iterator to iterate VMAs
 Don't use the mm_struct linked list or the vma->vm_next in prep for
 removal.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-46-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-46-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ fs/userfaultfd.c              |   49 ++++++++++++++++++++------------
+ include/linux/userfaultfd_k.h |    7 +---
+ mm/mmap.c                     |    7 +---
+ 3 files changed, 36 insertions(+), 27 deletions(-)
 
 --- a/fs/userfaultfd.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
 +++ a/fs/userfaultfd.c
-@@ -610,14 +610,16 @@ static void userfaultfd_event_wait_compl
+@@ -613,14 +613,16 @@ static void userfaultfd_event_wait_compl
  	if (release_new_ctx) {
  		struct vm_area_struct *vma;
  		struct mm_struct *mm = release_new_ctx->mm;
@@ -30,7 +40,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mmap_write_unlock(mm);
  
  		userfaultfd_ctx_put(release_new_ctx);
-@@ -798,11 +800,13 @@ static bool has_unmap_ctx(struct userfau
+@@ -801,11 +803,13 @@ static bool has_unmap_ctx(struct userfau
  	return false;
  }
  
@@ -48,7 +58,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		struct userfaultfd_unmap_ctx *unmap_ctx;
  		struct userfaultfd_ctx *ctx = vma->vm_userfaultfd_ctx.ctx;
  
-@@ -852,6 +856,7 @@ static int userfaultfd_release(struct in
+@@ -855,6 +859,7 @@ static int userfaultfd_release(struct in
  	/* len == 0 means wake all */
  	struct userfaultfd_wake_range range = { .len = 0, };
  	unsigned long new_flags;
@@ -56,7 +66,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	WRITE_ONCE(ctx->released, true);
  
-@@ -868,7 +873,7 @@ static int userfaultfd_release(struct in
+@@ -871,7 +876,7 @@ static int userfaultfd_release(struct in
  	 */
  	mmap_write_lock(mm);
  	prev = NULL;
@@ -65,7 +75,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  		BUG_ON(!!vma->vm_userfaultfd_ctx.ctx ^
  		       !!(vma->vm_flags & __VM_UFFD_FLAGS));
-@@ -1285,6 +1290,7 @@ static int userfaultfd_register(struct u
+@@ -1270,6 +1275,7 @@ static int userfaultfd_register(struct u
  	bool found;
  	bool basic_ioctls;
  	unsigned long start, end, vma_end;
@@ -73,7 +83,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	user_uffdio_register = (struct uffdio_register __user *) arg;
  
-@@ -1327,7 +1333,8 @@ static int userfaultfd_register(struct u
+@@ -1312,7 +1318,8 @@ static int userfaultfd_register(struct u
  		goto out;
  
  	mmap_write_lock(mm);
@@ -83,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma)
  		goto out_unlock;
  
-@@ -1352,7 +1359,7 @@ static int userfaultfd_register(struct u
+@@ -1337,7 +1344,7 @@ static int userfaultfd_register(struct u
  	 */
  	found = false;
  	basic_ioctls = false;
@@ -92,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  
  		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
-@@ -1412,8 +1419,10 @@ static int userfaultfd_register(struct u
+@@ -1397,8 +1404,10 @@ static int userfaultfd_register(struct u
  	}
  	BUG_ON(!found);
  
@@ -105,7 +115,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = 0;
  	do {
-@@ -1471,8 +1480,8 @@ static int userfaultfd_register(struct u
+@@ -1456,8 +1465,8 @@ static int userfaultfd_register(struct u
  	skip:
  		prev = vma;
  		start = vma->vm_end;
@@ -116,7 +126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out_unlock:
  	mmap_write_unlock(mm);
  	mmput(mm);
-@@ -1516,6 +1525,7 @@ static int userfaultfd_unregister(struct
+@@ -1501,6 +1510,7 @@ static int userfaultfd_unregister(struct
  	bool found;
  	unsigned long start, end, vma_end;
  	const void __user *buf = (void __user *)arg;
@@ -124,7 +134,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = -EFAULT;
  	if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
-@@ -1534,7 +1544,8 @@ static int userfaultfd_unregister(struct
+@@ -1519,7 +1529,8 @@ static int userfaultfd_unregister(struct
  		goto out;
  
  	mmap_write_lock(mm);
@@ -134,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!vma)
  		goto out_unlock;
  
-@@ -1559,7 +1570,7 @@ static int userfaultfd_unregister(struct
+@@ -1544,7 +1555,7 @@ static int userfaultfd_unregister(struct
  	 */
  	found = false;
  	ret = -EINVAL;
@@ -143,7 +153,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		cond_resched();
  
  		BUG_ON(!!cur->vm_userfaultfd_ctx.ctx ^
-@@ -1579,8 +1590,10 @@ static int userfaultfd_unregister(struct
+@@ -1564,8 +1575,10 @@ static int userfaultfd_unregister(struct
  	}
  	BUG_ON(!found);
  
@@ -156,7 +166,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	ret = 0;
  	do {
-@@ -1645,8 +1658,8 @@ static int userfaultfd_unregister(struct
+@@ -1630,8 +1643,8 @@ static int userfaultfd_unregister(struct
  	skip:
  		prev = vma;
  		start = vma->vm_end;
@@ -169,7 +179,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmput(mm);
 --- a/include/linux/userfaultfd_k.h~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
 +++ a/include/linux/userfaultfd_k.h
-@@ -139,9 +139,8 @@ extern bool userfaultfd_remove(struct vm
+@@ -173,9 +173,8 @@ extern bool userfaultfd_remove(struct vm
  			       unsigned long start,
  			       unsigned long end);
  
@@ -181,7 +191,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern void userfaultfd_unmap_complete(struct mm_struct *mm,
  				       struct list_head *uf);
  
-@@ -222,7 +221,7 @@ static inline bool userfaultfd_remove(st
+@@ -256,7 +255,7 @@ static inline bool userfaultfd_remove(st
  	return true;
  }
  
@@ -192,7 +202,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
 --- a/mm/mmap.c~userfaultfd-use-maple-tree-iterator-to-iterate-vmas
 +++ a/mm/mmap.c
-@@ -2500,7 +2500,7 @@ do_mas_align_munmap(struct ma_state *mas
+@@ -2517,7 +2517,7 @@ do_mas_align_munmap(struct ma_state *mas
  		 * split, despite we could. This is unlikely enough
  		 * failure that it's not worth optimizing it for.
  		 */
@@ -201,7 +211,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		if (error)
  			return error;
-@@ -2985,10 +2985,7 @@ static int do_brk_munmap(struct ma_state
+@@ -3016,10 +3016,7 @@ static int do_brk_munmap(struct ma_state
  		goto munmap_full_vma;
  	}
  
@@ -213,14 +223,4 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (ret)
  		return ret;
  	ret = 1;
-@@ -3001,6 +2998,9 @@ static int do_brk_munmap(struct ma_state
- 	}
- 
- 	vma->vm_end = newbrk;
-+	vma_init(&unmap, mm);
-+	unmap.vm_start = newbrk;
-+	unmap.vm_end = oldbrk;
- 	if (vma_mas_remove(&unmap, mas))
- 		goto mas_store_fail;
- 
 _

@@ -1,16 +1,23 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: perf: use VMA iterator
 
 The VMA iterator is faster than the linked list and removing the linked
 list will shrink the vm_area_struct.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-49-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-49-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ kernel/events/core.c    |    3 ++-
+ kernel/events/uprobes.c |    9 ++++++---
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
 --- a/kernel/events/core.c~perf-use-vma-iterator
 +++ a/kernel/events/core.c

@@ -3,11 +3,19 @@ Subject: bpf: remove VMA linked list
 
 Use vma_next() and remove reference to the start of the linked list
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-52-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-52-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ kernel/bpf/task_iter.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 --- a/kernel/bpf/task_iter.c~bpf-remove-vma-linked-list
 +++ a/kernel/bpf/task_iter.c

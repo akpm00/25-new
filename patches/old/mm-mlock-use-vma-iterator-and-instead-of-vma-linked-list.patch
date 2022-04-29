@@ -1,14 +1,21 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: mm/mlock: use vma iterator and instead of vma linked list
 
 Handle overflow checking in count_mm_mlocked_page_nr() differently.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-59-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-59-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mlock.c |   34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
 --- a/mm/mlock.c~mm-mlock-use-vma-iterator-and-instead-of-vma-linked-list
 +++ a/mm/mlock.c

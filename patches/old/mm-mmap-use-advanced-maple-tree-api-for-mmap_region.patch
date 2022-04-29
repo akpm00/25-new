@@ -11,15 +11,23 @@ Add vma_expand() to expand a VMA if possible by doing the necessary
 hugepage check, uprobe_munmap of files, dcache flush, modifications then
 undoing the detaches, etc.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-27-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-26-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/mmap.c |  245 ++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 198 insertions(+), 47 deletions(-)
 
 --- a/mm/mmap.c~mm-mmap-use-advanced-maple-tree-api-for-mmap_region
 +++ a/mm/mmap.c
-@@ -519,28 +519,6 @@ static inline struct vm_area_struct *__v
+@@ -516,28 +516,6 @@ static inline struct vm_area_struct *__v
  	return vma->vm_next;
  }
  
@@ -48,7 +56,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static unsigned long count_vma_pages_range(struct mm_struct *mm,
  		unsigned long addr, unsigned long end)
  {
-@@ -643,6 +621,117 @@ static void __insert_vm_struct(struct mm
+@@ -647,6 +625,127 @@ static void __insert_vm_struct(struct mm
  }
  
  /*
@@ -78,6 +86,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	struct anon_vma *anon_vma = vma->anon_vma;
 +	struct file *file = vma->vm_file;
 +	bool remove_next = false;
++	bool anon_cloned = false;
 +
 +	if (next && (vma != next) && (end == next->vm_end)) {
 +		remove_next = true;
@@ -88,6 +97,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +			error = anon_vma_clone(vma, next);
 +			if (error)
 +				return error;
++			anon_cloned = true;
 +		}
 +	}
 +
@@ -95,6 +105,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	VM_BUG_ON(!remove_next && next != vma && end > next->vm_start);
 +	/* Only handles expanding */
 +	VM_BUG_ON(vma->vm_start < start || vma->vm_end > end);
++
++	if (mas_preallocate(mas, vma, GFP_KERNEL))
++		goto nomem;
 +
 +	vma_adjust_trans_huge(vma, start, end, 0);
 +
@@ -160,13 +173,18 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +	validate_mm(mm);
 +	return 0;
++
++nomem:
++	if (anon_cloned)
++		unlink_anon_vmas(vma);
++	return -ENOMEM;
 +}
 +
 +/*
   * We cannot adjust vm_start, vm_end, vm_pgoff fields of a vma that
   * is already present in an i_mmap tree without adjusting the tree.
   * The following helper function should be used when such adjustments
-@@ -1631,9 +1720,15 @@ unsigned long mmap_region(struct file *f
+@@ -1648,9 +1747,15 @@ unsigned long mmap_region(struct file *f
  		struct list_head *uf)
  {
  	struct mm_struct *mm = current->mm;
@@ -184,7 +202,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/* Check against address space limit. */
  	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
-@@ -1643,16 +1738,17 @@ unsigned long mmap_region(struct file *f
+@@ -1660,16 +1765,17 @@ unsigned long mmap_region(struct file *f
  		 * MAP_FIXED may remove pages of mappings that intersects with
  		 * requested mapping. Account for the pages it would unmap.
  		 */
@@ -205,7 +223,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Private writable mapping: check memory availability
  	 */
-@@ -1663,14 +1759,43 @@ unsigned long mmap_region(struct file *f
+@@ -1680,14 +1786,43 @@ unsigned long mmap_region(struct file *f
  		vm_flags |= VM_ACCOUNT;
  	}
  
@@ -256,7 +274,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Determine the object being mapped and call the appropriate
  	 * specific mapper. the address has already been validated, but
-@@ -1683,7 +1808,7 @@ unsigned long mmap_region(struct file *f
+@@ -1700,7 +1835,7 @@ unsigned long mmap_region(struct file *f
  	}
  
  	vma->vm_start = addr;
@@ -265,7 +283,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vma->vm_flags = vm_flags;
  	vma->vm_page_prot = vm_get_page_prot(vm_flags);
  	vma->vm_pgoff = pgoff;
-@@ -1704,28 +1829,30 @@ unsigned long mmap_region(struct file *f
+@@ -1721,28 +1856,30 @@ unsigned long mmap_region(struct file *f
  		 *
  		 * Answer: Yes, several device drivers can do it in their
  		 *         f_op->mmap method. -DaveM
@@ -302,11 +320,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				vm_flags = vma->vm_flags;
  				goto unmap_writable;
  			}
-@@ -1749,13 +1876,28 @@ unsigned long mmap_region(struct file *f
+@@ -1766,7 +1903,7 @@ unsigned long mmap_region(struct file *f
  			goto free_vma;
  	}
  
--	vma_link(mm, vma, prev);
+-	if (vma_link(mm, vma, prev)) {
++	if (mas_preallocate(&mas, vma, GFP_KERNEL)) {
+ 		error = -ENOMEM;
+ 		if (file)
+ 			goto unmap_and_free_vma;
+@@ -1774,12 +1911,28 @@ unsigned long mmap_region(struct file *f
+ 			goto free_vma;
+ 	}
+ 
 +	if (vma->vm_file)
 +		i_mmap_lock_write(vma->vm_file->f_mapping);
 +
@@ -333,7 +359,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	perf_event_mmap(vma);
  
  	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
-@@ -1782,6 +1924,7 @@ out:
+@@ -1806,6 +1959,7 @@ out:
  
  	vma_set_page_prot(vma);
  
@@ -341,7 +367,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return addr;
  
  unmap_and_free_vma:
-@@ -1798,6 +1941,7 @@ free_vma:
+@@ -1822,6 +1976,7 @@ free_vma:
  unacct_error:
  	if (charged)
  		vm_unacct_memory(charged);
@@ -349,7 +375,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return error;
  }
  
-@@ -2585,10 +2729,6 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2601,10 +2756,6 @@ int __do_munmap(struct mm_struct *mm, un
  	prev = vma->vm_prev;
  	/* we have start < vma->vm_end  */
  

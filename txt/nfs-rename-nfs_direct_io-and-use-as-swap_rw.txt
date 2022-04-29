@@ -1,0 +1,19 @@
+From: NeilBrown <neilb@suse.de>
+Subject: nfs: rename nfs_direct_IO and use as ->swap_rw
+
+The nfs_direct_IO() exists to support SWAP IO, but hasn't worked for a
+while.  We now need a ->swap_rw function which behaves slightly
+differently, returning zero for success rather than a byte count.
+
+So modify nfs_direct_IO accordingly, rename it, and use it as the
+->swap_rw function.
+
+Link: https://lkml.kernel.org/r/165119301493.15698.7491285551903597618.stgit@noble.brown
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be> (on Renesas RSK+RZA1 with 32 MiB of SDRAM)
+Cc: David Howells <dhowells@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>

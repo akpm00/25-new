@@ -5,16 +5,23 @@ vma_lookup() will walk the vma tree once and not continue to look for the
 next vma.  Since the exact vma is checked below, this is a more optimal
 way of searching.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-24-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-23-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ mm/khugepaged.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/mm/khugepaged.c~mm-khugepaged-optimize-collapse_pte_mapped_thp-by-using-vma_lookup
 +++ a/mm/khugepaged.c
-@@ -1435,7 +1435,7 @@ static void collapse_and_free_pmd(struct
+@@ -1453,7 +1453,7 @@ static void collapse_and_free_pmd(struct
  void collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr)
  {
  	unsigned long haddr = addr & HPAGE_PMD_MASK;

@@ -6,16 +6,23 @@ kmem_cache_alloc requests to succeed even when GFP_KERNEL is not set in
 the flags.  This functionality allows for testing different paths though
 the code.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-3-Liam.Howlett@oracle.com
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/20220426150616.3937571-3-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ tools/testing/radix-tree/linux.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 --- a/tools/testing/radix-tree/linux.c~radix-tree-test-suite-add-kmem_cache_set_non_kernel
 +++ a/tools/testing/radix-tree/linux.c
-@@ -23,14 +23,24 @@ struct kmem_cache {
+@@ -23,15 +23,25 @@ struct kmem_cache {
  	int nr_objs;
  	void *objs;
  	void (*ctor)(void *);
@@ -27,7 +34,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	cachep->non_kernel = val;
 +}
 +
- void *kmem_cache_alloc(struct kmem_cache *cachep, int gfp)
+ void *kmem_cache_alloc_lru(struct kmem_cache *cachep, struct list_lru *lru,
+ 		int gfp)
  {
  	void *p;
  
@@ -42,7 +50,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	pthread_mutex_lock(&cachep->lock);
  	if (cachep->nr_objs) {
-@@ -89,5 +99,6 @@ kmem_cache_create(const char *name, unsi
+@@ -90,5 +100,6 @@ kmem_cache_create(const char *name, unsi
  	ret->nr_objs = 0;
  	ret->objs = NULL;
  	ret->ctor = ctor;

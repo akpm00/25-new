@@ -1,4 +1,4 @@
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 Subject: mm: convert vma_lookup() to use mtree_load()
 
 Unlike the rbtree, the Maple Tree will return a NULL if there's nothing at
@@ -7,17 +7,23 @@ a particular address.
 Since the previous commit dropped the vmacache, it is now possible to
 consult the tree directly.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-29-Liam.Howlett@oracle.com
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lkml.kernel.org/r/20220426150616.3937571-28-Liam.Howlett@oracle.com
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ include/linux/mm.h |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 --- a/include/linux/mm.h~mm-convert-vma_lookup-to-use-mtree_load
 +++ a/include/linux/mm.h
-@@ -2802,12 +2802,7 @@ struct vm_area_struct *find_vma_intersec
+@@ -2799,12 +2799,7 @@ struct vm_area_struct *find_vma_intersec
  static inline
  struct vm_area_struct *vma_lookup(struct mm_struct *mm, unsigned long addr)
  {

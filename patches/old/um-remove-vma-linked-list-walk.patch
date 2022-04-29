@@ -1,14 +1,21 @@
-From: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: um: remove vma linked list walk
 
 Use the VMA iterator instead.
 
-Link: https://lkml.kernel.org/r/20220404143501.2016403-41-Liam.Howlett@oracle.com
+Link: https://lkml.kernel.org/r/20220426150616.3937571-41-Liam.Howlett@oracle.com
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
+ arch/um/kernel/tlb.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 --- a/arch/um/kernel/tlb.c~um-remove-vma-linked-list-walk
 +++ a/arch/um/kernel/tlb.c
