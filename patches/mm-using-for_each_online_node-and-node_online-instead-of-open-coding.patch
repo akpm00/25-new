@@ -9,6 +9,7 @@ Signed-off-by: Peng Liu <liupeng256@huawei.com>
 Suggested-by: Davidlohr Bueso <dave@stgolabs.net>
 Suggested-by: Andrew Morton <akpm@linux-foundation.org>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

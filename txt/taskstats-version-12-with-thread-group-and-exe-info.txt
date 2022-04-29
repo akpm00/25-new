@@ -49,6 +49,8 @@ inode-based identification of the associated executable file.
 Add tools/accounting/procacct.c as a simplified fork of getdelays.c to
 demonstrate process and thread accounting.
 
+[thomas.orgis@uni-hamburg.de: fix version number in comment]
+  Link: https://lkml.kernel.org/r/20220405003601.7a5f6008@plasteblaster
 Link: https://lkml.kernel.org/r/20220331004106.64e5616b@plasteblaster
 Signed-off-by: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
 Reviewed-by: Ismael Luceno <ismael@iodev.co.uk>

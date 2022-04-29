@@ -25,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-add-missing-cache-flushing-in-hugetlb_unshare_all_pmds
 +++ a/mm/hugetlb.c
-@@ -6941,6 +6941,7 @@ void hugetlb_unshare_all_pmds(struct vm_
+@@ -6886,6 +6886,7 @@ void hugetlb_unshare_all_pmds(struct vm_
  	if (start >= end)
  		return;
  

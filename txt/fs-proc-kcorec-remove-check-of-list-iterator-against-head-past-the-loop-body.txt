@@ -12,6 +12,7 @@ head, using the iterator variable after the loop should be avoided.
 In preparation to limit the scope of a list iterator to the list traversal
 loop, use a dedicated pointer to point to the found element [1].
 
+[akpm@linux-foundation.org: reduce scope of `iter']
 Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
 Link: https://lkml.kernel.org/r/20220331223700.902556-1-jakobkoschel@gmail.com
 Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>

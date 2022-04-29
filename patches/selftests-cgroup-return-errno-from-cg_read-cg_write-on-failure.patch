@@ -126,7 +126,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  int cg_find_unified_root(char *root, size_t len)
-@@ -557,7 +550,8 @@ ssize_t proc_read_text(int pid, bool thr
+@@ -545,7 +538,8 @@ ssize_t proc_read_text(int pid, bool thr
  	else
  		snprintf(path, sizeof(path), "/proc/%d/%s", pid, item);
  

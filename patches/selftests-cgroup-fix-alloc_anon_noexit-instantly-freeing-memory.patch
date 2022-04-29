@@ -35,7 +35,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c~selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory
 +++ a/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -214,13 +214,17 @@ static int alloc_pagecache_50M_noexit(co
+@@ -211,13 +211,17 @@ static int alloc_pagecache_50M_noexit(co
  static int alloc_anon_noexit(const char *cgroup, void *arg)
  {
  	int ppid = getppid();

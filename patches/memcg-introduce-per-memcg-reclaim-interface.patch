@@ -166,7 +166,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	cgroups.  The default value is "0".
 --- a/mm/memcontrol.c~memcg-introduce-per-memcg-reclaim-interface
 +++ a/mm/memcontrol.c
-@@ -6360,6 +6360,46 @@ static ssize_t memory_oom_group_write(st
+@@ -6355,6 +6355,46 @@ static ssize_t memory_oom_group_write(st
  	return nbytes;
  }
  
@@ -213,7 +213,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static struct cftype memory_files[] = {
  	{
  		.name = "current",
-@@ -6418,6 +6458,11 @@ static struct cftype memory_files[] = {
+@@ -6413,6 +6453,11 @@ static struct cftype memory_files[] = {
  		.seq_show = memory_oom_group_show,
  		.write = memory_oom_group_write,
  	},

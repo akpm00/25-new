@@ -16,6 +16,7 @@ printk()-matching regular expressions for any necessary updates.
 So that detailed FAT messages are captured by this printk index, this
 patch wraps fat_msg with a macro.
 
+[akpm@linux-foundation.org: coding-style cleanups]
 Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
 Signed-off-by: Jonathan Lassoff <jof@thejof.com>
 Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
@@ -40,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +do {									\
 +	printk_index_subsys_emit(FAT_PRINTK_PREFIX, level, fmt, ##args);\
 +	_fat_msg(sb, level, fmt, ##args);				\
-+} while(0)
++} while (0)
  __printf(3, 4) __cold
 -void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...);
 +void _fat_msg(struct super_block *sb, const char *level, const char *fmt, ...);
