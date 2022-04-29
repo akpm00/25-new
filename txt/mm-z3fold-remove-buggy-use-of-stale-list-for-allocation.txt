@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove buggy use of stale list for allocation
+
+Currently if z3fold couldn't find an unbuddied page it would first try to
+pull a page off the stale list.  But this approach is problematic.  If
+init z3fold page fails later, the page should be freed via
+free_z3fold_page to clean up the relevant resource instead of using
+__free_page directly.  And if page is successfully reused, it will BUG_ON
+later in __SetPageMovable because it's already non-lru movable page, i.e. 
+PAGE_MAPPING_MOVABLE is already set in page->mapping.  In order to fix all
+of these issues, we can simply remove the buggy use of stale list for
+allocation because can_sleep should always be false and we never really
+hit the reusing code path now.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

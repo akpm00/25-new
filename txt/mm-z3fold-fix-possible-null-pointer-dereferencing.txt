@@ -1,0 +1,11 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: fix possible null pointer dereferencing
+
+alloc_slots could fail to allocate memory under heavy memory pressure.  So
+we should check zhdr->slots against NULL to avoid future null pointer
+dereferencing.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-3-linmiaohe@huawei.com
+Fixes: fc5488651c7d ("z3fold: simplify freeing slots")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

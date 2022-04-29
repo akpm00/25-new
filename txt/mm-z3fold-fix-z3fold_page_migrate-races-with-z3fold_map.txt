@@ -1,0 +1,28 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: fix z3fold_page_migrate races with z3fold_map
+
+Think about the below scenario:
+
+CPU1				CPU2
+ z3fold_page_migrate		z3fold_map
+  z3fold_page_trylock
+  ...
+  z3fold_page_unlock
+  /* slots still points to old zhdr*/
+				 get_z3fold_header
+				  get slots from handle
+				  get old zhdr from slots
+				  z3fold_page_trylock
+				  return *old* zhdr
+  encode_handle(new_zhdr, FIRST|LAST|MIDDLE)
+  put_page(page) /* zhdr is freed! */
+				 but zhdr is still used by caller!
+
+z3fold_map can map freed z3fold page and lead to use-after-free bug.  To
+fix it, we add PAGE_MIGRATED to indicate z3fold page is migrated and soon
+to be released.  So get_z3fold_header won't return such page.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-10-linmiaohe@huawei.com
+Fixes: 1f862989b04a ("mm/z3fold.c: support page migration")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

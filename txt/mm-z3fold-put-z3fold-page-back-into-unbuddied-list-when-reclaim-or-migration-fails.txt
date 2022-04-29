@@ -1,0 +1,12 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: put z3fold page back into unbuddied list when reclaim or migration fails
+
+When doing z3fold page reclaim or migration, the page is removed from
+unbuddied list.  If reclaim or migration succeeds, it's fine as page is
+released.  But in case it fails, the page is not put back into unbuddied
+list now.  The page will be leaked until next compaction work, reclaim or
+migration is done.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-7-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

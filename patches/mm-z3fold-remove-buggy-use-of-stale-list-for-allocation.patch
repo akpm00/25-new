@@ -1,0 +1,56 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: remove buggy use of stale list for allocation
+
+Currently if z3fold couldn't find an unbuddied page it would first try to
+pull a page off the stale list.  But this approach is problematic.  If
+init z3fold page fails later, the page should be freed via
+free_z3fold_page to clean up the relevant resource instead of using
+__free_page directly.  And if page is successfully reused, it will BUG_ON
+later in __SetPageMovable because it's already non-lru movable page, i.e. 
+PAGE_MAPPING_MOVABLE is already set in page->mapping.  In order to fix all
+of these issues, we can simply remove the buggy use of stale list for
+allocation because can_sleep should always be false and we never really
+hit the reusing code path now.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |   23 +----------------------
+ 1 file changed, 1 insertion(+), 22 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-remove-buggy-use-of-stale-list-for-allocation
++++ a/mm/z3fold.c
+@@ -1102,28 +1102,7 @@ retry:
+ 		bud = FIRST;
+ 	}
+ 
+-	page = NULL;
+-	if (can_sleep) {
+-		spin_lock(&pool->stale_lock);
+-		zhdr = list_first_entry_or_null(&pool->stale,
+-						struct z3fold_header, buddy);
+-		/*
+-		 * Before allocating a page, let's see if we can take one from
+-		 * the stale pages list. cancel_work_sync() can sleep so we
+-		 * limit this case to the contexts where we can sleep
+-		 */
+-		if (zhdr) {
+-			list_del(&zhdr->buddy);
+-			spin_unlock(&pool->stale_lock);
+-			cancel_work_sync(&zhdr->work);
+-			page = virt_to_page(zhdr);
+-		} else {
+-			spin_unlock(&pool->stale_lock);
+-		}
+-	}
+-	if (!page)
+-		page = alloc_page(gfp);
+-
++	page = alloc_page(gfp);
+ 	if (!page)
+ 		return -ENOMEM;
+ 
+_

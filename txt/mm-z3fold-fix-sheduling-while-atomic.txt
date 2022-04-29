@@ -1,0 +1,20 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: fix sheduling while atomic
+
+Patch series "A few fixup patches for z3fold".
+
+This series contains a few fixup patches to fix sheduling while atomic,
+fix possible null pointer dereferencing, fix various race conditions and
+so on. More details can be found in the respective changelogs.
+
+
+This patch (of 9):
+
+z3fold's page_lock is always held when calling alloc_slots.  So gfp should
+be GFP_ATOMIC to avoid "scheduling while atomic" bug.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220429064051.61552-2-linmiaohe@huawei.com
+Fixes: fc5488651c7d ("z3fold: simplify freeing slots")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

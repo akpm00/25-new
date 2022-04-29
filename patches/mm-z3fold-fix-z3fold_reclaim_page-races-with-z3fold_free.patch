@@ -1,0 +1,80 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: fix z3fold_reclaim_page races with z3fold_free
+
+Think about the below scenario:
+
+CPU1				CPU2
+z3fold_reclaim_page		z3fold_free
+ spin_lock(&pool->lock)		 get_z3fold_header -- hold page_lock
+ kref_get_unless_zero
+				 kref_put--zhdr->refcount can be 1 now
+ !z3fold_page_trylock
+  kref_put -- zhdr->refcount is 0 now
+   release_z3fold_page
+    WARN_ON(!list_empty(&zhdr->buddy)); -- we're on buddy now!
+    spin_lock(&pool->lock); -- deadlock here!
+
+z3fold_reclaim_page might race with z3fold_free and will lead to pool lock
+deadlock and zhdr buddy non-empty warning.  To fix this, defer getting the
+refcount until page_lock is held just like what __z3fold_alloc does.  Note
+this has the side effect that we won't break the reclaim if we meet a soon
+to be released z3fold page now.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-9-linmiaohe@huawei.com
+Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |   18 +++---------------
+ 1 file changed, 3 insertions(+), 15 deletions(-)
+
+--- a/mm/z3fold.c~mm-z3fold-fix-z3fold_reclaim_page-races-with-z3fold_free
++++ a/mm/z3fold.c
+@@ -519,13 +519,6 @@ static void __release_z3fold_page(struct
+ 	atomic64_dec(&pool->pages_nr);
+ }
+ 
+-static void release_z3fold_page(struct kref *ref)
+-{
+-	struct z3fold_header *zhdr = container_of(ref, struct z3fold_header,
+-						refcount);
+-	__release_z3fold_page(zhdr, false);
+-}
+-
+ static void release_z3fold_page_locked(struct kref *ref)
+ {
+ 	struct z3fold_header *zhdr = container_of(ref, struct z3fold_header,
+@@ -1317,12 +1310,7 @@ static int z3fold_reclaim_page(struct z3
+ 				break;
+ 			}
+ 
+-			if (kref_get_unless_zero(&zhdr->refcount) == 0) {
+-				zhdr = NULL;
+-				break;
+-			}
+ 			if (!z3fold_page_trylock(zhdr)) {
+-				kref_put(&zhdr->refcount, release_z3fold_page);
+ 				zhdr = NULL;
+ 				continue; /* can't evict at this point */
+ 			}
+@@ -1333,14 +1321,14 @@ static int z3fold_reclaim_page(struct z3
+ 			 */
+ 			if (zhdr->foreign_handles ||
+ 			    test_and_set_bit(PAGE_CLAIMED, &page->private)) {
+-				if (!kref_put(&zhdr->refcount,
+-						release_z3fold_page_locked))
+-					z3fold_page_unlock(zhdr);
++				z3fold_page_unlock(zhdr);
+ 				zhdr = NULL;
+ 				continue; /* can't evict such page */
+ 			}
+ 			list_del_init(&zhdr->buddy);
+ 			zhdr->cpu = -1;
++			/* See comment in __z3fold_alloc. */
++			kref_get(&zhdr->refcount);
+ 			break;
+ 		}
+ 
+_

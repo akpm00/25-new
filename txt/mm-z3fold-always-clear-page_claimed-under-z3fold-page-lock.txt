@@ -1,0 +1,26 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: always clear PAGE_CLAIMED under z3fold page lock
+
+Think about the below race window:
+
+CPU1				CPU2
+z3fold_reclaim_page		z3fold_free
+ test_and_set_bit PAGE_CLAIMED
+ failed to reclaim page
+ z3fold_page_lock(zhdr);
+ add back to the lru list;
+ z3fold_page_unlock(zhdr);
+				 get_z3fold_header
+				 page_claimed=test_and_set_bit PAGE_CLAIMED
+
+ clear_bit(PAGE_CLAIMED, &page->private);
+
+				 if (!page_claimed) /* it's false true */
+				  free_handle is not called
+
+free_handle won't be called in this case. So z3fold_buddy_slots will leak.
+Fix it by always clear PAGE_CLAIMED under z3fold page lock.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-8-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>

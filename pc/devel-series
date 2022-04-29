@@ -1,5 +1,5 @@
 origin.patch
-#NEXT_PATCHES_START mm-hotfixes-stable
+#BRANCH mm-hotfixes-stable
 mm-hotfixes-stable.patch
 ###mm/memory-failure
 ##revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
@@ -7,8 +7,8 @@ mm-hotfixes-stable.patch
 #
 ##mm-hwpoison-use-pr_err-instead-of-dump_page-in-get_any_page.patch
 #
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START mm-hotfixes-unstable
+#ENDBRANCH mm-hotfixes-stable
+#BRANCH mm-hotfixes-unstable
 #
 #mm/mremap
 mm-mremap-fix-sign-for-efault-error-return-value.patch
@@ -16,8 +16,8 @@ mm-mremap-fix-sign-for-efault-error-return-value.patch
 #procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: Kees ack?
 procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
-#NEXT_PATCHES_END mm-hotfixes-unstable
-#NEXT_PATCHES_START mm-stable
+#ENDBRANCH mm-hotfixes-unstable
+#BRANCH mm-stable
 mm-stable.patch
 #
 ##mm/debug
@@ -233,8 +233,8 @@ mm-stable.patch
 #
 #
 #
-#NEXT_PATCHES_END mm-stable
-#NEXT_PATCHES_START mm-unstable
+#ENDBRANCH mm-stable
+#BRANCH mm-unstable
 #
 #
 #
@@ -575,10 +575,20 @@ mm-rmap-fix-typos-in-comments.patch
 #mm/mremap
 selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
+#mm/z3fold
+mm-z3fold-fix-sheduling-while-atomic.patch
+mm-z3fold-fix-possible-null-pointer-dereferencing.patch
+mm-z3fold-remove-buggy-use-of-stale-list-for-allocation.patch
+mm-z3fold-throw-warning-on-failure-of-trylock_page-in-z3fold_alloc.patch
+revert-mm-z3foldc-allow-__gfp_highmem-in-z3fold_alloc.patch
+mm-z3fold-put-z3fold-page-back-into-unbuddied-list-when-reclaim-or-migration-fails.patch
+mm-z3fold-always-clear-page_claimed-under-z3fold-page-lock.patch
+mm-z3fold-fix-z3fold_reclaim_page-races-with-z3fold_free.patch
+mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
 #
 # mmend
 #
-#NEXT_PATCHES_END mm-unstable
+#ENDBRANCH mm-unstable
 #
 #
 #
@@ -587,7 +597,7 @@ selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
 #
 #
-#NEXT_PATCHES_START mm-nonmm-stable
+#BRANCH mm-nonmm-stable
 mm-nonmm-stable.patch
 ###ia64
 ##ia64-fix-typos-in-comments.patch
@@ -598,8 +608,8 @@ mm-nonmm-stable.patch
 ###
 ###
 ###
-#NEXT_PATCHES_END mm-nonmm-stable
-#NEXT_PATCHES_START mm-nonmm-unstable
+#ENDBRANCH mm-nonmm-stable
+#BRANCH mm-nonmm-unstable
 #scripts
 scripts-decode_stacktracesh-support-old-bash-version.patch
 #
@@ -708,31 +718,21 @@ ipc-update-semtimedop-to-use-hrtimer.patch
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #
 #
-#NEXT_PATCHES_END mm-nonmm-unstable
+#ENDBRANCH mm-nonmm-unstable
 
 stop.patch
+
 # next
 linux-next.patch
 linux-next-rejects.patch
 linux-next-git-rejects.patch
-#NEXT_PATCHES_START linux-next-post
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START linux-next-urgent
+#
 #
 mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START linux-next-resolution
-#NEXT_PATCHES_END
-#NEXT_PATCHES_START post-linux-next
 #
 #taskstats
 delayacct-track-delays-from-write-protect-copy.patch
 #
-#cleanups
-#
 #kselftest-vm-override-targets-from-arguments.patch: TBU
 kselftest-vm-override-targets-from-arguments.patch
-#
-#NEXT_PATCHES_END
-#[obsolete]mm-mmap-delete-dead-code-in-do_brk_flags.patch
-#[to-be-updated]hugetlb-clean-up-hugetlb_cma_reserve.patch
+

@@ -1,0 +1,45 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: revert "mm/z3fold.c: allow __GFP_HIGHMEM in z3fold_alloc"
+
+Revert commit f1549cb5ab2b ("mm/z3fold.c: allow __GFP_HIGHMEM in
+z3fold_alloc").
+
+z3fold can't support GFP_HIGHMEM page now.  page_address is used directly
+at all places.  Moreover, z3fold_header is on per cpu unbuddied list which
+could be access anytime.  So we should rid the support of GFP_HIGHMEM
+allocation for z3fold.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-6-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/z3fold.c |    8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+--- a/mm/z3fold.c~revert-mm-z3foldc-allow-__gfp_highmem-in-z3fold_alloc
++++ a/mm/z3fold.c
+@@ -212,10 +212,8 @@ static int size_to_chunks(size_t size)
+ static inline struct z3fold_buddy_slots *alloc_slots(struct z3fold_pool *pool,
+ 							gfp_t gfp)
+ {
+-	struct z3fold_buddy_slots *slots;
+-
+-	slots = kmem_cache_zalloc(pool->c_handle,
+-				 (gfp & ~(__GFP_HIGHMEM | __GFP_MOVABLE)));
++	struct z3fold_buddy_slots *slots = kmem_cache_zalloc(pool->c_handle,
++							     gfp);
+ 
+ 	if (slots) {
+ 		/* It will be freed separately in free_handle(). */
+@@ -1075,7 +1073,7 @@ static int z3fold_alloc(struct z3fold_po
+ 	enum buddy bud;
+ 	bool can_sleep = gfpflags_allow_blocking(gfp);
+ 
+-	if (!size)
++	if (!size || (gfp & __GFP_HIGHMEM))
+ 		return -EINVAL;
+ 
+ 	if (size > PAGE_SIZE)
+_

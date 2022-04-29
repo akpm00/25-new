@@ -1,0 +1,11 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/z3fold: throw warning on failure of trylock_page in z3fold_alloc
+
+If trylock_page fails, the page won't be non-lru movable page.  When this
+page is freed via free_z3fold_page, it will trigger bug on PageMovable
+check in __ClearPageMovable.  Throw warning on failure of trylock_page to
+guard against such rare case just as what zsmalloc does.
+
+Link: https://lkml.kernel.org/r/20220429064051.61552-5-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
