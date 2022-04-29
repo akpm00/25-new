@@ -16,7 +16,7 @@ mm-mremap-fix-sign-for-efault-error-return-value.patch
 #procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch: Kees ack?
 procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
-#NEXT_PATCHES_END
+#NEXT_PATCHES_END mm-hotfixes-unstable
 #NEXT_PATCHES_START mm-stable
 mm-stable.patch
 #
@@ -598,7 +598,7 @@ mm-nonmm-stable.patch
 ###
 ###
 ###
-#NEXT_PATCHES_END
+#NEXT_PATCHES_END mm-nonmm-stable
 #NEXT_PATCHES_START mm-nonmm-unstable
 #scripts
 scripts-decode_stacktracesh-support-old-bash-version.patch
