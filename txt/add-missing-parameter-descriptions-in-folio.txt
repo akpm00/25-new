@@ -1,0 +1,13 @@
+From: Coleman Dietsch <dietschc@csp.edu>
+Subject: include/linux/mm_types.h: add missing parameter descriptions in folio
+
+This resolves a warning when running make htmldocs.
+
+./include/linux/mm_types.h:275: warning: Function parameter or member '__filler' not described in 'folio'
+./include/linux/mm_types.h:275: warning: Function parameter or member 'mlock_count' not described in 'folio'
+
+Link: https://lkml.kernel.org/r/CABvydf+Y_ybtLSf2o_tCY-qxe-BOch299zCOC-Y+i_UovdY75A@mail.gmail.com
+Signed-off-by: Coleman Dietsch <dietschc@csp.edu>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: William Kucharski <william.kucharski@oracle.com>

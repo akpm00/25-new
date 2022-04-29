@@ -1,0 +1,31 @@
+From: Coleman Dietsch <dietschc@csp.edu>
+Subject: include/linux/mm_types.h: add missing parameter descriptions in folio
+
+This resolves a warning when running make htmldocs.
+
+./include/linux/mm_types.h:275: warning: Function parameter or member '__filler' not described in 'folio'
+./include/linux/mm_types.h:275: warning: Function parameter or member 'mlock_count' not described in 'folio'
+
+Link: https://lkml.kernel.org/r/CABvydf+Y_ybtLSf2o_tCY-qxe-BOch299zCOC-Y+i_UovdY75A@mail.gmail.com
+Signed-off-by: Coleman Dietsch <dietschc@csp.edu>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: William Kucharski <william.kucharski@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm_types.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/include/linux/mm_types.h~add-missing-parameter-descriptions-in-folio
++++ a/include/linux/mm_types.h
+@@ -227,6 +227,8 @@ struct page {
+  * struct folio - Represents a contiguous set of bytes.
+  * @flags: Identical to the page flags.
+  * @lru: Least Recently Used list; tracks how recently this folio was used.
++ * @__filler: Always even, identical to page __filler.
++ * @mlock_count: Count folio's mlocks.
+  * @mapping: The file this page belongs to, or refers to the anon_vma for
+  *    anonymous memory.
+  * @index: Offset within the file, in units of pages.  For anonymous memory,
+_
