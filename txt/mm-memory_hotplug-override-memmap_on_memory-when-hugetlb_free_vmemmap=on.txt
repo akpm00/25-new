@@ -1,0 +1,32 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: memory_hotplug: override memmap_on_memory when hugetlb_free_vmemmap=on
+
+When "hugetlb_free_vmemmap=on" and "memory_hotplug.memmap_on_memory" are
+both passed to boot cmdline, the variable of "memmap_on_memory" will be
+set to 1 even if the vmemmap pages will not be allocated from the hotadded
+memory since the former takes precedence over the latter.  In the next
+patch, we want to enable or disable the feature of freeing vmemmap pages
+of HugeTLB via sysctl.  We need a way to know if the feature of
+memory_hotplug.memmap_on_memory is enabled when enabling the feature of
+freeing vmemmap pages since those two features are not compatible,
+however, the variable of "memmap_on_memory" cannot indicate this nowadays.
+Do not set "memmap_on_memory" to 1 when both parameters are passed to
+cmdline, in this case, "memmap_on_memory" could indicate if this feature
+is enabled by the users.
+
+Also introduce mhp_memmap_on_memory() helper to move the definition of
+"memmap_on_memory" to the scope of CONFIG_MHP_MEMMAP_ON_MEMORY.  In the
+next patch, mhp_memmap_on_memory() will also be exported to be used in
+hugetlb_vmemmap.c.
+
+Link: https://lkml.kernel.org/r/20220429121816.37541-3-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

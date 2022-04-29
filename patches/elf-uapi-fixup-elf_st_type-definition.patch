@@ -1,0 +1,39 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: ELF, uapi: fixup ELF_ST_TYPE definition
+
+This is very theoretical compile failure:
+
+	ELF_ST_TYPE(st_info = A)
+
+Cast will bind first and st_info will stop being lvalue:
+
+	error: lvalue required as left operand of assignment
+
+Given that the only use of this macro is
+
+	ELF_ST_TYPE(sym->st_info)
+
+where st_info is "unsigned char" I've decided to remove cast especially
+given that companion macro ELF_ST_BIND doesn't use cast.
+
+Link: https://lkml.kernel.org/r/Ymv7G1BeX4kt3obz@localhost.localdomain
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/uapi/linux/elf.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/uapi/linux/elf.h~elf-uapi-fixup-elf_st_type-definition
++++ a/include/uapi/linux/elf.h
+@@ -134,7 +134,7 @@ typedef __s64	Elf64_Sxword;
+ #define STT_TLS     6
+ 
+ #define ELF_ST_BIND(x)		((x) >> 4)
+-#define ELF_ST_TYPE(x)		(((unsigned int) x) & 0xf)
++#define ELF_ST_TYPE(x)		((x) & 0xf)
+ #define ELF32_ST_BIND(x)	ELF_ST_BIND(x)
+ #define ELF32_ST_TYPE(x)	ELF_ST_TYPE(x)
+ #define ELF64_ST_BIND(x)	ELF_ST_BIND(x)
+_

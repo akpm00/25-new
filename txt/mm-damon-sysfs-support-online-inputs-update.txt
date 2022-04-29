@@ -1,0 +1,25 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: support online inputs update
+
+Currently, DAMON sysfs interface doesn't provide a way for adjusting DAMON
+input parameters while it is turned on.  Therefore, users who want to
+reconfigure DAMON need to stop DAMON and restart.  This means all the
+monitoring results that accumulated so far, which could be useful, should
+be flushed.  This would be inefficient for many cases.
+
+For an example, let's suppose a sysadmin was running a DAMON-based
+Operation Scheme to find memory regions not accessed for more than 5 mins
+and page out the regions.  If it turns out the 5 mins threshold was too
+long and therefore the sysadmin wants to reduce it to 4 mins, the sysadmin
+should turn off DAMON, restart it, and wait for at least 4 more minutes so
+that DAMON can find the cold memory regions, even though DAMON was knowing
+there are regions that not accessed for 4 mins at the time of shutdown.
+
+This commit makes DAMON sysfs interface to support online DAMON input
+parameters updates by adding a new input keyword for the 'state' DAMON
+sysfs file, 'commit'.  Writing the keyword to the 'state' file while the
+corresponding kdamond is running makes the kdamond to read the sysfs file
+values again and update the DAMON context.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-12-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

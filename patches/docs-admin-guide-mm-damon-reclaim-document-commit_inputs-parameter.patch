@@ -1,0 +1,35 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/reclaim: document 'commit_inputs' parameter
+
+This commit documents the new DAMON_RECLAIM parameter, 'commit_inputs' in
+its usage document.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-15-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/admin-guide/mm/damon/reclaim.rst |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+--- a/Documentation/admin-guide/mm/damon/reclaim.rst~docs-admin-guide-mm-damon-reclaim-document-commit_inputs-parameter
++++ a/Documentation/admin-guide/mm/damon/reclaim.rst
+@@ -66,6 +66,17 @@ Setting it as ``N`` disables DAMON_RECLA
+ no real monitoring and reclamation due to the watermarks-based activation
+ condition.  Refer to below descriptions for the watermarks parameter for this.
+ 
++commit_inputs
++-------------
++
++Make DAMON_RECLAIM reads the input parameters again, except ``enabled``.
++
++Input parameters that updated while DAMON_RECLAIM is running are not applied
++by default.  Once this parameter is set as ``Y``, DAMON_RECLAIM reads values
++of parametrs except ``enabled`` again.  Once the re-reading is done, this
++parameter is set as ``N``.  If invalid parameters are found while the
++re-reading, DAMON_RECLAIM will be disabled.
++
+ min_age
+ -------
+ 
+_

@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: move targets setup code to a separated function
+
+This commit separates DAMON sysfs interface's monitoring context targets
+setup code to a new function for better readability.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-8-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

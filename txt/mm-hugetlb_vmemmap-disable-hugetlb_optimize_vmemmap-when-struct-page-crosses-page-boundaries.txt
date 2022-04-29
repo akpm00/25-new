@@ -1,0 +1,36 @@
+From: Muchun Song <songmuchun@bytedance.com>
+Subject: mm: hugetlb_vmemmap: disable hugetlb_optimize_vmemmap when struct page crosses page boundaries
+
+Patch series "add hugetlb_optimize_vmemmap sysctl", v9.
+
+This series aims to add hugetlb_optimize_vmemmap sysctl to enable or
+disable the feature of optimizing vmemmap pages associated with HugeTLB
+pages.
+
+
+This patch (of 4):
+
+If the size of "struct page" is not the power of two but with the feature
+of minimizing overhead of struct page associated with each HugeTLB is
+enabled, then the vmemmap pages of HugeTLB will be corrupted after
+remapping (panic is about to happen in theory).  But this only exists when
+!CONFIG_MEMCG && !CONFIG_SLUB on x86_64.  However, it is not a
+conventional configuration nowadays.  So it is not a real word issue, just
+the result of a code review.
+
+But we cannot prevent anyone from configuring that combined configure. 
+This hugetlb_optimize_vmemmap should be disable in this case to fix this
+issue.
+
+Link: https://lkml.kernel.org/r/20220429121816.37541-1-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220429121816.37541-2-songmuchun@bytedance.com
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>

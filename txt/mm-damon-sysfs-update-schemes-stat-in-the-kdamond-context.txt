@@ -1,0 +1,15 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: update schemes stat in the kdamond context
+
+Only '->kdamond' and '->kdamond_stop' are protected by 'kdamond_lock' of
+'struct damon_ctx'.  All other DAMON context internal data items are
+recommended to be accessed in DAMON callbacks, or under some additional
+synchronizations.  But, DAMON sysfs is accessing the schemes stat under
+'kdamond_lock'.
+
+It makes no big issue as the read values are not used anywhere inside
+kernel, but would better to be fixed.  This commit moves the reads to
+DAMON callback context, as supposed to be used for the purpose.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-11-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

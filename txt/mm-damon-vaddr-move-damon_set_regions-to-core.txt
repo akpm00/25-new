@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/vaddr: move 'damon_set_regions()' to core
+
+This commit moves 'damon_set_regions()' from vaddr to core, as it is aimed
+to be used by not only 'vaddr' but also other parts of DAMON.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-5-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

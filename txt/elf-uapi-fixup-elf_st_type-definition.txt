@@ -1,0 +1,21 @@
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Subject: ELF, uapi: fixup ELF_ST_TYPE definition
+
+This is very theoretical compile failure:
+
+	ELF_ST_TYPE(st_info = A)
+
+Cast will bind first and st_info will stop being lvalue:
+
+	error: lvalue required as left operand of assignment
+
+Given that the only use of this macro is
+
+	ELF_ST_TYPE(sym->st_info)
+
+where st_info is "unsigned char" I've decided to remove cast especially
+given that companion macro ELF_ST_BIND doesn't use cast.
+
+Link: https://lkml.kernel.org/r/Ymv7G1BeX4kt3obz@localhost.localdomain
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Kees Cook <keescook@chromium.org>

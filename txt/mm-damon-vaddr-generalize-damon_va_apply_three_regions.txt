@@ -1,0 +1,12 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/vaddr: generalize damon_va_apply_three_regions()
+
+'damon_va_apply_three_regions()' is for adjusting address ranges to fit in
+three discontiguous ranges.  The function can be generalized for arbitrary
+number of discontiguous ranges and reused for future usage, such as
+arbitrary online regions update.  For such future usage, this commit
+introduces a generalized version of the function called
+'damon_set_regions()'.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-4-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

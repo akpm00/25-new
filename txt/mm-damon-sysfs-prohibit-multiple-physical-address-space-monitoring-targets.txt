@@ -1,0 +1,10 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: prohibit multiple physical address space monitoring targets
+
+Having multiple targets for physical address space monitoring makes no
+sense.  This commit prohibits such a ridiculous DAMON context setup my
+making the DAMON context build function to check and return an error for
+the case.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-7-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

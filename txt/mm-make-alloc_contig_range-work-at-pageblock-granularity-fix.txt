@@ -1,0 +1,17 @@
+From: Zi Yan <ziy@nvidia.com>
+Subject: mm-make-alloc_contig_range-work-at-pageblock-granularity-fix
+
+Fix deadlock/crash at https://lore.kernel.org/linux-mm/20220426201855.GA1014@qian/
+
+Link: https://lkml.kernel.org/r/23A7297E-6C84-4138-A9FE-3598234004E6@nvidia.com
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Eric Ren <renzhengeek@gmail.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

@@ -1,0 +1,56 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/core: add a new callback for watermarks checks
+
+Patch series "mm/damon: Support online tuning".
+
+Effects of DAMON and DAMON-based Operation Schemes highly depends on the
+configurations.  Wrong configurations could even result in unexpected
+efficiency degradations.  For finding a best configuration, repeating
+incremental configuration changes and results measurements, in other
+words, online tuning, could be helpful.
+
+Nevertheless, DAMON kernel API supports only restrictive online tuning. 
+Worse yet, the sysfs-based DAMON user interface doesn't support online
+tuning at all.  DAMON_RECLAIM also doesn't support online tuning.
+
+This patchset makes the DAMON kernel API, DAMON sysfs interface, and
+DAMON_RECLAIM supports online tuning.
+
+Sequence of patches
+-------------------
+
+First two patches enhance DAMON online tuning for kernel API users. 
+Specifically, patch 1 let kernel API users to be able to do DAMON online
+tuning without a restriction, and patch 2 makes error handling easier.
+
+Following seven patches (patches 3-9) refactor code for better readability
+and easier reuse of code fragments that will be useful for online tuning
+support.
+
+Patch 10 introduces DAMON callback based user request handling structure
+for DAMON sysfs interface, and patch 11 enables DAMON online tuning via
+DAMON sysfs interface.  Documentation patch (patch 12) for usage of it
+follows.
+
+Patch 13 enables online tuning of DAMON_RECLAIM and finally patch 14
+documents the DAMON_RECLAIM online tuning usage.
+
+
+This patch (of 14):
+
+For updating input parameters for running DAMON contexts, DAMON kernel API
+users can use the contexts' callbacks, as it is the safe place for context
+internal data accesses.  When the context has DAMON-based operation
+schemes and all schemes are deactivated due to their watermarks, however,
+DAMON does nothing but only watermarks checks.  As a result, no callbacks
+will be called back, and therefore the kernel API users cannot update the
+input parameters including monitoring attributes, DAMON-based operation
+schemes, and watermarks.
+
+To let users easily update such DAMON input parameters in such a case,
+this commit adds a new callback, 'after_wmarks_check()'.  It will be
+called after each watermarks check.  Users can do the online input
+parameters update in the callback even under the schemes deactivated case.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-2-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

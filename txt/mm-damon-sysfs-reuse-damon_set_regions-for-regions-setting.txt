@@ -1,0 +1,9 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: reuse damon_set_regions() for regions setting
+
+'damon_set_regions()' is general enough so that it can also be used for
+only creating regions.  This commit makes DAMON sysfs interface to reuse
+the function rather keeping two implementations for a same purpose.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-9-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

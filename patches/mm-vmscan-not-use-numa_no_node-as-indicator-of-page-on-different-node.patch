@@ -1,0 +1,50 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: don't use NUMA_NO_NODE as indicator of page on different node
+
+Now we are sure there is at least one page on page_list, so it is safe to
+get the nid of it.  This means it is not necessary to use NUMA_NO_NODE as
+an indicator for the beginning of iteration or a page on different node.
+
+Link: https://lkml.kernel.org/r/20220429014426.29223-2-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-not-use-numa_no_node-as-indicator-of-page-on-different-node
++++ a/mm/vmscan.c
+@@ -2562,7 +2562,7 @@ static unsigned int reclaim_page_list(st
+ 
+ unsigned long reclaim_pages(struct list_head *page_list)
+ {
+-	int nid = NUMA_NO_NODE;
++	int nid;
+ 	unsigned int nr_reclaimed = 0;
+ 	LIST_HEAD(node_page_list);
+ 	struct page *page;
+@@ -2573,10 +2573,9 @@ unsigned long reclaim_pages(struct list_
+ 
+ 	noreclaim_flag = memalloc_noreclaim_save();
+ 
++	nid = page_to_nid(lru_to_page(page_list));
+ 	do {
+ 		page = lru_to_page(page_list);
+-		if (nid == NUMA_NO_NODE)
+-			nid = page_to_nid(page);
+ 
+ 		if (nid == page_to_nid(page)) {
+ 			ClearPageActive(page);
+@@ -2585,7 +2584,7 @@ unsigned long reclaim_pages(struct list_
+ 		}
+ 
+ 		nr_reclaimed += reclaim_page_list(&node_page_list, NODE_DATA(nid));
+-		nid = NUMA_NO_NODE;
++		nid = page_to_nid(lru_to_page(page_list));
+ 	} while (!list_empty(page_list));
+ 
+ 	nr_reclaimed += reclaim_page_list(&node_page_list, NODE_DATA(nid));
+_

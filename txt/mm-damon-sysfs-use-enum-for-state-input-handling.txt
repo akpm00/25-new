@@ -1,0 +1,13 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: use enum for 'state' input handling
+
+DAMON sysfs 'state' file handling code is using string literals in both
+'state_show()' and 'state_store()'.  This makes the code error prone and
+inflexible for future extensions.
+
+To improve the situation, this commit defines possible input strings and
+'enum' for identifying each input keyword only once, and refactors the
+code to reuse those.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-10-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

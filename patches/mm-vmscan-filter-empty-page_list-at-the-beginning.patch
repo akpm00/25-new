@@ -1,0 +1,49 @@
+From: Wei Yang <richard.weiyang@gmail.com>
+Subject: mm/vmscan: filter empty page_list at the beginning
+
+node_page_list would always be !empty on finishing the loop, except
+page_list is empty.
+
+Let's handle empty page_list before doing any real work including touching
+PF_MEMALLOC flag.
+
+Link: https://lkml.kernel.org/r/20220429014426.29223-1-richard.weiyang@gmail.com
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/vmscan.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+--- a/mm/vmscan.c~mm-vmscan-filter-empty-page_list-at-the-beginning
++++ a/mm/vmscan.c
+@@ -2568,9 +2568,12 @@ unsigned long reclaim_pages(struct list_
+ 	struct page *page;
+ 	unsigned int noreclaim_flag;
+ 
++	if (list_empty(page_list))
++		return nr_reclaimed;
++
+ 	noreclaim_flag = memalloc_noreclaim_save();
+ 
+-	while (!list_empty(page_list)) {
++	do {
+ 		page = lru_to_page(page_list);
+ 		if (nid == NUMA_NO_NODE)
+ 			nid = page_to_nid(page);
+@@ -2583,10 +2586,9 @@ unsigned long reclaim_pages(struct list_
+ 
+ 		nr_reclaimed += reclaim_page_list(&node_page_list, NODE_DATA(nid));
+ 		nid = NUMA_NO_NODE;
+-	}
++	} while (!list_empty(page_list));
+ 
+-	if (!list_empty(&node_page_list))
+-		nr_reclaimed += reclaim_page_list(&node_page_list, NODE_DATA(nid));
++	nr_reclaimed += reclaim_page_list(&node_page_list, NODE_DATA(nid));
+ 
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 
+_

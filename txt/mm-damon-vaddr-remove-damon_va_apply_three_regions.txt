@@ -1,0 +1,9 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/vaddr: remove damon_va_apply_three_regions()
+
+'damon_va_apply_three_regions()' is just a wrapper of its general version,
+'damon_set_regions()'.  This commit replaces the wrapper calls to directly
+call the general version.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-6-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

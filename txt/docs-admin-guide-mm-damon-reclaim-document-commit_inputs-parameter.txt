@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/admin-guide/mm/damon/reclaim: document 'commit_inputs' parameter
+
+This commit documents the new DAMON_RECLAIM parameter, 'commit_inputs' in
+its usage document.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-15-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

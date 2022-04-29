@@ -1,0 +1,5 @@
+Documentation/admin-guide/sysctl/vm.rst
+include/linux/memory_hotplug.h
+mm/hugetlb_vmemmap.c
+mm/hugetlb_vmemmap.h
+mm/memory_hotplug.c

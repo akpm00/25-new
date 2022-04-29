@@ -1,0 +1,10 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/reclaim: support online inputs update
+
+DAMON_RECLAIM reads the user input parameters only when it starts.  To
+allow more efficient online tuning, this commit implements a new input
+parameter called 'commit_inputs'.  Writing true to the parameter makes
+DAMON_RECLAIM reads the input parameters again.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-14-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

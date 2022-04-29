@@ -1,0 +1,8 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: Docs/{ABI,admin-guide}/damon: Update for 'state' sysfs file input keyword, 'commit'
+
+This commit documents the newly added 'state' sysfs file input keyword,
+'commit', which allows online tuning of DAMON contexts.
+
+Link: https://lkml.kernel.org/r/20220429160606.127307-13-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
