@@ -355,8 +355,7 @@ hugetlb-fix-wrong-use-of-nr_online_nodes.patch
 hugetlb-fix-wrong-use-of-nr_online_nodes-v4.patch
 hugetlb-fix-hugepages_setup-when-deal-with-pernode.patch
 hugetlb-fix-return-value-of-__setup-handlers.patch
-#hugetlb-clean-up-hugetlb_cma_reserve.patch: TBU
-hugetlb-clean-up-hugetlb_cma_reserve.patch
+mm-using-for_each_online_node-and-node_online-instead-of-open-coding.patch
 #
 mm-khugepaged-use-vma_is_anonymous.patch
 #
@@ -576,7 +575,6 @@ mm-rmap-fix-typos-in-comments.patch
 #mm/mremap
 selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
-#mm/cleanups
 #
 # mmend
 #
@@ -737,3 +735,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #
 #NEXT_PATCHES_END
 #[obsolete]mm-mmap-delete-dead-code-in-do_brk_flags.patch
+#[to-be-updated]hugetlb-clean-up-hugetlb_cma_reserve.patch

@@ -1,0 +1,61 @@
+From: Peng Liu <liupeng256@huawei.com>
+Subject: mm: use for_each_online_node and node_online instead of open coding
+
+Use more generic functions to deal with issues related to online nodes. 
+The changes will make the code simplified.
+
+Link: https://lkml.kernel.org/r/20220429030218.644635-1-liupeng256@huawei.com
+Signed-off-by: Peng Liu <liupeng256@huawei.com>
+Suggested-by: Davidlohr Bueso <dave@stgolabs.net>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/ia64/kernel/uncached.c |    2 +-
+ mm/hugetlb.c                |    4 ++--
+ mm/page_ext.c               |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+--- a/arch/ia64/kernel/uncached.c~mm-using-for_each_online_node-and-node_online-instead-of-open-coding
++++ a/arch/ia64/kernel/uncached.c
+@@ -261,7 +261,7 @@ static int __init uncached_init(void)
+ {
+ 	int nid;
+ 
+-	for_each_node_state(nid, N_ONLINE) {
++	for_each_online_node(nid) {
+ 		uncached_pools[nid].pool = gen_pool_create(PAGE_SHIFT, nid);
+ 		mutex_init(&uncached_pools[nid].add_chunk_mutex);
+ 	}
+--- a/mm/hugetlb.c~mm-using-for_each_online_node-and-node_online-instead-of-open-coding
++++ a/mm/hugetlb.c
+@@ -7026,7 +7026,7 @@ void __init hugetlb_cma_reserve(int orde
+ 		if (hugetlb_cma_size_in_node[nid] == 0)
+ 			continue;
+ 
+-		if (!node_state(nid, N_ONLINE)) {
++		if (!node_online(nid)) {
+ 			pr_warn("hugetlb_cma: invalid node %d specified\n", nid);
+ 			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
+ 			hugetlb_cma_size_in_node[nid] = 0;
+@@ -7065,7 +7065,7 @@ void __init hugetlb_cma_reserve(int orde
+ 	}
+ 
+ 	reserved = 0;
+-	for_each_node_state(nid, N_ONLINE) {
++	for_each_online_node(nid) {
+ 		int res;
+ 		char name[CMA_MAX_NAME];
+ 
+--- a/mm/page_ext.c~mm-using-for_each_online_node-and-node_online-instead-of-open-coding
++++ a/mm/page_ext.c
+@@ -320,7 +320,7 @@ static int __meminit online_page_ext(uns
+ 		 * online__pages(), and start_pfn should exist.
+ 		 */
+ 		nid = pfn_to_nid(start_pfn);
+-		VM_BUG_ON(!node_state(nid, N_ONLINE));
++		VM_BUG_ON(!node_online(nid));
+ 	}
+ 
+ 	for (pfn = start; !fail && pfn < end; pfn += PAGES_PER_SECTION)
+_

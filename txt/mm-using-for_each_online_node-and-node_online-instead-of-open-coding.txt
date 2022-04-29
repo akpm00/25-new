@@ -1,0 +1,10 @@
+From: Peng Liu <liupeng256@huawei.com>
+Subject: mm: use for_each_online_node and node_online instead of open coding
+
+Use more generic functions to deal with issues related to online nodes. 
+The changes will make the code simplified.
+
+Link: https://lkml.kernel.org/r/20220429030218.644635-1-liupeng256@huawei.com
+Signed-off-by: Peng Liu <liupeng256@huawei.com>
+Suggested-by: Davidlohr Bueso <dave@stgolabs.net>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>

@@ -1,0 +1,3 @@
+arch/ia64/kernel/uncached.c
+mm/hugetlb.c
+mm/page_ext.c
