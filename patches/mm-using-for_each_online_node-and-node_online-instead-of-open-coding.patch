@@ -8,6 +8,7 @@ Link: https://lkml.kernel.org/r/20220429030218.644635-1-liupeng256@huawei.com
 Signed-off-by: Peng Liu <liupeng256@huawei.com>
 Suggested-by: Davidlohr Bueso <dave@stgolabs.net>
 Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -29,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
 --- a/mm/hugetlb.c~mm-using-for_each_online_node-and-node_online-instead-of-open-coding
 +++ a/mm/hugetlb.c
-@@ -7026,7 +7026,7 @@ void __init hugetlb_cma_reserve(int orde
+@@ -6971,7 +6971,7 @@ void __init hugetlb_cma_reserve(int orde
  		if (hugetlb_cma_size_in_node[nid] == 0)
  			continue;
  
@@ -38,7 +39,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pr_warn("hugetlb_cma: invalid node %d specified\n", nid);
  			hugetlb_cma_size -= hugetlb_cma_size_in_node[nid];
  			hugetlb_cma_size_in_node[nid] = 0;
-@@ -7065,7 +7065,7 @@ void __init hugetlb_cma_reserve(int orde
+@@ -7010,7 +7010,7 @@ void __init hugetlb_cma_reserve(int orde
  	}
  
  	reserved = 0;

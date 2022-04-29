@@ -1,0 +1,8 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: remove alloc_pages_vma()
+
+All callers have now been converted to use vma_alloc_folio(), so convert
+the body of alloc_pages_vma() to allocate folios instead.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-4-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

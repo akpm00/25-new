@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert lazy freeing to folios
+
+Remove a hidden call to compound_head(), and account nr_pages instead of a
+single page.  This matches the code in lru_lazyfree_fn() that accounts
+nr_pages to PGLAZYFREE.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-11-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

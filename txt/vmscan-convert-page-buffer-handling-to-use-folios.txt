@@ -1,0 +1,8 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert page buffer handling to use folios
+
+This mostly just removes calls to compound_head() although nr_reclaimed
+should be incremented by the number of pages, not just 1.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-10-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

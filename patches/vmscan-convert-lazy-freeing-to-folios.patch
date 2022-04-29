@@ -1,0 +1,79 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert lazy freeing to folios
+
+Remove a hidden call to compound_head(), and account nr_pages instead of a
+single page.  This matches the code in lru_lazyfree_fn() that accounts
+nr_pages to PGLAZYFREE.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-11-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/memcontrol.h |   14 ++++++++++++++
+ mm/vmscan.c                |   18 +++++++++---------
+ 2 files changed, 23 insertions(+), 9 deletions(-)
+
+--- a/include/linux/memcontrol.h~vmscan-convert-lazy-freeing-to-folios
++++ a/include/linux/memcontrol.h
+@@ -1057,6 +1057,15 @@ static inline void count_memcg_page_even
+ 		count_memcg_events(memcg, idx, 1);
+ }
+ 
++static inline void count_memcg_folio_events(struct folio *folio,
++		enum vm_event_item idx, unsigned long nr)
++{
++	struct mem_cgroup *memcg = folio_memcg(folio);
++
++	if (memcg)
++		count_memcg_events(memcg, idx, nr);
++}
++
+ static inline void count_memcg_event_mm(struct mm_struct *mm,
+ 					enum vm_event_item idx)
+ {
+@@ -1494,6 +1503,11 @@ static inline void count_memcg_page_even
+ {
+ }
+ 
++static inline void count_memcg_folio_events(struct folio *folio,
++		enum vm_event_item idx, unsigned long nr)
++{
++}
++
+ static inline
+ void count_memcg_event_mm(struct mm_struct *mm, enum vm_event_item idx)
+ {
+--- a/mm/vmscan.c~vmscan-convert-lazy-freeing-to-folios
++++ a/mm/vmscan.c
+@@ -1902,20 +1902,20 @@ retry:
+ 			}
+ 		}
+ 
+-		if (PageAnon(page) && !PageSwapBacked(page)) {
++		if (folio_test_anon(folio) && !folio_test_swapbacked(folio)) {
+ 			/* follow __remove_mapping for reference */
+-			if (!page_ref_freeze(page, 1))
++			if (!folio_ref_freeze(folio, 1))
+ 				goto keep_locked;
+ 			/*
+-			 * The page has only one reference left, which is
++			 * The folio has only one reference left, which is
+ 			 * from the isolation. After the caller puts the
+-			 * page back on lru and drops the reference, the
+-			 * page will be freed anyway. It doesn't matter
+-			 * which lru it goes. So we don't bother checking
+-			 * PageDirty here.
++			 * folio back on the lru and drops the reference, the
++			 * folio will be freed anyway. It doesn't matter
++			 * which lru it goes on. So we don't bother checking
++			 * the dirty flag here.
+ 			 */
+-			count_vm_event(PGLAZYFREED);
+-			count_memcg_page_event(page, PGLAZYFREED);
++			count_vm_events(PGLAZYFREED, nr_pages);
++			count_memcg_folio_events(folio, PGLAZYFREED, nr_pages);
+ 		} else if (!mapping || !__remove_mapping(mapping, folio, true,
+ 							 sc->target_mem_cgroup))
+ 			goto keep_locked;
+_

@@ -1,0 +1,10 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: move initialisation of mapping down
+
+Now that we don't interrogate the BDI for congestion, we can delay looking
+up the folio's mapping until we've got further through the function,
+reducing register pressure and saving a call to folio_mapping for folios
+we're adding to the swap cache.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-12-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

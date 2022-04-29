@@ -34,7 +34,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~hugetlb-fix-return-value-of-__setup-handlers
 +++ a/mm/hugetlb.c
-@@ -4157,7 +4157,7 @@ static int __init hugepages_setup(char *
+@@ -4155,7 +4155,7 @@ static int __init hugepages_setup(char *
  	if (!parsed_valid_hugepagesz) {
  		pr_warn("HugeTLB: hugepages=%s does not follow a valid hugepagesz, ignoring\n", s);
  		parsed_valid_hugepagesz = true;
@@ -43,7 +43,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	/*
-@@ -4173,7 +4173,7 @@ static int __init hugepages_setup(char *
+@@ -4171,7 +4171,7 @@ static int __init hugepages_setup(char *
  
  	if (mhp == last_mhp) {
  		pr_warn("HugeTLB: hugepages= specified twice without interleaving hugepagesz=, ignoring hugepages=%s\n", s);
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	while (*p) {
-@@ -4184,7 +4184,7 @@ static int __init hugepages_setup(char *
+@@ -4182,7 +4182,7 @@ static int __init hugepages_setup(char *
  		if (p[count] == ':') {
  			if (!hugetlb_node_alloc_supported()) {
  				pr_warn("HugeTLB: architecture can't support node specific alloc, ignoring!\n");
@@ -61,7 +61,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			}
  			if (tmp >= MAX_NUMNODES || !node_online(tmp))
  				goto invalid;
-@@ -4226,7 +4226,7 @@ static int __init hugepages_setup(char *
+@@ -4224,7 +4224,7 @@ static int __init hugepages_setup(char *
  invalid:
  	pr_warn("HugeTLB: Invalid hugepages parameter %s\n", p);
  	hugepages_clear_pages_in_node();
@@ -70,7 +70,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  __setup("hugepages=", hugepages_setup);
  
-@@ -4247,7 +4247,7 @@ static int __init hugepagesz_setup(char
+@@ -4245,7 +4245,7 @@ static int __init hugepagesz_setup(char
  
  	if (!arch_hugetlb_valid_size(size)) {
  		pr_err("HugeTLB: unsupported hugepagesz=%s\n", s);
@@ -79,7 +79,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	h = size_to_hstate(size);
-@@ -4262,7 +4262,7 @@ static int __init hugepagesz_setup(char
+@@ -4260,7 +4260,7 @@ static int __init hugepagesz_setup(char
  		if (!parsed_default_hugepagesz ||  h != &default_hstate ||
  		    default_hstate.max_huge_pages) {
  			pr_warn("HugeTLB: hugepagesz=%s specified twice, ignoring\n", s);
@@ -88,7 +88,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  
  		/*
-@@ -4293,14 +4293,14 @@ static int __init default_hugepagesz_set
+@@ -4291,14 +4291,14 @@ static int __init default_hugepagesz_set
  	parsed_valid_hugepagesz = false;
  	if (parsed_default_hugepagesz) {
  		pr_err("HugeTLB: default_hugepagesz previously specified, ignoring %s\n", s);

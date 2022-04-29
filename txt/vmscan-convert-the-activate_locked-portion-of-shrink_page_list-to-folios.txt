@@ -1,0 +1,7 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert the activate_locked portion of shrink_page_list to folios
+
+This accounts the number of pages activated correctly for large folios.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-13-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

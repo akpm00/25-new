@@ -1,0 +1,8 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: swap: turn get_swap_page() into folio_alloc_swap()
+
+This removes an assumption that a large folio is HPAGE_PMD_NR pages in
+size.
+
+Link: https://lkml.kernel.org/r/20220429192329.3034378-7-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>

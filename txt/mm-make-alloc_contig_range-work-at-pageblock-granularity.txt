@@ -7,10 +7,12 @@ convert extra pageblocks at the beginning and at the end of the range.
 Change alloc_contig_range() to work at pageblock granularity.
 
 Special handling is needed for free pages and in-use pages across the
-boundaries of the range specified by alloc_contig_range().  Because these
-partially isolated pages causes free page accounting issues.  The free
-pages will be split and freed into separate migratetype lists; the in-use
-pages will be migrated then the freed pages will be handled in the
+boundaries of the range specified by alloc_contig_range().  Because these=
+
+Partially isolated pages causes free page accounting issues.  The free
+pages will be split and freed into separate migratetype lists; the in-use=
+
+Pages will be migrated then the freed pages will be handled in the
 aforementioned way.
 
 Link: https://lkml.kernel.org/r/20220425143118.2850746-4-zi.yan@sent.com

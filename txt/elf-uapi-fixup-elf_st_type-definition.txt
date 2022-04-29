@@ -18,4 +18,5 @@ given that companion macro ELF_ST_BIND doesn't use cast.
 
 Link: https://lkml.kernel.org/r/Ymv7G1BeX4kt3obz@localhost.localdomain
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>

@@ -32,6 +32,8 @@ Assuming that "node < 2" is valid is wrong.
 Recheck all the places that use nr_online_nodes, and repair them one by
 one.
 
+[liupeng256@huawei.com: v4]
+  Link: https://lkml.kernel.org/r/20220416103526.3287348-1-liupeng256@huawei.com
 Link: https://lkml.kernel.org/r/20220413032915.251254-1-liupeng256@huawei.com
 Link: https://lkml.kernel.org/r/20220413032915.251254-2-liupeng256@huawei.com
 Fixes: 4178158ef8ca ("hugetlbfs: fix issue of preallocation of gigantic pages can't work")
@@ -44,6 +46,7 @@ Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>

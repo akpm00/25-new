@@ -32,6 +32,8 @@ Assuming that "node < 2" is valid is wrong.
 Recheck all the places that use nr_online_nodes, and repair them one by
 one.
 
+[liupeng256@huawei.com: v4]
+  Link: https://lkml.kernel.org/r/20220416103526.3287348-1-liupeng256@huawei.com
 Link: https://lkml.kernel.org/r/20220413032915.251254-1-liupeng256@huawei.com
 Link: https://lkml.kernel.org/r/20220413032915.251254-2-liupeng256@huawei.com
 Fixes: 4178158ef8ca ("hugetlbfs: fix issue of preallocation of gigantic pages can't work")
@@ -44,27 +46,28 @@ Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Zhenguo Yao <yaozhenguo1@gmail.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Liu Yuntao <liuyuntao10@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/hugetlb.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ mm/hugetlb.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
 --- a/mm/hugetlb.c~hugetlb-fix-wrong-use-of-nr_online_nodes
 +++ a/mm/hugetlb.c
-@@ -2986,7 +2986,7 @@ int __alloc_bootmem_huge_page(struct hst
+@@ -2984,8 +2984,6 @@ int __alloc_bootmem_huge_page(struct hst
  	struct huge_bootmem_page *m = NULL; /* initialize for clang */
  	int nr_nodes, node;
  
 -	if (nid != NUMA_NO_NODE && nid >= nr_online_nodes)
-+	if (nid != NUMA_NO_NODE && !node_online(nid))
- 		return 0;
+-		return 0;
  	/* do node specific alloc */
  	if (nid != NUMA_NO_NODE) {
-@@ -3095,7 +3095,7 @@ static void __init hugetlb_hstate_alloc_
+ 		m = memblock_alloc_try_nid_raw(huge_page_size(h), huge_page_size(h),
+@@ -3093,7 +3091,7 @@ static void __init hugetlb_hstate_alloc_
  	}
  
  	/* do node specific alloc */
@@ -73,7 +76,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (h->max_huge_pages_node[i] > 0) {
  			hugetlb_hstate_alloc_pages_onenode(h, i);
  			node_specific_alloc = true;
-@@ -4059,7 +4059,7 @@ static int __init hugetlb_init(void)
+@@ -4057,7 +4055,7 @@ static int __init hugetlb_init(void)
  			default_hstate.max_huge_pages =
  				default_hstate_max_huge_pages;
  
@@ -82,19 +85,19 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				default_hstate.max_huge_pages_node[i] =
  					default_hugepages_in_node[i];
  		}
-@@ -4174,9 +4174,9 @@ static int __init hugepages_setup(char *
+@@ -4172,9 +4170,9 @@ static int __init hugepages_setup(char *
  				pr_warn("HugeTLB: architecture can't support node specific alloc, ignoring!\n");
  				return 0;
  			}
 -			if (tmp >= nr_online_nodes)
-+			if (!node_online(tmp))
++			if (tmp >= MAX_NUMNODES || !node_online(tmp))
  				goto invalid;
 -			node = array_index_nospec(tmp, nr_online_nodes);
 +			node = array_index_nospec(tmp, MAX_NUMNODES);
  			p += count + 1;
  			/* Parse hugepages */
  			if (sscanf(p, "%lu%n", &tmp, &count) != 1)
-@@ -4304,7 +4304,7 @@ static int __init default_hugepagesz_set
+@@ -4302,7 +4300,7 @@ static int __init default_hugepagesz_set
  	 */
  	if (default_hstate_max_huge_pages) {
  		default_hstate.max_huge_pages = default_hstate_max_huge_pages;

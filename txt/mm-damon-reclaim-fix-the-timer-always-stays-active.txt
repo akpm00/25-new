@@ -7,4 +7,4 @@ module_param_cb() for enabled flag.
 
 Link: https://lkml.kernel.org/r/20220421125910.1052459-1-tuhailong@gmail.com
 Signed-off-by: Hailong Tu <tuhailong@gmail.com>
-Cc: SeongJae Park <sj@kernel.org>
+Reviewed-by: SeongJae Park <sj@kernel.org>
