@@ -1,10 +1,11 @@
-mm-stable.patch
+origin.patch
 #NEXT_PATCHES_START mm-hotfixes-stable
-#mm/memory-failure
-revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
-mm-huge_memory-do-not-overkill-when-splitting-huge_zero_page.patch
+mm-hotfixes-stable.patch
+###mm/memory-failure
+##revert-mm-memory-failurec-skip-huge_zero_page-in-memory_failure.patch
+##mm-huge_memory-do-not-overkill-when-splitting-huge_zero_page.patch
 #
-mm-hwpoison-use-pr_err-instead-of-dump_page-in-get_any_page.patch
+##mm-hwpoison-use-pr_err-instead-of-dump_page-in-get_any_page.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mm-hotfixes-unstable
@@ -17,6 +18,8 @@ procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #NEXT_PATCHES_END
 #NEXT_PATCHES_START mm-stable
+mm-stable.patch
+#
 ##mm/debug
 ##tools-vm-page_owner_sortc-use-fprintf-to-send-error-messages-to-stderr.patch
 ##tools-vm-page_owner_sortc-support-for-multi-value-selection-in-single-argument.patch
@@ -230,7 +233,7 @@ procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 #
 #
-#NEXT_PATCHES_END
+#NEXT_PATCHES_END mm-stable
 #NEXT_PATCHES_START mm-unstable
 #
 #
@@ -573,6 +576,8 @@ mm-rmap-fix-typos-in-comments.patch
 #mm/mremap
 selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
+#mm/cleanups
+#
 # mmend
 #
 #NEXT_PATCHES_END mm-unstable
@@ -584,8 +589,8 @@ selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 #
 #
 #
-#NEXT_PATCHES_START mm-non-mm-stable
-#NEXT_PATCHES_END
+#NEXT_PATCHES_START mm-nonmm-stable
+mm-nonmm-stable.patch
 ###ia64
 ##ia64-fix-typos-in-comments.patch
 ##ia64-ptrace-fix-typos-in-comments.patch
@@ -595,7 +600,8 @@ selftest-vm-test-that-mremap-fails-on-non-existent-vma.patch
 ###
 ###
 ###
-#NEXT_PATCHES_START mm-non-mm-unstable
+#NEXT_PATCHES_END
+#NEXT_PATCHES_START mm-nonmm-unstable
 #scripts
 scripts-decode_stacktracesh-support-old-bash-version.patch
 #
@@ -704,7 +710,7 @@ ipc-update-semtimedop-to-use-hrtimer.patch
 ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #
 #
-#NEXT_PATCHES_END mm-non-mm-unstable
+#NEXT_PATCHES_END mm-nonmm-unstable
 
 stop.patch
 # next
