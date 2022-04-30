@@ -1,0 +1,11 @@
+From: Mina Almasry <almasrymina@google.com>
+Subject: hugetlbfs: fix hugetlbfs_statfs() locking
+
+After commit db71ef79b59b ("hugetlb: make free_huge_page irq safe"), the
+subpool lock should be locked with spin_lock_irq() and all call sites was
+modified as such, except for the ones in hugetlbfs_statfs().
+
+Link: https://lkml.kernel.org/r/20220429202207.3045-1-almasrymina@google.com
+Fixes: db71ef79b59b ("hugetlb: make free_huge_page irq safe")
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>

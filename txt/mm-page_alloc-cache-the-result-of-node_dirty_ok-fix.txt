@@ -1,0 +1,12 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-page_alloc-cache-the-result-of-node_dirty_ok-fix
+
+rename last_pgdat_dirty_limit to last_pgdat_dirty_ok
+
+Cc: Wonhyuk Yang <vvghjk1234@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Ohhoon Kwon <ohkwon1043@gmail.com>
+Cc: JaeSang Yoo <jsyoo5b@gmail.com>
+Cc: Jiyoup Kim <lakroforce@gmail.com>
+Cc: Donghyeok Kim <dthex5d@gmail.com>

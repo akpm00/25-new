@@ -1,0 +1,43 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-page_alloc-cache-the-result-of-node_dirty_ok-fix
+
+rename last_pgdat_dirty_limit to last_pgdat_dirty_ok
+
+Cc: Wonhyuk Yang <vvghjk1234@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Ohhoon Kwon <ohkwon1043@gmail.com>
+Cc: JaeSang Yoo <jsyoo5b@gmail.com>
+Cc: Jiyoup Kim <lakroforce@gmail.com>
+Cc: Donghyeok Kim <dthex5d@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_alloc.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/page_alloc.c~mm-page_alloc-cache-the-result-of-node_dirty_ok-fix
++++ a/mm/page_alloc.c
+@@ -4022,7 +4022,7 @@ get_page_from_freelist(gfp_t gfp_mask, u
+ 	struct zoneref *z;
+ 	struct zone *zone;
+ 	struct pglist_data *last_pgdat = NULL;
+-	bool last_pgdat_dirty_limit = false;
++	bool last_pgdat_dirty_ok = false;
+ 	bool no_fallback;
+ 
+ retry:
+@@ -4063,10 +4063,10 @@ retry:
+ 		if (ac->spread_dirty_pages) {
+ 			if (last_pgdat != zone->zone_pgdat) {
+ 				last_pgdat = zone->zone_pgdat;
+-				last_pgdat_dirty_limit = node_dirty_ok(zone->zone_pgdat);
++				last_pgdat_dirty_ok = node_dirty_ok(zone->zone_pgdat);
+ 			}
+ 
+-			if (!last_pgdat_dirty_limit)
++			if (!last_pgdat_dirty_ok)
+ 				continue;
+ 		}
+ 
+_

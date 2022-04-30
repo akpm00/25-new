@@ -385,6 +385,10 @@ mm-avoid-unnecessary-flush-on-change_huge_pmd.patch
 #mm/page-reporting
 #mm/initialization
 #mm/pagealloc
+#mm-page_alloc-cache-the-result-of-node_dirty_ok.patch: acks?
+mm-page_alloc-cache-the-result-of-node_dirty_ok.patch
+mm-page_alloc-cache-the-result-of-node_dirty_ok-fix.patch
+#
 #mm-discard-__gfp_atomic.patch: check review
 mm-discard-__gfp_atomic.patch
 #
@@ -444,6 +448,8 @@ mm-uffd-move-userfaultfd-configs-into-mm.patch
 #mm/memblock
 #mm/oom-kill
 #mm/hugetlbfs
+hugetlbfs-fix-hugetlbfs_statfs-locking.patch
+#
 #mm/kmap
 #mm/thp
 #mm/cma
