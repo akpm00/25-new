@@ -390,7 +390,7 @@ mm-avoid-unnecessary-flush-on-change_huge_pmd.patch
 mm-page_alloc-cache-the-result-of-node_dirty_ok.patch
 mm-page_alloc-cache-the-result-of-node_dirty_ok-fix.patch
 #
-#mm-discard-__gfp_atomic.patch: check review
+#mm-discard-__gfp_atomic.patch: check review, mhocko https://lkml.kernel.org/r/Ym6rFVuPE8tAb8LQ@dhcp22.suse.cz
 mm-discard-__gfp_atomic.patch
 #
 #mm/mlock
