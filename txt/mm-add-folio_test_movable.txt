@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: add folio_test_movable()
+
+This is the folio equivalent of PageMovable() which is needed to
+convert mm/migrate.c to folios.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-26-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

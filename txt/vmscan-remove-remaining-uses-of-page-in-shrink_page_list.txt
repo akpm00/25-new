@@ -1,0 +1,8 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: remove remaining uses of page in shrink_page_list
+
+These are all straightforward conversions to the folio API.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-16-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

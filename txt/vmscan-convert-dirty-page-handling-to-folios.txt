@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert dirty page handling to folios
+
+Mostly this just eliminates calls to compound_head(), but
+NR_VMSCAN_IMMEDIATE was being incremented by 1 instead of by nr_pages.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-10-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

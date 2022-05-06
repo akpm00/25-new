@@ -1,0 +1,16 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: shmem: convert shmem_alloc_hugepage() to use vma_alloc_folio()
+
+Patch series "Folio patches for 5.19", v2.
+
+
+This patch (of 26):
+
+For now, return the head page of the folio, but remove use of the old
+alloc_pages_vma() API.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-1-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-2-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Zi Yan <ziy@nvidia.com>

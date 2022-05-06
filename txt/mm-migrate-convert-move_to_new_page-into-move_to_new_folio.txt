@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/migrate: convert move_to_new_page() into move_to_new_folio()
+
+Pass in the folios that we already have in each caller.  Saves a
+lot of calls to compound_head().
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-27-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

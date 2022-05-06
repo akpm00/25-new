@@ -1,0 +1,29 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: allow can_split_folio() to be called when THP are disabled
+
+The call to can_split_folio() in vmscan is currently guarded by a test of
+PageTransHuge() so the BUILD_BUG() is eliminated if THP are disabled.  The
+next patch replaces that test with folio_test_large() which may be true,
+even when THP are disabled.  However, if THP are disabled, we cannot
+split, so an unconditional return of false is appropriate.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-15-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/huge_mm.h |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/include/linux/huge_mm.h~mm-allow-can_split_folio-to-be-called-when-thp-are-disabled
++++ a/include/linux/huge_mm.h
+@@ -348,7 +348,6 @@ static inline void prep_transhuge_page(s
+ static inline bool
+ can_split_folio(struct folio *folio, int *pextra_pins)
+ {
+-	BUILD_BUG();
+ 	return false;
+ }
+ static inline int
+_

@@ -1,0 +1,30 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: add folio_mapping_flags()
+
+This is the equivalent of PageMappingFlags and is needed for converting
+mm/migrate.c to folios.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-25-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/page-flags.h |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/include/linux/page-flags.h~mm-add-folio_mapping_flags
++++ a/include/linux/page-flags.h
+@@ -650,6 +650,11 @@ __PAGEFLAG(Reported, reported, PF_NO_COM
+ #define PAGE_MAPPING_KSM	(PAGE_MAPPING_ANON | PAGE_MAPPING_MOVABLE)
+ #define PAGE_MAPPING_FLAGS	(PAGE_MAPPING_ANON | PAGE_MAPPING_MOVABLE)
+ 
++static __always_inline bool folio_mapping_flags(struct folio *folio)
++{
++	return ((unsigned long)folio->mapping & PAGE_MAPPING_FLAGS) != 0;
++}
++
+ static __always_inline int PageMappingFlags(struct page *page)
+ {
+ 	return ((unsigned long)page->mapping & PAGE_MAPPING_FLAGS) != 0;
+_

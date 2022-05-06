@@ -1,0 +1,10 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/shmem: use a folio in shmem_unused_huge_shrink
+
+When calling split_huge_page() we usually have to find the precise page,
+but that's not necessary here because we only need to unlock and put the
+folio afterwards.  Saves 231 bytes of text (20% of this function).
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-17-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

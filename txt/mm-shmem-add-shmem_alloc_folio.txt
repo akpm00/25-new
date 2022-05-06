@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/shmem: add shmem_alloc_folio()
+
+Call vma_alloc_folio() directly instead of alloc_page_vma().  Add a
+shmem_alloc_page() wrapper to avoid changing the callers.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-21-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

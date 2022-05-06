@@ -1,0 +1,10 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/swap: add folio_throttle_swaprate
+
+The only use of the page argument to cgroup_throttle_swaprate() is to get
+the node ID, and this will be the same for all pages in the folio, so just
+pass in the first page of the folio.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-18-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

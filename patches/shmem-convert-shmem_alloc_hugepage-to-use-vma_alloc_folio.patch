@@ -1,0 +1,51 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: shmem: convert shmem_alloc_hugepage() to use vma_alloc_folio()
+
+Patch series "Folio patches for 5.19", v2.
+
+
+This patch (of 26):
+
+For now, return the head page of the folio, but remove use of the old
+alloc_pages_vma() API.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-1-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-2-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shmem.c |   10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+--- a/mm/shmem.c~shmem-convert-shmem_alloc_hugepage-to-use-vma_alloc_folio
++++ a/mm/shmem.c
+@@ -1528,7 +1528,7 @@ static struct page *shmem_alloc_hugepage
+ 	struct vm_area_struct pvma;
+ 	struct address_space *mapping = info->vfs_inode.i_mapping;
+ 	pgoff_t hindex;
+-	struct page *page;
++	struct folio *folio;
+ 
+ 	hindex = round_down(index, HPAGE_PMD_NR);
+ 	if (xa_find(&mapping->i_pages, &hindex, hindex + HPAGE_PMD_NR - 1,
+@@ -1536,13 +1536,11 @@ static struct page *shmem_alloc_hugepage
+ 		return NULL;
+ 
+ 	shmem_pseudo_vma_init(&pvma, info, hindex);
+-	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, true);
++	folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, &pvma, 0, true);
+ 	shmem_pseudo_vma_destroy(&pvma);
+-	if (page)
+-		prep_transhuge_page(page);
+-	else
++	if (!folio)
+ 		count_vm_event(THP_FILE_FALLBACK);
+-	return page;
++	return &folio->page;
+ }
+ 
+ static struct page *shmem_alloc_page(gfp_t gfp,
+_

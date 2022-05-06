@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/shmem: convert shmem_swapin_page() to shmem_swapin_folio()
+
+shmem_swapin_page() only brings in order-0 pages, which are folios
+by definition.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-24-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

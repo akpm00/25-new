@@ -1,0 +1,30 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm: add folio_test_movable()
+
+This is the folio equivalent of PageMovable() which is needed to
+convert mm/migrate.c to folios.
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-26-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/migrate.h |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/include/linux/migrate.h~mm-add-folio_test_movable
++++ a/include/linux/migrate.h
+@@ -105,6 +105,11 @@ static inline void __ClearPageMovable(st
+ }
+ #endif
+ 
++static inline bool folio_test_movable(struct folio *folio)
++{
++	return PageMovable(&folio->page);
++}
++
+ #ifdef CONFIG_NUMA_BALANCING
+ extern int migrate_misplaced_page(struct page *page,
+ 				  struct vm_area_struct *vma, int node);
+_

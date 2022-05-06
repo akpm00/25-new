@@ -1,0 +1,8 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: vmscan: convert the writeback handling in shrink_page_list() to folios
+
+Slightly more efficient due to fewer calls to compound_head().
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-7-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

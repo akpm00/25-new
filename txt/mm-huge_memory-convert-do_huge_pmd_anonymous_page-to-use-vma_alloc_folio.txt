@@ -1,0 +1,9 @@
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: mm/huge_memory: convert do_huge_pmd_anonymous_page() to use  vma_alloc_folio()
+
+Remove the use of this old API, eliminating a call to
+prep_transhuge_page().
+
+Link: https://lkml.kernel.org/r/20220504182857.4013401-3-willy@infradead.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
