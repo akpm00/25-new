@@ -942,4 +942,3 @@ kselftest-vm-override-targets-from-arguments.patch
 #[obsolete]mm-shmem-convert-shmem_alloc_and_acct_page-to-use-a-folio.patch
 #[obsolete]mm-shmem-convert-shmem_getpage_gfp-to-use-a-folio.patch
 #[obsolete]mm-shmem-convert-shmem_swapin_page-to-shmem_swapin_folio.patch
-a.patch
