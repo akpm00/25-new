@@ -18,6 +18,11 @@ procfs-prevent-unpriveleged-processes-accessing-fdinfo-dir.patch
 #
 arm-memremap-dont-abuse-pfn_valid-to-ensure-presence-of-linear-map.patch
 #
+#mailmap
+mailmap-add-entry-for-martynaszapar-mudlaw-intelcom.patch
+#
+#mm/kfence
+mm-kfence-reset-pg_slab-and-memcg_data-before-freeing-__kfence_pool.patch
 #
 #ENDBRANCH mm-hotfixes-unstable
 #BRANCH mm-stable
@@ -287,12 +292,6 @@ mm-stable.patch
 #
 #ENDBRANCH mm-stable
 #BRANCH mm-unstable
-#
-#
-#
-#
-#
-#
 #mm/slab-generic
 #mm/slab
 #mm/slub
@@ -300,9 +299,6 @@ mm-stable.patch
 #mm/kcsan
 #mm/kmemleak
 #mm/debug
-#
-#
-#
 #mm/folios
 #mm/msync
 #mm/fadvise
@@ -618,27 +614,6 @@ mm-vmscan-filter-empty-page_list-at-the-beginning.patch
 mm-vmscan-not-use-numa_no_node-as-indicator-of-page-on-different-node.patch
 #
 #mm/folios
-shmem-convert-shmem_alloc_hugepage-to-use-vma_alloc_folio.patch
-mm-huge_memory-convert-do_huge_pmd_anonymous_page-to-use-vma_alloc_folio.patch
-mm-remove-alloc_pages_vma.patch
-vmscan-use-folio_mapped-in-shrink_page_list.patch
-vmscan-convert-the-writeback-handling-in-shrink_page_list-to-folios.patch
-swap-turn-get_swap_page-into-folio_alloc_swap.patch
-swap-convert-add_to_swap-to-take-a-folio.patch
-vmscan-convert-dirty-page-handling-to-folios.patch
-vmscan-convert-page-buffer-handling-to-use-folios.patch
-vmscan-convert-lazy-freeing-to-folios.patch
-vmscan-move-initialisation-of-mapping-down.patch
-vmscan-convert-the-activate_locked-portion-of-shrink_page_list-to-folios.patch
-vmscan-remove-remaining-uses-of-page-in-shrink_page_list.patch
-mm-shmem-use-a-folio-in-shmem_unused_huge_shrink.patch
-mm-swap-add-folio_throttle_swaprate.patch
-mm-shmem-convert-shmem_add_to_page_cache-to-take-a-folio.patch
-mm-shmem-turn-shmem_should_replace_page-into-shmem_should_replace_folio.patch
-mm-shmem-turn-shmem_alloc_page-into-shmem_alloc_folio.patch
-mm-shmem-convert-shmem_alloc_and_acct_page-to-use-a-folio.patch
-mm-shmem-convert-shmem_getpage_gfp-to-use-a-folio.patch
-mm-shmem-convert-shmem_swapin_page-to-shmem_swapin_folio.patch
 #
 #
 #
@@ -777,6 +752,8 @@ proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes.patc
 #
 #init
 #
+init-add-hostname-kernel-parameter.patch
+#
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
 #
@@ -846,3 +823,24 @@ kselftest-vm-override-targets-from-arguments.patch
 #[folded-merged]fs-proc-kcorec-remove-check-of-list-iterator-against-head-past-the-loop-body-fix.patch
 #[folded-merged]add-fat-messages-to-printk-index-checkpatch-fixes.patch
 #[folded-merged]taskstats-version-12-with-thread-group-and-exe-info-fix.patch
+#[obsolete]shmem-convert-shmem_alloc_hugepage-to-use-vma_alloc_folio.patch
+#[obsolete]mm-huge_memory-convert-do_huge_pmd_anonymous_page-to-use-vma_alloc_folio.patch
+#[obsolete]mm-remove-alloc_pages_vma.patch
+#[obsolete]vmscan-use-folio_mapped-in-shrink_page_list.patch
+#[obsolete]vmscan-convert-the-writeback-handling-in-shrink_page_list-to-folios.patch
+#[obsolete]swap-turn-get_swap_page-into-folio_alloc_swap.patch
+#[obsolete]swap-convert-add_to_swap-to-take-a-folio.patch
+#[obsolete]vmscan-convert-dirty-page-handling-to-folios.patch
+#[obsolete]vmscan-convert-page-buffer-handling-to-use-folios.patch
+#[obsolete]vmscan-convert-lazy-freeing-to-folios.patch
+#[obsolete]vmscan-move-initialisation-of-mapping-down.patch
+#[obsolete]vmscan-convert-the-activate_locked-portion-of-shrink_page_list-to-folios.patch
+#[obsolete]vmscan-remove-remaining-uses-of-page-in-shrink_page_list.patch
+#[obsolete]mm-shmem-use-a-folio-in-shmem_unused_huge_shrink.patch
+#[obsolete]mm-swap-add-folio_throttle_swaprate.patch
+#[obsolete]mm-shmem-convert-shmem_add_to_page_cache-to-take-a-folio.patch
+#[obsolete]mm-shmem-turn-shmem_should_replace_page-into-shmem_should_replace_folio.patch
+#[obsolete]mm-shmem-turn-shmem_alloc_page-into-shmem_alloc_folio.patch
+#[obsolete]mm-shmem-convert-shmem_alloc_and_acct_page-to-use-a-folio.patch
+#[obsolete]mm-shmem-convert-shmem_getpage_gfp-to-use-a-folio.patch
+#[obsolete]mm-shmem-convert-shmem_swapin_page-to-shmem_swapin_folio.patch

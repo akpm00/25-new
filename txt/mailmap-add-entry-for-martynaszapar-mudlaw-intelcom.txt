@@ -1,0 +1,9 @@
+From: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>
+Subject: mailmap: add entry for martyna.szapar-mudlaw@intel.com
+
+Separate linux.intel.com account was created for submitting and reviewing
+kernel patches, thus need to map previously used primary Intel e-mail
+address.
+
+Link: https://lkml.kernel.org/r/20220505132624.41802-1-martyna.szapar-mudlaw@linux.intel.com
+Signed-off-by: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>

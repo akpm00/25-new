@@ -1,0 +1,26 @@
+From: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>
+Subject: mailmap: add entry for martyna.szapar-mudlaw@intel.com
+
+Separate linux.intel.com account was created for submitting and reviewing
+kernel patches, thus need to map previously used primary Intel e-mail
+address.
+
+Link: https://lkml.kernel.org/r/20220505132624.41802-1-martyna.szapar-mudlaw@linux.intel.com
+Signed-off-by: Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ .mailmap |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/.mailmap~mailmap-add-entry-for-martynaszapar-mudlaw-intelcom
++++ a/.mailmap
+@@ -249,6 +249,7 @@ Mark Yao <markyao0591@gmail.com> <mark.y
+ Martin Kepplinger <martink@posteo.de> <martin.kepplinger@ginzinger.com>
+ Martin Kepplinger <martink@posteo.de> <martin.kepplinger@puri.sm>
+ Martin Kepplinger <martink@posteo.de> <martin.kepplinger@theobroma-systems.com>
++Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com> <martyna.szapar-mudlaw@intel.com>
+ Mathieu Othacehe <m.othacehe@gmail.com>
+ Matthew Wilcox <willy@infradead.org> <matthew.r.wilcox@intel.com>
+ Matthew Wilcox <willy@infradead.org> <matthew@wil.cx>
+_
