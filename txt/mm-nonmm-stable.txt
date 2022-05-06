@@ -1,0 +1,922 @@
+commit f6e2c20ca7604e6a267c93a511d19dda72573be1
+Author: Liu Shixin <liushixin2@huawei.com>
+Date:   Fri Apr 29 14:38:04 2022 -0700
+
+    fs: sysv: check sbi->s_firstdatazone in complete_read_super
+    
+    sbi->s_firstinodezone is initialized to 2 and sbi->s_firstdatazone is read
+    from sbd.  There's no guarantee that sbi->s_firstdatazone must bigger than
+    sbi->s_firstinodezone.  If sbi->s_firstdatazone less than 2, the
+    filesystem can still be mounted unexpetly.  At this point, sbi->s_ninodes
+    flip to very large value and this filesystem is broken.  We can observe
+    this by executing 'df' command.  When we execute, we will get an error
+    message:
+    
+            "sysv_count_free_inodes: unable to read inode table"
+    
+    Link: https://lkml.kernel.org/r/20220330104215.530223-1-liushixin2@huawei.com
+    Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit edc73c7261ca3ea79867437bb0b9dab0e232436c
+Author: xu xin <xu.xin16@zte.com.cn>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    kernel: make taskstats available from all net namespaces
+    
+    If getdelays runs in a non-init network namespace, it will fail in getting
+    delayacct stats even if it has privilege of root user, which seems to be
+    not very reasonable.  We can simply reproduce this by executing commands:
+    
+            unshare -n
+            getdelays -d -p <pid>
+    
+    I don't think net namespace should be an obstacle to the normal execution
+    of getdelay function.  So let's make it available from all net namespaces.
+    
+    Link: https://lkml.kernel.org/r/20220412071946.2532318-1-xu.xin16@zte.com.cn
+    Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+    Cc: Balbir Singh <bsingharora@gmail.com>
+    Cc: Yang Yang <yang.yang29@zte.com.cn>
+    Cc: "Dr. Thomas Orgis" <thomas.orgis@uni-hamburg.de>
+    Cc: Eric W. Biederman <ebiederm@xmission.com>
+    Cc: Ismael Luceno <ismael@iodev.co.uk>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0e0af57e0e91b304f36b7d1dba859e3c04094273
+Author: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    taskstats: version 12 with thread group and exe info
+    
+    The task exit struct needs some crucial information to be able to provide
+    an enhanced version of process and thread accounting.  This change
+    provides:
+    
+    1. ac_tgid in additon to ac_pid
+    2. thread group execution walltime in ac_tgetime
+    3. flag AGROUP in ac_flag to indicate the last task
+       in a thread group / process
+    4. device ID and inode of task's /proc/self/exe in
+       ac_exe_dev and ac_exe_inode
+    5. tools/accounting/procacct as demonstrator
+    
+    When a task exits, taskstats are reported to userspace including the
+    task's pid and ppid, but without the id of the thread group this task is
+    part of.  Without the tgid, the stats of single tasks cannot be correlated
+    to each other as a thread group (process).
+    
+    The taskstats documentation suggests that on process exit a data set
+    consisting of accumulated stats for the whole group is produced.  But such
+    an additional set of stats is only produced for actually multithreaded
+    processes, not groups that had only one thread, and also those stats only
+    contain data about delay accounting and not the more basic information
+    about CPU and memory resource usage.  Adding the AGROUP flag to be set
+    when the last task of a group exited enables determination of process end
+    also for single-threaded processes.
+    
+    My applicaton basically does enhanced process accounting with summed
+    cputime, biggest maxrss, tasks per process.  The data is not available
+    with the traditional BSD process accounting (which is not designed to be
+    extensible) and the taskstats interface allows more efficient on-the-fly
+    grouping and summing of the stats, anyway, without intermediate disk
+    writes.
+    
+    Furthermore, I do carry statistics on which exact program binary is used
+    how often with associated resources, getting a picture on how important
+    which parts of a collection of installed scientific software in different
+    versions are, and how well they put load on the machine.  This is enabled
+    by providing information on /proc/self/exe for each task.  I assume the
+    two 64-bit fields for device ID and inode are more appropriate than the
+    possibly large resolved path to keep the data volume down.
+    
+    Add the tgid to the stats to complete task identification, the flag AGROUP
+    to mark the last task of a group, the group wallclock time, and
+    inode-based identification of the associated executable file.
+    
+    Add tools/accounting/procacct.c as a simplified fork of getdelays.c to
+    demonstrate process and thread accounting.
+    
+    [thomas.orgis@uni-hamburg.de: fix version number in comment]
+      Link: https://lkml.kernel.org/r/20220405003601.7a5f6008@plasteblaster
+    Link: https://lkml.kernel.org/r/20220331004106.64e5616b@plasteblaster
+    Signed-off-by: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
+    Reviewed-by: Ismael Luceno <ismael@iodev.co.uk>
+    Cc: Balbir Singh <bsingharora@gmail.com>
+    Cc: Eric W. Biederman <ebiederm@xmission.com>
+    Cc: xu xin <xu.xin16@zte.com.cn>
+    Cc: Yang Yang <yang.yang29@zte.com.cn>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f8323a0cb9a66d8d8747c463211392a2cfc4c1dc
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    rapidio: remove unnecessary use of list iterator
+    
+    req->map is set in the valid case and always equals 'map' if the break was
+    hit.  It therefore is unnecessary to use the list iterator variable and
+    the use of 'map' can be replaced with req->map.
+    
+    This is done in preparation to limit the scope of a list iterator to the
+    list traversal loop [1].
+    
+    Link: https://lore.kernel.org/all/YhdfEIwI4EdtHdym@kroah.com/
+    Link: https://lkml.kernel.org/r/20220319203344.2547702-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+    Cc: Matt Porter <mporter@kernel.crashing.org>
+    Cc: Alexandre Bounine <alex.bou9@gmail.com>
+    Cc: Kees Cook <keescook@chromium.org>
+    Cc: Mike Rapoport <rppt@kernel.org>
+    Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+    Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+    Cc: "Bos, H.J." <h.j.bos@vu.nl>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 16b0b7adabfb5564a77fa35917afe08decd55b29
+Author: Michal Orzel <michalorzel.eng@gmail.com>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    kexec: remove redundant assignments
+    
+    Get rid of redundant assignments which end up in values not being read
+    either because they are overwritten or the function ends.
+    
+    Reported by clang-tidy [deadcode.DeadStores]
+    
+    Link: https://lkml.kernel.org/r/20220326180948.192154-1-michalorzel.eng@gmail.com
+    Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+    Acked-by: Baoquan He <bhe@redhat.com>
+    Cc: Eric Biederman <ebiederm@xmission.com>
+    Cc: Nathan Chancellor <nathan@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Michal Orzel <michalorzel.eng@gmail.com>
+    
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f224cabeedb274db8e64824a50765e2eabacca90
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    MAINTAINERS: remove redundant file of PTRACE SUPPORT entry
+    
+    In MAINTAINERS PTRACE SUPPORT entry, the file include/uapi/linux/ptrace.h
+    is redundant, remove it.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-4-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit a9866bef5171c859cfabc1155c594d28f194aa23
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    ptrace: fix wrong comment of PT_DTRACE
+    
+    PT_DTRACE is only used on um now, fix the wrong comment.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-3-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f26b2afd53e70db67be8252d340b4a1387ec8b55
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    ptrace: remove redudant check of #ifdef PTRACE_SINGLESTEP
+    
+    Patch series "ptrace: do some cleanup".
+    
+    
+    This patch (of 3):
+    
+    PTRACE_SINGLESTEP is always defined as 9 in include/uapi/linux/ptrace.h,
+    remove redudant check of #ifdef PTRACE_SINGLESTEP.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-2-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 183c3237c928109d2008c0456dff508baf692b20
+Author: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fat: add ratelimit to fat*_ent_bread()
+    
+    fat*_ent_bread() can be the cause of too many report on I/O error path.
+    So use fat_msg_ratelimit() instead.
+    
+    Link: https://lkml.kernel.org/r/87bkxogfeq.fsf@mail.parknet.co.jp
+    Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Reported-by: qianfan <qianfanguijin@163.com>
+    Tested-by: qianfan <qianfanguijin@163.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e057aaec34ae7534ac8f5cc4f880aa7de8402852
+Author: Jonathan Lassoff <jof@thejof.com>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fatfs: add FAT messages to printk index
+    
+    In order for end users to quickly react to new issues that come up in
+    production, it is proving useful to leverage the printk indexing system.
+    This printk index enables kernel developers to use calls to printk() with
+    changeable ad-hoc format strings (as they always have; no change of
+    expectations), while enabling end users to examine format strings to
+    detect changes.
+    
+    Since end users are using regular expressions to match messages printed
+    through printk(), being able to detect changes in chosen format strings
+    from release to release provides a useful signal to review
+    printk()-matching regular expressions for any necessary updates.
+    
+    So that detailed FAT messages are captured by this printk index, this
+    patch wraps fat_msg with a macro.
+    
+    [akpm@linux-foundation.org: coding-style cleanups]
+    Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
+    Signed-off-by: Jonathan Lassoff <jof@thejof.com>
+    Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Reviewed-by: Petr Mladek <pmladek@suse.com>
+    Tested-by: Petr Mladek <pmladek@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3fbb6b784acb4f308e2bc93dbc57761e8b6d9e80
+Author: Yubo Feng <fengyubo3@huawei.com>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fatfs: remove redundant judgment
+    
+    iput() has already judged the incoming parameter, so there is no need to
+    repeat outside.
+    
+    Link: https://lkml.kernel.org/r/1648265418-76563-1-git-send-email-fengyubo3@huawei.com
+    Signed-off-by: Yubo Feng <fengyubo3@huawei.com>
+    Reported-by: Hulk Robot <hulkci@huawei.com>
+    Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 7374fa33dc2dd76b71999f8fd236e73b21161030
+Author: Kees Cook <keescook@chromium.org>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    init/Kconfig: remove USELIB syscall by default
+    
+    The uselib syscall has been long deprecated.  There's no need to keep this
+    enabled by default under X86_32.
+    
+    Link: https://lkml.kernel.org/r/20220412212519.4113845-1-keescook@chromium.org
+    Signed-off-by: Kees Cook <keescook@chromium.org>
+    Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+    Cc: Masahiro Yamada <masahiroy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d679ae94fdd5d3ab00c35078f5af5f37e068b03d
+Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    list: fix a data-race around ep->rdllist
+    
+    ep_poll() first calls ep_events_available() with no lock held and checks
+    if ep->rdllist is empty by list_empty_careful(), which reads
+    rdllist->prev.  Thus all accesses to it need some protection to avoid
+    store/load-tearing.
+    
+    Note INIT_LIST_HEAD_RCU() already has the annotation for both prev
+    and next.
+    
+    Commit bf3b9f6372c4 ("epoll: Add busy poll support to epoll with socket
+    fds.") added the first lockless ep_events_available(), and commit
+    c5a282e9635e ("fs/epoll: reduce the scope of wq lock in epoll_wait()")
+    made some ep_events_available() calls lockless and added single call under
+    a lock, finally commit e59d3c64cba6 ("epoll: eliminate unnecessary lock
+    for zero timeout") made the last ep_events_available() lockless.
+    
+    BUG: KCSAN: data-race in do_epoll_wait / do_epoll_wait
+    
+    write to 0xffff88810480c7d8 of 8 bytes by task 1802 on cpu 0:
+     INIT_LIST_HEAD include/linux/list.h:38 [inline]
+     list_splice_init include/linux/list.h:492 [inline]
+     ep_start_scan fs/eventpoll.c:622 [inline]
+     ep_send_events fs/eventpoll.c:1656 [inline]
+     ep_poll fs/eventpoll.c:1806 [inline]
+     do_epoll_wait+0x4eb/0xf40 fs/eventpoll.c:2234
+     do_epoll_pwait fs/eventpoll.c:2268 [inline]
+     __do_sys_epoll_pwait fs/eventpoll.c:2281 [inline]
+     __se_sys_epoll_pwait+0x12b/0x240 fs/eventpoll.c:2275
+     __x64_sys_epoll_pwait+0x74/0x80 fs/eventpoll.c:2275
+     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+     do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    
+    read to 0xffff88810480c7d8 of 8 bytes by task 1799 on cpu 1:
+     list_empty_careful include/linux/list.h:329 [inline]
+     ep_events_available fs/eventpoll.c:381 [inline]
+     ep_poll fs/eventpoll.c:1797 [inline]
+     do_epoll_wait+0x279/0xf40 fs/eventpoll.c:2234
+     do_epoll_pwait fs/eventpoll.c:2268 [inline]
+     __do_sys_epoll_pwait fs/eventpoll.c:2281 [inline]
+     __se_sys_epoll_pwait+0x12b/0x240 fs/eventpoll.c:2275
+     __x64_sys_epoll_pwait+0x74/0x80 fs/eventpoll.c:2275
+     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+     do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    
+    value changed: 0xffff88810480c7d0 -> 0xffff888103c15098
+    
+    Reported by Kernel Concurrency Sanitizer on:
+    CPU: 1 PID: 1799 Comm: syz-fuzzer Tainted: G        W         5.17.0-rc7-syzkaller-dirty #0
+    Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+    
+    Link: https://lkml.kernel.org/r/20220322002653.33865-3-kuniyu@amazon.co.jp
+    Fixes: e59d3c64cba6 ("epoll: eliminate unnecessary lock for zero timeout")
+    Fixes: c5a282e9635e ("fs/epoll: reduce the scope of wq lock in epoll_wait()")
+    Fixes: bf3b9f6372c4 ("epoll: Add busy poll support to epoll with socket fds.")
+    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Reported-by: syzbot+bdd6e38a1ed5ee58d8bd@syzkaller.appspotmail.com
+    Cc: Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>
+    Cc: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Cc: Kuniyuki Iwashima <kuni1840@gmail.com>
+    Cc: "Soheil Hassas Yeganeh" <soheil@google.com>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Cc: "Sridhar Samudrala" <sridhar.samudrala@intel.com>
+    Cc: Alexander Duyck <alexander.h.duyck@intel.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f485922d8fe4e44f6d52a5bb95a603b7c65554bb
+Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    pipe: make poll_usage boolean and annotate its access
+    
+    Patch series "Fix data-races around epoll reported by KCSAN."
+    
+    This series suppresses a false positive KCSAN's message and fixes a real
+    data-race.
+    
+    
+    This patch (of 2):
+    
+    pipe_poll() runs locklessly and assigns 1 to poll_usage.  Once poll_usage
+    is set to 1, it never changes in other places.  However, concurrent writes
+    of a value trigger KCSAN, so let's make KCSAN happy.
+    
+    BUG: KCSAN: data-race in pipe_poll / pipe_poll
+    
+    write to 0xffff8880042f6678 of 4 bytes by task 174 on cpu 3:
+     pipe_poll (fs/pipe.c:656)
+     ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+     do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+     __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+     do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+    
+    write to 0xffff8880042f6678 of 4 bytes by task 177 on cpu 1:
+     pipe_poll (fs/pipe.c:656)
+     ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+     do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+     __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+     do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+    
+    Reported by Kernel Concurrency Sanitizer on:
+    CPU: 1 PID: 177 Comm: epoll_race Not tainted 5.17.0-58927-gf443e374ae13 #6
+    Hardware name: Red Hat KVM, BIOS 1.11.0-2.amzn2 04/01/2014
+    
+    Link: https://lkml.kernel.org/r/20220322002653.33865-1-kuniyu@amazon.co.jp
+    Link: https://lkml.kernel.org/r/20220322002653.33865-2-kuniyu@amazon.co.jp
+    Fixes: 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal loads")
+    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Cc: Alexander Duyck <alexander.h.duyck@intel.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Cc: Kuniyuki Iwashima <kuni1840@gmail.com>
+    Cc: "Soheil Hassas Yeganeh" <soheil@google.com>
+    Cc: "Sridhar Samudrala" <sridhar.samudrala@intel.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d1bd5fa07667fcc3e38996ec42aef98761f23039
+Author: Tom Rix <trix@redhat.com>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    lib: remove back_str initialization
+    
+    Clang static analysis reports this false positive
+    glob.c:48:32: warning: Assigned value is garbage
+      or undefined
+      char const *back_pat = NULL, *back_str = back_str;
+                                    ^~~~~~~~   ~~~~~~~~
+    
+    back_str is set after back_pat and it's use is protected by the !back_pat
+    check.  It is not necessary to initialize back_str, so remove the
+    initialization.
+    
+    Link: https://lkml.kernel.org/r/20220402131546.3383578-1-trix@redhat.com
+    Signed-off-by: Tom Rix <trix@redhat.com>
+    Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Nathan Chancellor <nathan@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit dffad91b06e0a1ee584f008565cbf2bb508a9777
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    lib/string.c: simplify str[c]spn
+    
+    Use strchr(), which makes them a lot shorter, and more obviously symmetric
+    in their treatment of accept/reject.  It also saves a little bit of .text;
+    bloat-o-meter for an arm build says
+    
+    Function                                     old     new   delta
+    strcspn                                       92      76     -16
+    strspn                                       108      76     -32
+    
+    While here, also remove a stray empty line before EXPORT_SYMBOL().
+    
+    Link: https://lkml.kernel.org/r/20220328224119.3003834-2-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Andy Shevchenko <andy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e0fa2ab3fcff42b8c2ed906f5619aae896e1e5e1
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/test_string.c: add strspn and strcspn tests
+    
+    Before refactoring strspn() and strcspn(), add some simple test cases.
+    
+    Link: https://lkml.kernel.org/r/20220328224119.3003834-1-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Andy Shevchenko <andy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 67fca000e1e173fe2c539a127ccf1bc338d5ff37
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/Kconfig.debug: remove more CONFIG_..._VALUE indirections
+    
+    As in "kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection",
+    use the IS_ENABLED() helper rather than having a hidden config option.
+    
+    Link: https://lkml.kernel.org/r/20220321121301.1389693-1-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Masahiro Yamada <masahiroy@kernel.org>
+    Cc: Kees Cook <keescook@chromium.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d4557fae77079f4e53f06712395c7a28e3734eb7
+Author: Xiaoke Wang <xkernel.wang@foxmail.com>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/test_meminit: optimize do_kmem_cache_rcu_persistent() test
+    
+    To make the test more robust, there are the following changes:
+    1. add a check for the return value of kmem_cache_alloc().
+    2. properly release the object `buf` on several error paths.
+    3. release the objects of `used_objects` if we never hit `saved_ptr`.
+    4. destroy the created cache by default.
+    
+    Link: https://lkml.kernel.org/r/tencent_7CB95F1C3914BCE1CA4A61FF7C20E7CCB108@qq.com
+    Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+    Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Alexander Potapenko <glider@google.com>
+    Cc: Andrey Konovalov <andreyknvl@gmail.com>
+    Cc: Marco Elver <elver@google.com>
+    Cc: Dmitry Vyukov <dvyukov@google.com>
+    Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+    Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 11fb48961e5250768767612da4a303fa2f5ea504
+Author: Rob Herring <robh@kernel.org>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    get_maintainer: Honor mailmap for in file emails
+    
+    Add support to also use the mailmap for 'in file' email addresses.
+    
+    Link: https://lkml.kernel.org/r/20220323193645.317514-1-robh@kernel.org
+    Signed-off-by: Rob Herring <robh@kernel.org>
+    Reported-by: Marc Zyngier <maz@kernel.org>
+    Acked-by: Joe Perches <joe@perches.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit c06d7aaf2951ce7f986a879127995728d63d8577
+Author: Haowen Bai <baihaowen@meizu.com>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    kernel: pid_namespace: use NULL instead of using plain integer as pointer
+    
+    This fixes the following sparse warnings:
+    kernel/pid_namespace.c:55:77: warning: Using plain integer as NULL pointer
+    
+    Link: https://lkml.kernel.org/r/1647944288-2806-1-git-send-email-baihaowen@meizu.com
+    Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 6308499b5e99c0c903fde2c605e41d9a86c4be6c
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    net: unexport csum_and_copy_{from,to}_user
+    
+    csum_and_copy_from_user and csum_and_copy_to_user are exported by a few
+    architectures, but not actually used in modular code.  Drop the exports.
+    
+    Link: https://lkml.kernel.org/r/20220421070440.1282704-1-hch@lst.de
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+    Acked-by: Jakub Kicinski <kuba@kernel.org>
+    Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+    Acked-by: Arnd Bergmann <arnd@arndb.de>
+    Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+    Cc: David Miller <davem@davemloft.net>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e0690479917cbce740eef51fa3de92c69647a5ad
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert read_from_oldmem() to take an iov_iter
+    
+    Remove the read_from_oldmem() wrapper introduced earlier and convert all
+    the remaining callers to pass an iov_iter.
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-4-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Matthew Wilcox <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 4a22fd20379ca897a6bfdb8372b4f9601e430332
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert __read_vmcore to use an iov_iter
+    
+    This gets rid of copy_to() and let us use proc_read_iter() instead of
+    proc_read().
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-3-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 5d8de293c224896a4da99763fce4f9794308caf4
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert copy_oldmem_page() to take an iov_iter
+    
+    Patch series "Convert vmcore to use an iov_iter", v5.
+    
+    For some reason several people have been sending bad patches to fix
+    compiler warnings in vmcore recently.  Here's how it should be done.
+    Compile-tested only on x86.  As noted in the first patch, s390 should take
+    this conversion a bit further, but I'm not inclined to do that work
+    myself.
+    
+    
+    This patch (of 3):
+    
+    Instead of passing in a 'buf' and 'userbuf' argument, pass in an iov_iter.
+    s390 needs more work to pass the iov_iter down further, or refactor, but
+    I'd be more comfortable if someone who can test on s390 did that work.
+    
+    It's more convenient to convert the whole of read_from_oldmem() to take an
+    iov_iter at the same time, so rename it to read_from_oldmem_iter() and add
+    a temporary read_from_oldmem() wrapper that creates an iov_iter.
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-1-bhe@redhat.com
+    Link: https://lkml.kernel.org/r/20220408090636.560886-2-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Cc: Heiko Carstens <hca@linux.ibm.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 04d168c6d42d1772d35372301a14bb20784c81c5
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    fs/proc/kcore.c: remove check of list iterator against head past the loop body
+    
+    When list_for_each_entry() completes the iteration over the whole list
+    without breaking the loop, the iterator value will be a bogus pointer
+    computed based on the head element.
+    
+    While it is safe to use the pointer to determine if it was computed based
+    on the head element, either with list_entry_is_head() or &pos->member ==
+    head, using the iterator variable after the loop should be avoided.
+    
+    In preparation to limit the scope of a list iterator to the list traversal
+    loop, use a dedicated pointer to point to the found element [1].
+    
+    [akpm@linux-foundation.org: reduce scope of `iter']
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
+    Link: https://lkml.kernel.org/r/20220331223700.902556-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Cc: Mike Rapoport <rppt@kernel.org>
+    Cc: David Hildenbrand <david@redhat.com>
+    Cc: Oscar Salvador <osalvador@suse.de>
+    Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+    Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+    Cc: "Bos, H.J." <h.j.bos@vu.nl>
+    Cc: Alexey Dobriyan <adobriyan@gmail.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f1e75d128b46e3b066e7b2e7cfca10491109d44d
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: rewrite error handling of ocfs2_fill_super
+    
+    Current ocfs2_fill_super() uses one goto label "read_super_error" to
+    handle all error cases.  And with previous serial patches, the error
+    handling should fork more branches to handle different error cases.  This
+    patch rewrite the error handling of ocfs2_fill_super.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-6-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0737e01de9c411e4db87dcedf4a9789d41b1c5c1
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: ocfs2_mount_volume does cleanup job before return error
+    
+    After this patch, when error, ocfs2_fill_super doesn't take care to
+    release resources which are allocated in ocfs2_mount_volume.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-5-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit a8a986db64930b7d4cd4e4f68d8718bfa75c9528
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: ocfs2_initialize_super does cleanup job before return error
+    
+    After this patch, when error, ocfs2_fill_super doesn't take care to
+    release resources which are allocated in ocfs2_initialize_super.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-4-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 54bd3f7c5c3b6b6101673ec9c73457127c317bf9
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: change return type of ocfs2_resmap_init
+    
+    Since ocfs2_resmap_init() always return 0, change it to void.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-3-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit bb20b31dee1a6c329c2f721fbe21c51945cdfc29
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: fix mounting crash if journal is not alloced
+    
+    Patch series "rewrite error handling during mounting stage".
+    
+    
+    This patch (of 5):
+    
+    After commit da5e7c87827e8 ("ocfs2: cleanup journal init and shutdown"),
+    journal init later than before, it makes NULL pointer access in free
+    routine.
+    
+    Crash flow:
+    
+    ocfs2_fill_super
+     + ocfs2_mount_volume
+     |  + ocfs2_dlm_init //fail & return, osb->journal is NULL.
+     |  + ...
+     |  + ocfs2_check_volume //no chance to init osb->journal
+     |
+     + ...
+     + ocfs2_dismount_volume
+        ocfs2_release_system_inodes
+          ...
+           evict
+            ...
+             ocfs2_clear_inode
+              ocfs2_checkpoint_inode
+               ocfs2_ci_fully_checkpointed
+                time_after(journal->j_trans_id, ci->ci_last_trans)
+                 + journal is empty, crash!
+    
+    For fixing, there are three solutions:
+    
+    1> Partly revert commit da5e7c87827e8
+    
+       For avoiding kernel crash, this make sense for us.  We only
+       concerned whether there has any non-system inode access before dlm
+       init.  The answer is NO.  And all journal replay/recovery handling
+       happen after dlm & journal init done.  So this method is not graceful
+       but workable.
+    
+    2> Add osb->journal check in free inode routine (eg ocfs2_clear_inode)
+    
+       The fix code is special for mounting phase, but it will continue
+       working after mounting stage.  In another word, this method adds
+       useless code in normal inode free flow.
+    
+    3> Do directly free inode in mounting phase
+    
+       This method is brutal/complex and may introduce unsafe code,
+       currently maintainer didn't like.
+    
+    At last, we chose method <1> and did partly reverted job.  We reverted
+    journal init codes, and kept cleanup codes flow.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-1-heming.zhao@suse.com
+    Link: https://lkml.kernel.org/r/20220424130952.2436-2-heming.zhao@suse.com
+    Fixes: da5e7c87827e8 ("ocfs2: cleanup journal init and shutdown")
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit b02da32b613f989b73c88113db16ab47de11a3fd
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    ocfs2: remove usage of list iterator variable after the loop body
+    
+    To move the list iterator variable into the list_for_each_entry_*() macro
+    in the future it should be avoided to use the list iterator variable after
+    the loop body.
+    
+    To *never* use the list iterator variable after the loop it was concluded
+    to use a separate iterator variable [1].
+    
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/
+    Link: https://lkml.kernel.org/r/20220322105014.3626194-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 81cd1ae909e0080eb41457766f0f448fd8ab9979
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    ocfs2: replace usage of found with dedicated list iterator variable
+    
+    To move the list iterator variable into the list_for_each_entry_*() macro
+    in the future it should be avoided to use the list iterator variable after
+    the loop body.
+    
+    To *never* use the list iterator variable after the loop it was concluded
+    to use a separate iterator variable instead of a found boolean [1].
+    
+    This removes the need to use a found variable and simply checking if the
+    variable was set, can determine if the break/goto was hit.
+    
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/
+    Link: https://lkml.kernel.org/r/20220324071650.61168-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit dec81a532027a77bd52f9bd8d8b3230843533d3f
+Author: Paul Gortmaker <paul.gortmaker@windriver.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    scripts/bloat-o-meter: filter out vermagic as it is not relevant
+    
+    Seeing it as a false positive increase at the top is just noise:
+    
+       linux-head$./scripts/bloat-o-meter ../pre/vmlinux ../post/vmlinux
+       add/remove: 0/571 grow/shrink: 1/9 up/down: 20/-64662 (-64642)
+       Function                                     old     new   delta
+       vermagic                                      49      69     +20
+    
+    Since it really doesn't "grow", it makes sense to filter it out.
+    
+    Link: https://lkml.kernel.org/r/20220428035824.7934-1-paul.gortmaker@windriver.com
+    Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3af8acf6aff2a98731522b52927429760f0b8006
+Author: Schspa Shi <schspa@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    scripts/decode_stacktrace.sh: support old bash version
+    
+    Old bash version don't support associative array variables.  Avoid to use
+    associative array variables to avoid error.
+    
+    Without this, old bash version will report error as fellowing
+    [   15.954042] Kernel panic - not syncing: sysrq triggered crash
+    [   15.955252] CPU: 1 PID: 167 Comm: sh Not tainted 5.18.0-rc1-00208-gb7d075db2fd5 #4
+    [   15.956472] Hardware name: Hobot J5 Virtual development board (DT)
+    [   15.957856] Call trace:
+    ./scripts/decode_stacktrace.sh: line 128: ,dump_backtrace: syntax error: operand expected (error token is ",dump_backtrace")
+    
+    Link: https://lkml.kernel.org/r/20220409180331.24047-1-schspa@gmail.com
+    Signed-off-by: Schspa Shi <schspa@gmail.com>
+    Cc: Stephen Boyd <swboyd@chromium.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit bd7155a0282e2f4e14260c30272d6472253e6564
+Author: Benjamin Stürz <benni@stuerz.xyz>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: replace comments with C99 initializers
+    
+    This replaces comments with C99's designated initializers because the
+    kernel supports them now.
+    
+    Link: https://lkml.kernel.org/r/20220326165909.506926-3-benni@stuerz.xyz
+    Signed-off-by: Benjamin Stürz <benni@stuerz.xyz>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 72a4fd6a7f032b921b1c195eb42a038ab9026021
+Author: Julia Lawall <Julia.Lawall@inria.fr>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: ptrace: fix typos in comments
+    
+    Various spelling mistakes in comments.
+    Detected with the help of Coccinelle.
+    
+    Link: https://lkml.kernel.org/r/20220318103729.157574-23-Julia.Lawall@inria.fr
+    Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0af96a024f524a5318485cbada73ab7d874895d4
+Author: Julia Lawall <Julia.Lawall@inria.fr>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: fix typos in comments
+    
+    Various spelling mistakes in comments.
+    Detected with the help of Coccinelle.
+    
+    Link: https://lkml.kernel.org/r/20220318103729.157574-1-Julia.Lawall@inria.fr
+    Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
