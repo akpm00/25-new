@@ -1,0 +1,115 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: tracing-incorrect-gfp_t-conversion-fix
+
+add FUL macro for readability
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vasily Averin <vvs@openvz.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/trace/events/mmflags.h |   84 ++++++++++++++++---------------
+ 1 file changed, 44 insertions(+), 40 deletions(-)
+
+--- a/include/trace/events/mmflags.h~tracing-incorrect-gfp_t-conversion-fix
++++ a/include/trace/events/mmflags.h
+@@ -13,53 +13,57 @@
+  * Thus most bits set go first.
+  */
+ 
++#define FUL __force unsigned long
++
+ #define __def_gfpflag_names						\
+-	{(__force unsigned long)GFP_TRANSHUGE,		"GFP_TRANSHUGE"},	\
+-	{(__force unsigned long)GFP_TRANSHUGE_LIGHT,	"GFP_TRANSHUGE_LIGHT"}, \
+-	{(__force unsigned long)GFP_HIGHUSER_MOVABLE,	"GFP_HIGHUSER_MOVABLE"},\
+-	{(__force unsigned long)GFP_HIGHUSER,		"GFP_HIGHUSER"},	\
+-	{(__force unsigned long)GFP_USER,		"GFP_USER"},		\
+-	{(__force unsigned long)GFP_KERNEL_ACCOUNT,	"GFP_KERNEL_ACCOUNT"},	\
+-	{(__force unsigned long)GFP_KERNEL,		"GFP_KERNEL"},		\
+-	{(__force unsigned long)GFP_NOFS,		"GFP_NOFS"},		\
+-	{(__force unsigned long)GFP_ATOMIC,		"GFP_ATOMIC"},		\
+-	{(__force unsigned long)GFP_NOIO,		"GFP_NOIO"},		\
+-	{(__force unsigned long)GFP_NOWAIT,		"GFP_NOWAIT"},		\
+-	{(__force unsigned long)GFP_DMA,		"GFP_DMA"},		\
+-	{(__force unsigned long)__GFP_HIGHMEM,		"__GFP_HIGHMEM"},	\
+-	{(__force unsigned long)GFP_DMA32,		"GFP_DMA32"},		\
+-	{(__force unsigned long)__GFP_HIGH,		"__GFP_HIGH"},		\
+-	{(__force unsigned long)__GFP_ATOMIC,		"__GFP_ATOMIC"},	\
+-	{(__force unsigned long)__GFP_IO,		"__GFP_IO"},		\
+-	{(__force unsigned long)__GFP_FS,		"__GFP_FS"},		\
+-	{(__force unsigned long)__GFP_NOWARN,		"__GFP_NOWARN"},	\
+-	{(__force unsigned long)__GFP_RETRY_MAYFAIL,	"__GFP_RETRY_MAYFAIL"},	\
+-	{(__force unsigned long)__GFP_NOFAIL,		"__GFP_NOFAIL"},	\
+-	{(__force unsigned long)__GFP_NORETRY,		"__GFP_NORETRY"},	\
+-	{(__force unsigned long)__GFP_COMP,		"__GFP_COMP"},		\
+-	{(__force unsigned long)__GFP_ZERO,		"__GFP_ZERO"},		\
+-	{(__force unsigned long)__GFP_NOMEMALLOC,	"__GFP_NOMEMALLOC"},	\
+-	{(__force unsigned long)__GFP_MEMALLOC,		"__GFP_MEMALLOC"},	\
+-	{(__force unsigned long)__GFP_HARDWALL,		"__GFP_HARDWALL"},	\
+-	{(__force unsigned long)__GFP_THISNODE,		"__GFP_THISNODE"},	\
+-	{(__force unsigned long)__GFP_RECLAIMABLE,	"__GFP_RECLAIMABLE"},	\
+-	{(__force unsigned long)__GFP_MOVABLE,		"__GFP_MOVABLE"},	\
+-	{(__force unsigned long)__GFP_ACCOUNT,		"__GFP_ACCOUNT"},	\
+-	{(__force unsigned long)__GFP_WRITE,		"__GFP_WRITE"},		\
+-	{(__force unsigned long)__GFP_RECLAIM,		"__GFP_RECLAIM"},	\
+-	{(__force unsigned long)__GFP_DIRECT_RECLAIM,	"__GFP_DIRECT_RECLAIM"},\
+-	{(__force unsigned long)__GFP_KSWAPD_RECLAIM,	"__GFP_KSWAPD_RECLAIM"},\
+-	{(__force unsigned long)__GFP_ZEROTAGS,		"__GFP_ZEROTAGS"}	\
++	{(FUL)GFP_TRANSHUGE,		"GFP_TRANSHUGE"},		\
++	{(FUL)GFP_TRANSHUGE_LIGHT,	"GFP_TRANSHUGE_LIGHT"}, 	\
++	{(FUL)GFP_HIGHUSER_MOVABLE,	"GFP_HIGHUSER_MOVABLE"},	\
++	{(FUL)GFP_HIGHUSER,		"GFP_HIGHUSER"},		\
++	{(FUL)GFP_USER,			"GFP_USER"},			\
++	{(FUL)GFP_KERNEL_ACCOUNT,	"GFP_KERNEL_ACCOUNT"},		\
++	{(FUL)GFP_KERNEL,		"GFP_KERNEL"},			\
++	{(FUL)GFP_NOFS,			"GFP_NOFS"},			\
++	{(FUL)GFP_ATOMIC,		"GFP_ATOMIC"},			\
++	{(FUL)GFP_NOIO,			"GFP_NOIO"},			\
++	{(FUL)GFP_NOWAIT,		"GFP_NOWAIT"},			\
++	{(FUL)GFP_DMA,			"GFP_DMA"},			\
++	{(FUL)__GFP_HIGHMEM,		"__GFP_HIGHMEM"},		\
++	{(FUL)GFP_DMA32,		"GFP_DMA32"},			\
++	{(FUL)__GFP_HIGH,		"__GFP_HIGH"},			\
++	{(FUL)__GFP_ATOMIC,		"__GFP_ATOMIC"},		\
++	{(FUL)__GFP_IO,			"__GFP_IO"},			\
++	{(FUL)__GFP_FS,			"__GFP_FS"},			\
++	{(FUL)__GFP_NOWARN,		"__GFP_NOWARN"},		\
++	{(FUL)__GFP_RETRY_MAYFAIL,	"__GFP_RETRY_MAYFAIL"},		\
++	{(FUL)__GFP_NOFAIL,		"__GFP_NOFAIL"},		\
++	{(FUL)__GFP_NORETRY,		"__GFP_NORETRY"},		\
++	{(FUL)__GFP_COMP,		"__GFP_COMP"},			\
++	{(FUL)__GFP_ZERO,		"__GFP_ZERO"},			\
++	{(FUL)__GFP_NOMEMALLOC,		"__GFP_NOMEMALLOC"},		\
++	{(FUL)__GFP_MEMALLOC,		"__GFP_MEMALLOC"},		\
++	{(FUL)__GFP_HARDWALL,		"__GFP_HARDWALL"},		\
++	{(FUL)__GFP_THISNODE,		"__GFP_THISNODE"},		\
++	{(FUL)__GFP_RECLAIMABLE,	"__GFP_RECLAIMABLE"},		\
++	{(FUL)__GFP_MOVABLE,		"__GFP_MOVABLE"},		\
++	{(FUL)__GFP_ACCOUNT,		"__GFP_ACCOUNT"},		\
++	{(FUL)__GFP_WRITE,		"__GFP_WRITE"},			\
++	{(FUL)__GFP_RECLAIM,		"__GFP_RECLAIM"},		\
++	{(FUL)__GFP_DIRECT_RECLAIM,	"__GFP_DIRECT_RECLAIM"},	\
++	{(FUL)__GFP_KSWAPD_RECLAIM,	"__GFP_KSWAPD_RECLAIM"},	\
++	{(FUL)__GFP_ZEROTAGS,		"__GFP_ZEROTAGS"}		\
+ 
+ #ifdef CONFIG_KASAN_HW_TAGS
+-#define __def_gfpflag_names_kasan ,					       \
+-	{(__force unsigned long)__GFP_SKIP_ZERO,	   "__GFP_SKIP_ZERO"},	       \
+-	{(__force unsigned long)__GFP_SKIP_KASAN_POISON,   "__GFP_SKIP_KASAN_POISON"}, \
+-	{(__force unsigned long)__GFP_SKIP_KASAN_UNPOISON, "__GFP_SKIP_KASAN_UNPOISON"}
++#define __def_gfpflag_names_kasan ,					\
++	{(FUL)__GFP_SKIP_ZERO,		"__GFP_SKIP_ZERO"},		\
++	{(FUL)__GFP_SKIP_KASAN_POISON,	"__GFP_SKIP_KASAN_POISON"},	\
++	{(FUL)__GFP_SKIP_KASAN_UNPOISON,"__GFP_SKIP_KASAN_UNPOISON"}
+ #else
+ #define __def_gfpflag_names_kasan
+ #endif
+ 
++#undef FUL
++
+ #define show_gfp_flags(flags)						\
+ 	(flags) ? __print_flags(flags, "|",				\
+ 	__def_gfpflag_names __def_gfpflag_names_kasan			\
+_

@@ -746,6 +746,7 @@ zram-remove-double-compression-logic.patch
 #
 #mm/tracing
 tracing-incorrect-gfp_t-conversion.patch
+tracing-incorrect-gfp_t-conversion-fix.patch
 #
 #mm/pagealloc
 #mm-discard-__gfp_atomic.patch: check review, mhocko https://lkml.kernel.org/r/Ym6rFVuPE8tAb8LQ@dhcp22.suse.cz
