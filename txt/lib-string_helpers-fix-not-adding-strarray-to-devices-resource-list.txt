@@ -1,0 +1,10 @@
+From: Puyou Lu <puyou.lu@gmail.com>
+Subject: lib/string_helpers: fix not adding strarray to device's resource list
+
+Add allocated strarray to device's resource list. This is a must to
+automatically release strarray when the device disappears.
+
+Link: https://lkml.kernel.org/r/20220506073623.2679-1-puyou.lu@gmail.com
+Fixes: acdb89b6c87a ("lib/string_helpers: Introduce managed variant of kasprintf_strarray()")
+Signed-off-by: Puyou Lu <puyou.lu@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>

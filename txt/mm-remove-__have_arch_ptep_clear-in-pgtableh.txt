@@ -1,0 +1,20 @@
+From: Tong Tiangen <tongtiangen@huawei.com>
+Subject: mm: remove __HAVE_ARCH_PTEP_CLEAR in pgtable.h
+
+Currently, there is no architecture definition __HAVE_ARCH_PTEP_CLEAR,
+Generic ptep_clear() is the only definition for all architecture, So drop
+the "#ifndef __HAVE_ARCH_PTEP_CLEAR".
+
+Link: https://lkml.kernel.org/r/20220507110114.4128854-5-tongtiangen@huawei.com
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Will Deacon <will@kernel.org>

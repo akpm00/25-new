@@ -1,0 +1,31 @@
+From: Akira Yokosawa <akiyks@gmail.com>
+Subject: docs: vm/page_owner: tweak literal block in STANDARD FORMAT SPECIFIERS
+
+A semantic conflict between commit 5603f9bdea68 ("docs: vm/page_owner: use
+literal blocks for param description") and a change queued for v5.19
+authored by Jiajian Ye ("tools/vm/page_owner_sort.c: support sorting
+blocks by multiple keys") results in a warning from "make htmldocs"
+saying:
+
+  [...]/vm/page_owner.rst:176: WARNING: Literal block expected; none found.
+
+This is because a literal block in ReST ends at a line which has the same
+indent as the paragraph preceding it.  In this case the one with no
+indent.
+
+Indent the two "For --xxxx option:" lines by two columns and make the
+whole section a literal block.
+
+While at it, fix indents by white spaces of "ator" keys.
+
+Link: https://lkml.kernel.org/r/fdfecc82-d41e-6d8a-738d-4beb6faa27fb@gmail.com
+Signed-of-by: Akira Yokosawa <akiyks@gmail.com>
+Reported-by: Shenghong Han <hanshenghong2019@email.szu.edu.cn>
+Cc: Jiajian Ye <yejiajian2018@email.szu.edu.cn>
+Cc: Chongxi Zhao <zhaochongxi2019@email.szu.edu.cn>
+Cc: Yinan Zhang <zhangyinan2019@email.szu.edu.cn>
+Cc: Yixuan Cao <caoyixuan2019@email.szu.edu.cn>
+Cc: Yongqiang Liu <liuyongqiang13@huawei.com>
+Cc: Yuhong Feng <yuhongf@szu.edu.cn>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: Jonathan Corbet <corbet@lwn.net>

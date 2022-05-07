@@ -498,7 +498,7 @@ mm-cma-use-pageblock_order-as-the-single-alignment.patch
 drivers-virtio_mem-use-pageblock-size-as-the-minimum-virtio_mem-size.patch
 #
 #mm/migration
-#mm-migration-reduce-the-rcu-lock-duration.patch: https://lkml.kernel.org/r/d6f0824dd1f01fe9aebf122bfeb5940babc93c69.camel@intel.com https://lkml.kernel.org/r/eeda05fb-b0bb-3e1d-37e0-0021dd72e144@redhat.com
+#mm-migration-reduce-the-rcu-lock-duration.patch: https://lkml.kernel.org/r/d6f0824dd1f01fe9aebf122bfeb5940babc93c69.camel@intel.com https://lkml.kernel.org/r/eeda05fb-b0bb-3e1d-37e0-0021dd72e144@redhat.com https://lkml.kernel.org/r/d260e8b178defbe4facda3cd8f0b534ec812268a.camel@intel.com
 mm-migration-reduce-the-rcu-lock-duration.patch
 #mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch: https://lkml.kernel.org/r/525298ad-5e6a-2f8d-366d-4dcb7eebd093@redhat.com
 mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch
@@ -714,8 +714,28 @@ mm-remove-the-vma-linked-list.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
 #
+#mm/hugetlb
+mm-functions-may-simplify-the-use-of-return-values.patch
 #
+#mm/debug
+mm-page_table_check-using-pxd_size-instead-of-pxd_page_size.patch
+mm-page_table_check-move-pxx_user_accessible_page-into-x86.patch
+mm-page_table_check-add-hooks-to-public-helpers.patch
+mm-remove-__have_arch_ptep_clear-in-pgtableh.patch
+arm64-mm-enable-arch_supports_page_table_check.patch
+riscv-mm-enable-arch_supports_page_table_check.patch
 #
+#mm/damon
+mm-damon-reclaim-use-resource_size-function-on-resource-object.patch
+#
+#mm/debug
+docs-vm-page_owner-tweak-literal-block-in-standard-format-specifiers.patch
+#
+#mm/percpu
+percpu-improve-percpu_alloc_percpu-event-trace.patch
+#
+#mm/zram
+zram-remove-double-compression-logic.patch
 #
 #
 # mmend
@@ -849,8 +869,8 @@ proc-fix-dentry-inode-overinstantiating-under-proc-pid-net.patch
 proc-fix-dentry-inode-overinstantiating-under-proc-pid-net-checkpatch-fixes.patch
 #
 #init
-#
 init-add-hostname-kernel-parameter.patch
+init-add-hostname-kernel-parameter-v2.patch
 #
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
@@ -873,6 +893,12 @@ ipc-mqueue-use-get_tree_nodev-in-mqueue_get_tree.patch
 #
 #binfmt
 elf-uapi-fixup-elf_st_type-definition.patch
+#
+#kernel
+kernel-crash_corec-remove-redundant-check-of-ck_cmdline.patch
+#
+#lib
+lib-string_helpers-fix-not-adding-strarray-to-devices-resource-list.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 

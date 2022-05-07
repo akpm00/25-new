@@ -1,0 +1,15 @@
+From: Li kunyu <kunyu@nfschina.com>
+Subject: mm: functions may simplify the use of return values
+
+p4d_clear_huge may be optimized for void return type and function usage. 
+vunmap_p4d_range function saves a few steps here.
+
+Link: https://lkml.kernel.org/r/20220507150630.90399-1-kunyu@nfschina.com
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>

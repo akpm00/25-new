@@ -1,0 +1,29 @@
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: mm/damon/reclaim: use resource_size function on resource object
+
+Fix the following coccicheck warnings:
+
+./mm/damon/reclaim.c:241:30-33: WARNING: Suspicious code. resource_size is maybe missing with res.
+
+Link: https://lkml.kernel.org/r/20220507032512.129598-1-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/damon/reclaim.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/damon/reclaim.c~mm-damon-reclaim-use-resource_size-function-on-resource-object
++++ a/mm/damon/reclaim.c
+@@ -238,7 +238,7 @@ static int walk_system_ram(struct resour
+ {
+ 	struct damon_reclaim_ram_walk_arg *a = arg;
+ 
+-	if (a->end - a->start < res->end - res->start) {
++	if (a->end - a->start < resource_size(res)) {
+ 		a->start = res->start;
+ 		a->end = res->end;
+ 	}
+_

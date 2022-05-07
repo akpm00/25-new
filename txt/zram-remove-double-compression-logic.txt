@@ -1,0 +1,21 @@
+From: Alexey Romanov <avromanov@sberdevices.ru>
+Subject: zram: remove double compression logic
+
+The 2nd trial allocation under per-cpu presumption has been used to
+prevent regression of allocation failure.  However, it makes trouble for
+maintenance without significant benefit.  The slowpath branch is executed
+extremely rarely: getting there is problematic.  Therefore, we delete this
+branch.
+
+Since b09ab054b69b ("zram: support BDI_CAP_STABLE_WRITES"), zram has used
+QUEUE_FLAG_STABLE_WRITES to prevent buffer change between 1st and 2nd
+memory allocations.  Since we remove second trial memory allocation logic,
+we could remove the STABLE_WRITES flag because there is no change buffer
+to be modified under us.
+
+Link: https://lkml.kernel.org/r/20220505094443.11728-1-avromanov@sberdevices.ru
+Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
+Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Nitin Gupta <ngupta@vflare.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>

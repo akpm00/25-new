@@ -1,5 +1,5 @@
 From: NeilBrown <neilb@suse.de>
-Subject: mm: create new mm/swap.h header file.
+Subject: mm: create new mm/swap.h header file
 
 Patch series "MM changes to improve swap-over-NFS support".
 

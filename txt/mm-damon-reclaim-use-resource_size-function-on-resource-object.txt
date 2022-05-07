@@ -1,0 +1,11 @@
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: mm/damon/reclaim: use resource_size function on resource object
+
+Fix the following coccicheck warnings:
+
+./mm/damon/reclaim.c:241:30-33: WARNING: Suspicious code. resource_size is maybe missing with res.
+
+Link: https://lkml.kernel.org/r/20220507032512.129598-1-jiapeng.chong@linux.alibaba.com
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>

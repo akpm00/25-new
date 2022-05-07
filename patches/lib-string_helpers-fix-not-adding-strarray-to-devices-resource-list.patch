@@ -1,0 +1,29 @@
+From: Puyou Lu <puyou.lu@gmail.com>
+Subject: lib/string_helpers: fix not adding strarray to device's resource list
+
+Add allocated strarray to device's resource list. This is a must to
+automatically release strarray when the device disappears.
+
+Link: https://lkml.kernel.org/r/20220506073623.2679-1-puyou.lu@gmail.com
+Fixes: acdb89b6c87a ("lib/string_helpers: Introduce managed variant of kasprintf_strarray()")
+Signed-off-by: Puyou Lu <puyou.lu@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/string_helpers.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/lib/string_helpers.c~lib-string_helpers-fix-not-adding-strarray-to-devices-resource-list
++++ a/lib/string_helpers.c
+@@ -757,6 +757,9 @@ char **devm_kasprintf_strarray(struct de
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
++	ptr->n = n;
++	devres_add(dev, ptr);
++
+ 	return ptr->array;
+ }
+ EXPORT_SYMBOL_GPL(devm_kasprintf_strarray);
+_

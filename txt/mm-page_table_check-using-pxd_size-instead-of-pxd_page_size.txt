@@ -1,0 +1,38 @@
+From: Tong Tiangen <tongtiangen@huawei.com>
+Subject: mm: page_table_check: using PxD_SIZE instead of PxD_PAGE_SIZE
+
+Patch series "mm: page_table_check: add support on arm64 and riscv", v7.
+
+Page table check performs extra verifications at the time when new pages
+become accessible from the userspace by getting their page table entries
+(PTEs PMDs etc.) added into the table.  It is supported on X86[1].
+
+This patchset made some simple changes and make it easier to support new
+architecture, then we support this feature on ARM64 and RISCV.
+
+[1]https://lore.kernel.org/lkml/20211123214814.3756047-1-pasha.tatashin@soleen.com/
+
+
+This patch (of 6):
+
+Compared with PxD_PAGE_SIZE, which is defined and used only on X86,
+PxD_SIZE is more common in each architecture.  Therefore, it is more
+reasonable to use PxD_SIZE instead of PxD_PAGE_SIZE in page_table_check.c.
+At the same time, it is easier to support page table check in other
+architectures.  The substitution has no functional impact on the x86.
+
+Link: https://lkml.kernel.org/r/20220507110114.4128854-1-tongtiangen@huawei.com
+Link: https://lkml.kernel.org/r/20220507110114.4128854-2-tongtiangen@huawei.com
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>

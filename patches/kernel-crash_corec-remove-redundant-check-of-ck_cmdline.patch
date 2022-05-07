@@ -1,0 +1,31 @@
+From: lizhe <sensor1010@163.com>
+Subject: kernel/crash_core.c: remove redundant check of ck_cmdline
+
+At the end of get_last_crashkernel(), the judgement of ck_cmdline is
+obviously unnecessary and causes redundance, let's clean it up.
+
+Link: https://lkml.kernel.org/r/20220506104116.259323-1-sensor1010@163.com
+Signed-off-by: lizhe <sensor1010@163.com>
+Acked-by: Baoquan He <bhe@redhat.com>
+Acked-by: Philipp Rudo <prudo@redhat.com>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/crash_core.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+--- a/kernel/crash_core.c~kernel-crash_corec-remove-redundant-check-of-ck_cmdline
++++ a/kernel/crash_core.c
+@@ -222,9 +222,6 @@ next:
+ 		p = strstr(p+1, name);
+ 	}
+ 
+-	if (!ck_cmdline)
+-		return NULL;
+-
+ 	return ck_cmdline;
+ }
+ 
+_
