@@ -1,0 +1,25 @@
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: fs/ntfs3: validate BOOT sectors_per_clusters
+
+When the NTFS BOOT sectors_per_clusters field is > 0x80, it represents a
+shift value.  Make sure that the shift value is not too large before using
+it (NTFS max cluster size is 2MB).  Return -EVINVAL if it too large.
+
+This prevents negative shift values and shift values that are larger than
+the field size.
+
+Prevents this UBSAN error:
+
+ UBSAN: shift-out-of-bounds in ../fs/ntfs3/super.c:673:16
+ shift exponent -192 is negative
+
+Link: https://lkml.kernel.org/r/20220502175342.20296-1-rdunlap@infradead.org
+Fixes: 82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: syzbot+1631f09646bc214d2e76@syzkaller.appspotmail.com
+Reviewed-by: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Kari Argillander <kari.argillander@stargateuniverse.net>
+Cc: Namjae Jeon <linkinjeon@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>

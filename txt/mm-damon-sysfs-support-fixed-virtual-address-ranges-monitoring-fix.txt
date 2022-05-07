@@ -1,0 +1,10 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: fix pid leak under fvaddr ops use case
+
+Commit c83136469313 ("mm/damon/sysfs: support fixed virtual address ranges
+monitoring") in 'mm-unstable' does not put the monitoring target pid when
+fvaddr ops is used.  This commit fixes it to put pid properly.
+
+Link: https://lkml.kernel.org/r/20220503220531.45913-1-sj@kernel.org
+Fixes: c83136469313 ("mm/damon/sysfs: support fixed virtual address ranges monitoring")
+Signed-off-by: SeongJae Park <sj@kernel.org>

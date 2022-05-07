@@ -1,0 +1,47 @@
+From: Andrei Vagin <avagin@gmail.com>
+Subject: fs: sendfile handles O_NONBLOCK of out_fd
+
+sendfile has to return EAGAIN if out_fd is nonblocking and the write into
+it would block.
+
+Here is a small reproducer for the problem:
+
+#define _GNU_SOURCE /* See feature_test_macros(7) */
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/sendfile.h>
+
+
+#define FILE_SIZE (1UL << 30)
+int main(int argc, char **argv) {
+        int p[2], fd;
+
+        if (pipe2(p, O_NONBLOCK))
+                return 1;
+
+        fd = open(argv[1], O_RDWR | O_TMPFILE, 0666);
+        if (fd < 0)
+                return 1;
+        ftruncate(fd, FILE_SIZE);
+
+        if (sendfile(p[1], fd, 0, FILE_SIZE) == -1) {
+                fprintf(stderr, "FAIL\n");
+        }
+        if (sendfile(p[1], fd, 0, FILE_SIZE) != -1 || errno != EAGAIN) {
+                fprintf(stderr, "FAIL\n");
+        }
+        return 0;
+}
+
+It worked before b964bf53e540, it is stuck after b964bf53e540, and it
+works again with this fix.
+
+Link: https://lkml.kernel.org/r/20220415005015.525191-1-avagin@gmail.com
+Fixes: b964bf53e540 ("teach sendfile(2) to handle send-to-pipe directly")
+Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: <stable@vger.kernel.org>

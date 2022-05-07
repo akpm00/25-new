@@ -1,0 +1,9 @@
+From: Florian Rommel <mail@florommel.de>
+Subject: mmap locking API: fix missed mmap_sem references in comments
+
+Commit c1e8d7c6a7a6 ("mmap locking API: convert mmap_sem comments") missed
+replacing some references of mmap_sem by mmap_lock due to misspelling
+(mm_sem instead of mmap_sem).
+
+Link: https://lkml.kernel.org/r/20220503113333.214124-1-mail@florommel.de
+Signed-off-by: Florian Rommel <mail@florommel.de>

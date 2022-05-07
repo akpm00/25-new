@@ -1,0 +1,38 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: mm/damon/sysfs: fix pid leak under fvaddr ops use case
+
+Commit c83136469313 ("mm/damon/sysfs: support fixed virtual address ranges
+monitoring") in 'mm-unstable' does not put the monitoring target pid when
+fvaddr ops is used.  This commit fixes it to put pid properly.
+
+Link: https://lkml.kernel.org/r/20220503220531.45913-1-sj@kernel.org
+Fixes: c83136469313 ("mm/damon/sysfs: support fixed virtual address ranges monitoring")
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/damon/sysfs.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+--- a/mm/damon/sysfs.c~mm-damon-sysfs-support-fixed-virtual-address-ranges-monitoring-fix
++++ a/mm/damon/sysfs.c
+@@ -2086,7 +2086,8 @@ static void damon_sysfs_destroy_targets(
+ 	struct damon_target *t, *next;
+ 
+ 	damon_for_each_target_safe(t, next, ctx) {
+-		if (ctx->ops.id == DAMON_OPS_VADDR)
++		if (ctx->ops.id == DAMON_OPS_VADDR ||
++				ctx->ops.id == DAMON_OPS_FVADDR)
+ 			put_pid(t->pid);
+ 		damon_destroy_target(t);
+ 	}
+@@ -2204,7 +2205,7 @@ static void damon_sysfs_before_terminate
+ {
+ 	struct damon_target *t, *next;
+ 
+-	if (ctx->ops.id != DAMON_OPS_VADDR)
++	if (ctx->ops.id != DAMON_OPS_VADDR && ctx->ops.id != DAMON_OPS_FVADDR)
+ 		return;
+ 
+ 	mutex_lock(&ctx->kdamond_lock);
+_

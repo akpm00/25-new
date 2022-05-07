@@ -1,0 +1,24 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: MAINTAINERS: add a mailing list for DAMON development
+
+This commit adds an open mailing list for DAMON in MAINTAINERS file.
+
+Link: https://lkml.kernel.org/r/20220503180741.137079-1-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/MAINTAINERS~maintainers-add-a-mailing-list-for-damon-development
++++ a/MAINTAINERS
+@@ -5438,6 +5438,7 @@ F:	net/ax25/sysctl_net_ax25.c
+ 
+ DATA ACCESS MONITOR
+ M:	SeongJae Park <sj@kernel.org>
++L:	damon@lists.linux.dev
+ L:	linux-mm@kvack.org
+ S:	Maintained
+ F:	Documentation/ABI/testing/sysfs-kernel-mm-damon
+_

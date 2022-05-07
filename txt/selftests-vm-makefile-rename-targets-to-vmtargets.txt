@@ -1,0 +1,34 @@
+From: Joel Savitz <jsavitz@redhat.com>
+Subject: selftests: vm: Makefile: rename TARGETS to VMTARGETS
+
+The tools/testing/selftests/vm/Makefile uses the variable TARGETS
+internally to generate a list of platform-specific binary build targets
+suffixed with _{32,64}.  When building the selftests using its own
+Makefile directly, such as via the following command run in a kernel tree:
+
+One receives an error such as the following:
+
+make: Entering directory '/root/linux/tools/testing/selftests'
+make --no-builtin-rules ARCH=x86 -C ../../.. headers_install
+make[1]: Entering directory '/root/linux'
+  INSTALL ./usr/include
+make[1]: Leaving directory '/root/linux'
+make[1]: Entering directory '/root/linux/tools/testing/selftests/vm'
+make[1]: *** No rule to make target 'vm.c', needed by '/root/linux/tools/testing/selftests/vm/vm_64'.  Stop.
+make[1]: Leaving directory '/root/linux/tools/testing/selftests/vm'
+make: *** [Makefile:175: all] Error 2
+make: Leaving directory '/root/linux/tools/testing/selftests'
+
+The TARGETS variable passed to tools/testing/selftests/Makefile collides
+with the TARGETS used in tools/testing/selftests/vm/Makefile, so rename
+the latter to VMTARGETS, eliminating the collision with no functional
+change.
+
+Link: https://lkml.kernel.org/r/20220504213454.1282532-1-jsavitz@redhat.com
+Fixes: f21fda8f6453 ("selftests: vm: pkeys: fix multilib builds for x86")
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Acked-by: Nico Pache <npache@redhat.com>
+Cc: Joel Savitz <jsavitz@redhat.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Sandipan Das <sandipan@linux.ibm.com>
+Cc: Dave Hansen <dave.hansen@intel.com>

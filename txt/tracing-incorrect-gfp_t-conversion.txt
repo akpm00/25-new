@@ -1,0 +1,14 @@
+From: Vasily Averin <vvs@openvz.org>
+Subject: tracing: incorrect gfp_t conversion
+
+Fixes the following sparse warnings:
+
+include/trace/events/*: sparse: cast to restricted gfp_t
+include/trace/events/*: sparse: restricted gfp_t degrades to integer
+
+gfp_t type is bitwise and requires __force attributes for any casts.
+
+Link: https://lkml.kernel.org/r/331d88fe-f4f7-657c-02a2-d977f15fbff6@openvz.org
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>

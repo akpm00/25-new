@@ -11,8 +11,8 @@ status can reduce the number of calle to node_dirty_ok().
 
 Link: https://lkml.kernel.org/r/20220430011032.64071-1-vvghjk1234@gmail.com
 Signed-off-by: Wonhyuk Yang <vvghjk1234@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Mel Gorman <mgorman@suse.de>
 Cc: Donghyeok Kim <dthex5d@gmail.com>
 Cc: JaeSang Yoo <jsyoo5b@gmail.com>
 Cc: Jiyoup Kim <lakroforce@gmail.com>

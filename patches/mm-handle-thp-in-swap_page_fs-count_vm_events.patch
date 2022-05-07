@@ -1,0 +1,42 @@
+From: "NeilBrown" <neilb@suse.de>
+Subject: MM: handle THP in swap_*page_fs() - count_vm_events()
+
+We need to use count_swpout_vm_event() for sio_write_complete() to get
+correct counting.
+
+Note that THP swap in (if it ever happens) is current accounted 1 for each
+page, whether HUGE or normal.  This is different from swap-out accounting.
+
+This patch should be squashed into
+    MM: handle THP in swap_*page_fs()
+
+Link: https://lkml.kernel.org/r/165146948934.24404.5909750610552745025@noble.neil.brown.name
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reported-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_io.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/mm/page_io.c~mm-handle-thp-in-swap_page_fs-count_vm_events
++++ a/mm/page_io.c
+@@ -280,8 +280,10 @@ static void sio_write_complete(struct ki
+ 			set_page_dirty(page);
+ 			ClearPageReclaim(page);
+ 		}
+-	} else
+-		count_vm_events(PSWPOUT, sio->pages);
++	} else {
++		for (p = 0; p < sio->pages; p++)
++			count_swpout_vm_event(sio->bvec[p].bv_page);
++	}
+ 
+ 	for (p = 0; p < sio->pages; p++)
+ 		end_page_writeback(sio->bvec[p].bv_page);
+_

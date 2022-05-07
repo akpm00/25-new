@@ -21,14 +21,16 @@ initramfs extraction, particularly for cpio archives with large directory
 counts.
 
 Benchmarks with a one million directory cpio archive extracted 20 times
-demonstrated: mean extraction time (s) std dev INITRAMFS_PRESERVE_MTIME=y
-3.808 0.006 INITRAMFS_PRESERVE_MTIME unset 3.056 0.004
+demonstrated:
+				mean extraction time (s)	std dev
+INITRAMFS_PRESERVE_MTIME=y		3.808			 0.006
+INITRAMFS_PRESERVE_MTIME unset		3.056			 0.004
 
 The above extraction times were measured using ftrace (initcall_finish -
 initcall_start) values for populate_rootfs() with initramfs_async
 disabled.
 
-[ddiss@suse.de: rebase atop dir_entry.name flexible array member and drop  separate initramfs_mtime.h header]
+[ddiss@suse.de: rebase atop dir_entry.name flexible array member and drop separate initramfs_mtime.h header]
 Link: https://lkml.org/lkml/2008/9/3/424
 Link: https://lkml.kernel.org/r/20220404093429.27570-4-ddiss@suse.de
 Signed-off-by: David Disseldorp <ddiss@suse.de>

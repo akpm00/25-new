@@ -1,0 +1,7 @@
+From: SeongJae Park <sj@kernel.org>
+Subject: MAINTAINERS: add a mailing list for DAMON development
+
+This commit adds an open mailing list for DAMON in MAINTAINERS file.
+
+Link: https://lkml.kernel.org/r/20220503180741.137079-1-sj@kernel.org
+Signed-off-by: SeongJae Park <sj@kernel.org>

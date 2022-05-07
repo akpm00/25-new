@@ -1,0 +1,20 @@
+From: "NeilBrown" <neilb@suse.de>
+Subject: MM: handle THP in swap_*page_fs() - count_vm_events()
+
+We need to use count_swpout_vm_event() for sio_write_complete() to get
+correct counting.
+
+Note that THP swap in (if it ever happens) is current accounted 1 for each
+page, whether HUGE or normal.  This is different from swap-out accounting.
+
+This patch should be squashed into
+    MM: handle THP in swap_*page_fs()
+
+Link: https://lkml.kernel.org/r/165146948934.24404.5909750610552745025@noble.neil.brown.name
+Signed-off-by: NeilBrown <neilb@suse.de>
+Reported-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Huang Ying <ying.huang@intel.com>

@@ -11,9 +11,9 @@ Link: https://lkml.kernel.org/r/20220507110114.4128854-6-tongtiangen@huawei.com
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Borislav Petkov <bp@alien8.de>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Ingo Molnar <mingo@redhat.com>
