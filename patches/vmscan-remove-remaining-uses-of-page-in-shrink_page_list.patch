@@ -9,8 +9,8 @@ Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/vmscan.c |  118 ++++++++++++++++++++++++--------------------------
- 1 file changed, 58 insertions(+), 60 deletions(-)
+ mm/vmscan.c |  122 ++++++++++++++++++++++++--------------------------
+ 1 file changed, 60 insertions(+), 62 deletions(-)
 
 --- a/mm/vmscan.c~vmscan-remove-remaining-uses-of-page-in-shrink_page_list
 +++ a/mm/vmscan.c
@@ -109,8 +109,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		 *    indicates that folios are being queued for I/O but
  		 *    are being recycled through the LRU before the I/O
  		 *    can complete. Waiting on the folio itself risks an
-@@ -1654,16 +1652,16 @@ retry:
- 			    !may_enter_fs(page, sc->gfp_mask)) {
+@@ -1651,19 +1649,19 @@ retry:
+ 			/* Case 2 above */
+ 			} else if (writeback_throttling_sane(sc) ||
+ 			    !folio_test_reclaim(folio) ||
+-			    !may_enter_fs(page, sc->gfp_mask)) {
++			    !may_enter_fs(folio, sc->gfp_mask)) {
  				/*
  				 * This is slightly racy -
 -				 * folio_end_writeback() might have just
@@ -213,6 +217,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			sc->nr_scanned -= (nr_pages - 1);
  			nr_pages = 1;
  		}
+@@ -1815,7 +1812,7 @@ retry:
+ 
+ 			if (references == PAGEREF_RECLAIM_CLEAN)
+ 				goto keep_locked;
+-			if (!may_enter_fs(page, sc->gfp_mask))
++			if (!may_enter_fs(folio, sc->gfp_mask))
+ 				goto keep_locked;
+ 			if (!sc->may_writepage)
+ 				goto keep_locked;
 @@ -1917,11 +1914,11 @@ retry:
  							 sc->target_mem_cgroup))
  			goto keep_locked;
