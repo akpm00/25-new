@@ -746,7 +746,6 @@ zram-remove-double-compression-logic.patch
 #
 #mm/tracing
 tracing-incorrect-gfp_t-conversion.patch
-tracing-incorrect-gfp_t-conversion-fix.patch
 #
 #mm/pagealloc
 #mm-discard-__gfp_atomic.patch: check review, mhocko https://lkml.kernel.org/r/Ym6rFVuPE8tAb8LQ@dhcp22.suse.cz
@@ -992,3 +991,4 @@ kselftest-vm-override-targets-from-arguments.patch
 #[obsolete]mm-shmem-convert-shmem_alloc_and_acct_page-to-use-a-folio.patch
 #[obsolete]mm-shmem-convert-shmem_getpage_gfp-to-use-a-folio.patch
 #[obsolete]mm-shmem-convert-shmem_swapin_page-to-shmem_swapin_folio.patch
+#[withdrawn]tracing-incorrect-gfp_t-conversion-fix.patch
