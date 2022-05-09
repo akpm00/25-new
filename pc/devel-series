@@ -30,6 +30,9 @@ selftests-vm-makefile-rename-targets-to-vmtargets.patch
 #MAINTAINERS
 maintainers-add-a-mailing-list-for-damon-development.patch
 #
+#mm/cma
+revert-mm-cmac-remove-redundant-cma_mutex-lock.patch
+#
 #ENDBRANCH mm-hotfixes-unstable
 #BRANCH mm-stable
 mm-stable.patch

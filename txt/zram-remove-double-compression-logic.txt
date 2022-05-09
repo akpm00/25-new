@@ -17,5 +17,5 @@ Link: https://lkml.kernel.org/r/20220505094443.11728-1-avromanov@sberdevices.ru
 Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
 Signed-off-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
 Acked-by: Minchan Kim <minchan@kernel.org>
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 Cc: Nitin Gupta <ngupta@vflare.org>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
