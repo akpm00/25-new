@@ -1,0 +1,35 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: avoid calling swp_swap_info when try to check SWP_STABLE_WRITES
+
+Use flags of si directly to check SWP_STABLE_WRITES to avoid possible
+READ_ONCE and thus save some cpu cycles.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-10-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/memory.c~mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes
++++ a/mm/memory.c
+@@ -3907,7 +3907,7 @@ vm_fault_t do_swap_page(struct vm_fault
+ 			 */
+ 			exclusive = true;
+ 		} else if (exclusive && PageWriteback(page) &&
+-			  (swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
++			  (si->flags & SWP_STABLE_WRITES)) {
+ 			/*
+ 			 * This is tricky: not all swap backends support
+ 			 * concurrent page modifications while under writeback.
+_

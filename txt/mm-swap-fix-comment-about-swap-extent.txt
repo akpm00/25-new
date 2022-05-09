@@ -1,0 +1,18 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: fix comment about swap extent
+
+Since commit 4efaceb1c5f8 ("mm, swap: use rbtree for swap_extent"), rbtree
+is used for swap extent.  Also curr_swap_extent is removed at that time. 
+Update the corresponding comment.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-16-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

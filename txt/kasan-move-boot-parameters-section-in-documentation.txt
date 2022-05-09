@@ -1,0 +1,14 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: move boot parameters section in documentation
+
+Move the "Boot parameters" section in KASAN documentation next to the
+section that describes KASAN build options.
+
+No content changes.
+
+Link: https://lkml.kernel.org/r/ec9c923f35e7c5312836c4624a7f317dc1ee2c1c.1652123204.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

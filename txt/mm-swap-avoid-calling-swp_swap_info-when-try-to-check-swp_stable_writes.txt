@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: avoid calling swp_swap_info when try to check SWP_STABLE_WRITES
+
+Use flags of si directly to check SWP_STABLE_WRITES to avoid possible
+READ_ONCE and thus save some cpu cycles.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-10-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

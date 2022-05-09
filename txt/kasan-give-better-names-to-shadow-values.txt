@@ -1,0 +1,15 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: give better names to shadow values
+
+Rename KASAN_KMALLOC_* shadow values to KASAN_SLAB_*, as they are used for
+all slab allocations, not only for kmalloc.
+
+Also rename KASAN_FREE_PAGE to KASAN_PAGE_FREE to be consistent with
+KASAN_PAGE_REDZONE and KASAN_SLAB_FREE.
+
+Link: https://lkml.kernel.org/r/bebcaf4eafdb0cabae0401a69c0af956aa87fcaa.1652111464.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

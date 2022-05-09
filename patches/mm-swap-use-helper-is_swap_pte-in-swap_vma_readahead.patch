@@ -1,0 +1,47 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: use helper is_swap_pte() in swap_vma_readahead
+
+Patch series "A few cleanup patches for swap".
+
+This series contains a few patches to fix the comment, remove unneeded
+return value, use some helpers and so on.  More details can be found in
+the respective changelogs.
+
+
+This patch (of 15):
+
+Use helper is_swap_pte() to check whether pte is swap entry to make code
+more clear.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-1-linmiaohe@huawei.com
+Link: https://lkml.kernel.org/r/20220509131416.17553-2-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: David Howells <dhowells@redhat.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swap_state.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+--- a/mm/swap_state.c~mm-swap-use-helper-is_swap_pte-in-swap_vma_readahead
++++ a/mm/swap_state.c
+@@ -818,9 +818,7 @@ static struct page *swap_vma_readahead(s
+ 	for (i = 0, pte = ra_info.ptes; i < ra_info.nr_pte;
+ 	     i++, pte++) {
+ 		pentry = *pte;
+-		if (pte_none(pentry))
+-			continue;
+-		if (pte_present(pentry))
++		if (!is_swap_pte(pentry))
+ 			continue;
+ 		entry = pte_to_swp_entry(pentry);
+ 		if (unlikely(non_swap_entry(entry)))
+_

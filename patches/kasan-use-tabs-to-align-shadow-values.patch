@@ -1,0 +1,66 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: use tabs to align shadow values
+
+Consistently use tabs instead of spaces to shadow value definitions.
+
+Link: https://lkml.kernel.org/r/00e7e66b5fc375d58200dc1489949b3edcd096b7.1652111464.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/kasan/kasan.h |   32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+--- a/mm/kasan/kasan.h~kasan-use-tabs-to-align-shadow-values
++++ a/mm/kasan/kasan.h
+@@ -74,29 +74,29 @@ static inline bool kasan_sync_fault_poss
+ #define KASAN_MEMORY_PER_SHADOW_PAGE	(KASAN_GRANULE_SIZE << PAGE_SHIFT)
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+-#define KASAN_FREE_PAGE         0xFF  /* freed page */
+-#define KASAN_PAGE_REDZONE      0xFE  /* redzone for kmalloc_large allocation */
+-#define KASAN_KMALLOC_REDZONE   0xFC  /* redzone for slab object */
+-#define KASAN_KMALLOC_FREE      0xFB  /* freed slab object */
+-#define KASAN_VMALLOC_INVALID   0xF8  /* inaccessible space in vmap area */
++#define KASAN_FREE_PAGE		0xFF  /* freed page */
++#define KASAN_PAGE_REDZONE	0xFE  /* redzone for kmalloc_large allocation */
++#define KASAN_KMALLOC_REDZONE	0xFC  /* redzone for slab object */
++#define KASAN_KMALLOC_FREE	0xFB  /* freed slab object */
++#define KASAN_VMALLOC_INVALID	0xF8  /* inaccessible space in vmap area */
+ #else
+-#define KASAN_FREE_PAGE         KASAN_TAG_INVALID
+-#define KASAN_PAGE_REDZONE      KASAN_TAG_INVALID
+-#define KASAN_KMALLOC_REDZONE   KASAN_TAG_INVALID
+-#define KASAN_KMALLOC_FREE      KASAN_TAG_INVALID
+-#define KASAN_VMALLOC_INVALID   KASAN_TAG_INVALID /* only used for SW_TAGS */
++#define KASAN_FREE_PAGE		KASAN_TAG_INVALID
++#define KASAN_PAGE_REDZONE	KASAN_TAG_INVALID
++#define KASAN_KMALLOC_REDZONE	KASAN_TAG_INVALID
++#define KASAN_KMALLOC_FREE	KASAN_TAG_INVALID
++#define KASAN_VMALLOC_INVALID	KASAN_TAG_INVALID /* only used for SW_TAGS */
+ #endif
+ 
+ #ifdef CONFIG_KASAN_GENERIC
+ 
+-#define KASAN_KMALLOC_FREETRACK 0xFA  /* freed slab object with free track */
+-#define KASAN_GLOBAL_REDZONE    0xF9  /* redzone for global variable */
++#define KASAN_KMALLOC_FREETRACK	0xFA  /* freed slab object with free track */
++#define KASAN_GLOBAL_REDZONE	0xF9  /* redzone for global variable */
+ 
+ /* Stack redzone shadow values. Compiler ABI, do not change. */
+-#define KASAN_STACK_LEFT        0xF1
+-#define KASAN_STACK_MID         0xF2
+-#define KASAN_STACK_RIGHT       0xF3
+-#define KASAN_STACK_PARTIAL     0xF4
++#define KASAN_STACK_LEFT	0xF1
++#define KASAN_STACK_MID		0xF2
++#define KASAN_STACK_RIGHT	0xF3
++#define KASAN_STACK_PARTIAL	0xF4
+ 
+ /* alloca redzone shadow values. */
+ #define KASAN_ALLOCA_LEFT	0xCA
+_

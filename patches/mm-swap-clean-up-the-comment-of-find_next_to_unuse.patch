@@ -1,0 +1,39 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: clean up the comment of find_next_to_unuse
+
+Since commit 10a9c496789f ("mm: simplify try_to_unuse"), frontswap
+parameter is removed.  Update the corresponding comment.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-14-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swapfile.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/swapfile.c~mm-swap-clean-up-the-comment-of-find_next_to_unuse
++++ a/mm/swapfile.c
+@@ -2006,9 +2006,9 @@ static int unuse_mm(struct mm_struct *mm
+ }
+ 
+ /*
+- * Scan swap_map (or frontswap_map if frontswap parameter is true)
+- * from current position to next entry still in use. Return 0
+- * if there are no inuse entries after prev till end of the map.
++ * Scan swap_map from current position to next entry still in use.
++ * Return 0 if there are no inuse entries after prev till end of
++ * the map.
+  */
+ static unsigned int find_next_to_unuse(struct swap_info_struct *si,
+ 					unsigned int prev)
+_

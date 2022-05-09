@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: print bad swap offset entry in get_swap_device
+
+If offset exceeds the si->max, print bad swap offset entry to help debug
+the unexpected case.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-6-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

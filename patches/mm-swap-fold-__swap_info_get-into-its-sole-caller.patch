@@ -1,0 +1,73 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: fold __swap_info_get() into its sole caller
+
+Fold __swap_info_get() into its sole caller to make code more clear. 
+Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-4-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swapfile.c |   24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
+
+--- a/mm/swapfile.c~mm-swap-fold-__swap_info_get-into-its-sole-caller
++++ a/mm/swapfile.c
+@@ -1122,7 +1122,7 @@ noswap:
+ 	return n_ret;
+ }
+ 
+-static struct swap_info_struct *__swap_info_get(swp_entry_t entry)
++static struct swap_info_struct *_swap_info_get(swp_entry_t entry)
+ {
+ 	struct swap_info_struct *p;
+ 	unsigned long offset;
+@@ -1137,8 +1137,13 @@ static struct swap_info_struct *__swap_i
+ 	offset = swp_offset(entry);
+ 	if (offset >= p->max)
+ 		goto bad_offset;
++	if (data_race(!p->swap_map[swp_offset(entry)]))
++		goto bad_free;
+ 	return p;
+ 
++bad_free:
++	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
++	goto out;
+ bad_offset:
+ 	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
+ 	goto out;
+@@ -1150,23 +1155,6 @@ bad_nofile:
+ out:
+ 	return NULL;
+ }
+-
+-static struct swap_info_struct *_swap_info_get(swp_entry_t entry)
+-{
+-	struct swap_info_struct *p;
+-
+-	p = __swap_info_get(entry);
+-	if (!p)
+-		goto out;
+-	if (data_race(!p->swap_map[swp_offset(entry)]))
+-		goto bad_free;
+-	return p;
+-
+-bad_free:
+-	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
+-out:
+-	return NULL;
+-}
+ 
+ static struct swap_info_struct *swap_info_get_cont(swp_entry_t entry,
+ 					struct swap_info_struct *q)
+_

@@ -1,0 +1,37 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: use helper macro __ATTR_RW
+
+Use helper macro __ATTR_RW to define vma_ra_enabled_attr to make code more
+clear.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swap_state.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+--- a/mm/swap_state.c~mm-swap-use-helper-macro-__attr_rw
++++ a/mm/swap_state.c
+@@ -881,9 +881,7 @@ static ssize_t vma_ra_enabled_store(stru
+ 
+ 	return count;
+ }
+-static struct kobj_attribute vma_ra_enabled_attr =
+-	__ATTR(vma_ra_enabled, 0644, vma_ra_enabled_show,
+-	       vma_ra_enabled_store);
++static struct kobj_attribute vma_ra_enabled_attr = __ATTR_RW(vma_ra_enabled);
+ 
+ static struct attribute *swap_attrs[] = {
+ 	&vma_ra_enabled_attr.attr,
+_

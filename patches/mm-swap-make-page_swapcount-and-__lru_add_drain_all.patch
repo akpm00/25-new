@@ -1,0 +1,71 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: make page_swapcount and __lru_add_drain_all
+
+Make page_swapcount and __lru_add_drain_all static.  They are only used
+within the file now.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-9-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/swap.h |    7 -------
+ mm/swap.c            |    2 +-
+ mm/swapfile.c        |    2 +-
+ 3 files changed, 2 insertions(+), 9 deletions(-)
+
+--- a/include/linux/swap.h~mm-swap-make-page_swapcount-and-__lru_add_drain_all
++++ a/include/linux/swap.h
+@@ -490,7 +490,6 @@ int swap_type_of(dev_t device, sector_t
+ int find_first_swap(dev_t *device);
+ extern unsigned int count_swap_pages(int, int);
+ extern sector_t swapdev_block(int, pgoff_t);
+-extern int page_swapcount(struct page *);
+ extern int __swap_count(swp_entry_t entry);
+ extern int __swp_swapcount(swp_entry_t entry);
+ extern int swp_swapcount(swp_entry_t entry);
+@@ -562,12 +561,6 @@ static inline void put_swap_page(struct
+ {
+ }
+ 
+-
+-static inline int page_swapcount(struct page *page)
+-{
+-	return 0;
+-}
+-
+ static inline int __swap_count(swp_entry_t entry)
+ {
+ 	return 0;
+--- a/mm/swap.c~mm-swap-make-page_swapcount-and-__lru_add_drain_all
++++ a/mm/swap.c
+@@ -748,7 +748,7 @@ static void lru_add_drain_per_cpu(struct
+  * Calling this function with cpu hotplug locks held can actually lead
+  * to obscure indirect dependencies via WQ context.
+  */
+-inline void __lru_add_drain_all(bool force_all_cpus)
++static inline void __lru_add_drain_all(bool force_all_cpus)
+ {
+ 	/*
+ 	 * lru_drain_gen - Global pages generation number
+--- a/mm/swapfile.c~mm-swap-make-page_swapcount-and-__lru_add_drain_all
++++ a/mm/swapfile.c
+@@ -1429,7 +1429,7 @@ void swapcache_free_entries(swp_entry_t
+  * This does not give an exact answer when swap count is continued,
+  * but does include the high COUNT_CONTINUED flag to allow for that.
+  */
+-int page_swapcount(struct page *page)
++static int page_swapcount(struct page *page)
+ {
+ 	int count = 0;
+ 	struct swap_info_struct *p;
+_

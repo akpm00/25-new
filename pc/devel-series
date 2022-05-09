@@ -757,6 +757,35 @@ mm-discard-__gfp_atomic.patch
 #mm/vmalloc
 mm-vmalloc-use-raw_cpu_ptr-for-vmap_block_queue-access.patch
 #
+#mm/kasan
+kasan-clean-up-comments-in-internal-kasanh.patch
+kasan-use-tabs-to-align-shadow-values.patch
+kasan-give-better-names-to-shadow-values.patch
+#
+kasan-update-documentation.patch
+kasan-move-boot-parameters-section-in-documentation.patch
+kasan-clean-up-kconfig-options-descriptions.patch
+#
+#mm/debug
+mm-page_owner-use-strscpy-instead-of-strlcpy.patch
+#
+#mm/swap
+mm-swap-use-helper-is_swap_pte-in-swap_vma_readahead.patch
+mm-swap-use-helper-macro-__attr_rw.patch
+mm-swap-fold-__swap_info_get-into-its-sole-caller.patch
+mm-swap-remove-unneeded-return-value-of-free_swap_slot.patch
+mm-swap-print-bad-swap-offset-entry-in-get_swap_device.patch
+mm-swap-remove-buggy-cache-nr-check-in-refill_swap_slots_cache.patch
+mm-swap-remove-unneeded-p-=-null-check-in-__swap_duplicate.patch
+mm-swap-make-page_swapcount-and-__lru_add_drain_all.patch
+mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes.patch
+#mm-swap-break-the-loop-if-matching-device-is-found.patch
+mm-swap-add-helper-swap_offset_available.patch
+mm-swap-fix-the-obsolete-comment-for-swp_type_shift.patch
+mm-swap-clean-up-the-comment-of-find_next_to_unuse.patch
+mm-swap-fix-the-comment-of-get_kernel_pages.patch
+mm-swap-fix-comment-about-swap-extent.patch
+#
 # mmend
 #
 #ENDBRANCH mm-unstable

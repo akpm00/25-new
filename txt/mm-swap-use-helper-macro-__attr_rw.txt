@@ -1,0 +1,17 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: use helper macro __ATTR_RW
+
+Use helper macro __ATTR_RW to define vma_ra_enabled_attr to make code more
+clear.  Minor readability improvement.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-3-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

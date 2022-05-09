@@ -1,0 +1,37 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: fix the comment of get_kernel_pages
+
+If no pages were pinned, 0 is returned in fact.  Fix the corresponding
+comment.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-15-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swap.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/mm/swap.c~mm-swap-fix-the-comment-of-get_kernel_pages
++++ a/mm/swap.c
+@@ -168,8 +168,8 @@ EXPORT_SYMBOL(put_pages_list);
+  *
+  * Returns number of pages pinned. This may be fewer than the number
+  * requested. If nr_pages is 0 or negative, returns 0. If no pages
+- * were pinned, returns -errno. Each page returned must be released
+- * with a put_page() call when it is finished with.
++ * were pinned, returns 0. Each page returned must be released with
++ * a put_page() call when it is finished with.
+  */
+ int get_kernel_pages(const struct kvec *kiov, int nr_segs, int write,
+ 		struct page **pages)
+_

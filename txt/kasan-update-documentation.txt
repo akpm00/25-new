@@ -1,0 +1,16 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: update documentation
+
+Do assorted clean-ups and improvements to KASAN documentation, including:
+
+- Describe each mode in a dedicated paragraph.
+- Split out a Support section that describes in details which compilers,
+  architectures and memory types each mode requires/supports.
+- Capitalize the first letter in the names of each KASAN mode.
+
+Link: https://lkml.kernel.org/r/5bd58ebebf066593ce0e1d265d60278b5f5a1874.1652123204.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>

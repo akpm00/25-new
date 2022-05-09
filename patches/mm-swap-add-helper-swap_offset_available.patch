@@ -1,0 +1,82 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: add helper swap_offset_available()
+
+Add helper swap_offset_available() to remove some duplicated codes.  Minor
+readability improvement.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-12-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swapfile.c |   33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
+
+--- a/mm/swapfile.c~mm-swap-add-helper-swap_offset_available
++++ a/mm/swapfile.c
+@@ -775,6 +775,21 @@ static void set_cluster_next(struct swap
+ 	this_cpu_write(*si->cluster_next_cpu, next);
+ }
+ 
++static inline bool swap_offset_available(struct swap_info_struct *si, unsigned long offset)
++{
++	if (data_race(!si->swap_map[offset])) {
++		spin_lock(&si->lock);
++		return true;
++	}
++
++	if (vm_swap_full() && READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) {
++		spin_lock(&si->lock);
++		return true;
++	}
++
++	return false;
++}
++
+ static int scan_swap_map_slots(struct swap_info_struct *si,
+ 			       unsigned char usage, int nr,
+ 			       swp_entry_t slots[])
+@@ -952,15 +967,8 @@ done:
+ scan:
+ 	spin_unlock(&si->lock);
+ 	while (++offset <= READ_ONCE(si->highest_bit)) {
+-		if (data_race(!si->swap_map[offset])) {
+-			spin_lock(&si->lock);
+-			goto checks;
+-		}
+-		if (vm_swap_full() &&
+-		    READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) {
+-			spin_lock(&si->lock);
++		if (swap_offset_available(si, offset))
+ 			goto checks;
+-		}
+ 		if (unlikely(--latency_ration < 0)) {
+ 			cond_resched();
+ 			latency_ration = LATENCY_LIMIT;
+@@ -969,15 +977,8 @@ scan:
+ 	}
+ 	offset = si->lowest_bit;
+ 	while (offset < scan_base) {
+-		if (data_race(!si->swap_map[offset])) {
+-			spin_lock(&si->lock);
++		if (swap_offset_available(si, offset))
+ 			goto checks;
+-		}
+-		if (vm_swap_full() &&
+-		    READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) {
+-			spin_lock(&si->lock);
+-			goto checks;
+-		}
+ 		if (unlikely(--latency_ration < 0)) {
+ 			cond_resched();
+ 			latency_ration = LATENCY_LIMIT;
+_

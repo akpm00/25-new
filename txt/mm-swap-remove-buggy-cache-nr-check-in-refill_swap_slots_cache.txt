@@ -1,0 +1,18 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: remove buggy cache->nr check in refill_swap_slots_cache
+
+refill_swap_slots_cache is always called when cache->nr is 0.  And if
+cache->nr != 0, we should return cache->nr instead of 0.  So remove such
+buggy and confusing check.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-7-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
