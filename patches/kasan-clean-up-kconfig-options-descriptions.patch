@@ -5,6 +5,7 @@ Various readability clean-ups of KASAN Kconfig options.
 
 No functional changes.
 
+Link: https://lkml.kernel.org/r/c160840dd9e4b1ad5529ecfdb0bba35d9a14d826.1652203271.git.andreyknvl@google.com
 Link: https://lkml.kernel.org/r/47afaecec29221347bee49f58c258ac1ced3b429.1652123204.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Cc: Marco Elver <elver@google.com>

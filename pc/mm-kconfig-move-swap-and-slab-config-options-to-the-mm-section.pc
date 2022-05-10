@@ -1,0 +1,2 @@
+init/Kconfig
+mm/Kconfig

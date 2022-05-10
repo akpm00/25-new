@@ -1,0 +1,19 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm: zswap: add basic meminfo and vmstat coverage
+
+Currently it requires poking at debugfs to figure out the size and
+population of the zswap cache on a host.  There are no counters for reads
+and writes against the cache.  As a result, it's difficult to understand
+zswap behavior on production systems.
+
+Print zswap memory consumption and how many pages are zswapped out in
+/proc/meminfo.  Count zswapouts and zswapins in /proc/vmstat.
+
+Link: https://lkml.kernel.org/r/20220510152847.230957-6-hannes@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Shakeel Butt <shakeelb@google.com>

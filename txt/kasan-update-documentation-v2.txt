@@ -1,0 +1,11 @@
+From: Andrey Konovalov <andreyknvl@google.com>
+Subject: kasan: update documentation
+
+rewording, per Marco
+
+Link: https://lkml.kernel.org/r/896b2d914d6b50d677fd7b38f76967cc705c01ba.1652203271.git.andreyknvl@google.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>

@@ -467,7 +467,7 @@ mm-khugepaged-sched-to-numa-node-when-collapse-huge-page.patch
 #mm/dax
 #mm/userfaultfd
 #
-#mm-introduce-pte_marker-swap-entry.patch: TBU
+#mm-introduce-pte_marker-swap-entry.patch+N: merge 5/12
 mm-introduce-pte_marker-swap-entry.patch
 mm-introduce-pte_marker-swap-entry-fix.patch
 mm-teach-core-mm-about-pte-markers.patch
@@ -489,7 +489,6 @@ mm-hugetlb-take-care-of-uffdio_copy_mode_wp.patch
 mm-hugetlb-handle-uffdio_writeprotect.patch
 mm-hugetlb-handle-pte-markers-in-page-faults.patch
 mm-hugetlb-allow-uffd-wr-protect-none-ptes.patch
-#mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch: https://lkml.kernel.org/r/202204140108.DeRAhWEn-lkp@intel.com
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required.patch
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix.patch
 mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix.patch
@@ -498,7 +497,6 @@ mm-shmem-handle-uffd-wp-during-fork-fix.patch
 mm-khugepaged-dont-recycle-vma-pgtable-if-uffd-wp-registered.patch
 mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs.patch
 mm-uffd-enable-write-protection-for-shmem-hugetlbfs.patch
-#mm-enable-pte-markers-by-default.patch: https://lkml.kernel.org/r/Yl7RrKV5mXtNAAzi@cmpxchg.org
 mm-enable-pte-markers-by-default.patch
 mm-enable-pte-markers-by-default-fix.patch
 selftests-uffd-enable-uffd-wp-for-shmem-hugetlbfs.patch
@@ -551,7 +549,7 @@ mm-swapfile-fix-lost-swap-bits-in-unuse_pte.patch
 #
 #mm/cma
 #mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch+N: acks? https://lkml.kernel.org/r/CA+G9fYveMF-NU-rvrsbaora2g2QWxrkF7AWViuDrJyN9mNScJg@mail.gmail.com
-#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch: 5/9 merge
+#mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch: 5/12 merge
 mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc.patch
 mm-page_isolation-check-specified-range-for-unmovable-pages.patch
 mm-make-alloc_contig_range-work-at-pageblock-granularity.patch
@@ -768,9 +766,10 @@ kasan-clean-up-comments-in-internal-kasanh.patch
 kasan-use-tabs-to-align-shadow-values.patch
 kasan-give-better-names-to-shadow-values.patch
 #
-#kasan-update-documentation.patch: TBU https://lkml.kernel.org/r/CA+fCnZcnVf41WrFRAV5RzeL6J9tkhTpYSYZrhZtC=jfWjTvXeg@mail.gmail.com
 kasan-update-documentation.patch
+kasan-update-documentation-v2.patch
 kasan-move-boot-parameters-section-in-documentation.patch
+#kasan-clean-up-kconfig-options-descriptions.patch: https://lkml.kernel.org/r/YnpTJR177vJ5G+HW@elver.google.com (optional)
 kasan-clean-up-kconfig-options-descriptions.patch
 #
 #mm/debug
@@ -804,6 +803,17 @@ mm-memory-failurec-simplify-num_poisoned_pages_inc-dec.patch
 #mm/zsmalloc
 #zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch: acks?
 zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
+#
+#mm/zswap
+documentation-filesystems-proc-update-meminfo-section.patch
+mm-kconfig-move-swap-and-slab-config-options-to-the-mm-section.patch
+mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
+mm-kconfig-simplify-zswap-configuration.patch
+mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
+zswap-memcg-accounting.patch
+#
+#mm/debug
+mm-fix-missing-handler-for-__gfp_nowarn.patch
 #
 # mmend
 #
@@ -973,6 +983,9 @@ fs-sendfile-handles-o_nonblock-of-out_fd.patch
 #
 #relay
 relay-remove-redundant-assignment-to-pointer-buf.patch
+#
+#drivers/tty
+tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 

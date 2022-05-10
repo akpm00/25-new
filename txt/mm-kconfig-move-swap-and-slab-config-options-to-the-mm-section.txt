@@ -1,0 +1,13 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm: Kconfig: move swap and slab config options to the MM section
+
+These are currently under General Setup. MM seems like a better fit.
+
+Link: https://lkml.kernel.org/r/20220510152847.230957-3-hannes@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Shakeel Butt <shakeelb@google.com>

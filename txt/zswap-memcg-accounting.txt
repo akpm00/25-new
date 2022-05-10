@@ -1,0 +1,32 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: zswap: memcg accounting
+
+Applications can currently escape their cgroup memory containment when
+zswap is enabled.  This patch adds per-cgroup tracking and limiting of
+zswap backend memory to rectify this.
+
+The existing cgroup2 memory.stat file is extended to show zswap statistics
+analogous to what's in meminfo and vmstat.  Furthermore, two new control
+files, memory.zswap.current and memory.zswap.max, are added to allow
+tuning zswap usage on a per-workload basis.  This is important since not
+all workloads benefit from zswap equally; some even suffer compared to
+disk swap when memory contents don't compress well.  The optimal size of
+the zswap pool, and the threshold for writeback, also depends on the size
+of the workload's warm set.
+
+The implementation doesn't use a traditional page_counter transaction. 
+zswap is unconventional as a memory consumer in that we only know the
+amount of memory to charge once expensive compression has occurred.  If
+zwap is disabled or the limit is already exceeded we obviously don't want
+to compress page upon page only to reject them all.  Instead, the limit is
+checked against current usage, then we compress and charge.  This allows
+some limit overrun, but not enough to matter in practice.
+
+Link: https://lkml.kernel.org/r/20220510152847.230957-7-hannes@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Minchan Kim <minchan@kernel.org>

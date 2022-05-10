@@ -1,0 +1,24 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm: Kconfig: simplify zswap configuration
+
+- CONFIG_ZRAM: Zram is a user-facing feature, whereas zsmalloc is
+  not. Don't make the user chase down a technical dependency like
+  that, just select it in automatically when zram is requested. The
+  CONFIG_CRYPTO dependency is redundant due to more specific deps.
+
+- CONFIG_ZPOOL: This is not a user-facing feature. Hide the symbol and
+  have it selected in as needed.
+
+- CONFIG_ZSWAP: Select CRYPTO instead of depend. Common pattern.
+
+- Make the ZSWAP suboptions and their descriptions (compression,
+  allocation backend) a bit more straight-forward for the user.
+
+Link: https://lkml.kernel.org/r/20220510152847.230957-5-hannes@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Shakeel Butt <shakeelb@google.com>
