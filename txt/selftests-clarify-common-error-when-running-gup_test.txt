@@ -1,0 +1,15 @@
+From: Joel Savitz <jsavitz@redhat.com>
+Subject: selftests: clarify common error when running gup_test
+
+The gup_test binary will fail showing only the output of perror("open") in
+the case that /sys/kernel/debug/gup_test is not found. This will almost
+always be due to CONFIG_GUP_TEST not being set, which enables
+compilation of a kernel that provides this file.
+
+Add a short error message to clarify this failure and point the user to
+the solution.
+
+Link: https://lkml.kernel.org/r/20220502224942.995427-1-jsavitz@redhat.com
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Nico Pache <npache@redhat.com>
