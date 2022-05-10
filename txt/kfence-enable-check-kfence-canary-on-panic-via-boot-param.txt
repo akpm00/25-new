@@ -16,6 +16,7 @@ are difficult to use to diagnose an issue alone.  In most cases, such
 reports are inactionable, and is therefore an opt-in feature (disabled by
 default).
 
+[akpm@linux-foundation.org: add __read_mostly, per Marco]
 Link: https://lkml.kernel.org/r/20220425022456.44300-1-huangshaobo6@huawei.com
 Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
 Suggested-by: chenzefeng <chenzefeng2@huawei.com>

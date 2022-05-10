@@ -202,7 +202,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/hugetlb.c~mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning
 +++ a/mm/hugetlb.c
-@@ -6105,6 +6105,9 @@ long follow_hugetlb_page(struct mm_struc
+@@ -6118,6 +6118,9 @@ long follow_hugetlb_page(struct mm_struc
  		pfn_offset = (vaddr & ~huge_page_mask(h)) >> PAGE_SHIFT;
  		page = pte_page(huge_ptep_get(pte));
  

@@ -6,7 +6,7 @@ macro pgprot_val.
 
 Link: https://lkml.kernel.org/r/20220426071302.220646-1-liusongtang@huawei.com
 Signed-off-by: liusongtang <liusongtang@huawei.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Xiaoming Ni <nixiaoming@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

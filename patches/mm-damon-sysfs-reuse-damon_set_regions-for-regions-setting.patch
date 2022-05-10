@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/damon/sysfs.c~mm-damon-sysfs-reuse-damon_set_regions-for-regions-setting
 +++ a/mm/damon/sysfs.c
-@@ -2095,28 +2095,31 @@ static void damon_sysfs_destroy_targets(
+@@ -2096,28 +2096,31 @@ static void damon_sysfs_destroy_targets(
  static int damon_sysfs_set_regions(struct damon_target *t,
  		struct damon_sysfs_regions *sysfs_regions)
  {

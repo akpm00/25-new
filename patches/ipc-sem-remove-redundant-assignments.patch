@@ -1,5 +1,5 @@
 From: Michal Orzel <michalorzel.eng@gmail.com>
-Subject: ipc/sem: Remove redundant assignments
+Subject: ipc/sem: remove redundant assignments
 
 Get rid of redundant assignments which end up in values not being
 read either because they are overwritten or the function ends.

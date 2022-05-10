@@ -26,6 +26,7 @@ Many functions declared in include/linux/swap.h are only used within mm/
 Create a new "mm/swap.h" and move some of these declarations there.
 Remove the redundant 'extern' from the function declarations.
 
+[akpm@linux-foundation.org: mm/memory-failure.c needs mm/swap.h]
 Link: https://lkml.kernel.org/r/164859751830.29473.5309689752169286816.stgit@noble.brown
 Link: https://lkml.kernel.org/r/164859778120.29473.11725907882296224053.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>

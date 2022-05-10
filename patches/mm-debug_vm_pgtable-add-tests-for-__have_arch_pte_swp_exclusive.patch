@@ -68,7 +68,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static void __init pte_swap_tests(struct pgtable_debug_args *args)
  {
  	swp_entry_t swp;
-@@ -1288,6 +1301,8 @@ static int __init debug_vm_pgtable(void)
+@@ -1295,6 +1308,8 @@ static int __init debug_vm_pgtable(void)
  	pte_swap_soft_dirty_tests(&args);
  	pmd_swap_soft_dirty_tests(&args);
  

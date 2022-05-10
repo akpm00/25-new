@@ -6,5 +6,6 @@ list_empty.
 
 So it is not necessary to re-init it again.
 
+[akpm@linux-foundation.org: remove unneeded braces]
 Link: https://lkml.kernel.org/r/20220426021743.21007-1-richard.weiyang@gmail.com
 Signed-off-by: Wei Yang <richard.weiyang@gmail.com>

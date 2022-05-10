@@ -155,7 +155,8 @@ once fork was involved (e.g., GUP before fork(), GUP during fork()).  KSM
 steps back in case it stumbles over unexpected references and is,
 therefore, fine.
 
-Link: https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
+[david@redhat.com: fix SWP_STABLE_WRITES test]
+  Link: https://lkml.kernel.org/r/ac725bcb-313a-4fff-250a-68ba9a8f85fb@redhat.comLink: https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
 Link: https://lkml.kernel.org/r/20220329164329.208407-2-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>

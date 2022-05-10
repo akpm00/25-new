@@ -10,7 +10,7 @@ hugetlb page.
 
 Link: https://lkml.kernel.org/r/dc903b378d1e2d26bbbe85409ab9d009631f175c.1651056365.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mina Almasry <almasrymina@google.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -21,7 +21,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/rmap.c~mm-rmap-use-flush_cache_range-to-flush-cache-for-hugetlb-pages
 +++ a/mm/rmap.c
-@@ -1528,13 +1528,7 @@ static bool try_to_unmap_one(struct foli
+@@ -1525,13 +1525,7 @@ static bool try_to_unmap_one(struct foli
  		anon_exclusive = folio_test_anon(folio) &&
  				 PageAnonExclusive(subpage);
  
@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/*
  			 * huge_pmd_unshare may unmap an entire PMD page.
  			 * There is no way of knowing exactly which PMDs may
-@@ -1544,22 +1538,31 @@ static bool try_to_unmap_one(struct foli
+@@ -1541,22 +1535,31 @@ static bool try_to_unmap_one(struct foli
  			 */
  			flush_cache_range(vma, range.start, range.end);
  
@@ -82,7 +82,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			}
  		} else {
  			flush_cache_page(vma, address, pte_pfn(*pvmw.pte));
-@@ -1885,13 +1888,7 @@ static bool try_to_migrate_one(struct fo
+@@ -1879,13 +1882,7 @@ static bool try_to_migrate_one(struct fo
  		anon_exclusive = folio_test_anon(folio) &&
  				 PageAnonExclusive(subpage);
  
@@ -97,7 +97,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/*
  			 * huge_pmd_unshare may unmap an entire PMD page.
  			 * There is no way of knowing exactly which PMDs may
-@@ -1901,22 +1898,31 @@ static bool try_to_migrate_one(struct fo
+@@ -1895,22 +1892,31 @@ static bool try_to_migrate_one(struct fo
  			 */
  			flush_cache_range(vma, range.start, range.end);
  

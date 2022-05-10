@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mremap.c~mm-mremap-fix-sign-for-efault-error-return-value
 +++ a/mm/mremap.c
-@@ -941,7 +941,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, a
+@@ -947,7 +947,7 @@ SYSCALL_DEFINE5(mremap, unsigned long, a
  		return -EINTR;
  	vma = vma_lookup(mm, addr);
  	if (!vma) {

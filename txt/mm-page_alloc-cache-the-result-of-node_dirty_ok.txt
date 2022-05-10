@@ -9,6 +9,7 @@ cached.
 Instead of caching the node, caching both the node and its node_dirty_ok()
 status can reduce the number of calle to node_dirty_ok().
 
+[akpm@linux-foundation.org: rename last_pgdat_dirty_limit to last_pgdat_dirty_ok]
 Link: https://lkml.kernel.org/r/20220430011032.64071-1-vvghjk1234@gmail.com
 Signed-off-by: Wonhyuk Yang <vvghjk1234@gmail.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>

@@ -199,7 +199,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	set_pud_at(dst_mm, addr, dst_pud, pud);
 --- a/mm/hugetlb.c~mm-rmap-split-page_dup_rmap-into-page_dup_file_rmap-and-page_try_dup_anon_rmap
 +++ a/mm/hugetlb.c
-@@ -4793,15 +4793,18 @@ again:
+@@ -4806,15 +4806,18 @@ again:
  			get_page(ptepage);
  
  			/*
@@ -222,7 +222,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				pte_t src_pte_old = entry;
  				struct page *new;
  
-@@ -4848,7 +4851,6 @@ again:
+@@ -4861,7 +4864,6 @@ again:
  				entry = huge_pte_wrprotect(entry);
  			}
  
@@ -230,7 +230,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			set_huge_pte_at(dst, addr, dst_pte, entry);
  			hugetlb_count_add(npages, dst);
  		}
-@@ -5528,7 +5530,7 @@ retry:
+@@ -5541,7 +5543,7 @@ retry:
  		ClearHPageRestoreReserve(page);
  		hugepage_add_new_anon_rmap(page, vma, haddr);
  	} else
@@ -239,7 +239,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	new_pte = make_huge_pte(vma, page, ((vma->vm_flags & VM_WRITE)
  				&& (vma->vm_flags & VM_SHARED)));
  	set_huge_pte_at(mm, haddr, ptep, new_pte);
-@@ -5889,7 +5891,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
+@@ -5902,7 +5904,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_s
  		goto out_release_unlock;
  
  	if (vm_shared) {

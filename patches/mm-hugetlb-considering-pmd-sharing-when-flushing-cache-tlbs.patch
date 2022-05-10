@@ -30,8 +30,8 @@ Link: https://lkml.kernel.org/r/0443c8cf20db554d3ff4b439b30e0ff26c0181dd.1651056
 Fixes: 550a7d60bd5e ("mm, hugepages: add mremap() support for hugepage backed vma")
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Mina Almasry <almasrymina@google.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-considering-pmd-sharing-when-flushing-cache-tlbs
 +++ a/mm/hugetlb.c
-@@ -4935,10 +4935,17 @@ int move_hugetlb_page_tables(struct vm_a
+@@ -4922,10 +4922,17 @@ int move_hugetlb_page_tables(struct vm_a
  	unsigned long old_addr_copy;
  	pte_t *src_pte, *dst_pte;
  	struct mmu_notifier_range range;
@@ -59,7 +59,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmu_notifier_invalidate_range_start(&range);
  	/* Prevent race with file truncation */
  	i_mmap_lock_write(mapping);
-@@ -4955,8 +4962,10 @@ int move_hugetlb_page_tables(struct vm_a
+@@ -4942,8 +4949,10 @@ int move_hugetlb_page_tables(struct vm_a
  		 */
  		old_addr_copy = old_addr;
  
@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		dst_pte = huge_pte_alloc(mm, new_vma, new_addr, sz);
  		if (!dst_pte)
-@@ -4964,7 +4973,11 @@ int move_hugetlb_page_tables(struct vm_a
+@@ -4951,7 +4960,11 @@ int move_hugetlb_page_tables(struct vm_a
  
  		move_huge_pte(vma, old_addr, new_addr, src_pte, dst_pte);
  	}

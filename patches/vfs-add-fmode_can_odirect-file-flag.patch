@@ -1,5 +1,5 @@
 From: NeilBrown <neilb@suse.de>
-Subject: VFS: Add FMODE_CAN_ODIRECT file flag
+Subject: VFS: add FMODE_CAN_ODIRECT file flag
 
 Currently various places test if direct IO is possible on a file by
 checking for the existence of the direct_IO address space operation.

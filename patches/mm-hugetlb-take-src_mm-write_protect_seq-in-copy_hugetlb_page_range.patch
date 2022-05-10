@@ -65,7 +65,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/hugetlb.c~mm-hugetlb-take-src_mm-write_protect_seq-in-copy_hugetlb_page_range
 +++ a/mm/hugetlb.c
-@@ -4722,6 +4722,8 @@ int copy_hugetlb_page_range(struct mm_st
+@@ -4735,6 +4735,8 @@ int copy_hugetlb_page_range(struct mm_st
  					vma->vm_start,
  					vma->vm_end);
  		mmu_notifier_invalidate_range_start(&range);
@@ -74,7 +74,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	} else {
  		/*
  		 * For shared mappings i_mmap_rwsem must be held to call
-@@ -4854,10 +4856,12 @@ again:
+@@ -4867,10 +4869,12 @@ again:
  		spin_unlock(dst_ptl);
  	}
  

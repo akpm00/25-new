@@ -10,7 +10,7 @@ Link: https://lkml.kernel.org/r/1651187881-2858-1-git-send-email-prakash.sangapp
 Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-Cc: Manfred Spraul <manfred@colorfullife.com>
+Reviewed-by: Manfred Spraul <manfred@colorfullife.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

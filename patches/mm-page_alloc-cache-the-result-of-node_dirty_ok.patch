@@ -9,10 +9,11 @@ cached.
 Instead of caching the node, caching both the node and its node_dirty_ok()
 status can reduce the number of calle to node_dirty_ok().
 
+[akpm@linux-foundation.org: rename last_pgdat_dirty_limit to last_pgdat_dirty_ok]
 Link: https://lkml.kernel.org/r/20220430011032.64071-1-vvghjk1234@gmail.com
 Signed-off-by: Wonhyuk Yang <vvghjk1234@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Mel Gorman <mgorman@suse.de>
 Cc: Donghyeok Kim <dthex5d@gmail.com>
 Cc: JaeSang Yoo <jsyoo5b@gmail.com>
 Cc: Jiyoup Kim <lakroforce@gmail.com>
@@ -31,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct zone *zone;
 -	struct pglist_data *last_pgdat_dirty_limit = NULL;
 +	struct pglist_data *last_pgdat = NULL;
-+	bool last_pgdat_dirty_limit = false;
++	bool last_pgdat_dirty_ok = false;
  	bool no_fallback;
  
  retry:
@@ -43,12 +44,12 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -				continue;
 +			if (last_pgdat != zone->zone_pgdat) {
 +				last_pgdat = zone->zone_pgdat;
-+				last_pgdat_dirty_limit = node_dirty_ok(zone->zone_pgdat);
++				last_pgdat_dirty_ok = node_dirty_ok(zone->zone_pgdat);
 +			}
  
 -			if (!node_dirty_ok(zone->zone_pgdat)) {
 -				last_pgdat_dirty_limit = zone->zone_pgdat;
-+			if (!last_pgdat_dirty_limit)
++			if (!last_pgdat_dirty_ok)
  				continue;
 -			}
  		}

@@ -16,6 +16,7 @@ are difficult to use to diagnose an issue alone.  In most cases, such
 reports are inactionable, and is therefore an opt-in feature (disabled by
 default).
 
+[akpm@linux-foundation.org: add __read_mostly, per Marco]
 Link: https://lkml.kernel.org/r/20220425022456.44300-1-huangshaobo6@huawei.com
 Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
 Suggested-by: chenzefeng <chenzefeng2@huawei.com>
@@ -47,7 +48,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  module_param_named(deferrable, kfence_deferrable, bool, 0444);
  
 +/* If true, check all canary bytes on panic. */
-+static bool kfence_check_on_panic;
++static bool kfence_check_on_panic __read_mostly;
 +module_param_named(check_on_panic, kfence_check_on_panic, bool, 0444);
 +
  /* The pool of pages used for guard pages and objects. */

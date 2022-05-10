@@ -16,7 +16,7 @@ address mapping in case of potential issues in future.
 
 Link: https://lkml.kernel.org/r/4f7ae6dfdc838ab71e1655188b657c032ff1f28f.1651056365.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mina Almasry <almasrymina@google.com>
 Cc: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/rmap.c~mm-rmap-move-the-cache-flushing-to-the-correct-place-for-hugetlb-pmd-sharing
 +++ a/mm/rmap.c
-@@ -1535,15 +1535,16 @@ static bool try_to_unmap_one(struct foli
+@@ -1532,15 +1532,16 @@ static bool try_to_unmap_one(struct foli
  			 * do this outside rmap routines.
  			 */
  			VM_BUG_ON(!(flags & TTU_RMAP_LOCKED));
@@ -52,7 +52,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				flush_tlb_range(vma, range.start, range.end);
  				mmu_notifier_invalidate_range(mm, range.start,
  							      range.end);
-@@ -1560,13 +1561,14 @@ static bool try_to_unmap_one(struct foli
+@@ -1557,13 +1558,14 @@ static bool try_to_unmap_one(struct foli
  				page_vma_mapped_walk_done(&pvmw);
  				break;
  			}
@@ -68,7 +68,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (should_defer_flush(mm, flags) && !anon_exclusive) {
  			/*
  			 * We clear the PTE but do not flush so potentially
-@@ -1890,15 +1892,16 @@ static bool try_to_migrate_one(struct fo
+@@ -1884,15 +1886,16 @@ static bool try_to_migrate_one(struct fo
  			 * do this outside rmap routines.
  			 */
  			VM_BUG_ON(!(flags & TTU_RMAP_LOCKED));
@@ -93,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				flush_tlb_range(vma, range.start, range.end);
  				mmu_notifier_invalidate_range(mm, range.start,
  							      range.end);
-@@ -1915,10 +1918,11 @@ static bool try_to_migrate_one(struct fo
+@@ -1909,10 +1912,11 @@ static bool try_to_migrate_one(struct fo
  				page_vma_mapped_walk_done(&pvmw);
  				break;
  			}

@@ -16,6 +16,7 @@ reboots):
 Before: 169020 kB
 After:  167304 kB
 
+[akpm@linux-foundation.org: make slab alignment type `unsigned int' to avoid casting]
 Link: https://linux-review.googlesource.com/id/I752e725179b43b144153f4b6f584ceb646473ead
 Link: https://lkml.kernel.org/r/20220427195820.1716975-2-pcc@google.com
 Signed-off-by: Peter Collingbourne <pcc@google.com>

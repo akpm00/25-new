@@ -48,7 +48,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	"update_schemes_stats",
  };
  
-@@ -2194,6 +2197,39 @@ destroy_targets_out:
+@@ -2195,6 +2198,39 @@ destroy_targets_out:
  	return err;
  }
  
@@ -88,7 +88,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int damon_sysfs_set_targets(struct damon_ctx *ctx,
  		struct damon_sysfs_targets *sysfs_targets)
  {
-@@ -2204,8 +2240,15 @@ static int damon_sysfs_set_targets(struc
+@@ -2205,8 +2241,15 @@ static int damon_sysfs_set_targets(struc
  		return -EINVAL;
  
  	for (i = 0; i < sysfs_targets->nr; i++) {
@@ -106,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (err)
  			return err;
  	}
-@@ -2308,6 +2351,48 @@ static int damon_sysfs_upd_schemes_stats
+@@ -2309,6 +2352,48 @@ static int damon_sysfs_upd_schemes_stats
  	return 0;
  }
  
@@ -155,7 +155,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * damon_sysfs_cmd_request_callback() - DAMON callback for handling requests.
   * @c:	The DAMON context of the callback.
-@@ -2330,6 +2415,9 @@ static int damon_sysfs_cmd_request_callb
+@@ -2331,6 +2416,9 @@ static int damon_sysfs_cmd_request_callb
  	case DAMON_SYSFS_CMD_UPDATE_SCHEMES_STATS:
  		err = damon_sysfs_upd_schemes_stats(kdamond);
  		break;
@@ -165,7 +165,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	default:
  		break;
  	}
-@@ -2414,13 +2502,6 @@ static int damon_sysfs_turn_damon_off(st
+@@ -2415,13 +2503,6 @@ static int damon_sysfs_turn_damon_off(st
  	 */
  }
  

@@ -67,7 +67,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		put_dev_pagemap(ctx.pgmap);
 --- a/mm/hugetlb.c~mm-gup-disallow-follow_pagefoll_pin
 +++ a/mm/hugetlb.c
-@@ -6706,9 +6706,11 @@ follow_huge_pmd(struct mm_struct *mm, un
+@@ -6719,9 +6719,11 @@ follow_huge_pmd(struct mm_struct *mm, un
  	spinlock_t *ptl;
  	pte_t pte;
  

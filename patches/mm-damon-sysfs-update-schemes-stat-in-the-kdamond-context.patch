@@ -47,7 +47,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
  		char *buf)
  {
-@@ -2257,6 +2276,70 @@ static void damon_sysfs_before_terminate
+@@ -2258,6 +2277,70 @@ static void damon_sysfs_before_terminate
  	mutex_unlock(&ctx->kdamond_lock);
  }
  
@@ -118,7 +118,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static struct damon_ctx *damon_sysfs_build_ctx(
  		struct damon_sysfs_context *sys_ctx)
  {
-@@ -2279,6 +2362,8 @@ static struct damon_ctx *damon_sysfs_bui
+@@ -2280,6 +2363,8 @@ static struct damon_ctx *damon_sysfs_bui
  	if (err)
  		goto out;
  
@@ -127,7 +127,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	ctx->callback.before_terminate = damon_sysfs_before_terminate;
  	return ctx;
  
-@@ -2295,6 +2380,8 @@ static int damon_sysfs_turn_damon_on(str
+@@ -2296,6 +2381,8 @@ static int damon_sysfs_turn_damon_on(str
  	if (kdamond->damon_ctx &&
  			damon_sysfs_ctx_running(kdamond->damon_ctx))
  		return -EBUSY;
@@ -136,7 +136,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/* TODO: support multiple contexts per kdamond */
  	if (kdamond->contexts->nr != 1)
  		return -EINVAL;
-@@ -2327,29 +2414,11 @@ static int damon_sysfs_turn_damon_off(st
+@@ -2328,29 +2415,11 @@ static int damon_sysfs_turn_damon_off(st
  	 */
  }
  
@@ -170,7 +170,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -2357,24 +2426,58 @@ static int damon_sysfs_update_schemes_st
+@@ -2358,24 +2427,58 @@ static int damon_sysfs_update_schemes_st
   * @cmd:	The command to handle.
   * @kdamond:	The kobject wrapper for the associated kdamond.
   *
@@ -233,7 +233,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  static ssize_t state_store(struct kobject *kobj, struct kobj_attribute *attr,
-@@ -2511,6 +2614,12 @@ static int damon_sysfs_kdamonds_add_dirs
+@@ -2512,6 +2615,12 @@ static int damon_sysfs_kdamonds_add_dirs
  	if (damon_sysfs_nr_running_ctxs(kdamonds->kdamonds_arr, kdamonds->nr))
  		return -EBUSY;
  

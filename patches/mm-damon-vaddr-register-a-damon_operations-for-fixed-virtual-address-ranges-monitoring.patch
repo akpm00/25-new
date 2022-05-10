@@ -90,7 +90,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
 --- a/mm/damon/vaddr.c~mm-damon-vaddr-register-a-damon_operations-for-fixed-virtual-address-ranges-monitoring
 +++ a/mm/damon/vaddr.c
-@@ -754,8 +754,19 @@ static int __init damon_va_initcall(void
+@@ -753,8 +753,19 @@ static int __init damon_va_initcall(void
  		.apply_scheme = damon_va_apply_scheme,
  		.get_scheme_score = damon_va_scheme_score,
  	};

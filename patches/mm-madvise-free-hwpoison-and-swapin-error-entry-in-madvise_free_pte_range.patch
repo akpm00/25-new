@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/madvise.c~mm-madvise-free-hwpoison-and-swapin-error-entry-in-madvise_free_pte_range
 +++ a/mm/madvise.c
-@@ -619,11 +619,14 @@ static int madvise_free_pte_range(pmd_t
+@@ -624,11 +624,14 @@ static int madvise_free_pte_range(pmd_t
  			swp_entry_t entry;
  
  			entry = pte_to_swp_entry(ptent);

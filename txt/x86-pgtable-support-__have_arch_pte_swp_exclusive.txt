@@ -3,6 +3,8 @@ Subject: x86/pgtable: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
 
 Let's use bit 3 to remember PG_anon_exclusive in swap ptes.
 
+[david@redhat.com: fix 32-bit swap layout]
+  Link: https://lkml.kernel.org/r/d875c292-46b3-f281-65ae-71d0b0c6f592@redhat.com
 Link: https://lkml.kernel.org/r/20220329164329.208407-4-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>

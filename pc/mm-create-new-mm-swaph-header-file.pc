@@ -3,6 +3,7 @@ mm/huge_memory.c
 mm/madvise.c
 mm/memcontrol.c
 mm/memory.c
+mm/memory-failure.c
 mm/mincore.c
 mm/page_alloc.c
 mm/page_io.c

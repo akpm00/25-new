@@ -9,6 +9,7 @@ which returns 1 and leaves dentries/inodes in the LRU.
 Force revalidation/lookup on everything under /proc/${pid}/net by
 inheriting proc_net_dentry_ops.
 
+[akpm@linux-foundation.org: coding-style cleanups]
 Link: https://lkml.kernel.org/r/YjdVHgildbWO7diJ@localhost.localdomain
 Fixes: c6c75deda813 ("proc: fix lookup in /proc/net subdirectories after setns(2)")
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>

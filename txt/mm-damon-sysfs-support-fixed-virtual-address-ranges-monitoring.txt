@@ -7,5 +7,7 @@ address ranges monitoring.  After this commit, writing 'fvaddr' to the
 set for fixed virtual address ranges, so that users can monitor accesses
 to only interested virtual address ranges.
 
+[sj@kernel.org: fix pid leak under fvaddr ops use case]
+  Link: https://lkml.kernel.org/r/20220503220531.45913-1-sj@kernel.org
 Link: https://lkml.kernel.org/r/20220426231750.48822-3-sj@kernel.org
 Signed-off-by: SeongJae Park <sj@kernel.org>

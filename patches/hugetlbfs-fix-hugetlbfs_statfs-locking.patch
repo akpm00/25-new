@@ -17,7 +17,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/hugetlbfs/inode.c~hugetlbfs-fix-hugetlbfs_statfs-locking
 +++ a/fs/hugetlbfs/inode.c
-@@ -1051,12 +1051,12 @@ static int hugetlbfs_statfs(struct dentr
+@@ -1048,12 +1048,12 @@ static int hugetlbfs_statfs(struct dentr
  		if (sbinfo->spool) {
  			long free_pages;
  

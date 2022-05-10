@@ -3,6 +3,8 @@ Subject: x86/pgtable: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
 
 Let's use bit 3 to remember PG_anon_exclusive in swap ptes.
 
+[david@redhat.com: fix 32-bit swap layout]
+  Link: https://lkml.kernel.org/r/d875c292-46b3-f281-65ae-71d0b0c6f592@redhat.com
 Link: https://lkml.kernel.org/r/20220329164329.208407-4-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -43,10 +45,10 @@ Cc: Will Deacon <will@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/x86/include/asm/pgtable.h       |   16 ++++++++++++++++
- arch/x86/include/asm/pgtable_64.h    |    4 +++-
- arch/x86/include/asm/pgtable_types.h |    5 +++++
- 3 files changed, 24 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/pgtable.h          |   17 +++++++++++++++++
+ arch/x86/include/asm/pgtable_64.h       |    4 +++-
+ arch/x86/include/asm/pgtable_64_types.h |    5 +++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
 --- a/arch/x86/include/asm/pgtable_64.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
 +++ a/arch/x86/include/asm/pgtable_64.h
@@ -68,12 +70,25 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * Bit 7 in swp entry should be 0 because pmd_present checks not only P,
   * but also L and G.
   *
+--- a/arch/x86/include/asm/pgtable_64_types.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
++++ a/arch/x86/include/asm/pgtable_64_types.h
+@@ -163,4 +163,9 @@ extern unsigned int ptrs_per_p4d;
+ 
+ #define PGD_KERNEL_START	((PAGE_SIZE / 2) / sizeof(pgd_t))
+ 
++/*
++ * We borrow bit 3 to remember PG_anon_exclusive.
++ */
++#define _PAGE_SWP_EXCLUSIVE	_PAGE_PWT
++
+ #endif /* _ASM_X86_PGTABLE_64_DEFS_H */
 --- a/arch/x86/include/asm/pgtable.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
 +++ a/arch/x86/include/asm/pgtable.h
-@@ -1292,6 +1292,22 @@ static inline void update_mmu_cache_pud(
+@@ -1286,6 +1286,23 @@ static inline void update_mmu_cache_pud(
+ 		unsigned long addr, pud_t *pud)
  {
  }
- 
++#ifdef _PAGE_SWP_EXCLUSIVE
 +#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
 +static inline pte_t pte_swp_mkexclusive(pte_t pte)
 +{
@@ -89,22 +104,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +{
 +	return pte_clear_flags(pte, _PAGE_SWP_EXCLUSIVE);
 +}
-+
++#endif /* _PAGE_SWP_EXCLUSIVE */
+ 
  #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
  static inline pte_t pte_swp_mksoft_dirty(pte_t pte)
- {
---- a/arch/x86/include/asm/pgtable_types.h~x86-pgtable-support-__have_arch_pte_swp_exclusive
-+++ a/arch/x86/include/asm/pgtable_types.h
-@@ -84,6 +84,11 @@
- #endif
- 
- /*
-+ * We borrow bit 3 to remember PG_anon_exclusive.
-+ */
-+#define _PAGE_SWP_EXCLUSIVE	_PAGE_PWT
-+
-+/*
-  * Tracking soft dirty bit when a page goes to a swap is tricky.
-  * We need a bit which can be stored in pte _and_ not conflict
-  * with swap entry format. On x86 bits 1-4 are *not* involved
 _

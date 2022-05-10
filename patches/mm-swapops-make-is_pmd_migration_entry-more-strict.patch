@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swapops.h~mm-swapops-make-is_pmd_migration_entry-more-strict
 +++ a/include/linux/swapops.h
-@@ -424,7 +424,7 @@ static inline pmd_t swp_entry_to_pmd(swp
+@@ -331,7 +331,7 @@ static inline pmd_t swp_entry_to_pmd(swp
  
  static inline int is_pmd_migration_entry(pmd_t pmd)
  {

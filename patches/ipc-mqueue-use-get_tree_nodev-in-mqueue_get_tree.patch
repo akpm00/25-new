@@ -11,7 +11,7 @@ because the following code in the critcal section of sget_fc():
           goto share_extant_sb;
   }
 
-After testing with added instrumentation code, it was found that the the
+After testing with added instrumentation code, it was found that the
 benchmark could generate thousands of ipc namespaces with the
 corresponding number of entries in the mqueue's fs_supers list where the
 namespaces are the key for the search.  This leads to excessive time in

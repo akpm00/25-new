@@ -16,7 +16,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/damon/sysfs.c~mm-damon-sysfs-prohibit-multiple-physical-address-space-monitoring-targets
 +++ a/mm/damon/sysfs.c
-@@ -2124,6 +2124,10 @@ static int damon_sysfs_set_targets(struc
+@@ -2125,6 +2125,10 @@ static int damon_sysfs_set_targets(struc
  {
  	int i, err;
  

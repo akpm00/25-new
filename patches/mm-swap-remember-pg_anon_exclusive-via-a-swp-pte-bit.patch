@@ -155,7 +155,8 @@ once fork was involved (e.g., GUP before fork(), GUP during fork()).  KSM
 steps back in case it stumbles over unexpected references and is,
 therefore, fine.
 
-Link: https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
+[david@redhat.com: fix SWP_STABLE_WRITES test]
+  Link: https://lkml.kernel.org/r/ac725bcb-313a-4fff-250a-68ba9a8f85fb@redhat.comLink: https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
 Link: https://lkml.kernel.org/r/20220329164329.208407-2-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
@@ -266,7 +267,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		rss[MM_SWAPENTS]++;
  	} else if (is_migration_entry(entry)) {
  		page = pfn_swap_entry_to_page(entry);
-@@ -3559,6 +3564,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3563,6 +3568,7 @@ vm_fault_t do_swap_page(struct vm_fault
  	struct page *page = NULL, *swapcache;
  	struct swap_info_struct *si = NULL;
  	rmap_t rmap_flags = RMAP_NONE;
@@ -274,7 +275,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	swp_entry_t entry;
  	pte_t pte;
  	int locked;
-@@ -3725,6 +3731,46 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3729,6 +3735,46 @@ vm_fault_t do_swap_page(struct vm_fault
  	BUG_ON(PageAnon(page) && PageAnonExclusive(page));
  
  	/*
@@ -294,7 +295,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +			 */
 +			exclusive = true;
 +		} else if (exclusive && PageWriteback(page) &&
-+			   !(swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
++			  (swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
 +			/*
 +			 * This is tricky: not all swap backends support
 +			 * concurrent page modifications while under writeback.
@@ -321,7 +322,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * Remove the swap entry and conditionally try to free up the swapcache.
  	 * We're already holding a reference on the page but haven't mapped it
  	 * yet.
-@@ -3738,11 +3784,12 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3742,11 +3788,12 @@ vm_fault_t do_swap_page(struct vm_fault
  	pte = mk_pte(page, vma->vm_page_prot);
  
  	/*
@@ -340,7 +341,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			vmf->flags &= ~FAULT_FLAG_WRITE;
 --- a/mm/rmap.c~mm-swap-remember-pg_anon_exclusive-via-a-swp-pte-bit
 +++ a/mm/rmap.c
-@@ -1656,14 +1656,15 @@ static bool try_to_unmap_one(struct foli
+@@ -1698,14 +1698,15 @@ static bool try_to_unmap_one(struct foli
  				break;
  			}
  			/*
@@ -364,7 +365,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			 */
  			if (list_empty(&mm->mmlist)) {
  				spin_lock(&mmlist_lock);
-@@ -1674,6 +1675,8 @@ static bool try_to_unmap_one(struct foli
+@@ -1716,6 +1717,8 @@ static bool try_to_unmap_one(struct foli
  			dec_mm_counter(mm, MM_ANONPAGES);
  			inc_mm_counter(mm, MM_SWAPENTS);
  			swp_pte = swp_entry_to_pte(entry);

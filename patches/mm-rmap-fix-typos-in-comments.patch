@@ -13,7 +13,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/rmap.c~mm-rmap-fix-typos-in-comments
 +++ a/mm/rmap.c
-@@ -299,7 +299,7 @@ int anon_vma_clone(struct vm_area_struct
+@@ -298,7 +298,7 @@ int anon_vma_clone(struct vm_area_struct
  		 * Reuse existing anon_vma if its degree lower than two,
  		 * that means it has no vma and only one anon_vma child.
  		 *
@@ -22,7 +22,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		 * will always reuse it. Root anon_vma is never reused:
  		 * it has self-parent reference and at least one child.
  		 */
-@@ -2257,7 +2257,7 @@ static bool folio_make_device_exclusive(
+@@ -2249,7 +2249,7 @@ static bool folio_make_device_exclusive(
  
  /**
   * make_device_exclusive_range() - Mark a range for exclusive use by a device

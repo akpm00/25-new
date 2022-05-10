@@ -1,5 +1,5 @@
 From: NeilBrown <neilb@suse.de>
-Subject: mm: create new mm/swap.h header file.
+Subject: mm: create new mm/swap.h header file
 
 Patch series "MM changes to improve swap-over-NFS support".
 
@@ -26,6 +26,7 @@ Many functions declared in include/linux/swap.h are only used within mm/
 Create a new "mm/swap.h" and move some of these declarations there.
 Remove the redundant 'extern' from the function declarations.
 
+[akpm@linux-foundation.org: mm/memory-failure.c needs mm/swap.h]
 Link: https://lkml.kernel.org/r/164859751830.29473.5309689752169286816.stgit@noble.brown
 Link: https://lkml.kernel.org/r/164859778120.29473.11725907882296224053.stgit@noble.brown
 Signed-off-by: NeilBrown <neilb@suse.de>
@@ -35,6 +36,7 @@ Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -42,6 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  mm/huge_memory.c     |    1 
  mm/madvise.c         |    1 
  mm/memcontrol.c      |    1 
+ mm/memory-failure.c  |    1 
  mm/memory.c          |    1 
  mm/mincore.c         |    1 
  mm/page_alloc.c      |    1 
@@ -53,7 +56,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  mm/util.c            |    1 
  mm/vmscan.c          |    1 
  mm/zswap.c           |    2 
- 15 files changed, 147 insertions(+), 121 deletions(-)
+ 16 files changed, 148 insertions(+), 121 deletions(-)
 
 --- a/include/linux/swap.h~mm-create-new-mm-swaph-header-file
 +++ a/include/linux/swap.h
@@ -266,6 +269,16 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #if defined(LAST_CPUPID_NOT_IN_PAGE_FLAGS) && !defined(CONFIG_COMPILE_TEST)
  #warning Unfortunate NUMA and NUMA Balancing config, growing page-frame for last_cpupid.
+--- a/mm/memory-failure.c~mm-create-new-mm-swaph-header-file
++++ a/mm/memory-failure.c
+@@ -59,6 +59,7 @@
+ #include <linux/page-isolation.h>
+ #include <linux/pagewalk.h>
+ #include <linux/shmem_fs.h>
++#include "swap.h"
+ #include "internal.h"
+ #include "ras/ras_event.h"
+ 
 --- a/mm/mincore.c~mm-create-new-mm-swaph-header-file
 +++ a/mm/mincore.c
 @@ -20,6 +20,7 @@

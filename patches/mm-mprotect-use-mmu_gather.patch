@@ -140,7 +140,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/include/linux/mm.h~mm-mprotect-use-mmu_gather
 +++ a/include/linux/mm.h
-@@ -1970,10 +1970,11 @@ extern unsigned long move_page_tables(st
+@@ -1967,10 +1967,11 @@ extern unsigned long move_page_tables(st
  #define  MM_CP_UFFD_WP_ALL                 (MM_CP_UFFD_WP | \
  					    MM_CP_UFFD_WP_RESOLVE)
  
@@ -197,7 +197,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <linux/uaccess.h>
  
  #include "internal.h"
-@@ -636,12 +637,18 @@ unlock:
+@@ -630,12 +631,18 @@ unlock:
  unsigned long change_prot_numa(struct vm_area_struct *vma,
  			unsigned long addr, unsigned long end)
  {
