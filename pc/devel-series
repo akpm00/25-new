@@ -432,7 +432,7 @@ mm-stable.patch
 #mm/msync
 #mm/fadvise
 #mm/memcg
-#cgroups-refactor-children-cgroups-in-memcg-tests.patch+N: 5/9 merge
+#cgroups-refactor-children-cgroups-in-memcg-tests.patch+N: https://lkml.kernel.org/r/20220510174341.GC24172@blackbody.suse.cz
 cgroups-refactor-children-cgroups-in-memcg-tests.patch
 #cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch: check review https://lkml.kernel.org/r/20220427140928.GD9823@blackbody.suse.cz
 cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
@@ -666,7 +666,7 @@ radix-tree-test-suite-add-support-for-slab-bulk-apis.patch
 radix-tree-test-suite-add-lockdep_is_held-to-header.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree.patch
-mapletree-build-fix.patch
+mm-start-tracking-vmas-with-maple-tree-fix.patch
 mm-add-vma-iterator.patch
 mmap-use-the-vma-iterator-in-count_vma_pages_range.patch
 mm-mmap-use-the-maple-tree-in-find_vma-instead-of-the-rbtree.patch
