@@ -1,0 +1,53 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm: rmap: fix CONT-PTE/PMD size hugetlb issue when unmapping
+
+On some architectures (like ARM64), it can support CONT-PTE/PMD size
+hugetlb, which means it can support not only PMD/PUD size hugetlb: 2M and
+1G, but also CONT-PTE/PMD size: 64K and 32M if a 4K page size specified.
+
+When unmapping a hugetlb page, we will get the relevant page table entry
+by huge_pte_offset() only once to nuke it.  This is correct for PMD or PUD
+size hugetlb, since they always contain only one pmd entry or pud entry in
+the page table.
+
+However this is incorrect for CONT-PTE and CONT-PMD size hugetlb, since
+they can contain several continuous pte or pmd entry with same page table
+attributes, so we will nuke only one pte or pmd entry for this
+CONT-PTE/PMD size hugetlb page.
+
+And now try_to_unmap() is only passed a hugetlb page in the case where the
+hugetlb page is poisoned.  Which means now we will unmap only one pte
+entry for a CONT-PTE or CONT-PMD size poisoned hugetlb page, and we can
+still access other subpages of a CONT-PTE or CONT-PMD size poisoned
+hugetlb page, which will cause serious issues possibly.
+
+So we should change to use huge_ptep_clear_flush() to nuke the hugetlb
+page table to fix this issue, which already considered CONT-PTE and
+CONT-PMD size hugetlb.
+
+We've already used set_huge_swap_pte_at() to set a poisoned swap entry for
+a poisoned hugetlb page.  Meanwhile adding a VM_BUG_ON() to make sure the
+passed hugetlb page is poisoned in try_to_unmap().
+
+Link: https://lkml.kernel.org/r/730ea4b6d292f32fb10b7a4e87dad49b0eb30474.1652147571.git.baolin.wang@linux.alibaba.com
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.osdn.me>
