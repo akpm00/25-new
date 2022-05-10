@@ -672,6 +672,7 @@ mm-mmap-use-the-maple-tree-for-find_vma_prev-instead-of-the-rbtree.patch
 mm-mmap-use-maple-tree-for-unmapped_area_topdown.patch
 kernel-fork-use-maple-tree-for-dup_mmap-during-forking.patch
 damon-convert-__damon_va_three_regions-to-use-the-vma-iterator.patch
+damon-convert-__damon_va_three_regions-to-use-the-vma-iterator-fix.patch
 proc-remove-vma-rbtree-use-from-nommu.patch
 mm-remove-rb-tree.patch
 mmap-change-zeroing-of-maple-tree-in-__vma_adjust.patch
@@ -814,6 +815,22 @@ zswap-memcg-accounting.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch
+#
+#mm/highmem
+mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
+documentation-vm-move-using-kmap-atomic-to-highmemh.patch
+documentation-vm-rework-temporary-virtual-mappings-section.patch
+#
+#mm/hugetlb
+sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
+mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
+mm-khugepaged-skip-dax-vma.patch
+mm-thp-only-regular-file-could-be-thp-eligible.patch
+mm-khugepaged-make-khugepaged_enter-void-function.patch
+mm-khugepaged-make-hugepage_vma_check-non-static.patch
+mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
+mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 # mmend
 #

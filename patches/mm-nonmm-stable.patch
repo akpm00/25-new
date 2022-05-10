@@ -1,20 +1,1282 @@
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2647adf30569..886265f04061 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15963,7 +15963,6 @@ F:	include/asm-generic/syscall.h
- F:	include/linux/ptrace.h
- F:	include/linux/regset.h
- F:	include/uapi/linux/ptrace.h
--F:	include/uapi/linux/ptrace.h
- F:	kernel/ptrace.c
- 
- PULSE8-CEC DRIVER
-diff --git a/arch/alpha/lib/csum_partial_copy.c b/arch/alpha/lib/csum_partial_copy.c
-index 1931a04af85a..4d180d96f09e 100644
---- a/arch/alpha/lib/csum_partial_copy.c
-+++ b/arch/alpha/lib/csum_partial_copy.c
-@@ -353,7 +353,6 @@ csum_and_copy_from_user(const void __user *src, void *dst, int len)
+commit d60c4d01a98bc1942dba6e3adc02031f5519f94b
+Author: Waiman Long <longman@redhat.com>
+Date:   Mon May 9 18:29:21 2022 -0700
+
+    ipc/mqueue: use get_tree_nodev() in mqueue_get_tree()
+    
+    When running the stress-ng clone benchmark with multiple testing threads,
+    it was found that there were significant spinlock contention in sget_fc().
+    The contended spinlock was the sb_lock.  It is under heavy contention
+    because the following code in the critcal section of sget_fc():
+    
+      hlist_for_each_entry(old, &fc->fs_type->fs_supers, s_instances) {
+          if (test(old, fc))
+              goto share_extant_sb;
+      }
+    
+    After testing with added instrumentation code, it was found that the
+    benchmark could generate thousands of ipc namespaces with the
+    corresponding number of entries in the mqueue's fs_supers list where the
+    namespaces are the key for the search.  This leads to excessive time in
+    scanning the list for a match.
+    
+    Looking back at the mqueue calling sequence leading to sget_fc():
+    
+      mq_init_ns()
+      => mq_create_mount()
+      => fc_mount()
+      => vfs_get_tree()
+      => mqueue_get_tree()
+      => get_tree_keyed()
+      => vfs_get_super()
+      => sget_fc()
+    
+    Currently, mq_init_ns() is the only mqueue function that will indirectly
+    call mqueue_get_tree() with a newly allocated ipc namespace as the key for
+    searching.  As a result, there will never be a match with the exising ipc
+    namespaces stored in the mqueue's fs_supers list.
+    
+    So using get_tree_keyed() to do an existing ipc namespace search is just a
+    waste of time.  Instead, we could use get_tree_nodev() to eliminate the
+    useless search.  By doing so, we can greatly reduce the sb_lock hold time
+    and avoid the spinlock contention problem in case a large number of ipc
+    namespaces are present.
+    
+    Of course, if the code is modified in the future to allow
+    mqueue_get_tree() to be called with an existing ipc namespace instead of a
+    new one, we will have to use get_tree_keyed() in this case.
+    
+    The following stress-ng clone benchmark command was run on a 2-socket
+    48-core Intel system:
+    
+    ./stress-ng --clone 32 --verbose --oomable --metrics-brief -t 20
+    
+    The "bogo ops/s" increased from 5948.45 before patch to 9137.06 after
+    patch. This is an increase of 54% in performance.
+    
+    Link: https://lkml.kernel.org/r/20220121172315.19652-1-longman@redhat.com
+    Fixes: 935c6912b198 ("ipc: Convert mqueue fs to fs_context")
+    Signed-off-by: Waiman Long <longman@redhat.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: David Howells <dhowells@redhat.com>
+    Cc: Manfred Spraul <manfred@colorfullife.com>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 49c9dd0df65d547a58642d2f717eeb560e1db140
+Author: Prakash Sangappa <prakash.sangappa@oracle.com>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    ipc: update semtimedop() to use hrtimer
+    
+    semtimedop() should be converted to use hrtimer like it has been done for
+    most of the system calls with timeouts.  This system call already takes a
+    struct timespec as an argument and can therefore provide finer granularity
+    timed wait.
+    
+    Link: https://lkml.kernel.org/r/1651187881-2858-1-git-send-email-prakash.sangappa@oracle.com
+    Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
+    Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+    Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+    Reviewed-by: Manfred Spraul <manfred@colorfullife.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0e900029655327bb5326ced02eff97667a079039
+Author: Michal Orzel <michalorzel.eng@gmail.com>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    ipc/sem: remove redundant assignments
+    
+    Get rid of redundant assignments which end up in values not being
+    read either because they are overwritten or the function ends.
+    
+    Reported by clang-tidy [deadcode.DeadStores]
+    
+    Link: https://lkml.kernel.org/r/20220409101933.207157-1-michalorzel.eng@gmail.com
+    Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+    Reviewed-by: Tom Rix <trix@redhat.com>
+    Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 800c24dc34b93d2014f3952683f8d5e9309e1b73
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    initramfs: support cpio extraction with file checksums
+    
+    Add support for extraction of checksum-enabled "070702" cpio archives,
+    specified in Documentation/driver-api/early-userspace/buffer-format.rst.
+    Fail extraction if the calculated file data checksum doesn't match the
+    value carried in the header.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-7-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit ea8048719a0c46d95e6ab925bf0924e7198d9971
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    gen_init_cpio: support file checksum archiving
+    
+    Documentation/driver-api/early-userspace/buffer-format.rst includes the
+    specification for checksum-enabled cpio archives.  Implement support for
+    this format in gen_init_cpio via a new '-c' parameter.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-6-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3a2699cfbe317f6e1b9c84d2f10ab7debb1c79dc
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    gen_init_cpio: fix short read file handling
+    
+    When processing a "file" entry, gen_init_cpio attempts to allocate a
+    buffer large enough to stage the entire contents of the source file.  It
+    then attempts to fill the buffer via a single read() call and subsequently
+    writes out the entire buffer length, without checking that read() returned
+    the full length, potentially writing uninitialized buffer memory.
+    
+    Fix this by breaking up file I/O into 64k chunks and only writing the
+    length returned by the prior read() call.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-5-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 1274aea127b2e8c9a4b9cbcc3ea6baf78990a958
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: add INITRAMFS_PRESERVE_MTIME Kconfig option
+    
+    initramfs cpio mtime preservation, as implemented in commit 889d51a10712
+    ("initramfs: add option to preserve mtime from initramfs cpio images"),
+    uses a linked list to defer directory mtime processing until after all
+    other items in the cpio archive have been processed.  This is done to
+    ensure that parent directory mtimes aren't overwritten via subsequent
+    child creation.
+    
+    The lkml link below indicates that the mtime retention use case was for
+    embedded devices with applications running exclusively out of initramfs,
+    where the 32-bit mtime value provided a rough file version identifier.
+    Linux distributions which discard an extracted initramfs immediately after
+    the root filesystem has been mounted may want to avoid the unnecessary
+    overhead.
+    
+    This change adds a new INITRAMFS_PRESERVE_MTIME Kconfig option, which can
+    be used to disable on-by-default mtime retention and in turn speed up
+    initramfs extraction, particularly for cpio archives with large directory
+    counts.
+    
+    Benchmarks with a one million directory cpio archive extracted 20 times
+    demonstrated:
+                                    mean extraction time (s)        std dev
+    INITRAMFS_PRESERVE_MTIME=y              3.808                    0.006
+    INITRAMFS_PRESERVE_MTIME unset          3.056                    0.004
+    
+    The above extraction times were measured using ftrace (initcall_finish -
+    initcall_start) values for populate_rootfs() with initramfs_async
+    disabled.
+    
+    [ddiss@suse.de: rebase atop dir_entry.name flexible array member and drop separate initramfs_mtime.h header]
+    Link: https://lkml.org/lkml/2008/9/3/424
+    Link: https://lkml.kernel.org/r/20220404093429.27570-4-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit fcb7aedd2e90c4ad43f7f01827014df8c6f034a5
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: make dir_entry.name a flexible array member
+    
+    dir_entry.name is currently allocated via a separate kstrdup().  Change it
+    to a flexible array member and allocate it along with struct dir_entry.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-3-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit da028e4c4b0279eb49f80220d8f7cc62b4a57ccb
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: refactor do_header() cpio magic checks
+    
+    Patch series "initramfs: "crc" cpio format and INITRAMFS_PRESERVE_MTIME", v7.
+    
+    This patchset does some minor initramfs refactoring and allows cpio entry
+    mtime preservation to be disabled via a new Kconfig
+    INITRAMFS_PRESERVE_MTIME option.
+    
+    Patches 4/6 to 6/6 implement support for creation and extraction of "crc"
+    cpio archives, which carry file data checksums.  Basic tests for this
+    functionality can be found at https://github.com/rapido-linux/rapido/pull/163
+    
+    
+    This patch (of 6):
+    
+    do_header() is called for each cpio entry and fails if the first six bytes
+    don't match "newc" magic.  The magic check includes a special case error
+    message if POSIX.1 ASCII (cpio -H odc) magic is detected.  This special
+    case POSIX.1 check can be nested under the "newc" mismatch code path to
+    avoid calling memcmp() twice in a non-error case.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-1-ddiss@suse.de
+    Link: https://lkml.kernel.org/r/20220404093429.27570-2-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Matthew Wilcox <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 7055197705709c59b8ab77e6a5c7d46d61edd96e
+Author: Alexey Dobriyan <adobriyan@gmail.com>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    proc: fix dentry/inode overinstantiating under /proc/${pid}/net
+    
+    When a process exits, /proc/${pid}, and /proc/${pid}/net dentries are
+    flushed.  However some leaf dentries like /proc/${pid}/net/arp_cache
+    aren't.  That's because respective PDEs have proc_misc_d_revalidate() hook
+    which returns 1 and leaves dentries/inodes in the LRU.
+    
+    Force revalidation/lookup on everything under /proc/${pid}/net by
+    inheriting proc_net_dentry_ops.
+    
+    [akpm@linux-foundation.org: coding-style cleanups]
+    Link: https://lkml.kernel.org/r/YjdVHgildbWO7diJ@localhost.localdomain
+    Fixes: c6c75deda813 ("proc: fix lookup in /proc/net subdirectories after setns(2)")
+    Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+    Reported-by: hui li <juanfengpy@gmail.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f6e2c20ca7604e6a267c93a511d19dda72573be1
+Author: Liu Shixin <liushixin2@huawei.com>
+Date:   Fri Apr 29 14:38:04 2022 -0700
+
+    fs: sysv: check sbi->s_firstdatazone in complete_read_super
+    
+    sbi->s_firstinodezone is initialized to 2 and sbi->s_firstdatazone is read
+    from sbd.  There's no guarantee that sbi->s_firstdatazone must bigger than
+    sbi->s_firstinodezone.  If sbi->s_firstdatazone less than 2, the
+    filesystem can still be mounted unexpetly.  At this point, sbi->s_ninodes
+    flip to very large value and this filesystem is broken.  We can observe
+    this by executing 'df' command.  When we execute, we will get an error
+    message:
+    
+            "sysv_count_free_inodes: unable to read inode table"
+    
+    Link: https://lkml.kernel.org/r/20220330104215.530223-1-liushixin2@huawei.com
+    Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit edc73c7261ca3ea79867437bb0b9dab0e232436c
+Author: xu xin <xu.xin16@zte.com.cn>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    kernel: make taskstats available from all net namespaces
+    
+    If getdelays runs in a non-init network namespace, it will fail in getting
+    delayacct stats even if it has privilege of root user, which seems to be
+    not very reasonable.  We can simply reproduce this by executing commands:
+    
+            unshare -n
+            getdelays -d -p <pid>
+    
+    I don't think net namespace should be an obstacle to the normal execution
+    of getdelay function.  So let's make it available from all net namespaces.
+    
+    Link: https://lkml.kernel.org/r/20220412071946.2532318-1-xu.xin16@zte.com.cn
+    Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+    Cc: Balbir Singh <bsingharora@gmail.com>
+    Cc: Yang Yang <yang.yang29@zte.com.cn>
+    Cc: "Dr. Thomas Orgis" <thomas.orgis@uni-hamburg.de>
+    Cc: Eric W. Biederman <ebiederm@xmission.com>
+    Cc: Ismael Luceno <ismael@iodev.co.uk>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0e0af57e0e91b304f36b7d1dba859e3c04094273
+Author: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    taskstats: version 12 with thread group and exe info
+    
+    The task exit struct needs some crucial information to be able to provide
+    an enhanced version of process and thread accounting.  This change
+    provides:
+    
+    1. ac_tgid in additon to ac_pid
+    2. thread group execution walltime in ac_tgetime
+    3. flag AGROUP in ac_flag to indicate the last task
+       in a thread group / process
+    4. device ID and inode of task's /proc/self/exe in
+       ac_exe_dev and ac_exe_inode
+    5. tools/accounting/procacct as demonstrator
+    
+    When a task exits, taskstats are reported to userspace including the
+    task's pid and ppid, but without the id of the thread group this task is
+    part of.  Without the tgid, the stats of single tasks cannot be correlated
+    to each other as a thread group (process).
+    
+    The taskstats documentation suggests that on process exit a data set
+    consisting of accumulated stats for the whole group is produced.  But such
+    an additional set of stats is only produced for actually multithreaded
+    processes, not groups that had only one thread, and also those stats only
+    contain data about delay accounting and not the more basic information
+    about CPU and memory resource usage.  Adding the AGROUP flag to be set
+    when the last task of a group exited enables determination of process end
+    also for single-threaded processes.
+    
+    My applicaton basically does enhanced process accounting with summed
+    cputime, biggest maxrss, tasks per process.  The data is not available
+    with the traditional BSD process accounting (which is not designed to be
+    extensible) and the taskstats interface allows more efficient on-the-fly
+    grouping and summing of the stats, anyway, without intermediate disk
+    writes.
+    
+    Furthermore, I do carry statistics on which exact program binary is used
+    how often with associated resources, getting a picture on how important
+    which parts of a collection of installed scientific software in different
+    versions are, and how well they put load on the machine.  This is enabled
+    by providing information on /proc/self/exe for each task.  I assume the
+    two 64-bit fields for device ID and inode are more appropriate than the
+    possibly large resolved path to keep the data volume down.
+    
+    Add the tgid to the stats to complete task identification, the flag AGROUP
+    to mark the last task of a group, the group wallclock time, and
+    inode-based identification of the associated executable file.
+    
+    Add tools/accounting/procacct.c as a simplified fork of getdelays.c to
+    demonstrate process and thread accounting.
+    
+    [thomas.orgis@uni-hamburg.de: fix version number in comment]
+      Link: https://lkml.kernel.org/r/20220405003601.7a5f6008@plasteblaster
+    Link: https://lkml.kernel.org/r/20220331004106.64e5616b@plasteblaster
+    Signed-off-by: Dr. Thomas Orgis <thomas.orgis@uni-hamburg.de>
+    Reviewed-by: Ismael Luceno <ismael@iodev.co.uk>
+    Cc: Balbir Singh <bsingharora@gmail.com>
+    Cc: Eric W. Biederman <ebiederm@xmission.com>
+    Cc: xu xin <xu.xin16@zte.com.cn>
+    Cc: Yang Yang <yang.yang29@zte.com.cn>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f8323a0cb9a66d8d8747c463211392a2cfc4c1dc
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    rapidio: remove unnecessary use of list iterator
+    
+    req->map is set in the valid case and always equals 'map' if the break was
+    hit.  It therefore is unnecessary to use the list iterator variable and
+    the use of 'map' can be replaced with req->map.
+    
+    This is done in preparation to limit the scope of a list iterator to the
+    list traversal loop [1].
+    
+    Link: https://lore.kernel.org/all/YhdfEIwI4EdtHdym@kroah.com/
+    Link: https://lkml.kernel.org/r/20220319203344.2547702-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+    Cc: Matt Porter <mporter@kernel.crashing.org>
+    Cc: Alexandre Bounine <alex.bou9@gmail.com>
+    Cc: Kees Cook <keescook@chromium.org>
+    Cc: Mike Rapoport <rppt@kernel.org>
+    Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+    Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+    Cc: "Bos, H.J." <h.j.bos@vu.nl>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 16b0b7adabfb5564a77fa35917afe08decd55b29
+Author: Michal Orzel <michalorzel.eng@gmail.com>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    kexec: remove redundant assignments
+    
+    Get rid of redundant assignments which end up in values not being read
+    either because they are overwritten or the function ends.
+    
+    Reported by clang-tidy [deadcode.DeadStores]
+    
+    Link: https://lkml.kernel.org/r/20220326180948.192154-1-michalorzel.eng@gmail.com
+    Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+    Acked-by: Baoquan He <bhe@redhat.com>
+    Cc: Eric Biederman <ebiederm@xmission.com>
+    Cc: Nathan Chancellor <nathan@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Michal Orzel <michalorzel.eng@gmail.com>
+    
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f224cabeedb274db8e64824a50765e2eabacca90
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:03 2022 -0700
+
+    MAINTAINERS: remove redundant file of PTRACE SUPPORT entry
+    
+    In MAINTAINERS PTRACE SUPPORT entry, the file include/uapi/linux/ptrace.h
+    is redundant, remove it.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-4-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit a9866bef5171c859cfabc1155c594d28f194aa23
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    ptrace: fix wrong comment of PT_DTRACE
+    
+    PT_DTRACE is only used on um now, fix the wrong comment.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-3-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f26b2afd53e70db67be8252d340b4a1387ec8b55
+Author: Tiezhu Yang <yangtiezhu@loongson.cn>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    ptrace: remove redudant check of #ifdef PTRACE_SINGLESTEP
+    
+    Patch series "ptrace: do some cleanup".
+    
+    
+    This patch (of 3):
+    
+    PTRACE_SINGLESTEP is always defined as 9 in include/uapi/linux/ptrace.h,
+    remove redudant check of #ifdef PTRACE_SINGLESTEP.
+    
+    Link: https://lkml.kernel.org/r/1649240981-11024-2-git-send-email-yangtiezhu@loongson.cn
+    Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Oleg Nesterov <oleg@redhat.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 183c3237c928109d2008c0456dff508baf692b20
+Author: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fat: add ratelimit to fat*_ent_bread()
+    
+    fat*_ent_bread() can be the cause of too many report on I/O error path.
+    So use fat_msg_ratelimit() instead.
+    
+    Link: https://lkml.kernel.org/r/87bkxogfeq.fsf@mail.parknet.co.jp
+    Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Reported-by: qianfan <qianfanguijin@163.com>
+    Tested-by: qianfan <qianfanguijin@163.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e057aaec34ae7534ac8f5cc4f880aa7de8402852
+Author: Jonathan Lassoff <jof@thejof.com>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fatfs: add FAT messages to printk index
+    
+    In order for end users to quickly react to new issues that come up in
+    production, it is proving useful to leverage the printk indexing system.
+    This printk index enables kernel developers to use calls to printk() with
+    changeable ad-hoc format strings (as they always have; no change of
+    expectations), while enabling end users to examine format strings to
+    detect changes.
+    
+    Since end users are using regular expressions to match messages printed
+    through printk(), being able to detect changes in chosen format strings
+    from release to release provides a useful signal to review
+    printk()-matching regular expressions for any necessary updates.
+    
+    So that detailed FAT messages are captured by this printk index, this
+    patch wraps fat_msg with a macro.
+    
+    [akpm@linux-foundation.org: coding-style cleanups]
+    Link: https://lkml.kernel.org/r/8aaa2dd7995e820292bb40d2120ab69756662c65.1648688136.git.jof@thejof.com
+    Signed-off-by: Jonathan Lassoff <jof@thejof.com>
+    Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Reviewed-by: Petr Mladek <pmladek@suse.com>
+    Tested-by: Petr Mladek <pmladek@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3fbb6b784acb4f308e2bc93dbc57761e8b6d9e80
+Author: Yubo Feng <fengyubo3@huawei.com>
+Date:   Fri Apr 29 14:38:02 2022 -0700
+
+    fatfs: remove redundant judgment
+    
+    iput() has already judged the incoming parameter, so there is no need to
+    repeat outside.
+    
+    Link: https://lkml.kernel.org/r/1648265418-76563-1-git-send-email-fengyubo3@huawei.com
+    Signed-off-by: Yubo Feng <fengyubo3@huawei.com>
+    Reported-by: Hulk Robot <hulkci@huawei.com>
+    Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 7374fa33dc2dd76b71999f8fd236e73b21161030
+Author: Kees Cook <keescook@chromium.org>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    init/Kconfig: remove USELIB syscall by default
+    
+    The uselib syscall has been long deprecated.  There's no need to keep this
+    enabled by default under X86_32.
+    
+    Link: https://lkml.kernel.org/r/20220412212519.4113845-1-keescook@chromium.org
+    Signed-off-by: Kees Cook <keescook@chromium.org>
+    Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+    Cc: Masahiro Yamada <masahiroy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d679ae94fdd5d3ab00c35078f5af5f37e068b03d
+Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    list: fix a data-race around ep->rdllist
+    
+    ep_poll() first calls ep_events_available() with no lock held and checks
+    if ep->rdllist is empty by list_empty_careful(), which reads
+    rdllist->prev.  Thus all accesses to it need some protection to avoid
+    store/load-tearing.
+    
+    Note INIT_LIST_HEAD_RCU() already has the annotation for both prev
+    and next.
+    
+    Commit bf3b9f6372c4 ("epoll: Add busy poll support to epoll with socket
+    fds.") added the first lockless ep_events_available(), and commit
+    c5a282e9635e ("fs/epoll: reduce the scope of wq lock in epoll_wait()")
+    made some ep_events_available() calls lockless and added single call under
+    a lock, finally commit e59d3c64cba6 ("epoll: eliminate unnecessary lock
+    for zero timeout") made the last ep_events_available() lockless.
+    
+    BUG: KCSAN: data-race in do_epoll_wait / do_epoll_wait
+    
+    write to 0xffff88810480c7d8 of 8 bytes by task 1802 on cpu 0:
+     INIT_LIST_HEAD include/linux/list.h:38 [inline]
+     list_splice_init include/linux/list.h:492 [inline]
+     ep_start_scan fs/eventpoll.c:622 [inline]
+     ep_send_events fs/eventpoll.c:1656 [inline]
+     ep_poll fs/eventpoll.c:1806 [inline]
+     do_epoll_wait+0x4eb/0xf40 fs/eventpoll.c:2234
+     do_epoll_pwait fs/eventpoll.c:2268 [inline]
+     __do_sys_epoll_pwait fs/eventpoll.c:2281 [inline]
+     __se_sys_epoll_pwait+0x12b/0x240 fs/eventpoll.c:2275
+     __x64_sys_epoll_pwait+0x74/0x80 fs/eventpoll.c:2275
+     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+     do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    
+    read to 0xffff88810480c7d8 of 8 bytes by task 1799 on cpu 1:
+     list_empty_careful include/linux/list.h:329 [inline]
+     ep_events_available fs/eventpoll.c:381 [inline]
+     ep_poll fs/eventpoll.c:1797 [inline]
+     do_epoll_wait+0x279/0xf40 fs/eventpoll.c:2234
+     do_epoll_pwait fs/eventpoll.c:2268 [inline]
+     __do_sys_epoll_pwait fs/eventpoll.c:2281 [inline]
+     __se_sys_epoll_pwait+0x12b/0x240 fs/eventpoll.c:2275
+     __x64_sys_epoll_pwait+0x74/0x80 fs/eventpoll.c:2275
+     do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+     do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    
+    value changed: 0xffff88810480c7d0 -> 0xffff888103c15098
+    
+    Reported by Kernel Concurrency Sanitizer on:
+    CPU: 1 PID: 1799 Comm: syz-fuzzer Tainted: G        W         5.17.0-rc7-syzkaller-dirty #0
+    Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+    
+    Link: https://lkml.kernel.org/r/20220322002653.33865-3-kuniyu@amazon.co.jp
+    Fixes: e59d3c64cba6 ("epoll: eliminate unnecessary lock for zero timeout")
+    Fixes: c5a282e9635e ("fs/epoll: reduce the scope of wq lock in epoll_wait()")
+    Fixes: bf3b9f6372c4 ("epoll: Add busy poll support to epoll with socket fds.")
+    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Reported-by: syzbot+bdd6e38a1ed5ee58d8bd@syzkaller.appspotmail.com
+    Cc: Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>
+    Cc: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Cc: Kuniyuki Iwashima <kuni1840@gmail.com>
+    Cc: "Soheil Hassas Yeganeh" <soheil@google.com>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Cc: "Sridhar Samudrala" <sridhar.samudrala@intel.com>
+    Cc: Alexander Duyck <alexander.h.duyck@intel.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f485922d8fe4e44f6d52a5bb95a603b7c65554bb
+Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    pipe: make poll_usage boolean and annotate its access
+    
+    Patch series "Fix data-races around epoll reported by KCSAN."
+    
+    This series suppresses a false positive KCSAN's message and fixes a real
+    data-race.
+    
+    
+    This patch (of 2):
+    
+    pipe_poll() runs locklessly and assigns 1 to poll_usage.  Once poll_usage
+    is set to 1, it never changes in other places.  However, concurrent writes
+    of a value trigger KCSAN, so let's make KCSAN happy.
+    
+    BUG: KCSAN: data-race in pipe_poll / pipe_poll
+    
+    write to 0xffff8880042f6678 of 4 bytes by task 174 on cpu 3:
+     pipe_poll (fs/pipe.c:656)
+     ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+     do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+     __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+     do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+    
+    write to 0xffff8880042f6678 of 4 bytes by task 177 on cpu 1:
+     pipe_poll (fs/pipe.c:656)
+     ep_item_poll.isra.0 (./include/linux/poll.h:88 fs/eventpoll.c:853)
+     do_epoll_wait (fs/eventpoll.c:1692 fs/eventpoll.c:1806 fs/eventpoll.c:2234)
+     __x64_sys_epoll_wait (fs/eventpoll.c:2246 fs/eventpoll.c:2241 fs/eventpoll.c:2241)
+     do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+     entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:113)
+    
+    Reported by Kernel Concurrency Sanitizer on:
+    CPU: 1 PID: 177 Comm: epoll_race Not tainted 5.17.0-58927-gf443e374ae13 #6
+    Hardware name: Red Hat KVM, BIOS 1.11.0-2.amzn2 04/01/2014
+    
+    Link: https://lkml.kernel.org/r/20220322002653.33865-1-kuniyu@amazon.co.jp
+    Link: https://lkml.kernel.org/r/20220322002653.33865-2-kuniyu@amazon.co.jp
+    Fixes: 3b844826b6c6 ("pipe: avoid unnecessary EPOLLET wakeups under normal loads")
+    Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+    Cc: Alexander Duyck <alexander.h.duyck@intel.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Cc: Kuniyuki Iwashima <kuni1840@gmail.com>
+    Cc: "Soheil Hassas Yeganeh" <soheil@google.com>
+    Cc: "Sridhar Samudrala" <sridhar.samudrala@intel.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d1bd5fa07667fcc3e38996ec42aef98761f23039
+Author: Tom Rix <trix@redhat.com>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    lib: remove back_str initialization
+    
+    Clang static analysis reports this false positive
+    glob.c:48:32: warning: Assigned value is garbage
+      or undefined
+      char const *back_pat = NULL, *back_str = back_str;
+                                    ^~~~~~~~   ~~~~~~~~
+    
+    back_str is set after back_pat and it's use is protected by the !back_pat
+    check.  It is not necessary to initialize back_str, so remove the
+    initialization.
+    
+    Link: https://lkml.kernel.org/r/20220402131546.3383578-1-trix@redhat.com
+    Signed-off-by: Tom Rix <trix@redhat.com>
+    Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+    Cc: Nathan Chancellor <nathan@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit dffad91b06e0a1ee584f008565cbf2bb508a9777
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:01 2022 -0700
+
+    lib/string.c: simplify str[c]spn
+    
+    Use strchr(), which makes them a lot shorter, and more obviously symmetric
+    in their treatment of accept/reject.  It also saves a little bit of .text;
+    bloat-o-meter for an arm build says
+    
+    Function                                     old     new   delta
+    strcspn                                       92      76     -16
+    strspn                                       108      76     -32
+    
+    While here, also remove a stray empty line before EXPORT_SYMBOL().
+    
+    Link: https://lkml.kernel.org/r/20220328224119.3003834-2-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Andy Shevchenko <andy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e0fa2ab3fcff42b8c2ed906f5619aae896e1e5e1
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/test_string.c: add strspn and strcspn tests
+    
+    Before refactoring strspn() and strcspn(), add some simple test cases.
+    
+    Link: https://lkml.kernel.org/r/20220328224119.3003834-1-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Andy Shevchenko <andy@kernel.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 67fca000e1e173fe2c539a127ccf1bc338d5ff37
+Author: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/Kconfig.debug: remove more CONFIG_..._VALUE indirections
+    
+    As in "kernel/panic.c: remove CONFIG_PANIC_ON_OOPS_VALUE indirection",
+    use the IS_ENABLED() helper rather than having a hidden config option.
+    
+    Link: https://lkml.kernel.org/r/20220321121301.1389693-1-linux@rasmusvillemoes.dk
+    Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+    Cc: Masahiro Yamada <masahiroy@kernel.org>
+    Cc: Kees Cook <keescook@chromium.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit d4557fae77079f4e53f06712395c7a28e3734eb7
+Author: Xiaoke Wang <xkernel.wang@foxmail.com>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    lib/test_meminit: optimize do_kmem_cache_rcu_persistent() test
+    
+    To make the test more robust, there are the following changes:
+    1. add a check for the return value of kmem_cache_alloc().
+    2. properly release the object `buf` on several error paths.
+    3. release the objects of `used_objects` if we never hit `saved_ptr`.
+    4. destroy the created cache by default.
+    
+    Link: https://lkml.kernel.org/r/tencent_7CB95F1C3914BCE1CA4A61FF7C20E7CCB108@qq.com
+    Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+    Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Alexander Potapenko <glider@google.com>
+    Cc: Andrey Konovalov <andreyknvl@gmail.com>
+    Cc: Marco Elver <elver@google.com>
+    Cc: Dmitry Vyukov <dvyukov@google.com>
+    Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+    Cc: Xiaoke Wang <xkernel.wang@foxmail.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 11fb48961e5250768767612da4a303fa2f5ea504
+Author: Rob Herring <robh@kernel.org>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    get_maintainer: Honor mailmap for in file emails
+    
+    Add support to also use the mailmap for 'in file' email addresses.
+    
+    Link: https://lkml.kernel.org/r/20220323193645.317514-1-robh@kernel.org
+    Signed-off-by: Rob Herring <robh@kernel.org>
+    Reported-by: Marc Zyngier <maz@kernel.org>
+    Acked-by: Joe Perches <joe@perches.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit c06d7aaf2951ce7f986a879127995728d63d8577
+Author: Haowen Bai <baihaowen@meizu.com>
+Date:   Fri Apr 29 14:38:00 2022 -0700
+
+    kernel: pid_namespace: use NULL instead of using plain integer as pointer
+    
+    This fixes the following sparse warnings:
+    kernel/pid_namespace.c:55:77: warning: Using plain integer as NULL pointer
+    
+    Link: https://lkml.kernel.org/r/1647944288-2806-1-git-send-email-baihaowen@meizu.com
+    Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 6308499b5e99c0c903fde2c605e41d9a86c4be6c
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    net: unexport csum_and_copy_{from,to}_user
+    
+    csum_and_copy_from_user and csum_and_copy_to_user are exported by a few
+    architectures, but not actually used in modular code.  Drop the exports.
+    
+    Link: https://lkml.kernel.org/r/20220421070440.1282704-1-hch@lst.de
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+    Acked-by: Jakub Kicinski <kuba@kernel.org>
+    Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+    Acked-by: Arnd Bergmann <arnd@arndb.de>
+    Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+    Cc: David Miller <davem@davemloft.net>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit e0690479917cbce740eef51fa3de92c69647a5ad
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert read_from_oldmem() to take an iov_iter
+    
+    Remove the read_from_oldmem() wrapper introduced earlier and convert all
+    the remaining callers to pass an iov_iter.
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-4-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+    Cc: Amit Daniel Kachhap <amit.kachhap@arm.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Matthew Wilcox <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 4a22fd20379ca897a6bfdb8372b4f9601e430332
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert __read_vmcore to use an iov_iter
+    
+    This gets rid of copy_to() and let us use proc_read_iter() instead of
+    proc_read().
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-3-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 5d8de293c224896a4da99763fce4f9794308caf4
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    vmcore: convert copy_oldmem_page() to take an iov_iter
+    
+    Patch series "Convert vmcore to use an iov_iter", v5.
+    
+    For some reason several people have been sending bad patches to fix
+    compiler warnings in vmcore recently.  Here's how it should be done.
+    Compile-tested only on x86.  As noted in the first patch, s390 should take
+    this conversion a bit further, but I'm not inclined to do that work
+    myself.
+    
+    
+    This patch (of 3):
+    
+    Instead of passing in a 'buf' and 'userbuf' argument, pass in an iov_iter.
+    s390 needs more work to pass the iov_iter down further, or refactor, but
+    I'd be more comfortable if someone who can test on s390 did that work.
+    
+    It's more convenient to convert the whole of read_from_oldmem() to take an
+    iov_iter at the same time, so rename it to read_from_oldmem_iter() and add
+    a temporary read_from_oldmem() wrapper that creates an iov_iter.
+    
+    Link: https://lkml.kernel.org/r/20220408090636.560886-1-bhe@redhat.com
+    Link: https://lkml.kernel.org/r/20220408090636.560886-2-bhe@redhat.com
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Baoquan He <bhe@redhat.com>
+    Reviewed-by: Christoph Hellwig <hch@lst.de>
+    Cc: Heiko Carstens <hca@linux.ibm.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 04d168c6d42d1772d35372301a14bb20784c81c5
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:59 2022 -0700
+
+    fs/proc/kcore.c: remove check of list iterator against head past the loop body
+    
+    When list_for_each_entry() completes the iteration over the whole list
+    without breaking the loop, the iterator value will be a bogus pointer
+    computed based on the head element.
+    
+    While it is safe to use the pointer to determine if it was computed based
+    on the head element, either with list_entry_is_head() or &pos->member ==
+    head, using the iterator variable after the loop should be avoided.
+    
+    In preparation to limit the scope of a list iterator to the list traversal
+    loop, use a dedicated pointer to point to the found element [1].
+    
+    [akpm@linux-foundation.org: reduce scope of `iter']
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/ [1]
+    Link: https://lkml.kernel.org/r/20220331223700.902556-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Cc: Mike Rapoport <rppt@kernel.org>
+    Cc: David Hildenbrand <david@redhat.com>
+    Cc: Oscar Salvador <osalvador@suse.de>
+    Cc: "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>
+    Cc: Cristiano Giuffrida <c.giuffrida@vu.nl>
+    Cc: "Bos, H.J." <h.j.bos@vu.nl>
+    Cc: Alexey Dobriyan <adobriyan@gmail.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit f1e75d128b46e3b066e7b2e7cfca10491109d44d
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: rewrite error handling of ocfs2_fill_super
+    
+    Current ocfs2_fill_super() uses one goto label "read_super_error" to
+    handle all error cases.  And with previous serial patches, the error
+    handling should fork more branches to handle different error cases.  This
+    patch rewrite the error handling of ocfs2_fill_super.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-6-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0737e01de9c411e4db87dcedf4a9789d41b1c5c1
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: ocfs2_mount_volume does cleanup job before return error
+    
+    After this patch, when error, ocfs2_fill_super doesn't take care to
+    release resources which are allocated in ocfs2_mount_volume.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-5-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit a8a986db64930b7d4cd4e4f68d8718bfa75c9528
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: ocfs2_initialize_super does cleanup job before return error
+    
+    After this patch, when error, ocfs2_fill_super doesn't take care to
+    release resources which are allocated in ocfs2_initialize_super.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-4-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 54bd3f7c5c3b6b6101673ec9c73457127c317bf9
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: change return type of ocfs2_resmap_init
+    
+    Since ocfs2_resmap_init() always return 0, change it to void.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-3-heming.zhao@suse.com
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit bb20b31dee1a6c329c2f721fbe21c51945cdfc29
+Author: Heming Zhao via Ocfs2-devel <ocfs2-devel@oss.oracle.com>
+Date:   Fri Apr 29 14:37:58 2022 -0700
+
+    ocfs2: fix mounting crash if journal is not alloced
+    
+    Patch series "rewrite error handling during mounting stage".
+    
+    
+    This patch (of 5):
+    
+    After commit da5e7c87827e8 ("ocfs2: cleanup journal init and shutdown"),
+    journal init later than before, it makes NULL pointer access in free
+    routine.
+    
+    Crash flow:
+    
+    ocfs2_fill_super
+     + ocfs2_mount_volume
+     |  + ocfs2_dlm_init //fail & return, osb->journal is NULL.
+     |  + ...
+     |  + ocfs2_check_volume //no chance to init osb->journal
+     |
+     + ...
+     + ocfs2_dismount_volume
+        ocfs2_release_system_inodes
+          ...
+           evict
+            ...
+             ocfs2_clear_inode
+              ocfs2_checkpoint_inode
+               ocfs2_ci_fully_checkpointed
+                time_after(journal->j_trans_id, ci->ci_last_trans)
+                 + journal is empty, crash!
+    
+    For fixing, there are three solutions:
+    
+    1> Partly revert commit da5e7c87827e8
+    
+       For avoiding kernel crash, this make sense for us.  We only
+       concerned whether there has any non-system inode access before dlm
+       init.  The answer is NO.  And all journal replay/recovery handling
+       happen after dlm & journal init done.  So this method is not graceful
+       but workable.
+    
+    2> Add osb->journal check in free inode routine (eg ocfs2_clear_inode)
+    
+       The fix code is special for mounting phase, but it will continue
+       working after mounting stage.  In another word, this method adds
+       useless code in normal inode free flow.
+    
+    3> Do directly free inode in mounting phase
+    
+       This method is brutal/complex and may introduce unsafe code,
+       currently maintainer didn't like.
+    
+    At last, we chose method <1> and did partly reverted job.  We reverted
+    journal init codes, and kept cleanup codes flow.
+    
+    Link: https://lkml.kernel.org/r/20220424130952.2436-1-heming.zhao@suse.com
+    Link: https://lkml.kernel.org/r/20220424130952.2436-2-heming.zhao@suse.com
+    Fixes: da5e7c87827e8 ("ocfs2: cleanup journal init and shutdown")
+    Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit b02da32b613f989b73c88113db16ab47de11a3fd
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    ocfs2: remove usage of list iterator variable after the loop body
+    
+    To move the list iterator variable into the list_for_each_entry_*() macro
+    in the future it should be avoided to use the list iterator variable after
+    the loop body.
+    
+    To *never* use the list iterator variable after the loop it was concluded
+    to use a separate iterator variable [1].
+    
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/
+    Link: https://lkml.kernel.org/r/20220322105014.3626194-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 81cd1ae909e0080eb41457766f0f448fd8ab9979
+Author: Jakob Koschel <jakobkoschel@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    ocfs2: replace usage of found with dedicated list iterator variable
+    
+    To move the list iterator variable into the list_for_each_entry_*() macro
+    in the future it should be avoided to use the list iterator variable after
+    the loop body.
+    
+    To *never* use the list iterator variable after the loop it was concluded
+    to use a separate iterator variable instead of a found boolean [1].
+    
+    This removes the need to use a found variable and simply checking if the
+    variable was set, can determine if the break/goto was hit.
+    
+    Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/
+    Link: https://lkml.kernel.org/r/20220324071650.61168-1-jakobkoschel@gmail.com
+    Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+    Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+    Cc: Mark Fasheh <mark@fasheh.com>
+    Cc: Joel Becker <jlbec@evilplan.org>
+    Cc: Junxiao Bi <junxiao.bi@oracle.com>
+    Cc: Changwei Ge <gechangwei@live.cn>
+    Cc: Gang He <ghe@suse.com>
+    Cc: Jun Piao <piaojun@huawei.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit dec81a532027a77bd52f9bd8d8b3230843533d3f
+Author: Paul Gortmaker <paul.gortmaker@windriver.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    scripts/bloat-o-meter: filter out vermagic as it is not relevant
+    
+    Seeing it as a false positive increase at the top is just noise:
+    
+       linux-head$./scripts/bloat-o-meter ../pre/vmlinux ../post/vmlinux
+       add/remove: 0/571 grow/shrink: 1/9 up/down: 20/-64662 (-64642)
+       Function                                     old     new   delta
+       vermagic                                      49      69     +20
+    
+    Since it really doesn't "grow", it makes sense to filter it out.
+    
+    Link: https://lkml.kernel.org/r/20220428035824.7934-1-paul.gortmaker@windriver.com
+    Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3af8acf6aff2a98731522b52927429760f0b8006
+Author: Schspa Shi <schspa@gmail.com>
+Date:   Fri Apr 29 14:37:57 2022 -0700
+
+    scripts/decode_stacktrace.sh: support old bash version
+    
+    Old bash version don't support associative array variables.  Avoid to use
+    associative array variables to avoid error.
+    
+    Without this, old bash version will report error as fellowing
+    [   15.954042] Kernel panic - not syncing: sysrq triggered crash
+    [   15.955252] CPU: 1 PID: 167 Comm: sh Not tainted 5.18.0-rc1-00208-gb7d075db2fd5 #4
+    [   15.956472] Hardware name: Hobot J5 Virtual development board (DT)
+    [   15.957856] Call trace:
+    ./scripts/decode_stacktrace.sh: line 128: ,dump_backtrace: syntax error: operand expected (error token is ",dump_backtrace")
+    
+    Link: https://lkml.kernel.org/r/20220409180331.24047-1-schspa@gmail.com
+    Signed-off-by: Schspa Shi <schspa@gmail.com>
+    Cc: Stephen Boyd <swboyd@chromium.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit bd7155a0282e2f4e14260c30272d6472253e6564
+Author: Benjamin Stürz <benni@stuerz.xyz>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: replace comments with C99 initializers
+    
+    This replaces comments with C99's designated initializers because the
+    kernel supports them now.
+    
+    Link: https://lkml.kernel.org/r/20220326165909.506926-3-benni@stuerz.xyz
+    Signed-off-by: Benjamin Stürz <benni@stuerz.xyz>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 72a4fd6a7f032b921b1c195eb42a038ab9026021
+Author: Julia Lawall <Julia.Lawall@inria.fr>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: ptrace: fix typos in comments
+    
+    Various spelling mistakes in comments.
+    Detected with the help of Coccinelle.
+    
+    Link: https://lkml.kernel.org/r/20220318103729.157574-23-Julia.Lawall@inria.fr
+    Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0af96a024f524a5318485cbada73ab7d874895d4
+Author: Julia Lawall <Julia.Lawall@inria.fr>
+Date:   Thu Apr 28 23:17:25 2022 -0700
+
+    ia64: fix typos in comments
+    
+    Various spelling mistakes in comments.
+    Detected with the help of Coccinelle.
+    
+    Link: https://lkml.kernel.org/r/20220318103729.157574-1-Julia.Lawall@inria.fr
+    Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ MAINTAINERS                              |    1 
+ arch/alpha/lib/csum_partial_copy.c       |    1 
+ arch/arm/kernel/crash_dump.c             |   27 -
+ arch/arm64/kernel/crash_dump.c           |   29 -
+ arch/ia64/kernel/crash_dump.c            |   32 -
+ arch/ia64/kernel/kprobes.c               |   64 +--
+ arch/ia64/kernel/palinfo.c               |    2 
+ arch/ia64/kernel/ptrace.c                |    2 
+ arch/ia64/kernel/traps.c                 |    2 
+ arch/ia64/mm/init.c                      |    2 
+ arch/ia64/mm/tlb.c                       |    4 
+ arch/m68k/lib/checksum.c                 |    2 
+ arch/mips/kernel/crash_dump.c            |   27 -
+ arch/powerpc/kernel/crash_dump.c         |   35 -
+ arch/powerpc/lib/checksum_wrappers.c     |    2 
+ arch/riscv/kernel/crash_dump.c           |   26 -
+ arch/s390/kernel/crash_dump.c            |   13 
+ arch/sh/kernel/crash_dump.c              |   29 -
+ arch/x86/kernel/crash_dump_32.c          |   29 -
+ arch/x86/kernel/crash_dump_64.c          |   48 --
+ arch/x86/lib/csum-wrappers_64.c          |    2 
+ drivers/rapidio/devices/rio_mport_cdev.c |    4 
+ fs/fat/fat.h                             |    9 
+ fs/fat/fatent.c                          |    7 
+ fs/fat/inode.c                           |    6 
+ fs/fat/misc.c                            |   14 
+ fs/ocfs2/dlm/dlmdebug.c                  |   12 
+ fs/ocfs2/dlm/dlmunlock.c                 |   21 -
+ fs/ocfs2/inode.c                         |    4 
+ fs/ocfs2/journal.c                       |   33 +
+ fs/ocfs2/journal.h                       |    2 
+ fs/ocfs2/quota_local.c                   |   10 
+ fs/ocfs2/reservations.c                  |    4 
+ fs/ocfs2/reservations.h                  |    9 
+ fs/ocfs2/super.c                         |  180 +++++----
+ fs/pipe.c                                |    2 
+ fs/proc/generic.c                        |    3 
+ fs/proc/kcore.c                          |   14 
+ fs/proc/proc_net.c                       |    3 
+ fs/proc/vmcore.c                         |  130 ++----
+ fs/sysv/super.c                          |    4 
+ include/linux/crash_dump.h               |   19 
+ include/linux/list.h                     |    6 
+ include/linux/pipe_fs_i.h                |    2 
+ include/linux/ptrace.h                   |    2 
+ include/uapi/linux/acct.h                |    3 
+ include/uapi/linux/taskstats.h           |   24 +
+ init/Kconfig                             |   14 
+ init/initramfs.c                         |   76 ++-
+ ipc/mqueue.c                             |   14 
+ ipc/sem.c                                |   25 -
+ kernel/hung_task.c                       |    2 
+ kernel/kexec_core.c                      |    2 
+ kernel/pid_namespace.c                   |    2 
+ kernel/ptrace.c                          |    6 
+ kernel/taskstats.c                       |   24 +
+ kernel/tsacct.c                          |   10 
+ kernel/watchdog.c                        |    4 
+ lib/Kconfig.debug                        |   21 -
+ lib/glob.c                               |    2 
+ lib/string.c                             |   25 -
+ lib/test_meminit.c                       |   12 
+ lib/test_string.c                        |   33 +
+ scripts/bloat-o-meter                    |    1 
+ scripts/decode_stacktrace.sh             |   27 -
+ scripts/get_maintainer.pl                |    1 
+ tools/accounting/.gitignore              |    1 
+ tools/accounting/Makefile                |    2 
+ tools/accounting/procacct.c              |  417 +++++++++++++++++++++
+ usr/gen_init_cpio.c                      |   92 +++-
+ 70 files changed, 1076 insertions(+), 643 deletions(-)
+
+--- a/arch/alpha/lib/csum_partial_copy.c~mm-nonmm-stable
++++ a/arch/alpha/lib/csum_partial_copy.c
+@@ -353,7 +353,6 @@ csum_and_copy_from_user(const void __use
  		return 0;
  	return __csum_and_copy(src, dst, len);
  }
@@ -22,56 +1284,8 @@ index 1931a04af85a..4d180d96f09e 100644
  
  __wsum
  csum_partial_copy_nocheck(const void *src, void *dst, int len)
-diff --git a/arch/arm/kernel/crash_dump.c b/arch/arm/kernel/crash_dump.c
-index 53cb92435392..938bd932df9a 100644
---- a/arch/arm/kernel/crash_dump.c
-+++ b/arch/arm/kernel/crash_dump.c
-@@ -14,22 +14,10 @@
- #include <linux/crash_dump.h>
- #include <linux/uaccess.h>
- #include <linux/io.h>
-+#include <linux/uio.h>
- 
--/**
-- * copy_oldmem_page() - copy one page from old kernel memory
-- * @pfn: page frame number to be copied
-- * @buf: buffer where the copied page is placed
-- * @csize: number of bytes to copy
-- * @offset: offset in bytes into the page
-- * @userbuf: if set, @buf is int he user address space
-- *
-- * This function copies one page from old kernel memory into buffer pointed by
-- * @buf. If @buf is in userspace, set @userbuf to %1. Returns number of bytes
-- * copied or negative error in case of failure.
-- */
--ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
--			 size_t csize, unsigned long offset,
--			 int userbuf)
-+ssize_t copy_oldmem_page(struct iov_iter *iter, unsigned long pfn,
-+			 size_t csize, unsigned long offset)
- {
- 	void *vaddr;
- 
-@@ -40,14 +28,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
- 	if (!vaddr)
- 		return -ENOMEM;
- 
--	if (userbuf) {
--		if (copy_to_user(buf, vaddr + offset, csize)) {
--			iounmap(vaddr);
--			return -EFAULT;
--		}
--	} else {
--		memcpy(buf, vaddr + offset, csize);
--	}
-+	csize = copy_to_iter(vaddr + offset, csize, iter);
- 
- 	iounmap(vaddr);
- 	return csize;
-diff --git a/arch/arm64/kernel/crash_dump.c b/arch/arm64/kernel/crash_dump.c
-index 58303a9ec32c..670e4ce81822 100644
---- a/arch/arm64/kernel/crash_dump.c
-+++ b/arch/arm64/kernel/crash_dump.c
+--- a/arch/arm64/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/arm64/kernel/crash_dump.c
 @@ -9,25 +9,11 @@
  #include <linux/crash_dump.h>
  #include <linux/errno.h>
@@ -101,7 +1315,7 @@ index 58303a9ec32c..670e4ce81822 100644
  {
  	void *vaddr;
  
-@@ -38,14 +24,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+@@ -38,14 +24,7 @@ ssize_t copy_oldmem_page(unsigned long p
  	if (!vaddr)
  		return -ENOMEM;
  
@@ -117,10 +1331,52 @@ index 58303a9ec32c..670e4ce81822 100644
  
  	memunmap(vaddr);
  
-diff --git a/arch/ia64/kernel/crash_dump.c b/arch/ia64/kernel/crash_dump.c
-index 0ed3c3dee4cd..4ef68e2aa757 100644
---- a/arch/ia64/kernel/crash_dump.c
-+++ b/arch/ia64/kernel/crash_dump.c
+--- a/arch/arm/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/arm/kernel/crash_dump.c
+@@ -14,22 +14,10 @@
+ #include <linux/crash_dump.h>
+ #include <linux/uaccess.h>
+ #include <linux/io.h>
++#include <linux/uio.h>
+ 
+-/**
+- * copy_oldmem_page() - copy one page from old kernel memory
+- * @pfn: page frame number to be copied
+- * @buf: buffer where the copied page is placed
+- * @csize: number of bytes to copy
+- * @offset: offset in bytes into the page
+- * @userbuf: if set, @buf is int he user address space
+- *
+- * This function copies one page from old kernel memory into buffer pointed by
+- * @buf. If @buf is in userspace, set @userbuf to %1. Returns number of bytes
+- * copied or negative error in case of failure.
+- */
+-ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+-			 size_t csize, unsigned long offset,
+-			 int userbuf)
++ssize_t copy_oldmem_page(struct iov_iter *iter, unsigned long pfn,
++			 size_t csize, unsigned long offset)
+ {
+ 	void *vaddr;
+ 
+@@ -40,14 +28,7 @@ ssize_t copy_oldmem_page(unsigned long p
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	if (userbuf) {
+-		if (copy_to_user(buf, vaddr + offset, csize)) {
+-			iounmap(vaddr);
+-			return -EFAULT;
+-		}
+-	} else {
+-		memcpy(buf, vaddr + offset, csize);
+-	}
++	csize = copy_to_iter(vaddr + offset, csize, iter);
+ 
+ 	iounmap(vaddr);
+ 	return csize;
+--- a/arch/ia64/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/ia64/kernel/crash_dump.c
 @@ -10,42 +10,18 @@
  #include <linux/errno.h>
  #include <linux/types.h>
@@ -168,11 +1424,9 @@ index 0ed3c3dee4cd..4ef68e2aa757 100644
  	return csize;
  }
  
-diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
-index 1a7bab1c5d7c..ca34e51e84b4 100644
---- a/arch/ia64/kernel/kprobes.c
-+++ b/arch/ia64/kernel/kprobes.c
-@@ -29,38 +29,38 @@ struct kretprobe_blackpoint kretprobe_blacklist[] = {{NULL, NULL}};
+--- a/arch/ia64/kernel/kprobes.c~mm-nonmm-stable
++++ a/arch/ia64/kernel/kprobes.c
+@@ -29,38 +29,38 @@ struct kretprobe_blackpoint kretprobe_bl
  
  enum instruction_type {A, I, M, F, B, L, X, u};
  static enum instruction_type bundle_encoding[32][3] = {
@@ -243,10 +1497,8 @@ index 1a7bab1c5d7c..ca34e51e84b4 100644
  };
  
  /* Insert a long branch code */
-diff --git a/arch/ia64/kernel/palinfo.c b/arch/ia64/kernel/palinfo.c
-index 64189f04c1a4..b9ae093bfe37 100644
---- a/arch/ia64/kernel/palinfo.c
-+++ b/arch/ia64/kernel/palinfo.c
+--- a/arch/ia64/kernel/palinfo.c~mm-nonmm-stable
++++ a/arch/ia64/kernel/palinfo.c
 @@ -120,7 +120,7 @@ static const char *mem_attrib[]={
   * Input:
   *	- a pointer to a buffer to hold the string
@@ -256,11 +1508,9 @@ index 64189f04c1a4..b9ae093bfe37 100644
   *	- a pointer to the end of the buffer
   *
   */
-diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
-index a19acd9f5e1f..4fc6e38a8459 100644
---- a/arch/ia64/kernel/ptrace.c
-+++ b/arch/ia64/kernel/ptrace.c
-@@ -2025,7 +2025,7 @@ static void syscall_get_args_cb(struct unw_frame_info *info, void *data)
+--- a/arch/ia64/kernel/ptrace.c~mm-nonmm-stable
++++ a/arch/ia64/kernel/ptrace.c
+@@ -2025,7 +2025,7 @@ static void syscall_get_args_cb(struct u
  	 * - epsinstruction: cfm is set by br.call
  	 *   locals don't exist.
  	 *
@@ -269,11 +1519,9 @@ index a19acd9f5e1f..4fc6e38a8459 100644
  	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
  	 */
  	cfm = pt->cr_ifs;
-diff --git a/arch/ia64/kernel/traps.c b/arch/ia64/kernel/traps.c
-index 753642366e12..53735b1d1be3 100644
---- a/arch/ia64/kernel/traps.c
-+++ b/arch/ia64/kernel/traps.c
-@@ -309,7 +309,7 @@ handle_fpu_swa (int fp_fault, struct pt_regs *regs, unsigned long isr)
+--- a/arch/ia64/kernel/traps.c~mm-nonmm-stable
++++ a/arch/ia64/kernel/traps.c
+@@ -309,7 +309,7 @@ handle_fpu_swa (int fp_fault, struct pt_
  			/*
  			 * Lower 4 bits are used as a count. Upper bits are a sequence
  			 * number that is updated when count is reset. The cmpxchg will
@@ -282,10 +1530,8 @@ index 753642366e12..53735b1d1be3 100644
  			 * resetting the count.
  			 */
  			if (current_jiffies > last.time)
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 5d165607bf35..7ae1244ed8ec 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
+--- a/arch/ia64/mm/init.c~mm-nonmm-stable
++++ a/arch/ia64/mm/init.c
 @@ -451,7 +451,7 @@ mem_init (void)
  	memblock_free_all();
  
@@ -295,10 +1541,8 @@ index 5d165607bf35..7ae1244ed8ec 100644
  	 * (heavy-weight) handler, but mark it by setting bit 0, so the fsyscall entry
  	 * code can tell them apart.
  	 */
-diff --git a/arch/ia64/mm/tlb.c b/arch/ia64/mm/tlb.c
-index 135b5135cace..ca060e7a2a46 100644
---- a/arch/ia64/mm/tlb.c
-+++ b/arch/ia64/mm/tlb.c
+--- a/arch/ia64/mm/tlb.c~mm-nonmm-stable
++++ a/arch/ia64/mm/tlb.c
 @@ -174,7 +174,7 @@ __setup("nptcg=", set_nptcg);
   * override table (in which case we should ignore the value from
   * PAL_VM_SUMMARY).
@@ -308,7 +1552,7 @@ index 135b5135cace..ca060e7a2a46 100644
   * purges defined in either PAL_VM_SUMMARY or PAL override table. In this case,
   * we should ignore the value from either PAL_VM_SUMMARY or PAL override table.
   *
-@@ -516,7 +516,7 @@ int ia64_itr_entry(u64 target_mask, u64 va, u64 pte, u64 log_size)
+@@ -516,7 +516,7 @@ found:
  	if (i >= per_cpu(ia64_tr_num, cpu))
  		return -EBUSY;
  
@@ -317,11 +1561,9 @@ index 135b5135cace..ca060e7a2a46 100644
  	if (i > per_cpu(ia64_tr_used, cpu))
  		per_cpu(ia64_tr_used, cpu) = i;
  
-diff --git a/arch/m68k/lib/checksum.c b/arch/m68k/lib/checksum.c
-index 7e6afeae6217..5acb821849d3 100644
---- a/arch/m68k/lib/checksum.c
-+++ b/arch/m68k/lib/checksum.c
-@@ -265,8 +265,6 @@ csum_and_copy_from_user(const void __user *src, void *dst, int len)
+--- a/arch/m68k/lib/checksum.c~mm-nonmm-stable
++++ a/arch/m68k/lib/checksum.c
+@@ -265,8 +265,6 @@ csum_and_copy_from_user(const void __use
  	return sum;
  }
  
@@ -330,10 +1572,8 @@ index 7e6afeae6217..5acb821849d3 100644
  
  /*
   * copy from kernel space while checksumming, otherwise like csum_partial
-diff --git a/arch/mips/kernel/crash_dump.c b/arch/mips/kernel/crash_dump.c
-index 2e50f55185a6..6e50f4902409 100644
---- a/arch/mips/kernel/crash_dump.c
-+++ b/arch/mips/kernel/crash_dump.c
+--- a/arch/mips/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/mips/kernel/crash_dump.c
 @@ -1,22 +1,10 @@
  // SPDX-License-Identifier: GPL-2.0
  #include <linux/highmem.h>
@@ -360,7 +1600,7 @@ index 2e50f55185a6..6e50f4902409 100644
  {
  	void  *vaddr;
  
-@@ -24,14 +12,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+@@ -24,14 +12,7 @@ ssize_t copy_oldmem_page(unsigned long p
  		return 0;
  
  	vaddr = kmap_local_pfn(pfn);
@@ -376,10 +1616,8 @@ index 2e50f55185a6..6e50f4902409 100644
  	kunmap_local(vaddr);
  
  	return csize;
-diff --git a/arch/powerpc/kernel/crash_dump.c b/arch/powerpc/kernel/crash_dump.c
-index 5693e1c67c2b..32b4a97f1b79 100644
---- a/arch/powerpc/kernel/crash_dump.c
-+++ b/arch/powerpc/kernel/crash_dump.c
+--- a/arch/powerpc/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/powerpc/kernel/crash_dump.c
 @@ -16,7 +16,7 @@
  #include <asm/kdump.h>
  #include <asm/prom.h>
@@ -425,7 +1663,7 @@ index 5693e1c67c2b..32b4a97f1b79 100644
  {
  	void  *vaddr;
  	phys_addr_t paddr;
-@@ -107,10 +82,10 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+@@ -107,10 +82,10 @@ ssize_t copy_oldmem_page(unsigned long p
  
  	if (memblock_is_region_memory(paddr, csize)) {
  		vaddr = __va(paddr);
@@ -438,11 +1676,9 @@ index 5693e1c67c2b..32b4a97f1b79 100644
  		iounmap(vaddr);
  	}
  
-diff --git a/arch/powerpc/lib/checksum_wrappers.c b/arch/powerpc/lib/checksum_wrappers.c
-index f3999cbb2fcc..1a14c8780278 100644
---- a/arch/powerpc/lib/checksum_wrappers.c
-+++ b/arch/powerpc/lib/checksum_wrappers.c
-@@ -24,7 +24,6 @@ __wsum csum_and_copy_from_user(const void __user *src, void *dst,
+--- a/arch/powerpc/lib/checksum_wrappers.c~mm-nonmm-stable
++++ a/arch/powerpc/lib/checksum_wrappers.c
+@@ -24,7 +24,6 @@ __wsum csum_and_copy_from_user(const voi
  	user_read_access_end();
  	return csum;
  }
@@ -450,15 +1686,13 @@ index f3999cbb2fcc..1a14c8780278 100644
  
  __wsum csum_and_copy_to_user(const void *src, void __user *dst, int len)
  {
-@@ -38,4 +37,3 @@ __wsum csum_and_copy_to_user(const void *src, void __user *dst, int len)
+@@ -38,4 +37,3 @@ __wsum csum_and_copy_to_user(const void
  	user_write_access_end();
  	return csum;
  }
 -EXPORT_SYMBOL(csum_and_copy_to_user);
-diff --git a/arch/riscv/kernel/crash_dump.c b/arch/riscv/kernel/crash_dump.c
-index 86cc0ada5752..ea2158cee97b 100644
---- a/arch/riscv/kernel/crash_dump.c
-+++ b/arch/riscv/kernel/crash_dump.c
+--- a/arch/riscv/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/riscv/kernel/crash_dump.c
 @@ -7,22 +7,10 @@
  
  #include <linux/crash_dump.h>
@@ -485,7 +1719,7 @@ index 86cc0ada5752..ea2158cee97b 100644
  {
  	void *vaddr;
  
-@@ -33,13 +21,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+@@ -33,13 +21,7 @@ ssize_t copy_oldmem_page(unsigned long p
  	if (!vaddr)
  		return -ENOMEM;
  
@@ -500,10 +1734,8 @@ index 86cc0ada5752..ea2158cee97b 100644
  
  	memunmap(vaddr);
  	return csize;
-diff --git a/arch/s390/kernel/crash_dump.c b/arch/s390/kernel/crash_dump.c
-index 69819b765250..a2c1c55daec0 100644
---- a/arch/s390/kernel/crash_dump.c
-+++ b/arch/s390/kernel/crash_dump.c
+--- a/arch/s390/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/s390/kernel/crash_dump.c
 @@ -15,6 +15,7 @@
  #include <linux/slab.h>
  #include <linux/memblock.h>
@@ -512,7 +1744,7 @@ index 69819b765250..a2c1c55daec0 100644
  #include <asm/asm-offsets.h>
  #include <asm/os_info.h>
  #include <asm/elf.h>
-@@ -212,8 +213,8 @@ static int copy_oldmem_user(void __user *dst, unsigned long src, size_t count)
+@@ -212,8 +213,8 @@ static int copy_oldmem_user(void __user
  /*
   * Copy one page from "oldmem"
   */
@@ -523,7 +1755,7 @@ index 69819b765250..a2c1c55daec0 100644
  {
  	unsigned long src;
  	int rc;
-@@ -221,10 +222,12 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+@@ -221,10 +222,12 @@ ssize_t copy_oldmem_page(unsigned long p
  	if (!csize)
  		return 0;
  	src = pfn_to_phys(pfn) + offset;
@@ -539,10 +1771,8 @@ index 69819b765250..a2c1c55daec0 100644
  	return rc;
  }
  
-diff --git a/arch/sh/kernel/crash_dump.c b/arch/sh/kernel/crash_dump.c
-index 5b41b59698c1..19ce6a950aac 100644
---- a/arch/sh/kernel/crash_dump.c
-+++ b/arch/sh/kernel/crash_dump.c
+--- a/arch/sh/kernel/crash_dump.c~mm-nonmm-stable
++++ a/arch/sh/kernel/crash_dump.c
 @@ -8,23 +8,11 @@
  #include <linux/errno.h>
  #include <linux/crash_dump.h>
@@ -570,7 +1800,7 @@ index 5b41b59698c1..19ce6a950aac 100644
  {
  	void  __iomem *vaddr;
  
-@@ -32,15 +20,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+@@ -32,15 +20,8 @@ ssize_t copy_oldmem_page(unsigned long p
  		return 0;
  
  	vaddr = ioremap(pfn << PAGE_SHIFT, PAGE_SIZE);
@@ -588,10 +1818,8 @@ index 5b41b59698c1..19ce6a950aac 100644
 +
  	return csize;
  }
-diff --git a/arch/x86/kernel/crash_dump_32.c b/arch/x86/kernel/crash_dump_32.c
-index 5fcac46aaf6b..5f4ae5476e19 100644
---- a/arch/x86/kernel/crash_dump_32.c
-+++ b/arch/x86/kernel/crash_dump_32.c
+--- a/arch/x86/kernel/crash_dump_32.c~mm-nonmm-stable
++++ a/arch/x86/kernel/crash_dump_32.c
 @@ -10,8 +10,7 @@
  #include <linux/errno.h>
  #include <linux/highmem.h>
@@ -602,7 +1830,7 @@ index 5fcac46aaf6b..5f4ae5476e19 100644
  
  static inline bool is_crashed_pfn_valid(unsigned long pfn)
  {
-@@ -29,21 +28,8 @@ static inline bool is_crashed_pfn_valid(unsigned long pfn)
+@@ -29,21 +28,8 @@ static inline bool is_crashed_pfn_valid(
  #endif
  }
  
@@ -626,7 +1854,7 @@ index 5fcac46aaf6b..5f4ae5476e19 100644
  {
  	void  *vaddr;
  
-@@ -54,14 +40,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+@@ -54,14 +40,7 @@ ssize_t copy_oldmem_page(unsigned long p
  		return -EFAULT;
  
  	vaddr = kmap_local_pfn(pfn);
@@ -642,10 +1870,8 @@ index 5fcac46aaf6b..5f4ae5476e19 100644
  	kunmap_local(vaddr);
  
  	return csize;
-diff --git a/arch/x86/kernel/crash_dump_64.c b/arch/x86/kernel/crash_dump_64.c
-index 97529552dd24..e75bc2f217ff 100644
---- a/arch/x86/kernel/crash_dump_64.c
-+++ b/arch/x86/kernel/crash_dump_64.c
+--- a/arch/x86/kernel/crash_dump_64.c~mm-nonmm-stable
++++ a/arch/x86/kernel/crash_dump_64.c
 @@ -8,12 +8,12 @@
  
  #include <linux/errno.h>
@@ -662,7 +1888,7 @@ index 97529552dd24..e75bc2f217ff 100644
  				  bool encrypted)
  {
  	void  *vaddr;
-@@ -29,50 +29,36 @@ static ssize_t __copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+@@ -29,50 +29,36 @@ static ssize_t __copy_oldmem_page(unsign
  	if (!vaddr)
  		return -ENOMEM;
  
@@ -727,11 +1953,9 @@ index 97529552dd24..e75bc2f217ff 100644
 +	return read_from_oldmem(&iter, count, ppos,
  				cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT));
  }
-diff --git a/arch/x86/lib/csum-wrappers_64.c b/arch/x86/lib/csum-wrappers_64.c
-index 189344924a2b..145f9a0bde29 100644
---- a/arch/x86/lib/csum-wrappers_64.c
-+++ b/arch/x86/lib/csum-wrappers_64.c
-@@ -32,7 +32,6 @@ csum_and_copy_from_user(const void __user *src, void *dst, int len)
+--- a/arch/x86/lib/csum-wrappers_64.c~mm-nonmm-stable
++++ a/arch/x86/lib/csum-wrappers_64.c
+@@ -32,7 +32,6 @@ csum_and_copy_from_user(const void __use
  	user_access_end();
  	return sum;
  }
@@ -739,7 +1963,7 @@ index 189344924a2b..145f9a0bde29 100644
  
  /**
   * csum_and_copy_to_user - Copy and checksum to user space.
-@@ -57,7 +56,6 @@ csum_and_copy_to_user(const void *src, void __user *dst, int len)
+@@ -57,7 +56,6 @@ csum_and_copy_to_user(const void *src, v
  	user_access_end();
  	return sum;
  }
@@ -747,11 +1971,9 @@ index 189344924a2b..145f9a0bde29 100644
  
  /**
   * csum_partial_copy_nocheck - Copy and checksum.
-diff --git a/drivers/rapidio/devices/rio_mport_cdev.c b/drivers/rapidio/devices/rio_mport_cdev.c
-index 7df466e22282..2cdc054e53a5 100644
---- a/drivers/rapidio/devices/rio_mport_cdev.c
-+++ b/drivers/rapidio/devices/rio_mport_cdev.c
-@@ -915,7 +915,7 @@ rio_dma_transfer(struct file *filp, u32 transfer_mode,
+--- a/drivers/rapidio/devices/rio_mport_cdev.c~mm-nonmm-stable
++++ a/drivers/rapidio/devices/rio_mport_cdev.c
+@@ -915,7 +915,7 @@ rio_dma_transfer(struct file *filp, u32
  			goto err_req;
  		}
  
@@ -760,7 +1982,7 @@ index 7df466e22282..2cdc054e53a5 100644
  			ret = -EINVAL;
  			goto err_req;
  		}
-@@ -927,7 +927,7 @@ rio_dma_transfer(struct file *filp, u32 transfer_mode,
+@@ -927,7 +927,7 @@ rio_dma_transfer(struct file *filp, u32
  		}
  
  		sg_set_buf(req->sgt.sgl,
@@ -769,11 +1991,32 @@ index 7df466e22282..2cdc054e53a5 100644
  				xfer->offset, xfer->length);
  	}
  
-diff --git a/fs/fat/fat.h b/fs/fat/fat.h
-index 02d4d4234956..2cf85a6e0d99 100644
---- a/fs/fat/fat.h
-+++ b/fs/fat/fat.h
-@@ -433,8 +433,15 @@ void __fat_fs_error(struct super_block *sb, int report, const char *fmt, ...);
+--- a/fs/fat/fatent.c~mm-nonmm-stable
++++ a/fs/fat/fatent.c
+@@ -94,7 +94,8 @@ static int fat12_ent_bread(struct super_
+ err_brelse:
+ 	brelse(bhs[0]);
+ err:
+-	fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)", (llu)blocknr);
++	fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
++			  (llu)blocknr);
+ 	return -EIO;
+ }
+ 
+@@ -107,8 +108,8 @@ static int fat_ent_bread(struct super_bl
+ 	fatent->fat_inode = MSDOS_SB(sb)->fat_inode;
+ 	fatent->bhs[0] = sb_bread(sb, blocknr);
+ 	if (!fatent->bhs[0]) {
+-		fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
+-		       (llu)blocknr);
++		fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
++				  (llu)blocknr);
+ 		return -EIO;
+ 	}
+ 	fatent->nr_bhs = 1;
+--- a/fs/fat/fat.h~mm-nonmm-stable
++++ a/fs/fat/fat.h
+@@ -433,8 +433,15 @@ void __fat_fs_error(struct super_block *
  	__fat_fs_error(sb, 1, fmt , ## args)
  #define fat_fs_error_ratelimit(sb, fmt, args...) \
  	__fat_fs_error(sb, __ratelimit(&MSDOS_SB(sb)->ratelimit), fmt , ## args)
@@ -790,36 +2033,9 @@ index 02d4d4234956..2cf85a6e0d99 100644
  #define fat_msg_ratelimit(sb, level, fmt, args...)	\
  	do {	\
  			if (__ratelimit(&MSDOS_SB(sb)->ratelimit))	\
-diff --git a/fs/fat/fatent.c b/fs/fat/fatent.c
-index 978ac6751aeb..1db348f8f887 100644
---- a/fs/fat/fatent.c
-+++ b/fs/fat/fatent.c
-@@ -94,7 +94,8 @@ static int fat12_ent_bread(struct super_block *sb, struct fat_entry *fatent,
- err_brelse:
- 	brelse(bhs[0]);
- err:
--	fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)", (llu)blocknr);
-+	fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
-+			  (llu)blocknr);
- 	return -EIO;
- }
- 
-@@ -107,8 +108,8 @@ static int fat_ent_bread(struct super_block *sb, struct fat_entry *fatent,
- 	fatent->fat_inode = MSDOS_SB(sb)->fat_inode;
- 	fatent->bhs[0] = sb_bread(sb, blocknr);
- 	if (!fatent->bhs[0]) {
--		fat_msg(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
--		       (llu)blocknr);
-+		fat_msg_ratelimit(sb, KERN_ERR, "FAT read failed (blocknr %llu)",
-+				  (llu)blocknr);
- 		return -EIO;
- 	}
- 	fatent->nr_bhs = 1;
-diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-index bf6051bdf1d1..cb698a827c9a 100644
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -1889,10 +1889,8 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
+--- a/fs/fat/inode.c~mm-nonmm-stable
++++ a/fs/fat/inode.c
+@@ -1889,10 +1889,8 @@ out_invalid:
  		fat_msg(sb, KERN_INFO, "Can't find a valid FAT filesystem");
  
  out_fail:
@@ -832,11 +2048,9 @@ index bf6051bdf1d1..cb698a827c9a 100644
  	unload_nls(sbi->nls_io);
  	unload_nls(sbi->nls_disk);
  	fat_reset_iocharset(&sbi->options);
-diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-index 91ca3c304211..855477d89f41 100644
---- a/fs/fat/misc.c
-+++ b/fs/fat/misc.c
-@@ -42,10 +42,16 @@ void __fat_fs_error(struct super_block *sb, int report, const char *fmt, ...)
+--- a/fs/fat/misc.c~mm-nonmm-stable
++++ a/fs/fat/misc.c
+@@ -42,10 +42,16 @@ void __fat_fs_error(struct super_block *
  EXPORT_SYMBOL_GPL(__fat_fs_error);
  
  /**
@@ -856,7 +2070,7 @@ index 91ca3c304211..855477d89f41 100644
  {
  	struct va_format vaf;
  	va_list args;
-@@ -53,7 +59,7 @@ void fat_msg(struct super_block *sb, const char *level, const char *fmt, ...)
+@@ -53,7 +59,7 @@ void fat_msg(struct super_block *sb, con
  	va_start(args, fmt);
  	vaf.fmt = fmt;
  	vaf.va = &args;
@@ -865,11 +2079,9 @@ index 91ca3c304211..855477d89f41 100644
  	va_end(args);
  }
  
-diff --git a/fs/ocfs2/dlm/dlmdebug.c b/fs/ocfs2/dlm/dlmdebug.c
-index d442cf5dda8a..be5e9ed7da8d 100644
---- a/fs/ocfs2/dlm/dlmdebug.c
-+++ b/fs/ocfs2/dlm/dlmdebug.c
-@@ -541,7 +541,7 @@ static void *lockres_seq_start(struct seq_file *m, loff_t *pos)
+--- a/fs/ocfs2/dlm/dlmdebug.c~mm-nonmm-stable
++++ a/fs/ocfs2/dlm/dlmdebug.c
+@@ -541,7 +541,7 @@ static void *lockres_seq_start(struct se
  	struct debug_lockres *dl = m->private;
  	struct dlm_ctxt *dlm = dl->dl_ctxt;
  	struct dlm_lock_resource *oldres = dl->dl_res;
@@ -878,7 +2090,7 @@ index d442cf5dda8a..be5e9ed7da8d 100644
  	struct list_head *track_list;
  
  	spin_lock(&dlm->track_lock);
-@@ -556,11 +556,11 @@ static void *lockres_seq_start(struct seq_file *m, loff_t *pos)
+@@ -556,11 +556,11 @@ static void *lockres_seq_start(struct se
  		}
  	}
  
@@ -895,11 +2107,9 @@ index d442cf5dda8a..be5e9ed7da8d 100644
  		break;
  	}
  	spin_unlock(&dlm->track_lock);
-diff --git a/fs/ocfs2/dlm/dlmunlock.c b/fs/ocfs2/dlm/dlmunlock.c
-index 61103b2d69fb..7318e4794ef9 100644
---- a/fs/ocfs2/dlm/dlmunlock.c
-+++ b/fs/ocfs2/dlm/dlmunlock.c
-@@ -392,9 +392,9 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
+--- a/fs/ocfs2/dlm/dlmunlock.c~mm-nonmm-stable
++++ a/fs/ocfs2/dlm/dlmunlock.c
+@@ -392,9 +392,9 @@ int dlm_unlock_lock_handler(struct o2net
  	struct dlm_ctxt *dlm = data;
  	struct dlm_unlock_lock *unlock = (struct dlm_unlock_lock *)msg->buf;
  	struct dlm_lock_resource *res = NULL;
@@ -911,7 +2121,7 @@ index 61103b2d69fb..7318e4794ef9 100644
  	struct dlm_lockstatus *lksb = NULL;
  	int ignore;
  	u32 flags;
-@@ -437,7 +437,6 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
+@@ -437,7 +437,6 @@ int dlm_unlock_lock_handler(struct o2net
  	}
  
  	queue=&res->granted;
@@ -919,7 +2129,7 @@ index 61103b2d69fb..7318e4794ef9 100644
  	spin_lock(&res->spinlock);
  	if (res->state & DLM_LOCK_RES_RECOVERING) {
  		spin_unlock(&res->spinlock);
-@@ -461,21 +460,21 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
+@@ -461,21 +460,21 @@ int dlm_unlock_lock_handler(struct o2net
  	}
  
  	for (i=0; i<3; i++) {
@@ -948,7 +2158,7 @@ index 61103b2d69fb..7318e4794ef9 100644
  		status = DLM_IVLOCKID;
  		goto not_found;
  	}
-@@ -505,7 +504,7 @@ int dlm_unlock_lock_handler(struct o2net_msg *msg, u32 len, void *data,
+@@ -505,7 +504,7 @@ int dlm_unlock_lock_handler(struct o2net
  	dlm_kick_thread(dlm, res);
  
  not_found:
@@ -957,11 +2167,9 @@ index 61103b2d69fb..7318e4794ef9 100644
  		mlog(ML_ERROR, "failed to find lock to unlock! "
  			       "cookie=%u:%llu\n",
  		     dlm_get_lock_cookie_node(be64_to_cpu(unlock->cookie)),
-diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
-index 5739dc301569..bb116c39b581 100644
---- a/fs/ocfs2/inode.c
-+++ b/fs/ocfs2/inode.c
-@@ -125,6 +125,7 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
+--- a/fs/ocfs2/inode.c~mm-nonmm-stable
++++ a/fs/ocfs2/inode.c
+@@ -125,6 +125,7 @@ struct inode *ocfs2_iget(struct ocfs2_su
  	struct inode *inode = NULL;
  	struct super_block *sb = osb->sb;
  	struct ocfs2_find_inode_args args;
@@ -969,7 +2177,7 @@ index 5739dc301569..bb116c39b581 100644
  
  	trace_ocfs2_iget_begin((unsigned long long)blkno, flags,
  			       sysfile_type);
-@@ -171,11 +172,10 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
+@@ -171,11 +172,10 @@ struct inode *ocfs2_iget(struct ocfs2_su
  	 * part of the transaction - the inode could have been reclaimed and
  	 * now it is reread from disk.
  	 */
@@ -982,11 +2190,9 @@ index 5739dc301569..bb116c39b581 100644
  
  		read_lock(&journal->j_state_lock);
  		if (journal->j_running_transaction)
-diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-index 1887a2708709..fa87d89cf754 100644
---- a/fs/ocfs2/journal.c
-+++ b/fs/ocfs2/journal.c
-@@ -810,22 +810,20 @@ void ocfs2_set_journal_params(struct ocfs2_super *osb)
+--- a/fs/ocfs2/journal.c~mm-nonmm-stable
++++ a/fs/ocfs2/journal.c
+@@ -810,22 +810,20 @@ void ocfs2_set_journal_params(struct ocf
  	write_unlock(&journal->j_state_lock);
  }
  
@@ -1017,7 +2223,7 @@ index 1887a2708709..fa87d89cf754 100644
  	}
  	osb->journal = journal;
  	journal->j_osb = osb;
-@@ -839,6 +837,21 @@ int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
+@@ -839,6 +837,21 @@ int ocfs2_journal_init(struct ocfs2_supe
  	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
  	journal->j_state = OCFS2_JOURNAL_FREE;
  
@@ -1039,11 +2245,9 @@ index 1887a2708709..fa87d89cf754 100644
  	/* already have the inode for our journal */
  	inode = ocfs2_get_system_file_inode(osb, JOURNAL_SYSTEM_INODE,
  					    osb->slot_num);
-diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
-index 8dcb2f2cadbc..969d0aa28718 100644
---- a/fs/ocfs2/journal.h
-+++ b/fs/ocfs2/journal.h
-@@ -154,6 +154,7 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb);
+--- a/fs/ocfs2/journal.h~mm-nonmm-stable
++++ a/fs/ocfs2/journal.h
+@@ -154,6 +154,7 @@ int ocfs2_compute_replay_slots(struct oc
   *  Journal Control:
   *  Initialize, Load, Shutdown, Wipe a journal.
   *
@@ -1051,7 +2255,7 @@ index 8dcb2f2cadbc..969d0aa28718 100644
   *  ocfs2_journal_init     - Initialize journal structures in the OSB.
   *  ocfs2_journal_load     - Load the given journal off disk. Replay it if
   *                          there's transactions still in there.
-@@ -167,6 +168,7 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb);
+@@ -167,6 +168,7 @@ int ocfs2_compute_replay_slots(struct oc
   *  ocfs2_start_checkpoint - Kick the commit thread to do a checkpoint.
   */
  void   ocfs2_set_journal_params(struct ocfs2_super *osb);
@@ -1059,11 +2263,9 @@ index 8dcb2f2cadbc..969d0aa28718 100644
  int    ocfs2_journal_init(struct ocfs2_super *osb, int *dirty);
  void   ocfs2_journal_shutdown(struct ocfs2_super *osb);
  int    ocfs2_journal_wipe(struct ocfs2_journal *journal,
-diff --git a/fs/ocfs2/quota_local.c b/fs/ocfs2/quota_local.c
-index b1a8b046f4c2..5022b3e9bfcd 100644
---- a/fs/ocfs2/quota_local.c
-+++ b/fs/ocfs2/quota_local.c
-@@ -921,19 +921,19 @@ static struct ocfs2_quota_chunk *ocfs2_find_free_entry(struct super_block *sb,
+--- a/fs/ocfs2/quota_local.c~mm-nonmm-stable
++++ a/fs/ocfs2/quota_local.c
+@@ -921,19 +921,19 @@ static struct ocfs2_quota_chunk *ocfs2_f
  {
  	struct mem_dqinfo *info = sb_dqinfo(sb, type);
  	struct ocfs2_mem_dqinfo *oinfo = info->dqi_priv;
@@ -1088,11 +2290,9 @@ index b1a8b046f4c2..5022b3e9bfcd 100644
  		return NULL;
  
  	if (chunk->qc_num < oinfo->dqi_chunks - 1) {
-diff --git a/fs/ocfs2/reservations.c b/fs/ocfs2/reservations.c
-index 769e466887b0..a9d1296d736d 100644
---- a/fs/ocfs2/reservations.c
-+++ b/fs/ocfs2/reservations.c
-@@ -198,7 +198,7 @@ void ocfs2_resv_set_type(struct ocfs2_alloc_reservation *resv,
+--- a/fs/ocfs2/reservations.c~mm-nonmm-stable
++++ a/fs/ocfs2/reservations.c
+@@ -198,7 +198,7 @@ void ocfs2_resv_set_type(struct ocfs2_al
  	resv->r_flags |= flags;
  }
  
@@ -1101,7 +2301,7 @@ index 769e466887b0..a9d1296d736d 100644
  		      struct ocfs2_reservation_map *resmap)
  {
  	memset(resmap, 0, sizeof(*resmap));
-@@ -207,8 +207,6 @@ int ocfs2_resmap_init(struct ocfs2_super *osb,
+@@ -207,8 +207,6 @@ int ocfs2_resmap_init(struct ocfs2_super
  	resmap->m_reservations = RB_ROOT;
  	/* m_bitmap_len is initialized to zero by the above memset. */
  	INIT_LIST_HEAD(&resmap->m_lru);
@@ -1110,11 +2310,9 @@ index 769e466887b0..a9d1296d736d 100644
  }
  
  static void ocfs2_resv_mark_lru(struct ocfs2_reservation_map *resmap,
-diff --git a/fs/ocfs2/reservations.h b/fs/ocfs2/reservations.h
-index 677c50663595..ec8101ef5717 100644
---- a/fs/ocfs2/reservations.h
-+++ b/fs/ocfs2/reservations.h
-@@ -73,15 +73,10 @@ void ocfs2_resv_discard(struct ocfs2_reservation_map *resmap,
+--- a/fs/ocfs2/reservations.h~mm-nonmm-stable
++++ a/fs/ocfs2/reservations.h
+@@ -73,15 +73,10 @@ void ocfs2_resv_discard(struct ocfs2_res
  
  /**
   * ocfs2_resmap_init() - Initialize fields of a reservations bitmap
@@ -1132,11 +2330,9 @@ index 677c50663595..ec8101ef5717 100644
  		      struct ocfs2_reservation_map *resmap);
  
  /**
-diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-index 477cdf94122e..f7298816d8d9 100644
---- a/fs/ocfs2/super.c
-+++ b/fs/ocfs2/super.c
-@@ -989,28 +989,27 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+--- a/fs/ocfs2/super.c~mm-nonmm-stable
++++ a/fs/ocfs2/super.c
+@@ -989,28 +989,27 @@ static int ocfs2_fill_super(struct super
  
  	if (!ocfs2_parse_options(sb, data, &parsed_options, 0)) {
  		status = -EINVAL;
@@ -1172,7 +2368,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  	osb->s_mount_opt = parsed_options.mount_opt;
  	osb->s_atime_quantum = parsed_options.atime_quantum;
-@@ -1027,7 +1026,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1027,7 +1026,7 @@ static int ocfs2_fill_super(struct super
  
  	status = ocfs2_verify_userspace_stack(osb, &parsed_options);
  	if (status)
@@ -1181,7 +2377,7 @@ index 477cdf94122e..f7298816d8d9 100644
  
  	sb->s_magic = OCFS2_SUPER_MAGIC;
  
-@@ -1041,7 +1040,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1041,7 +1040,7 @@ static int ocfs2_fill_super(struct super
  			status = -EACCES;
  			mlog(ML_ERROR, "Readonly device detected but readonly "
  			     "mount was not specified.\n");
@@ -1190,7 +2386,7 @@ index 477cdf94122e..f7298816d8d9 100644
  		}
  
  		/* You should not be able to start a local heartbeat
-@@ -1050,7 +1049,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1050,7 +1049,7 @@ static int ocfs2_fill_super(struct super
  			status = -EROFS;
  			mlog(ML_ERROR, "Local heartbeat specified on readonly "
  			     "device.\n");
@@ -1199,7 +2395,7 @@ index 477cdf94122e..f7298816d8d9 100644
  		}
  
  		status = ocfs2_check_journals_nolocks(osb);
-@@ -1059,9 +1058,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1059,9 +1058,7 @@ static int ocfs2_fill_super(struct super
  				mlog(ML_ERROR, "Recovery required on readonly "
  				     "file system, but write access is "
  				     "unavailable.\n");
@@ -1210,7 +2406,7 @@ index 477cdf94122e..f7298816d8d9 100644
  		}
  
  		ocfs2_set_ro_flag(osb, 1);
-@@ -1077,10 +1074,8 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1077,10 +1074,8 @@ static int ocfs2_fill_super(struct super
  	}
  
  	status = ocfs2_verify_heartbeat(osb);
@@ -1223,7 +2419,7 @@ index 477cdf94122e..f7298816d8d9 100644
  
  	osb->osb_debug_root = debugfs_create_dir(osb->uuid_str,
  						 ocfs2_debugfs_root);
-@@ -1094,15 +1089,14 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1094,15 +1089,14 @@ static int ocfs2_fill_super(struct super
  
  	status = ocfs2_mount_volume(sb);
  	if (status < 0)
@@ -1241,7 +2437,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	osb->osb_dev_kset = kset_create_and_add(sb->s_id, NULL,
-@@ -1110,7 +1104,7 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1110,7 +1104,7 @@ static int ocfs2_fill_super(struct super
  	if (!osb->osb_dev_kset) {
  		status = -ENOMEM;
  		mlog(ML_ERROR, "Unable to create device kset %s.\n", sb->s_id);
@@ -1250,7 +2446,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	/* Create filecheck sysfs related directories/files at
-@@ -1119,14 +1113,13 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1119,14 +1113,13 @@ static int ocfs2_fill_super(struct super
  		status = -ENOMEM;
  		mlog(ML_ERROR, "Unable to create filecheck sysfs directory at "
  			"/sys/fs/ocfs2/%s/filecheck.\n", sb->s_id);
@@ -1267,7 +2463,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	sb->s_root = root;
-@@ -1178,17 +1171,21 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
+@@ -1178,17 +1171,21 @@ static int ocfs2_fill_super(struct super
  
  	return status;
  
@@ -1299,7 +2495,7 @@ index 477cdf94122e..f7298816d8d9 100644
  
  	return status;
  }
-@@ -1803,11 +1800,10 @@ static int ocfs2_get_sector(struct super_block *sb,
+@@ -1803,11 +1800,10 @@ static int ocfs2_get_sector(struct super
  static int ocfs2_mount_volume(struct super_block *sb)
  {
  	int status = 0;
@@ -1312,7 +2508,7 @@ index 477cdf94122e..f7298816d8d9 100644
  
  	mutex_init(&osb->obs_trim_fs_mutex);
  
-@@ -1817,44 +1813,56 @@ static int ocfs2_mount_volume(struct super_block *sb)
+@@ -1817,44 +1813,56 @@ static int ocfs2_mount_volume(struct sup
  		if (status == -EBADR && ocfs2_userspace_stack(osb))
  			mlog(ML_ERROR, "couldn't mount because cluster name on"
  			" disk does not match the running cluster name.\n");
@@ -1379,7 +2575,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	return status;
  }
  
-@@ -2022,7 +2030,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2022,7 +2030,7 @@ static int ocfs2_initialize_super(struct
  	if (!osb) {
  		status = -ENOMEM;
  		mlog_errno(status);
@@ -1388,7 +2584,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	sb->s_fs_info = osb;
-@@ -2083,7 +2091,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2083,7 +2091,7 @@ static int ocfs2_initialize_super(struct
  		mlog(ML_ERROR, "Invalid number of node slots (%u)\n",
  		     osb->max_slots);
  		status = -EINVAL;
@@ -1397,7 +2593,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	ocfs2_orphan_scan_init(osb);
-@@ -2092,7 +2100,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2092,7 +2100,7 @@ static int ocfs2_initialize_super(struct
  	if (status) {
  		mlog(ML_ERROR, "Unable to initialize recovery state\n");
  		mlog_errno(status);
@@ -1406,7 +2602,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	init_waitqueue_head(&osb->checkpoint_event);
-@@ -2110,17 +2118,13 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2110,17 +2118,13 @@ static int ocfs2_initialize_super(struct
  
  	init_waitqueue_head(&osb->osb_mount_event);
  
@@ -1426,7 +2622,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	osb->slot_recovery_generations =
-@@ -2129,7 +2133,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2129,7 +2133,7 @@ static int ocfs2_initialize_super(struct
  	if (!osb->slot_recovery_generations) {
  		status = -ENOMEM;
  		mlog_errno(status);
@@ -1435,7 +2631,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	init_waitqueue_head(&osb->osb_wipe_event);
-@@ -2139,7 +2143,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2139,7 +2143,7 @@ static int ocfs2_initialize_super(struct
  	if (!osb->osb_orphan_wipes) {
  		status = -ENOMEM;
  		mlog_errno(status);
@@ -1444,7 +2640,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	osb->osb_rf_lock_tree = RB_ROOT;
-@@ -2155,13 +2159,13 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2155,13 +2159,13 @@ static int ocfs2_initialize_super(struct
  		mlog(ML_ERROR, "couldn't mount because of unsupported "
  		     "optional features (%x).\n", i);
  		status = -EINVAL;
@@ -1460,7 +2656,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	if (ocfs2_clusterinfo_valid(osb)) {
-@@ -2182,7 +2186,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2182,7 +2186,7 @@ static int ocfs2_initialize_super(struct
  			     "cluster stack label (%s) \n",
  			     osb->osb_cluster_stack);
  			status = -EINVAL;
@@ -1469,7 +2665,7 @@ index 477cdf94122e..f7298816d8d9 100644
  		}
  		memcpy(osb->osb_cluster_name,
  			OCFS2_RAW_SB(di)->s_cluster_info.ci_cluster,
-@@ -2195,6 +2199,15 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2195,6 +2199,15 @@ static int ocfs2_initialize_super(struct
  
  	get_random_bytes(&osb->s_next_generation, sizeof(u32));
  
@@ -1485,7 +2681,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	INIT_WORK(&osb->dquot_drop_work, ocfs2_drop_dquot_refs);
  	init_llist_head(&osb->dquot_drop_list);
  
-@@ -2208,7 +2221,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2208,7 +2221,7 @@ static int ocfs2_initialize_super(struct
  		mlog(ML_ERROR, "Volume has invalid cluster size (%d)\n",
  		     osb->s_clustersize);
  		status = -EINVAL;
@@ -1494,7 +2690,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	total_blocks = ocfs2_clusters_to_blocks(osb->sb,
-@@ -2220,14 +2233,14 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2220,14 +2233,14 @@ static int ocfs2_initialize_super(struct
  		mlog(ML_ERROR, "Volume too large "
  		     "to mount safely on this system");
  		status = -EFBIG;
@@ -1511,7 +2707,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	strlcpy(osb->vol_label, di->id2.i_super.s_label,
-@@ -2247,7 +2260,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2247,7 +2260,7 @@ static int ocfs2_initialize_super(struct
  	if (!osb->osb_dlm_debug) {
  		status = -ENOMEM;
  		mlog_errno(status);
@@ -1520,7 +2716,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	atomic_set(&osb->vol_state, VOLUME_INIT);
-@@ -2256,7 +2269,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2256,7 +2269,7 @@ static int ocfs2_initialize_super(struct
  	status = ocfs2_init_global_system_inodes(osb);
  	if (status < 0) {
  		mlog_errno(status);
@@ -1529,7 +2725,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	/*
-@@ -2267,7 +2280,7 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2267,7 +2280,7 @@ static int ocfs2_initialize_super(struct
  	if (!inode) {
  		status = -EINVAL;
  		mlog_errno(status);
@@ -1538,7 +2734,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	}
  
  	osb->bitmap_blkno = OCFS2_I(inode)->ip_blkno;
-@@ -2280,16 +2293,39 @@ static int ocfs2_initialize_super(struct super_block *sb,
+@@ -2280,16 +2293,39 @@ static int ocfs2_initialize_super(struct
  	status = ocfs2_init_slot_info(osb);
  	if (status < 0) {
  		mlog_errno(status);
@@ -1580,7 +2776,7 @@ index 477cdf94122e..f7298816d8d9 100644
  	return status;
  }
  
-@@ -2483,6 +2519,12 @@ static void ocfs2_delete_osb(struct ocfs2_super *osb)
+@@ -2483,6 +2519,12 @@ static void ocfs2_delete_osb(struct ocfs
  
  	kfree(osb->osb_orphan_wipes);
  	kfree(osb->slot_recovery_generations);
@@ -1593,11 +2789,9 @@ index 477cdf94122e..f7298816d8d9 100644
  	kfree(osb->local_alloc_copy);
  	kfree(osb->uuid_str);
  	kfree(osb->vol_label);
-diff --git a/fs/pipe.c b/fs/pipe.c
-index e140ea150bbb..d04c3fce28a6 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -653,7 +653,7 @@ pipe_poll(struct file *filp, poll_table *wait)
+--- a/fs/pipe.c~mm-nonmm-stable
++++ a/fs/pipe.c
+@@ -653,7 +653,7 @@ pipe_poll(struct file *filp, poll_table
  	unsigned int head, tail;
  
  	/* Epoll has some historical nasty semantics, this enables them */
@@ -1606,11 +2800,9 @@ index e140ea150bbb..d04c3fce28a6 100644
  
  	/*
  	 * Reading pipe state only -- no need for acquiring the semaphore.
-diff --git a/fs/proc/generic.c b/fs/proc/generic.c
-index f2132407e133..587b91d9d998 100644
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -448,6 +448,9 @@ static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
+--- a/fs/proc/generic.c~mm-nonmm-stable
++++ a/fs/proc/generic.c
+@@ -448,6 +448,9 @@ static struct proc_dir_entry *__proc_cre
  	proc_set_user(ent, (*parent)->uid, (*parent)->gid);
  
  	ent->proc_dops = &proc_misc_dentry_ops;
@@ -1620,11 +2812,9 @@ index f2132407e133..587b91d9d998 100644
  
  out:
  	return ent;
-diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-index 982e694aae77..dff921f7ca33 100644
---- a/fs/proc/kcore.c
-+++ b/fs/proc/kcore.c
-@@ -479,10 +479,15 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+--- a/fs/proc/kcore.c~mm-nonmm-stable
++++ a/fs/proc/kcore.c
+@@ -479,10 +479,15 @@ read_kcore(struct file *file, char __use
  		 * the previous entry, search for a matching entry.
  		 */
  		if (!m || start < m->addr || start >= m->addr + m->size) {
@@ -1643,7 +2833,7 @@ index 982e694aae77..dff921f7ca33 100644
  			}
  		}
  
-@@ -492,12 +497,11 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+@@ -492,12 +497,11 @@ read_kcore(struct file *file, char __use
  			page_offline_freeze();
  		}
  
@@ -1657,11 +2847,9 @@ index 982e694aae77..dff921f7ca33 100644
  			goto skip;
  		}
  
-diff --git a/fs/proc/proc_net.c b/fs/proc/proc_net.c
-index e1cfeda397f3..913e5acefbb6 100644
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -376,6 +376,9 @@ static __net_init int proc_net_ns_init(struct net *net)
+--- a/fs/proc/proc_net.c~mm-nonmm-stable
++++ a/fs/proc/proc_net.c
+@@ -376,6 +376,9 @@ static __net_init int proc_net_ns_init(s
  
  	proc_set_user(netd, uid, gid);
  
@@ -1671,10 +2859,8 @@ index e1cfeda397f3..913e5acefbb6 100644
  	err = -EEXIST;
  	net_statd = proc_net_mkdir(net, "stat", netd);
  	if (!net_statd)
-diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
-index 6f1b8ddc6f7a..4eaeb645e759 100644
---- a/fs/proc/vmcore.c
-+++ b/fs/proc/vmcore.c
+--- a/fs/proc/vmcore.c~mm-nonmm-stable
++++ a/fs/proc/vmcore.c
 @@ -26,6 +26,7 @@
  #include <linux/vmalloc.h>
  #include <linux/pagemap.h>
@@ -1683,7 +2869,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  #include <linux/cc_platform.h>
  #include <asm/io.h>
  #include "internal.h"
-@@ -128,9 +129,8 @@ static int open_vmcore(struct inode *inode, struct file *file)
+@@ -128,9 +129,8 @@ static int open_vmcore(struct inode *ino
  }
  
  /* Reads a page from the oldmem device from given offset. */
@@ -1695,7 +2881,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  {
  	unsigned long pfn, offset;
  	size_t nr_bytes;
-@@ -152,29 +152,23 @@ ssize_t read_from_oldmem(char *buf, size_t count,
+@@ -152,29 +152,23 @@ ssize_t read_from_oldmem(char *buf, size
  
  		/* If pfn is not ram, return zeros for sparse dump files */
  		if (!pfn_is_ram(pfn)) {
@@ -1732,7 +2918,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  		read += nr_bytes;
  		++pfn;
  		offset = 0;
-@@ -203,7 +197,12 @@ void __weak elfcorehdr_free(unsigned long long addr)
+@@ -203,7 +197,12 @@ void __weak elfcorehdr_free(unsigned lon
   */
  ssize_t __weak elfcorehdr_read(char *buf, size_t count, u64 *ppos)
  {
@@ -1746,7 +2932,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  }
  
  /*
-@@ -211,7 +210,13 @@ ssize_t __weak elfcorehdr_read(char *buf, size_t count, u64 *ppos)
+@@ -211,7 +210,13 @@ ssize_t __weak elfcorehdr_read(char *buf
   */
  ssize_t __weak elfcorehdr_read_notes(char *buf, size_t count, u64 *ppos)
  {
@@ -1761,16 +2947,14 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  }
  
  /*
-@@ -228,29 +233,14 @@ int __weak remap_oldmem_pfn_range(struct vm_area_struct *vma,
+@@ -228,29 +233,14 @@ int __weak remap_oldmem_pfn_range(struct
  /*
   * Architectures which support memory encryption override this.
   */
 -ssize_t __weak
 -copy_oldmem_page_encrypted(unsigned long pfn, char *buf, size_t csize,
 -			   unsigned long offset, int userbuf)
-+ssize_t __weak copy_oldmem_page_encrypted(struct iov_iter *iter,
-+		unsigned long pfn, size_t csize, unsigned long offset)
- {
+-{
 -	return copy_oldmem_page(pfn, buf, csize, offset, userbuf);
 -}
 -
@@ -1778,7 +2962,9 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
 - * Copy to either kernel or user space
 - */
 -static int copy_to(void *target, void *src, size_t size, int userbuf)
--{
++ssize_t __weak copy_oldmem_page_encrypted(struct iov_iter *iter,
++		unsigned long pfn, size_t csize, unsigned long offset)
+ {
 -	if (userbuf) {
 -		if (copy_to_user((char __user *) target, src, size))
 -			return -EFAULT;
@@ -1795,7 +2981,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  {
  	struct vmcoredd_node *dump;
  	u64 offset = 0;
-@@ -263,14 +253,13 @@ static int vmcoredd_copy_dumps(void *dst, u64 start, size_t size, int userbuf)
+@@ -263,14 +253,13 @@ static int vmcoredd_copy_dumps(void *dst
  		if (start < offset + dump->size) {
  			tsz = min(offset + (u64)dump->size - start, (u64)size);
  			buf = dump->buf + start - offset;
@@ -1811,7 +2997,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  
  			/* Leave now if buffer filled already */
  			if (!size)
-@@ -326,33 +315,28 @@ static int vmcoredd_mmap_dumps(struct vm_area_struct *vma, unsigned long dst,
+@@ -326,33 +315,28 @@ out_unlock:
  /* Read from the ELF header and then the crash dump. On error, negative value is
   * returned otherwise number of bytes read are returned.
   */
@@ -1851,7 +3037,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  			return acc;
  	}
  
-@@ -373,35 +357,32 @@ static ssize_t __read_vmcore(char *buffer, size_t buflen, loff_t *fpos,
+@@ -373,35 +357,32 @@ static ssize_t __read_vmcore(char *buffe
  		/* Read device dumps */
  		if (*fpos < elfcorebuf_sz + vmcoredd_orig_sz) {
  			tsz = min(elfcorebuf_sz + vmcoredd_orig_sz -
@@ -1894,7 +3080,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  			return acc;
  	}
  
-@@ -409,19 +390,17 @@ static ssize_t __read_vmcore(char *buffer, size_t buflen, loff_t *fpos,
+@@ -409,19 +390,17 @@ static ssize_t __read_vmcore(char *buffe
  		if (*fpos < m->offset + m->size) {
  			tsz = (size_t)min_t(unsigned long long,
  					    m->offset + m->size - *fpos,
@@ -1918,7 +3104,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  				return acc;
  		}
  	}
-@@ -429,15 +408,14 @@ static ssize_t __read_vmcore(char *buffer, size_t buflen, loff_t *fpos,
+@@ -429,15 +408,14 @@ static ssize_t __read_vmcore(char *buffe
  	return acc;
  }
  
@@ -1937,7 +3123,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
   *
   * On s390 the fault handler is used for memory regions that can't be mapped
   * directly with remap_pfn_range().
-@@ -447,9 +425,10 @@ static vm_fault_t mmap_vmcore_fault(struct vm_fault *vmf)
+@@ -447,9 +425,10 @@ static vm_fault_t mmap_vmcore_fault(stru
  #ifdef CONFIG_S390
  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
  	pgoff_t index = vmf->pgoff;
@@ -1949,7 +3135,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  	int rc;
  
  	page = find_or_create_page(mapping, index, GFP_KERNEL);
-@@ -457,8 +436,11 @@ static vm_fault_t mmap_vmcore_fault(struct vm_fault *vmf)
+@@ -457,8 +436,11 @@ static vm_fault_t mmap_vmcore_fault(stru
  		return VM_FAULT_OOM;
  	if (!PageUptodate(page)) {
  		offset = (loff_t) index << PAGE_SHIFT;
@@ -1963,7 +3149,7 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  		if (rc < 0) {
  			unlock_page(page);
  			put_page(page);
-@@ -708,7 +690,7 @@ static int mmap_vmcore(struct file *file, struct vm_area_struct *vma)
+@@ -708,7 +690,7 @@ static int mmap_vmcore(struct file *file
  
  static const struct proc_ops vmcore_proc_ops = {
  	.proc_open	= open_vmcore,
@@ -1972,11 +3158,9 @@ index 6f1b8ddc6f7a..4eaeb645e759 100644
  	.proc_lseek	= default_llseek,
  	.proc_mmap	= mmap_vmcore,
  };
-diff --git a/fs/sysv/super.c b/fs/sysv/super.c
-index d1def0771a40..3365a30dc1e0 100644
---- a/fs/sysv/super.c
-+++ b/fs/sysv/super.c
-@@ -312,7 +312,9 @@ static int complete_read_super(struct super_block *sb, int silent, int size)
+--- a/fs/sysv/super.c~mm-nonmm-stable
++++ a/fs/sysv/super.c
+@@ -312,7 +312,9 @@ static int complete_read_super(struct su
  	sbi->s_firstinodezone = 2;
  
  	flavour_setup[sbi->s_type](sbi, &sb->s_max_links);
@@ -1987,11 +3171,9 @@ index d1def0771a40..3365a30dc1e0 100644
  	sbi->s_ndatazones = sbi->s_nzones - sbi->s_firstdatazone;
  	sbi->s_inodes_per_block = bsize >> 6;
  	sbi->s_inodes_per_block_1 = (bsize >> 6)-1;
-diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
-index 620821549b23..0f3a656293b0 100644
---- a/include/linux/crash_dump.h
-+++ b/include/linux/crash_dump.h
-@@ -24,11 +24,10 @@ extern int remap_oldmem_pfn_range(struct vm_area_struct *vma,
+--- a/include/linux/crash_dump.h~mm-nonmm-stable
++++ a/include/linux/crash_dump.h
+@@ -24,11 +24,10 @@ extern int remap_oldmem_pfn_range(struct
  				  unsigned long from, unsigned long pfn,
  				  unsigned long size, pgprot_t prot);
  
@@ -2007,7 +3189,7 @@ index 620821549b23..0f3a656293b0 100644
  
  void vmcore_cleanup(void);
  
-@@ -135,13 +134,11 @@ static inline int vmcore_add_device_dump(struct vmcoredd_data *data)
+@@ -135,13 +134,11 @@ static inline int vmcore_add_device_dump
  #endif /* CONFIG_PROC_VMCORE_DEVICE_DUMP */
  
  #ifdef CONFIG_PROC_VMCORE
@@ -2025,10 +3207,8 @@ index 620821549b23..0f3a656293b0 100644
  {
  	return -EOPNOTSUPP;
  }
-diff --git a/include/linux/list.h b/include/linux/list.h
-index dd6c2041d09c..d7d2bfa1a365 100644
---- a/include/linux/list.h
-+++ b/include/linux/list.h
+--- a/include/linux/list.h~mm-nonmm-stable
++++ a/include/linux/list.h
 @@ -35,7 +35,7 @@
  static inline void INIT_LIST_HEAD(struct list_head *list)
  {
@@ -2038,7 +3218,7 @@ index dd6c2041d09c..d7d2bfa1a365 100644
  }
  
  #ifdef CONFIG_DEBUG_LIST
-@@ -306,7 +306,7 @@ static inline int list_empty(const struct list_head *head)
+@@ -306,7 +306,7 @@ static inline int list_empty(const struc
  static inline void list_del_init_careful(struct list_head *entry)
  {
  	__list_del_entry(entry);
@@ -2047,7 +3227,7 @@ index dd6c2041d09c..d7d2bfa1a365 100644
  	smp_store_release(&entry->next, entry);
  }
  
-@@ -326,7 +326,7 @@ static inline void list_del_init_careful(struct list_head *entry)
+@@ -326,7 +326,7 @@ static inline void list_del_init_careful
  static inline int list_empty_careful(const struct list_head *head)
  {
  	struct list_head *next = smp_load_acquire(&head->next);
@@ -2056,10 +3236,8 @@ index dd6c2041d09c..d7d2bfa1a365 100644
  }
  
  /**
-diff --git a/include/linux/pipe_fs_i.h b/include/linux/pipe_fs_i.h
-index c00c618ef290..cb0fd633a610 100644
---- a/include/linux/pipe_fs_i.h
-+++ b/include/linux/pipe_fs_i.h
+--- a/include/linux/pipe_fs_i.h~mm-nonmm-stable
++++ a/include/linux/pipe_fs_i.h
 @@ -71,7 +71,7 @@ struct pipe_inode_info {
  	unsigned int files;
  	unsigned int r_counter;
@@ -2069,11 +3247,9 @@ index c00c618ef290..cb0fd633a610 100644
  	struct page *tmp_page;
  	struct fasync_struct *fasync_readers;
  	struct fasync_struct *fasync_writers;
-diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
-index 15b3d176b6b4..db4509587d2c 100644
---- a/include/linux/ptrace.h
-+++ b/include/linux/ptrace.h
-@@ -30,7 +30,7 @@ extern int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
+--- a/include/linux/ptrace.h~mm-nonmm-stable
++++ a/include/linux/ptrace.h
+@@ -30,7 +30,7 @@ extern int ptrace_access_vm(struct task_
  
  #define PT_SEIZED	0x00010000	/* SEIZE used, enable new behavior */
  #define PT_PTRACED	0x00000001
@@ -2082,10 +3258,8 @@ index 15b3d176b6b4..db4509587d2c 100644
  
  #define PT_OPT_FLAG_SHIFT	3
  /* PT_TRACE_* event enable flags */
-diff --git a/include/uapi/linux/acct.h b/include/uapi/linux/acct.h
-index 985b89068591..0e591152aa8a 100644
---- a/include/uapi/linux/acct.h
-+++ b/include/uapi/linux/acct.h
+--- a/include/uapi/linux/acct.h~mm-nonmm-stable
++++ a/include/uapi/linux/acct.h
 @@ -103,12 +103,13 @@ struct acct_v3
  /*
   *  accounting flags
@@ -2101,10 +3275,8 @@ index 985b89068591..0e591152aa8a 100644
  
  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
  #define ACCT_BYTEORDER	0x80	/* accounting file is big endian */
-diff --git a/include/uapi/linux/taskstats.h b/include/uapi/linux/taskstats.h
-index 12327d32378f..736154171489 100644
---- a/include/uapi/linux/taskstats.h
-+++ b/include/uapi/linux/taskstats.h
+--- a/include/uapi/linux/taskstats.h~mm-nonmm-stable
++++ a/include/uapi/linux/taskstats.h
 @@ -34,7 +34,7 @@
   */
  
@@ -2152,42 +3324,8 @@ index 12327d32378f..736154171489 100644
  };
  
  
-diff --git a/init/Kconfig b/init/Kconfig
-index ddcbefe535e9..90cb1ac936db 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -435,8 +435,8 @@ config CROSS_MEMORY_ATTACH
- 	  See the man page for more details.
- 
- config USELIB
--	bool "uselib syscall"
--	def_bool ALPHA || M68K || SPARC || X86_32 || IA32_EMULATION
-+	bool "uselib syscall (for libc5 and earlier)"
-+	default ALPHA || M68K || SPARC
- 	help
- 	  This option enables the uselib syscall, a system call used in the
- 	  dynamic linker from libc5 and earlier.  glibc does not use this
-@@ -1361,6 +1361,16 @@ config BOOT_CONFIG
- 
- 	  If unsure, say Y.
- 
-+config INITRAMFS_PRESERVE_MTIME
-+	bool "Preserve cpio archive mtimes in initramfs"
-+	default y
-+	help
-+	  Each entry in an initramfs cpio archive carries an mtime value. When
-+	  enabled, extracted cpio items take this mtime, with directory mtime
-+	  setting deferred until after creation of any child entries.
-+
-+	  If unsure, say Y.
-+
- choice
- 	prompt "Compiler optimization level"
- 	default CC_OPTIMIZE_FOR_PERFORMANCE
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 2f3d96dc3db6..dc84cf756cea 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
+--- a/init/initramfs.c~mm-nonmm-stable
++++ a/init/initramfs.c
 @@ -17,8 +17,11 @@
  #include <linux/init_syscalls.h>
  #include <linux/umh.h>
@@ -2202,7 +3340,7 @@ index 2f3d96dc3db6..dc84cf756cea 100644
  {
  	ssize_t out = 0;
  
-@@ -33,6 +36,13 @@ static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
+@@ -33,6 +36,13 @@ static ssize_t __init xwrite(struct file
  		} else if (rv == 0)
  			break;
  
@@ -2280,7 +3418,7 @@ index 2f3d96dc3db6..dc84cf756cea 100644
  
  static __initdata time64_t mtime;
  
-@@ -166,15 +186,16 @@ static __initdata unsigned long body_len, name_len;
+@@ -166,15 +186,16 @@ static __initdata unsigned long body_len
  static __initdata uid_t uid;
  static __initdata gid_t gid;
  static __initdata unsigned rdev;
@@ -2356,10 +3494,38 @@ index 2f3d96dc3db6..dc84cf756cea 100644
  		eat(body_len);
  		state = SkipIt;
  		return 0;
-diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-index 7c08eb3c258d..54cb6264f8cf 100644
---- a/ipc/mqueue.c
-+++ b/ipc/mqueue.c
+--- a/init/Kconfig~mm-nonmm-stable
++++ a/init/Kconfig
+@@ -418,8 +418,8 @@ config CROSS_MEMORY_ATTACH
+ 	  See the man page for more details.
+ 
+ config USELIB
+-	bool "uselib syscall"
+-	def_bool ALPHA || M68K || SPARC || X86_32 || IA32_EMULATION
++	bool "uselib syscall (for libc5 and earlier)"
++	default ALPHA || M68K || SPARC
+ 	help
+ 	  This option enables the uselib syscall, a system call used in the
+ 	  dynamic linker from libc5 and earlier.  glibc does not use this
+@@ -1344,6 +1344,16 @@ config BOOT_CONFIG
+ 
+ 	  If unsure, say Y.
+ 
++config INITRAMFS_PRESERVE_MTIME
++	bool "Preserve cpio archive mtimes in initramfs"
++	default y
++	help
++	  Each entry in an initramfs cpio archive carries an mtime value. When
++	  enabled, extracted cpio items take this mtime, with directory mtime
++	  setting deferred until after creation of any child entries.
++
++	  If unsure, say Y.
++
+ choice
+ 	prompt "Compiler optimization level"
+ 	default CC_OPTIMIZE_FOR_PERFORMANCE
+--- a/ipc/mqueue.c~mm-nonmm-stable
++++ a/ipc/mqueue.c
 @@ -45,6 +45,7 @@
  
  struct mqueue_fs_context {
@@ -2368,7 +3534,7 @@ index 7c08eb3c258d..54cb6264f8cf 100644
  };
  
  #define MQUEUE_MAGIC	0x19800202
-@@ -427,6 +428,14 @@ static int mqueue_get_tree(struct fs_context *fc)
+@@ -427,6 +428,14 @@ static int mqueue_get_tree(struct fs_con
  {
  	struct mqueue_fs_context *ctx = fc->fs_private;
  
@@ -2383,7 +3549,7 @@ index 7c08eb3c258d..54cb6264f8cf 100644
  	return get_tree_keyed(fc, mqueue_fill_super, ctx->ipc_ns);
  }
  
-@@ -454,6 +463,10 @@ static int mqueue_init_fs_context(struct fs_context *fc)
+@@ -454,6 +463,10 @@ static int mqueue_init_fs_context(struct
  	return 0;
  }
  
@@ -2394,7 +3560,7 @@ index 7c08eb3c258d..54cb6264f8cf 100644
  static struct vfsmount *mq_create_mount(struct ipc_namespace *ns)
  {
  	struct mqueue_fs_context *ctx;
-@@ -465,6 +478,7 @@ static struct vfsmount *mq_create_mount(struct ipc_namespace *ns)
+@@ -465,6 +478,7 @@ static struct vfsmount *mq_create_mount(
  		return ERR_CAST(fc);
  
  	ctx = fc->fs_private;
@@ -2402,11 +3568,9 @@ index 7c08eb3c258d..54cb6264f8cf 100644
  	put_ipc_ns(ctx->ipc_ns);
  	ctx->ipc_ns = get_ipc_ns(ns);
  	put_user_ns(fc->user_ns);
-diff --git a/ipc/sem.c b/ipc/sem.c
-index 0dbdb98fdf2d..c8496f98b139 100644
---- a/ipc/sem.c
-+++ b/ipc/sem.c
-@@ -766,7 +766,6 @@ static int perform_atomic_semop(struct sem_array *sma, struct sem_queue *q)
+--- a/ipc/sem.c~mm-nonmm-stable
++++ a/ipc/sem.c
+@@ -766,7 +766,6 @@ static int perform_atomic_semop(struct s
  	for (sop = sops; sop < sops + nsops; sop++) {
  		curr = &sma->sems[sop->sem_num];
  		sem_op = sop->sem_op;
@@ -2414,7 +3578,7 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  
  		if (sop->sem_flg & SEM_UNDO) {
  			int undo = un->semadj[sop->sem_num] - sem_op;
-@@ -1430,7 +1429,6 @@ static int semctl_main(struct ipc_namespace *ns, int semid, int semnum,
+@@ -1430,7 +1429,6 @@ static int semctl_main(struct ipc_namesp
  	if (err)
  		goto out_rcu_wakeup;
  
@@ -2422,7 +3586,7 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  	switch (cmd) {
  	case GETALL:
  	{
-@@ -1995,7 +1993,9 @@ long __do_semtimedop(int semid, struct sembuf *sops,
+@@ -1995,7 +1993,9 @@ long __do_semtimedop(int semid, struct s
  	int max, locknum;
  	bool undos = false, alter = false, dupsop = false;
  	struct sem_queue queue;
@@ -2433,7 +3597,7 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  
  	if (nsops < 1 || semid < 0)
  		return -EINVAL;
-@@ -2003,12 +2003,11 @@ long __do_semtimedop(int semid, struct sembuf *sops,
+@@ -2003,12 +2003,11 @@ long __do_semtimedop(int semid, struct s
  		return -E2BIG;
  
  	if (timeout) {
@@ -2451,7 +3615,7 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  	}
  
  
-@@ -2166,10 +2165,8 @@ long __do_semtimedop(int semid, struct sembuf *sops,
+@@ -2166,10 +2165,8 @@ long __do_semtimedop(int semid, struct s
  		sem_unlock(sma, locknum);
  		rcu_read_unlock();
  
@@ -2464,7 +3628,7 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  
  		/*
  		 * fastpath: the semop has completed, either successfully or
-@@ -2210,7 +2207,7 @@ long __do_semtimedop(int semid, struct sembuf *sops,
+@@ -2210,7 +2207,7 @@ long __do_semtimedop(int semid, struct s
  		/*
  		 * If an interrupt occurred we have to clean up the queue.
  		 */
@@ -2473,11 +3637,9 @@ index 0dbdb98fdf2d..c8496f98b139 100644
  			error = -EAGAIN;
  	} while (error == -EINTR && !signal_pending(current)); /* spurious */
  
-diff --git a/kernel/hung_task.c b/kernel/hung_task.c
-index 52501e5f7655..cff3ae8c818f 100644
---- a/kernel/hung_task.c
-+++ b/kernel/hung_task.c
-@@ -73,7 +73,7 @@ static unsigned int __read_mostly sysctl_hung_task_all_cpu_backtrace;
+--- a/kernel/hung_task.c~mm-nonmm-stable
++++ a/kernel/hung_task.c
+@@ -73,7 +73,7 @@ static unsigned int __read_mostly sysctl
   * hung task is detected:
   */
  unsigned int __read_mostly sysctl_hung_task_panic =
@@ -2486,11 +3648,9 @@ index 52501e5f7655..cff3ae8c818f 100644
  
  static int
  hung_task_panic(struct notifier_block *this, unsigned long event, void *ptr)
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index 68480f731192..d08904a27362 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -768,7 +768,6 @@ static struct page *kimage_alloc_page(struct kimage *image,
+--- a/kernel/kexec_core.c~mm-nonmm-stable
++++ a/kernel/kexec_core.c
+@@ -768,7 +768,6 @@ static struct page *kimage_alloc_page(st
  				kimage_free_pages(old_page);
  				continue;
  			}
@@ -2498,7 +3658,7 @@ index 68480f731192..d08904a27362 100644
  			page = old_page;
  			break;
  		}
-@@ -788,7 +787,6 @@ static int kimage_load_normal_segment(struct kimage *image,
+@@ -788,7 +787,6 @@ static int kimage_load_normal_segment(st
  	unsigned char __user *buf = NULL;
  	unsigned char *kbuf = NULL;
  
@@ -2506,11 +3666,9 @@ index 68480f731192..d08904a27362 100644
  	if (image->file_mode)
  		kbuf = segment->kbuf;
  	else
-diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-index a46a3723bc66..f4f8cb0435b4 100644
---- a/kernel/pid_namespace.c
-+++ b/kernel/pid_namespace.c
-@@ -52,7 +52,7 @@ static struct kmem_cache *create_pid_cachep(unsigned int level)
+--- a/kernel/pid_namespace.c~mm-nonmm-stable
++++ a/kernel/pid_namespace.c
+@@ -52,7 +52,7 @@ static struct kmem_cache *create_pid_cac
  	/* Name collision forces to do allocation under mutex. */
  	if (!*pkc)
  		*pkc = kmem_cache_create(name, len, 0,
@@ -2519,11 +3677,9 @@ index a46a3723bc66..f4f8cb0435b4 100644
  	mutex_unlock(&pid_caches_mutex);
  	/* current can fail, but someone else can succeed. */
  	return READ_ONCE(*pkc);
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index ccc4b465775b..49c29baf9907 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -829,11 +829,7 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
+--- a/kernel/ptrace.c~mm-nonmm-stable
++++ a/kernel/ptrace.c
+@@ -829,11 +829,7 @@ static long ptrace_get_rseq_configuratio
  }
  #endif
  
@@ -2535,7 +3691,7 @@ index ccc4b465775b..49c29baf9907 100644
  
  #ifdef PTRACE_SINGLEBLOCK
  #define is_singleblock(request)		((request) == PTRACE_SINGLEBLOCK)
-@@ -1221,9 +1217,7 @@ int ptrace_request(struct task_struct *child, long request,
+@@ -1221,9 +1217,7 @@ int ptrace_request(struct task_struct *c
  	}
  #endif
  
@@ -2545,10 +3701,8 @@ index ccc4b465775b..49c29baf9907 100644
  #ifdef PTRACE_SINGLEBLOCK
  	case PTRACE_SINGLEBLOCK:
  #endif
-diff --git a/kernel/taskstats.c b/kernel/taskstats.c
-index bcac5a9043aa..f7e246336218 100644
---- a/kernel/taskstats.c
-+++ b/kernel/taskstats.c
+--- a/kernel/taskstats.c~mm-nonmm-stable
++++ a/kernel/taskstats.c
 @@ -9,6 +9,7 @@
  #include <linux/kernel.h>
  #include <linux/taskstats_kern.h>
@@ -2557,7 +3711,7 @@ index bcac5a9043aa..f7e246336218 100644
  #include <linux/delayacct.h>
  #include <linux/cpumask.h>
  #include <linux/percpu.h>
-@@ -153,6 +154,23 @@ static void send_cpu_listeners(struct sk_buff *skb,
+@@ -153,6 +154,23 @@ static void send_cpu_listeners(struct sk
  	up_write(&listeners->sem);
  }
  
@@ -2581,7 +3735,7 @@ index bcac5a9043aa..f7e246336218 100644
  static void fill_stats(struct user_namespace *user_ns,
  		       struct pid_namespace *pid_ns,
  		       struct task_struct *tsk, struct taskstats *stats)
-@@ -175,6 +193,9 @@ static void fill_stats(struct user_namespace *user_ns,
+@@ -175,6 +193,9 @@ static void fill_stats(struct user_names
  
  	/* fill in extended acct fields */
  	xacct_add_tsk(stats, tsk);
@@ -2591,7 +3745,7 @@ index bcac5a9043aa..f7e246336218 100644
  }
  
  static int fill_stats_for_pid(pid_t pid, struct taskstats *stats)
-@@ -620,6 +641,8 @@ void taskstats_exit(struct task_struct *tsk, int group_dead)
+@@ -620,6 +641,8 @@ void taskstats_exit(struct task_struct *
  		goto err;
  
  	fill_stats(&init_user_ns, &init_pid_ns, tsk, stats);
@@ -2600,7 +3754,7 @@ index bcac5a9043aa..f7e246336218 100644
  
  	/*
  	 * Doesn't matter if tsk is the leader or the last group member leaving
-@@ -665,6 +688,7 @@ static struct genl_family family __ro_after_init = {
+@@ -665,6 +688,7 @@ static struct genl_family family __ro_af
  	.module		= THIS_MODULE,
  	.ops		= taskstats_ops,
  	.n_ops		= ARRAY_SIZE(taskstats_ops),
@@ -2608,11 +3762,9 @@ index bcac5a9043aa..f7e246336218 100644
  };
  
  /* Needed early in initialization */
-diff --git a/kernel/tsacct.c b/kernel/tsacct.c
-index 1d261fbe367b..4252f0645b9e 100644
---- a/kernel/tsacct.c
-+++ b/kernel/tsacct.c
-@@ -23,15 +23,20 @@ void bacct_add_tsk(struct user_namespace *user_ns,
+--- a/kernel/tsacct.c~mm-nonmm-stable
++++ a/kernel/tsacct.c
+@@ -23,15 +23,20 @@ void bacct_add_tsk(struct user_namespace
  {
  	const struct cred *tcred;
  	u64 utime, stime, utimescaled, stimescaled;
@@ -2635,7 +3787,7 @@ index 1d261fbe367b..4252f0645b9e 100644
  	stats->ac_etime = delta;
  	/* Convert to seconds for btime (note y2106 limit) */
  	btime = ktime_get_real_seconds() - div_u64(delta, USEC_PER_SEC);
-@@ -51,6 +56,7 @@ void bacct_add_tsk(struct user_namespace *user_ns,
+@@ -51,6 +56,7 @@ void bacct_add_tsk(struct user_namespace
  	stats->ac_nice	 = task_nice(tsk);
  	stats->ac_sched	 = tsk->policy;
  	stats->ac_pid	 = task_pid_nr_ns(tsk, pid_ns);
@@ -2643,11 +3795,9 @@ index 1d261fbe367b..4252f0645b9e 100644
  	rcu_read_lock();
  	tcred = __task_cred(tsk);
  	stats->ac_uid	 = from_kuid_munged(user_ns, tcred->uid);
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 9166220457bc..ecb0e8346e65 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -57,7 +57,7 @@ int __read_mostly sysctl_hardlockup_all_cpu_backtrace;
+--- a/kernel/watchdog.c~mm-nonmm-stable
++++ a/kernel/watchdog.c
+@@ -57,7 +57,7 @@ int __read_mostly sysctl_hardlockup_all_
   * Should we panic when a soft-lockup or hard-lockup occurs:
   */
  unsigned int __read_mostly hardlockup_panic =
@@ -2656,7 +3806,7 @@ index 9166220457bc..ecb0e8346e65 100644
  /*
   * We may not want to enable hard lockup detection by default in all cases,
   * for example when running the kernel as a guest on a hypervisor. In these
-@@ -168,7 +168,7 @@ static struct cpumask watchdog_allowed_mask __read_mostly;
+@@ -168,7 +168,7 @@ static struct cpumask watchdog_allowed_m
  
  /* Global variables, exported for sysctl */
  unsigned int __read_mostly softlockup_panic =
@@ -2665,11 +3815,20 @@ index 9166220457bc..ecb0e8346e65 100644
  
  static bool softlockup_initialized __read_mostly;
  static u64 __read_mostly sample_period;
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 075cd25363ac..8fa08100dbd8 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1071,13 +1071,6 @@ config BOOTPARAM_SOFTLOCKUP_PANIC
+--- a/lib/glob.c~mm-nonmm-stable
++++ a/lib/glob.c
+@@ -45,7 +45,7 @@ bool __pure glob_match(char const *pat,
+ 	 * (no exception for /), it can be easily proved that there's
+ 	 * never a need to backtrack multiple levels.
+ 	 */
+-	char const *back_pat = NULL, *back_str = back_str;
++	char const *back_pat = NULL, *back_str;
+ 
+ 	/*
+ 	 * Loop over each token (character or class) in pat, matching
+--- a/lib/Kconfig.debug~mm-nonmm-stable
++++ a/lib/Kconfig.debug
+@@ -1070,13 +1070,6 @@ config BOOTPARAM_SOFTLOCKUP_PANIC
  
  	  Say N if unsure.
  
@@ -2683,7 +3842,7 @@ index 075cd25363ac..8fa08100dbd8 100644
  config HARDLOCKUP_DETECTOR_PERF
  	bool
  	select SOFTLOCKUP_DETECTOR
-@@ -1119,13 +1112,6 @@ config BOOTPARAM_HARDLOCKUP_PANIC
+@@ -1118,13 +1111,6 @@ config BOOTPARAM_HARDLOCKUP_PANIC
  
  	  Say N if unsure.
  
@@ -2697,7 +3856,7 @@ index 075cd25363ac..8fa08100dbd8 100644
  config DETECT_HUNG_TASK
  	bool "Detect Hung Tasks"
  	depends on DEBUG_KERNEL
-@@ -1173,13 +1159,6 @@ config BOOTPARAM_HUNG_TASK_PANIC
+@@ -1172,13 +1158,6 @@ config BOOTPARAM_HUNG_TASK_PANIC
  
  	  Say N if unsure.
  
@@ -2711,23 +3870,8 @@ index 075cd25363ac..8fa08100dbd8 100644
  config WQ_WATCHDOG
  	bool "Detect Workqueue Stalls"
  	depends on DEBUG_KERNEL
-diff --git a/lib/glob.c b/lib/glob.c
-index 85ecbda45cd8..15b73f490720 100644
---- a/lib/glob.c
-+++ b/lib/glob.c
-@@ -45,7 +45,7 @@ bool __pure glob_match(char const *pat, char const *str)
- 	 * (no exception for /), it can be easily proved that there's
- 	 * never a need to backtrack multiple levels.
- 	 */
--	char const *back_pat = NULL, *back_str = back_str;
-+	char const *back_pat = NULL, *back_str;
- 
- 	/*
- 	 * Loop over each token (character or class) in pat, matching
-diff --git a/lib/string.c b/lib/string.c
-index 485777c9da83..6f334420f687 100644
---- a/lib/string.c
-+++ b/lib/string.c
+--- a/lib/string.c~mm-nonmm-stable
++++ a/lib/string.c
 @@ -517,21 +517,13 @@ EXPORT_SYMBOL(strnlen);
  size_t strspn(const char *s, const char *accept)
  {
@@ -2774,11 +3918,9 @@ index 485777c9da83..6f334420f687 100644
  }
  EXPORT_SYMBOL(strcspn);
  #endif
-diff --git a/lib/test_meminit.c b/lib/test_meminit.c
-index 3ca717f11397..c95db11a6906 100644
---- a/lib/test_meminit.c
-+++ b/lib/test_meminit.c
-@@ -279,13 +279,18 @@ static int __init do_kmem_cache_rcu_persistent(int size, int *total_failures)
+--- a/lib/test_meminit.c~mm-nonmm-stable
++++ a/lib/test_meminit.c
+@@ -279,13 +279,18 @@ static int __init do_kmem_cache_rcu_pers
  	c = kmem_cache_create("test_cache", size, size, SLAB_TYPESAFE_BY_RCU,
  			      NULL);
  	buf = kmem_cache_alloc(c, GFP_KERNEL);
@@ -2798,7 +3940,7 @@ index 3ca717f11397..c95db11a6906 100644
  		kfree(buf_contents);
  		goto out;
  	}
-@@ -306,11 +311,14 @@ static int __init do_kmem_cache_rcu_persistent(int size, int *total_failures)
+@@ -306,11 +311,14 @@ static int __init do_kmem_cache_rcu_pers
  		}
  	}
  
@@ -2814,10 +3956,8 @@ index 3ca717f11397..c95db11a6906 100644
  	*total_failures += fail;
  	return 1;
  }
-diff --git a/lib/test_string.c b/lib/test_string.c
-index 9dfd6f52de92..c5cb92fb710e 100644
---- a/lib/test_string.c
-+++ b/lib/test_string.c
+--- a/lib/test_string.c~mm-nonmm-stable
++++ a/lib/test_string.c
 @@ -179,6 +179,34 @@ static __init int strnchr_selftest(void)
  	return 0;
  }
@@ -2853,7 +3993,7 @@ index 9dfd6f52de92..c5cb92fb710e 100644
  static __exit void string_selftest_remove(void)
  {
  }
-@@ -212,6 +240,11 @@ static __init int string_selftest_init(void)
+@@ -212,6 +240,11 @@ static __init int string_selftest_init(v
  	if (subtest)
  		goto fail;
  
@@ -2865,10 +4005,18 @@ index 9dfd6f52de92..c5cb92fb710e 100644
  	pr_info("String selftests succeeded\n");
  	return 0;
  fail:
-diff --git a/scripts/bloat-o-meter b/scripts/bloat-o-meter
-index dcd8d8750b8b..4dd6a804ce41 100755
---- a/scripts/bloat-o-meter
-+++ b/scripts/bloat-o-meter
+--- a/MAINTAINERS~mm-nonmm-stable
++++ a/MAINTAINERS
+@@ -15979,7 +15979,6 @@ F:	include/asm-generic/syscall.h
+ F:	include/linux/ptrace.h
+ F:	include/linux/regset.h
+ F:	include/uapi/linux/ptrace.h
+-F:	include/uapi/linux/ptrace.h
+ F:	kernel/ptrace.c
+ 
+ PULSE8-CEC DRIVER
+--- a/scripts/bloat-o-meter~mm-nonmm-stable
++++ a/scripts/bloat-o-meter
 @@ -36,6 +36,7 @@ def getsizes(file, format):
                  if name.startswith("__se_compat_sys"): continue
                  if name.startswith("__addressable_"): continue
@@ -2877,10 +4025,8 @@ index dcd8d8750b8b..4dd6a804ce41 100755
                  # statics and some other optimizations adds random .NUMBER
                  name = re_NUMBER.sub('', name)
                  sym[name] = sym.get(name, 0) + int(size, 16)
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 5fbad61fe490..7075e26ab2c4 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
+--- a/scripts/decode_stacktrace.sh~mm-nonmm-stable
++++ a/scripts/decode_stacktrace.sh
 @@ -45,8 +45,13 @@ else
  	fi
  fi
@@ -2953,10 +4099,8 @@ index 5fbad61fe490..7075e26ab2c4 100755
  	fi
  
  	# addr2line doesn't return a proper error code if it fails, so
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index 6bd5221d37b8..ab123b498fd9 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
+--- a/scripts/get_maintainer.pl~mm-nonmm-stable
++++ a/scripts/get_maintainer.pl
 @@ -983,6 +983,7 @@ sub get_maintainers {
  	}
  
@@ -2965,18 +4109,14 @@ index 6bd5221d37b8..ab123b498fd9 100755
  	    my ($name, $address) = parse_email($email);
  
  	    my $tmp_email = format_email($name, $address, $email_usename);
-diff --git a/tools/accounting/.gitignore b/tools/accounting/.gitignore
-index c45fb4ed4309..522a690aaf3d 100644
---- a/tools/accounting/.gitignore
-+++ b/tools/accounting/.gitignore
+--- a/tools/accounting/.gitignore~mm-nonmm-stable
++++ a/tools/accounting/.gitignore
 @@ -1,2 +1,3 @@
  # SPDX-License-Identifier: GPL-2.0-only
  getdelays
 +procacct
-diff --git a/tools/accounting/Makefile b/tools/accounting/Makefile
-index 03687f19cbb1..11def1ad046c 100644
---- a/tools/accounting/Makefile
-+++ b/tools/accounting/Makefile
+--- a/tools/accounting/Makefile~mm-nonmm-stable
++++ a/tools/accounting/Makefile
 @@ -2,7 +2,7 @@
  CC := $(CROSS_COMPILE)gcc
  CFLAGS := -I../../usr/include
@@ -2986,11 +4126,8 @@ index 03687f19cbb1..11def1ad046c 100644
  
  all: $(PROGS)
  
-diff --git a/tools/accounting/procacct.c b/tools/accounting/procacct.c
-new file mode 100644
-index 000000000000..8353d3237e50
 --- /dev/null
-+++ b/tools/accounting/procacct.c
++++ a/tools/accounting/procacct.c
 @@ -0,0 +1,417 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* procacct.c
@@ -3409,10 +4546,8 @@ index 000000000000..8353d3237e50
 +		close(cfd);
 +	return 0;
 +}
-diff --git a/usr/gen_init_cpio.c b/usr/gen_init_cpio.c
-index 0e2c8a5838b1..dc838e26a5b9 100644
---- a/usr/gen_init_cpio.c
-+++ b/usr/gen_init_cpio.c
+--- a/usr/gen_init_cpio.c~mm-nonmm-stable
++++ a/usr/gen_init_cpio.c
 @@ -1,6 +1,8 @@
  // SPDX-License-Identifier: GPL-2.0
  #include <stdio.h>
@@ -3444,7 +4579,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  		0,			/* ino */
  		0,			/* mode */
  		(long) 0,		/* uid */
-@@ -109,7 +113,7 @@ static int cpio_mkslink(const char *name, const char *target,
+@@ -109,7 +113,7 @@ static int cpio_mkslink(const char *name
  		name++;
  	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
  	       "%08X%08X%08X%08X%08X%08X%08X",
@@ -3453,7 +4588,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  		ino++,			/* ino */
  		S_IFLNK | mode,		/* mode */
  		(long) uid,		/* uid */
-@@ -158,7 +162,7 @@ static int cpio_mkgeneric(const char *name, unsigned int mode,
+@@ -158,7 +162,7 @@ static int cpio_mkgeneric(const char *na
  		name++;
  	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
  	       "%08X%08X%08X%08X%08X%08X%08X",
@@ -3462,7 +4597,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  		ino++,			/* ino */
  		mode,			/* mode */
  		(long) uid,		/* uid */
-@@ -252,7 +256,7 @@ static int cpio_mknod(const char *name, unsigned int mode,
+@@ -252,7 +256,7 @@ static int cpio_mknod(const char *name,
  		name++;
  	sprintf(s,"%s%08X%08X%08lX%08lX%08X%08lX"
  	       "%08X%08X%08X%08X%08X%08X%08X",
@@ -3471,7 +4606,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  		ino++,			/* ino */
  		mode,			/* mode */
  		(long) uid,		/* uid */
-@@ -292,19 +296,42 @@ static int cpio_mknod_line(const char *line)
+@@ -292,19 +296,42 @@ static int cpio_mknod_line(const char *l
  	return rc;
  }
  
@@ -3516,7 +4651,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  
  	mode |= S_IFREG;
  
-@@ -326,29 +353,29 @@ static int cpio_mkfile(const char *name, const char *location,
+@@ -326,29 +353,29 @@ static int cpio_mkfile(const char *name,
  		buf.st_mtime = 0xffffffff;
  	}
  
@@ -3554,7 +4689,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  			ino,			/* ino */
  			mode,			/* mode */
  			(long) uid,		/* uid */
-@@ -361,28 +388,39 @@ static int cpio_mkfile(const char *name, const char *location,
+@@ -361,28 +388,39 @@ static int cpio_mkfile(const char *name,
  			0,			/* rmajor */
  			0,			/* rminor */
  			namesize,		/* namesize */
@@ -3602,7 +4737,7 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  	return rc;
  }
  
-@@ -458,7 +496,7 @@ static int cpio_mkfile_line(const char *line)
+@@ -458,7 +496,7 @@ static int cpio_mkfile_line(const char *
  static void usage(const char *prog)
  {
  	fprintf(stderr, "Usage:\n"
@@ -3640,3 +4775,4 @@ index 0e2c8a5838b1..dc838e26a5b9 100644
  		case 'h':
  		case '?':
  			usage(argv[0]);
+_

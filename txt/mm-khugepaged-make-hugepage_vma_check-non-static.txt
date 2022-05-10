@@ -1,0 +1,18 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: khugepaged: make hugepage_vma_check() non-static
+
+The hugepage_vma_check() could be reused by khugepaged_enter() and
+khugepaged_enter_vma_merge(), but it is static in khugepaged.c.  Make it
+non-static and declare it in khugepaged.h.
+
+Link: https://lkml.kernel.org/r/20220510203222.24246-7-shy828301@gmail.com
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Zi Yan <ziy@nvidia.com>

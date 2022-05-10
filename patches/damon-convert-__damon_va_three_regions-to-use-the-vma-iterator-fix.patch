@@ -1,0 +1,30 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: damon-convert-__damon_va_three_regions-to-use-the-vma-iterator-fix
+
+vaddr-test.h no longer needs internal.h
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: SeongJae Park <sj@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/damon/vaddr-test.h |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/mm/damon/vaddr-test.h~damon-convert-__damon_va_three_regions-to-use-the-vma-iterator-fix
++++ a/mm/damon/vaddr-test.h
+@@ -13,7 +13,6 @@
+ #define _DAMON_VADDR_TEST_H
+ 
+ #include <kunit/test.h>
+-#include "../../mm/internal.h"
+ 
+ static void __link_vmas(struct maple_tree *mt, struct vm_area_struct *vmas,
+ 			ssize_t nr_vmas)
+_
