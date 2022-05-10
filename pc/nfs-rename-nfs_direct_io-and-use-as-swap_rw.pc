@@ -1,3 +1,0 @@
-fs/nfs/direct.c
-fs/nfs/file.c
-include/linux/nfs_fs.h

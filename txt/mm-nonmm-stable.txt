@@ -1,3 +1,282 @@
+commit d60c4d01a98bc1942dba6e3adc02031f5519f94b
+Author: Waiman Long <longman@redhat.com>
+Date:   Mon May 9 18:29:21 2022 -0700
+
+    ipc/mqueue: use get_tree_nodev() in mqueue_get_tree()
+    
+    When running the stress-ng clone benchmark with multiple testing threads,
+    it was found that there were significant spinlock contention in sget_fc().
+    The contended spinlock was the sb_lock.  It is under heavy contention
+    because the following code in the critcal section of sget_fc():
+    
+      hlist_for_each_entry(old, &fc->fs_type->fs_supers, s_instances) {
+          if (test(old, fc))
+              goto share_extant_sb;
+      }
+    
+    After testing with added instrumentation code, it was found that the
+    benchmark could generate thousands of ipc namespaces with the
+    corresponding number of entries in the mqueue's fs_supers list where the
+    namespaces are the key for the search.  This leads to excessive time in
+    scanning the list for a match.
+    
+    Looking back at the mqueue calling sequence leading to sget_fc():
+    
+      mq_init_ns()
+      => mq_create_mount()
+      => fc_mount()
+      => vfs_get_tree()
+      => mqueue_get_tree()
+      => get_tree_keyed()
+      => vfs_get_super()
+      => sget_fc()
+    
+    Currently, mq_init_ns() is the only mqueue function that will indirectly
+    call mqueue_get_tree() with a newly allocated ipc namespace as the key for
+    searching.  As a result, there will never be a match with the exising ipc
+    namespaces stored in the mqueue's fs_supers list.
+    
+    So using get_tree_keyed() to do an existing ipc namespace search is just a
+    waste of time.  Instead, we could use get_tree_nodev() to eliminate the
+    useless search.  By doing so, we can greatly reduce the sb_lock hold time
+    and avoid the spinlock contention problem in case a large number of ipc
+    namespaces are present.
+    
+    Of course, if the code is modified in the future to allow
+    mqueue_get_tree() to be called with an existing ipc namespace instead of a
+    new one, we will have to use get_tree_keyed() in this case.
+    
+    The following stress-ng clone benchmark command was run on a 2-socket
+    48-core Intel system:
+    
+    ./stress-ng --clone 32 --verbose --oomable --metrics-brief -t 20
+    
+    The "bogo ops/s" increased from 5948.45 before patch to 9137.06 after
+    patch. This is an increase of 54% in performance.
+    
+    Link: https://lkml.kernel.org/r/20220121172315.19652-1-longman@redhat.com
+    Fixes: 935c6912b198 ("ipc: Convert mqueue fs to fs_context")
+    Signed-off-by: Waiman Long <longman@redhat.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: David Howells <dhowells@redhat.com>
+    Cc: Manfred Spraul <manfred@colorfullife.com>
+    Cc: Davidlohr Bueso <dave@stgolabs.net>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 49c9dd0df65d547a58642d2f717eeb560e1db140
+Author: Prakash Sangappa <prakash.sangappa@oracle.com>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    ipc: update semtimedop() to use hrtimer
+    
+    semtimedop() should be converted to use hrtimer like it has been done for
+    most of the system calls with timeouts.  This system call already takes a
+    struct timespec as an argument and can therefore provide finer granularity
+    timed wait.
+    
+    Link: https://lkml.kernel.org/r/1651187881-2858-1-git-send-email-prakash.sangappa@oracle.com
+    Signed-off-by: Prakash Sangappa <prakash.sangappa@oracle.com>
+    Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+    Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+    Reviewed-by: Manfred Spraul <manfred@colorfullife.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 0e900029655327bb5326ced02eff97667a079039
+Author: Michal Orzel <michalorzel.eng@gmail.com>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    ipc/sem: remove redundant assignments
+    
+    Get rid of redundant assignments which end up in values not being
+    read either because they are overwritten or the function ends.
+    
+    Reported by clang-tidy [deadcode.DeadStores]
+    
+    Link: https://lkml.kernel.org/r/20220409101933.207157-1-michalorzel.eng@gmail.com
+    Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+    Reviewed-by: Tom Rix <trix@redhat.com>
+    Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+    Cc: Nick Desaulniers <ndesaulniers@google.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 800c24dc34b93d2014f3952683f8d5e9309e1b73
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    initramfs: support cpio extraction with file checksums
+    
+    Add support for extraction of checksum-enabled "070702" cpio archives,
+    specified in Documentation/driver-api/early-userspace/buffer-format.rst.
+    Fail extraction if the calculated file data checksum doesn't match the
+    value carried in the header.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-7-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit ea8048719a0c46d95e6ab925bf0924e7198d9971
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    gen_init_cpio: support file checksum archiving
+    
+    Documentation/driver-api/early-userspace/buffer-format.rst includes the
+    specification for checksum-enabled cpio archives.  Implement support for
+    this format in gen_init_cpio via a new '-c' parameter.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-6-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3a2699cfbe317f6e1b9c84d2f10ab7debb1c79dc
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:20 2022 -0700
+
+    gen_init_cpio: fix short read file handling
+    
+    When processing a "file" entry, gen_init_cpio attempts to allocate a
+    buffer large enough to stage the entire contents of the source file.  It
+    then attempts to fill the buffer via a single read() call and subsequently
+    writes out the entire buffer length, without checking that read() returned
+    the full length, potentially writing uninitialized buffer memory.
+    
+    Fix this by breaking up file I/O into 64k chunks and only writing the
+    length returned by the prior read() call.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-5-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 1274aea127b2e8c9a4b9cbcc3ea6baf78990a958
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: add INITRAMFS_PRESERVE_MTIME Kconfig option
+    
+    initramfs cpio mtime preservation, as implemented in commit 889d51a10712
+    ("initramfs: add option to preserve mtime from initramfs cpio images"),
+    uses a linked list to defer directory mtime processing until after all
+    other items in the cpio archive have been processed.  This is done to
+    ensure that parent directory mtimes aren't overwritten via subsequent
+    child creation.
+    
+    The lkml link below indicates that the mtime retention use case was for
+    embedded devices with applications running exclusively out of initramfs,
+    where the 32-bit mtime value provided a rough file version identifier.
+    Linux distributions which discard an extracted initramfs immediately after
+    the root filesystem has been mounted may want to avoid the unnecessary
+    overhead.
+    
+    This change adds a new INITRAMFS_PRESERVE_MTIME Kconfig option, which can
+    be used to disable on-by-default mtime retention and in turn speed up
+    initramfs extraction, particularly for cpio archives with large directory
+    counts.
+    
+    Benchmarks with a one million directory cpio archive extracted 20 times
+    demonstrated:
+                                    mean extraction time (s)        std dev
+    INITRAMFS_PRESERVE_MTIME=y              3.808                    0.006
+    INITRAMFS_PRESERVE_MTIME unset          3.056                    0.004
+    
+    The above extraction times were measured using ftrace (initcall_finish -
+    initcall_start) values for populate_rootfs() with initramfs_async
+    disabled.
+    
+    [ddiss@suse.de: rebase atop dir_entry.name flexible array member and drop separate initramfs_mtime.h header]
+    Link: https://lkml.org/lkml/2008/9/3/424
+    Link: https://lkml.kernel.org/r/20220404093429.27570-4-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit fcb7aedd2e90c4ad43f7f01827014df8c6f034a5
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: make dir_entry.name a flexible array member
+    
+    dir_entry.name is currently allocated via a separate kstrdup().  Change it
+    to a flexible array member and allocate it along with struct dir_entry.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-3-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Martin Wilck <mwilck@suse.com>
+    Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit da028e4c4b0279eb49f80220d8f7cc62b4a57ccb
+Author: David Disseldorp <ddiss@suse.de>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    initramfs: refactor do_header() cpio magic checks
+    
+    Patch series "initramfs: "crc" cpio format and INITRAMFS_PRESERVE_MTIME", v7.
+    
+    This patchset does some minor initramfs refactoring and allows cpio entry
+    mtime preservation to be disabled via a new Kconfig
+    INITRAMFS_PRESERVE_MTIME option.
+    
+    Patches 4/6 to 6/6 implement support for creation and extraction of "crc"
+    cpio archives, which carry file data checksums.  Basic tests for this
+    functionality can be found at https://github.com/rapido-linux/rapido/pull/163
+    
+    
+    This patch (of 6):
+    
+    do_header() is called for each cpio entry and fails if the first six bytes
+    don't match "newc" magic.  The magic check includes a special case error
+    message if POSIX.1 ASCII (cpio -H odc) magic is detected.  This special
+    case POSIX.1 check can be nested under the "newc" mismatch code path to
+    avoid calling memcmp() twice in a non-error case.
+    
+    Link: https://lkml.kernel.org/r/20220404093429.27570-1-ddiss@suse.de
+    Link: https://lkml.kernel.org/r/20220404093429.27570-2-ddiss@suse.de
+    Signed-off-by: David Disseldorp <ddiss@suse.de>
+    Reviewed-by: Martin Wilck <mwilck@suse.com>
+    Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Cc: Matthew Wilcox <willy@infradead.org>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+commit 7055197705709c59b8ab77e6a5c7d46d61edd96e
+Author: Alexey Dobriyan <adobriyan@gmail.com>
+Date:   Mon May 9 18:29:19 2022 -0700
+
+    proc: fix dentry/inode overinstantiating under /proc/${pid}/net
+    
+    When a process exits, /proc/${pid}, and /proc/${pid}/net dentries are
+    flushed.  However some leaf dentries like /proc/${pid}/net/arp_cache
+    aren't.  That's because respective PDEs have proc_misc_d_revalidate() hook
+    which returns 1 and leaves dentries/inodes in the LRU.
+    
+    Force revalidation/lookup on everything under /proc/${pid}/net by
+    inheriting proc_net_dentry_ops.
+    
+    [akpm@linux-foundation.org: coding-style cleanups]
+    Link: https://lkml.kernel.org/r/YjdVHgildbWO7diJ@localhost.localdomain
+    Fixes: c6c75deda813 ("proc: fix lookup in /proc/net subdirectories after setns(2)")
+    Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+    Reported-by: hui li <juanfengpy@gmail.com>
+    Cc: Al Viro <viro@zeniv.linux.org.uk>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
 commit f6e2c20ca7604e6a267c93a511d19dda72573be1
 Author: Liu Shixin <liushixin2@huawei.com>
 Date:   Fri Apr 29 14:38:04 2022 -0700

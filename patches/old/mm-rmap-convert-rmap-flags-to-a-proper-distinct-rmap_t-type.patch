@@ -5,7 +5,7 @@ We want to pass the flags to more than one anon rmap function, getting rid
 of special "do_page_add_anon_rmap()".  So let's pass around a distinct
 __bitwise type and refine documentation.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-6-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-6-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -20,7 +20,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
@@ -81,7 +81,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void page_add_file_rmap(struct page *, struct vm_area_struct *,
 --- a/mm/memory.c~mm-rmap-convert-rmap-flags-to-a-proper-distinct-rmap_t-type
 +++ a/mm/memory.c
-@@ -3507,10 +3507,10 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3511,10 +3511,10 @@ vm_fault_t do_swap_page(struct vm_fault
  	struct vm_area_struct *vma = vmf->vma;
  	struct page *page = NULL, *swapcache;
  	struct swap_info_struct *si = NULL;
@@ -93,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vm_fault_t ret = 0;
  	void *shadow = NULL;
  
-@@ -3685,7 +3685,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3689,7 +3689,7 @@ vm_fault_t do_swap_page(struct vm_fault
  		pte = maybe_mkwrite(pte_mkdirty(pte), vma);
  		vmf->flags &= ~FAULT_FLAG_WRITE;
  		ret |= VM_FAULT_WRITE;
@@ -102,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  	flush_icache_page(vma, page);
  	if (pte_swp_soft_dirty(vmf->orig_pte))
-@@ -3701,7 +3701,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3705,7 +3705,7 @@ vm_fault_t do_swap_page(struct vm_fault
  		page_add_new_anon_rmap(page, vma, vmf->address, false);
  		lru_cache_add_inactive_or_unevictable(page, vma);
  	} else {
@@ -113,7 +113,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
 --- a/mm/rmap.c~mm-rmap-convert-rmap-flags-to-a-proper-distinct-rmap_t-type
 +++ a/mm/rmap.c
-@@ -1137,7 +1137,8 @@ static void __page_check_anon_rmap(struc
+@@ -1181,7 +1181,8 @@ static void __page_check_anon_rmap(struc
  void page_add_anon_rmap(struct page *page,
  	struct vm_area_struct *vma, unsigned long address, bool compound)
  {
@@ -123,7 +123,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -1146,7 +1147,7 @@ void page_add_anon_rmap(struct page *pag
+@@ -1190,7 +1191,7 @@ void page_add_anon_rmap(struct page *pag
   * Everybody else should continue to use page_add_anon_rmap above.
   */
  void do_page_add_anon_rmap(struct page *page,
@@ -132,7 +132,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	bool compound = flags & RMAP_COMPOUND;
  	bool first;
-@@ -1185,7 +1186,7 @@ void do_page_add_anon_rmap(struct page *
+@@ -1229,7 +1230,7 @@ void do_page_add_anon_rmap(struct page *
  	/* address might be in next vma when migration races vma_adjust */
  	else if (first)
  		__page_set_anon_rmap(page, vma, address,

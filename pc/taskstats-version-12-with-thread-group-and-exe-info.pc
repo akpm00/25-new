@@ -1,7 +1,0 @@
-include/uapi/linux/acct.h
-include/uapi/linux/taskstats.h
-kernel/taskstats.c
-kernel/tsacct.c
-tools/accounting/.gitignore
-tools/accounting/Makefile
-tools/accounting/procacct.c

@@ -1,3 +1,0 @@
-kernel/hung_task.c
-kernel/watchdog.c
-lib/Kconfig.debug

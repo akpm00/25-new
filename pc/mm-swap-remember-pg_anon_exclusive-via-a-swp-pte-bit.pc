@@ -1,5 +1,0 @@
-include/linux/pgtable.h
-include/linux/swapops.h
-mm/memory.c
-mm/rmap.c
-mm/swapfile.c

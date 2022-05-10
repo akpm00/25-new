@@ -1,5 +1,0 @@
-include/linux/memory_hotplug.h
-include/linux/mm.h
-mm/memory_hotplug.c
-mm/sparse.c
-mm/sparse-vmemmap.c

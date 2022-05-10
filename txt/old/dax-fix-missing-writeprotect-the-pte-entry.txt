@@ -1,9 +1,9 @@
 From: Muchun Song <songmuchun@bytedance.com>
 Subject: dax: fix missing writeprotect the pte entry
 
-Currently dax_mapping_entry_mkclean() fails to clean and write protect
-the pte entry within a DAX PMD entry during an *sync operation. This
-can result in data loss in the following sequence:
+Currently dax_mapping_entry_mkclean() fails to clean and write protect the
+pte entry within a DAX PMD entry during an *sync operation.  This can
+result in data loss in the following sequence:
 
   1) process A mmap write to DAX PMD, dirtying PMD radix tree entry and
      making the pmd entry dirty and writeable.
@@ -21,9 +21,9 @@ can result in data loss in the following sequence:
   6) crash - dirty data that should have been fsync'd as part of 5) could
      still have been in the processor cache, and is lost.
 
-Just use pfn_mkclean_range() to clean the pfns to fix this issue.
+Just to use pfn_mkclean_range() to clean the pfns to fix this issue.
 
-Link: https://lkml.kernel.org/r/20220318074529.5261-6-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220403053957.10770-6-songmuchun@bytedance.com
 Fixes: 4b4bb46d00b3 ("dax: clear dirty entry tags on cache flush")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>

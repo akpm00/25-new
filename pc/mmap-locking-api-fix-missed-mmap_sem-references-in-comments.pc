@@ -1,4 +1,0 @@
-drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-drivers/gpu/drm/ttm/ttm_bo_vm.c
-mm/mmap.c

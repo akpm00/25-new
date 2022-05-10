@@ -1,9 +1,9 @@
 From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Subject: selftest/vm: clarify error statement in gup_test
+Subject: tools/testing/selftests/vm/gup_test.c: clarify error statement
 
-Print two possible reasons /sys/kernel/debug/gup_test cannot be opened to
-help users of this test diagnose failures.
+Print three possible reasons /sys/kernel/debug/gup_test cannot be opened
+to help users of this test diagnose failures.
 
-Link: https://lkml.kernel.org/r/20220330215257.112029-1-sidhartha.kumar@oracle.com
+Link: https://lkml.kernel.org/r/20220405214809.3351223-1-sidhartha.kumar@oracle.com
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: Shuah Khan <shuah@kernel.org>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>

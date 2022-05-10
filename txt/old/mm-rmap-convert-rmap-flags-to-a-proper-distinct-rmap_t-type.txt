@@ -5,7 +5,7 @@ We want to pass the flags to more than one anon rmap function, getting rid
 of special "do_page_add_anon_rmap()".  So let's pass around a distinct
 __bitwise type and refine documentation.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-6-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-6-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -20,7 +20,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>

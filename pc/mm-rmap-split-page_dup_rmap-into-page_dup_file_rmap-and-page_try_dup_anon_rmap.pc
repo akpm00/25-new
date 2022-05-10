@@ -1,6 +1,0 @@
-include/linux/mm.h
-include/linux/rmap.h
-mm/huge_memory.c
-mm/hugetlb.c
-mm/memory.c
-mm/migrate.c

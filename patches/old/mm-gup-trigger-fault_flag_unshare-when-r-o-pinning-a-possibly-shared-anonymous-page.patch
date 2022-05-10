@@ -35,11 +35,11 @@ there with FOLL_PIN.
 
 This commit is heavily based on prototype patches by Andrea.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-16-david@redhat.com
-Co-developed-by: Andrea Arcangeli <aarcange@redhat.com>
+Link: https://lkml.kernel.org/r/20220428083441.37290-17-david@redhat.com
 Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Co-developed-by: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: David Rientjes <rientjes@google.com>
 Cc: Don Dutile <ddutile@redhat.com>
@@ -51,7 +51,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
@@ -75,7 +75,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page
 +++ a/include/linux/mm.h
-@@ -3005,6 +3005,45 @@ static inline int vm_fault_to_errno(vm_f
+@@ -3002,6 +3002,45 @@ static inline int vm_fault_to_errno(vm_f
  	return 0;
  }
  
@@ -242,7 +242,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/hugetlb.c~mm-gup-trigger-fault_flag_unshare-when-r-o-pinning-a-possibly-shared-anonymous-page
 +++ a/mm/hugetlb.c
-@@ -5964,6 +5964,25 @@ static void record_subpages_vmas(struct
+@@ -5982,6 +5982,25 @@ static void record_subpages_vmas(struct
  	}
  }
  
@@ -268,7 +268,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
  			 struct page **pages, struct vm_area_struct **vmas,
  			 unsigned long *position, unsigned long *nr_pages,
-@@ -5978,6 +5997,7 @@ long follow_hugetlb_page(struct mm_struc
+@@ -5996,6 +6015,7 @@ long follow_hugetlb_page(struct mm_struc
  	while (vaddr < vma->vm_end && remainder) {
  		pte_t *pte;
  		spinlock_t *ptl = NULL;
@@ -276,7 +276,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		int absent;
  		struct page *page;
  
-@@ -6028,9 +6048,8 @@ long follow_hugetlb_page(struct mm_struc
+@@ -6046,9 +6066,8 @@ long follow_hugetlb_page(struct mm_struc
  		 * both cases, and because we can't follow correct pages
  		 * directly from any kind of swap entries.
  		 */
@@ -288,7 +288,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			vm_fault_t ret;
  			unsigned int fault_flags = 0;
  
-@@ -6038,6 +6057,8 @@ long follow_hugetlb_page(struct mm_struc
+@@ -6056,6 +6075,8 @@ long follow_hugetlb_page(struct mm_struc
  				spin_unlock(ptl);
  			if (flags & FOLL_WRITE)
  				fault_flags |= FAULT_FLAG_WRITE;

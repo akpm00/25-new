@@ -11,7 +11,7 @@ anonymous page from a writable migration entry.
 This is a preparation for marking an anonymous page inside
 page_add_anon_rmap() as exclusive when RMAP_EXCLUSIVE is passed.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-7-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-7-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -26,7 +26,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>

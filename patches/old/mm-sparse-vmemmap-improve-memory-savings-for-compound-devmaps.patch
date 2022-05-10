@@ -27,8 +27,9 @@ worth noting that altmap for devmap mappings was there to relieve the
 pressure of inordinate amounts of memmap space to map terabytes of pmem. 
 With compound pages the motivation for altmaps for pmem gets reduced.
 
-Link: https://lkml.kernel.org/r/20220303213252.28593-5-joao.m.martins@oracle.com
+Link: https://lkml.kernel.org/r/20220420155310.9712-5-joao.m.martins@oracle.com
 Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: Jane Chu <jane.chu@oracle.com>
@@ -36,22 +37,20 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Vishal Verma <vishal.l.verma@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- Documentation/vm/vmemmap_dedup.rst |   55 ++++++++++-
+ Documentation/vm/vmemmap_dedup.rst |   56 ++++++++++-
  include/linux/mm.h                 |    2 
  mm/memremap.c                      |    1 
  mm/sparse-vmemmap.c                |  132 ++++++++++++++++++++++++---
- 4 files changed, 176 insertions(+), 14 deletions(-)
+ 4 files changed, 177 insertions(+), 14 deletions(-)
 
 --- a/Documentation/vm/vmemmap_dedup.rst~mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps
 +++ a/Documentation/vm/vmemmap_dedup.rst
-@@ -2,9 +2,12 @@
- 
- .. _vmemmap_dedup:
+@@ -1,8 +1,11 @@
+ .. SPDX-License-Identifier: GPL-2.0
  
 -==================================
 -Free some vmemmap pages of HugeTLB
@@ -65,10 +64,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  The struct page structures (page structs) are used to describe a physical
  page frame. By default, there is a one-to-one mapping from a page frame to
-@@ -168,3 +171,49 @@ The contiguous bit is used to increase t
- (last) level. So this type of HugeTLB page can be optimized only when its
- size of the struct page structs is greater than 2 pages.
- 
+@@ -171,3 +174,50 @@ tail vmemmap pages are mapped to the hea
+ more than one struct page struct with PG_head (e.g. 8 per 2 MB HugeTLB page)
+ associated with each HugeTLB page. The compound_head() can handle this
+ correctly (more details refer to the comment above compound_head()).
++
 +Device DAX
 +==========
 +
@@ -92,7 +92,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +
 +Deduplicated tail pages are not mapped read-only.
 +
-+Here's how things look like on device-dax after the sections are populated:
++Here's how things look like on device-dax after the sections are populated::
 +
 + +-----------+ ---virt_to_page---> +-----------+   mapping to   +-----------+
 + |           |                     |     0     | -------------> |     0     |
@@ -117,7 +117,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 + +-----------+
 --- a/include/linux/mm.h~mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps
 +++ a/include/linux/mm.h
-@@ -3162,7 +3162,7 @@ p4d_t *vmemmap_p4d_populate(pgd_t *pgd,
+@@ -3161,7 +3161,7 @@ p4d_t *vmemmap_p4d_populate(pgd_t *pgd,
  pud_t *vmemmap_pud_populate(p4d_t *p4d, unsigned long addr, int node);
  pmd_t *vmemmap_pmd_populate(pud_t *pud, unsigned long addr, int node);
  pte_t *vmemmap_pte_populate(pmd_t *pmd, unsigned long addr, int node,
@@ -128,7 +128,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  void *vmemmap_alloc_block_buf(unsigned long size, int node,
 --- a/mm/memremap.c~mm-sparse-vmemmap-improve-memory-savings-for-compound-devmaps
 +++ a/mm/memremap.c
-@@ -321,6 +321,7 @@ void *memremap_pages(struct dev_pagemap
+@@ -287,6 +287,7 @@ void *memremap_pages(struct dev_pagemap
  {
  	struct mhp_params params = {
  		.altmap = pgmap_altmap(pgmap),

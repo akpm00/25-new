@@ -1,3 +1,0 @@
-arch/powerpc/include/asm/mman.h
-arch/powerpc/Kconfig
-arch/powerpc/mm/book3s64/pgtable.c

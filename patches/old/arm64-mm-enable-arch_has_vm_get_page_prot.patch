@@ -2,15 +2,17 @@ From: Anshuman Khandual <anshuman.khandual@arm.com>
 Subject: arm64/mm: enable ARCH_HAS_VM_GET_PAGE_PROT
 
 This defines and exports a platform specific custom vm_get_page_prot() via
-subscribing ARCH_HAS_VM_GET_PAGE_PROT.  It localizes
-arch_vm_get_page_prot() and moves it near vm_get_page_prot().
+subscribing ARCH_HAS_VM_GET_PAGE_PROT. It localizes arch_vm_get_page_prot()
+and moves it near vm_get_page_prot().
 
-Link: https://lkml.kernel.org/r/20220407103251.1209606-4-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/20220414062125.609297-4-anshuman.khandual@arm.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc: Christoph Hellwig <hch@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
+Cc: David S. Miller <davem@davemloft.net>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
@@ -19,10 +21,10 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- arch/arm64/Kconfig            |    1 
- arch/arm64/include/asm/mman.h |   24 -----------------------
- arch/arm64/mm/mmap.c          |   33 ++++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 24 deletions(-)
+ arch/arm64/Kconfig            |    1 +
+ arch/arm64/include/asm/mman.h |   24 ------------------------
+ arch/arm64/mm/mmap.c          |   25 +++++++++++++++++++++++++
+ 3 files changed, 26 insertions(+), 24 deletions(-)
 
 --- a/arch/arm64/include/asm/mman.h~arm64-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/arm64/include/asm/mman.h
@@ -69,14 +71,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
 --- a/arch/arm64/mm/mmap.c~arm64-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/arm64/mm/mmap.c
-@@ -55,3 +55,36 @@ static int __init adjust_protection_map(
+@@ -55,3 +55,28 @@ static int __init adjust_protection_map(
  	return 0;
  }
  arch_initcall(adjust_protection_map);
 +
-+static pgprot_t arm64_arch_vm_get_page_prot(unsigned long vm_flags)
++pgprot_t vm_get_page_prot(unsigned long vm_flags)
 +{
-+	pteval_t prot = 0;
++	pteval_t prot = pgprot_val(protection_map[vm_flags &
++				   (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]);
 +
 +	if (vm_flags & VM_ARM64_BTI)
 +		prot |= PTE_GP;
@@ -95,15 +98,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		prot |= PTE_ATTRINDX(MT_NORMAL_TAGGED);
 +
 +	return __pgprot(prot);
-+}
-+
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)
-+{
-+	pgprot_t ret = __pgprot(pgprot_val(protection_map[vm_flags &
-+				(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]) |
-+				pgprot_val(arm64_arch_vm_get_page_prot(vm_flags)));
-+
-+	return ret;
 +}
 +EXPORT_SYMBOL(vm_get_page_prot);
 _

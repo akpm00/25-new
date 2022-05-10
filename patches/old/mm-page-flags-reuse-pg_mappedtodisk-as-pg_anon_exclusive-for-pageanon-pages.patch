@@ -45,8 +45,8 @@ are:
   possible and consequently doesn't require care.
 
   If GUP wants to take a reliable pin (FOLL_PIN) on an anonymous page,
-  it should only pin if the relevant PG_anon_bit is set. In that case,
-  the pin will be fully reliable and stay consistent with the pages
+  it should only pin if the relevant PG_anon_exclusive is set. In that
+  case, the pin will be fully reliable and stay consistent with the pages
   mapped into the page table, as the bit cannot get cleared (e.g., by
   fork(), KSM) while the page is pinned. For anonymous pages that
   are mapped R/W, PG_anon_exclusive can be assumed to always be set
@@ -81,7 +81,7 @@ Note that we properly clear the flag in free_pages_prepare() via
 PAGE_FLAGS_CHECK_AT_PREP for each individual subpage of a compound page,
 so there is no need to manually clear the flag.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-12-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-12-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -96,7 +96,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
@@ -184,7 +184,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #else
 --- a/mm/hugetlb.c~mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages
 +++ a/mm/hugetlb.c
-@@ -1672,6 +1672,8 @@ void free_huge_page(struct page *page)
+@@ -1677,6 +1677,8 @@ void free_huge_page(struct page *page)
  	VM_BUG_ON_PAGE(page_mapcount(page), page);
  
  	hugetlb_set_page_subpool(page, NULL);
@@ -195,7 +195,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	ClearHPageRestoreReserve(page);
 --- a/mm/memory.c~mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages
 +++ a/mm/memory.c
-@@ -3664,6 +3664,17 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3668,6 +3668,17 @@ vm_fault_t do_swap_page(struct vm_fault
  	}
  
  	/*
@@ -215,7 +215,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * yet.
 --- a/mm/memremap.c~mm-page-flags-reuse-pg_mappedtodisk-as-pg_anon_exclusive-for-pageanon-pages
 +++ a/mm/memremap.c
-@@ -479,6 +479,15 @@ void free_zone_device_page(struct page *
+@@ -460,6 +460,15 @@ void free_zone_device_page(struct page *
  	mem_cgroup_uncharge(page_folio(page));
  
  	/*

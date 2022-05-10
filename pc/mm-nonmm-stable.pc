@@ -33,7 +33,9 @@ fs/ocfs2/reservations.c
 fs/ocfs2/reservations.h
 fs/ocfs2/super.c
 fs/pipe.c
+fs/proc/generic.c
 fs/proc/kcore.c
+fs/proc/proc_net.c
 fs/proc/vmcore.c
 fs/sysv/super.c
 include/linux/crash_dump.h
@@ -42,7 +44,10 @@ include/linux/pipe_fs_i.h
 include/linux/ptrace.h
 include/uapi/linux/acct.h
 include/uapi/linux/taskstats.h
+init/initramfs.c
 init/Kconfig
+ipc/mqueue.c
+ipc/sem.c
 kernel/hung_task.c
 kernel/kexec_core.c
 kernel/pid_namespace.c
@@ -62,3 +67,4 @@ scripts/get_maintainer.pl
 tools/accounting/.gitignore
 tools/accounting/Makefile
 tools/accounting/procacct.c
+usr/gen_init_cpio.c

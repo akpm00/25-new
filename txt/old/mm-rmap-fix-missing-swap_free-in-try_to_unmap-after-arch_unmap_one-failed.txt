@@ -1,7 +1,7 @@
 From: David Hildenbrand <david@redhat.com>
 Subject: mm/rmap: fix missing swap_free() in try_to_unmap() after arch_unmap_one() failed
 
-Patch series "mm: COW fixes part 2: reliable GUP pins of anonymous pages", v3.
+Patch series "mm: COW fixes part 2: reliable GUP pins of anonymous pages", v4.
 
 This series is the result of the discussion on the previous approach [2]. 
 More information on the general COW issues can be found there.  It is
@@ -96,13 +96,13 @@ it's now 100% mapcount free and I further simplified it a bit.
 [4] https://bugzilla.kernel.org/show_bug.cgi?id=215616
 
 
-This patch (of 16):
+This patch (of 17):
 
 In case arch_unmap_one() fails, we already did a swap_duplicate().  let's
 undo that properly via swap_free().
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-1-david@redhat.com
-Link: https://lkml.kernel.org/r/20220329160440.193848-2-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-1-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-2-david@redhat.com
 Fixes: ca827d55ebaa ("mm, swap: Add infrastructure for saving page metadata on swap")
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
@@ -116,7 +116,7 @@ Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Jann Horn <jannh@google.com>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Nadav Amit <namit@vmware.com>
@@ -131,3 +131,4 @@ Cc: Jan Kara <jack@suse.cz>
 Cc: Liang Zhang <zhangliang5@huawei.com>
 Cc: Pedro Demarchi Gomes <pedrodemargomes@gmail.com>
 Cc: Oded Gabbay <oded.gabbay@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>

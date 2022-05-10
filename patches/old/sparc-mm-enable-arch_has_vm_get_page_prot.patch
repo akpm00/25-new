@@ -6,10 +6,12 @@ subscribing ARCH_HAS_VM_GET_PAGE_PROT.  It localizes
 arch_vm_get_page_prot() as sparc_vm_get_page_prot() and moves near
 vm_get_page_prot().
 
-Link: https://lkml.kernel.org/r/20220407103251.1209606-5-anshuman.khandual@arm.com
+Link: https://lkml.kernel.org/r/20220414062125.609297-5-anshuman.khandual@arm.com
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: David S. Miller <davem@davemloft.net>
 Reviewed-by: Khalid Aziz <khalid.aziz@oracle.com>
-Cc: "David S. Miller" <davem@davemloft.net>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Christoph Hellwig <hch@infradead.org>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -22,8 +24,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
  arch/sparc/Kconfig            |    1 +
  arch/sparc/include/asm/mman.h |    6 ------
- arch/sparc/mm/init_64.c       |   13 +++++++++++++
- 3 files changed, 14 insertions(+), 6 deletions(-)
+ arch/sparc/mm/init_64.c       |   12 ++++++++++++
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
 --- a/arch/sparc/include/asm/mman.h~sparc-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/sparc/include/asm/mman.h
@@ -52,21 +54,20 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
 --- a/arch/sparc/mm/init_64.c~sparc-mm-enable-arch_has_vm_get_page_prot
 +++ a/arch/sparc/mm/init_64.c
-@@ -3184,3 +3184,16 @@ void copy_highpage(struct page *to, stru
+@@ -3184,3 +3184,15 @@ void copy_highpage(struct page *to, stru
  	}
  }
  EXPORT_SYMBOL(copy_highpage);
 +
-+static pgprot_t sparc_vm_get_page_prot(unsigned long vm_flags)
-+{
-+	return (vm_flags & VM_SPARC_ADI) ? __pgprot(_PAGE_MCD_4V) : __pgprot(0);
-+}
-+
 +pgprot_t vm_get_page_prot(unsigned long vm_flags)
 +{
-+	return __pgprot(pgprot_val(protection_map[vm_flags &
-+			(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]) |
-+			pgprot_val(sparc_vm_get_page_prot(vm_flags)));
++	unsigned long prot = pgprot_val(protection_map[vm_flags &
++					(VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]);
++
++	if (vm_flags & VM_SPARC_ADI)
++		prot |= _PAGE_MCD_4V;
++
++	return __pgprot(prot);
 +}
 +EXPORT_SYMBOL(vm_get_page_prot);
 _

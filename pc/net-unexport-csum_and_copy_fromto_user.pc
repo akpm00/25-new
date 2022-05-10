@@ -1,4 +1,0 @@
-arch/alpha/lib/csum_partial_copy.c
-arch/m68k/lib/checksum.c
-arch/powerpc/lib/checksum_wrappers.c
-arch/x86/lib/csum-wrappers_64.c

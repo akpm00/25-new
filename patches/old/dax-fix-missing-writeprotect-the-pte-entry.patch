@@ -1,9 +1,9 @@
 From: Muchun Song <songmuchun@bytedance.com>
 Subject: dax: fix missing writeprotect the pte entry
 
-Currently dax_mapping_entry_mkclean() fails to clean and write protect
-the pte entry within a DAX PMD entry during an *sync operation. This
-can result in data loss in the following sequence:
+Currently dax_mapping_entry_mkclean() fails to clean and write protect the
+pte entry within a DAX PMD entry during an *sync operation.  This can
+result in data loss in the following sequence:
 
   1) process A mmap write to DAX PMD, dirtying PMD radix tree entry and
      making the pmd entry dirty and writeable.
@@ -21,9 +21,9 @@ can result in data loss in the following sequence:
   6) crash - dirty data that should have been fsync'd as part of 5) could
      still have been in the processor cache, and is lost.
 
-Just use pfn_mkclean_range() to clean the pfns to fix this issue.
+Just to use pfn_mkclean_range() to clean the pfns to fix this issue.
 
-Link: https://lkml.kernel.org/r/20220318074529.5261-6-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220403053957.10770-6-songmuchun@bytedance.com
 Fixes: 4b4bb46d00b3 ("dax: clear dirty entry tags on cache flush")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
@@ -42,8 +42,8 @@ Cc: Yang Shi <shy828301@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/dax.c |   83 ++++-------------------------------------------------
- 1 file changed, 7 insertions(+), 76 deletions(-)
+ fs/dax.c |   99 ++++++-----------------------------------------------
+ 1 file changed, 12 insertions(+), 87 deletions(-)
 
 --- a/fs/dax.c~dax-fix-missing-writeprotect-the-pte-entry
 +++ a/fs/dax.c
@@ -55,7 +55,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <asm/pgalloc.h>
  
  #define CREATE_TRACE_POINTS
-@@ -789,87 +790,17 @@ static void *dax_insert_entry(struct xa_
+@@ -789,96 +790,12 @@ static void *dax_insert_entry(struct xa_
  	return entry;
  }
  
@@ -69,26 +69,21 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -	return address;
 -}
 -
- /* Walk all mappings of a given index of a file and writeprotect them */
+-/* Walk all mappings of a given index of a file and writeprotect them */
 -static void dax_entry_mkclean(struct address_space *mapping, pgoff_t index,
 -		unsigned long pfn)
-+static void dax_entry_mkclean(struct address_space *mapping, unsigned long pfn,
-+			      unsigned long npfn, pgoff_t start)
- {
- 	struct vm_area_struct *vma;
+-{
+-	struct vm_area_struct *vma;
 -	pte_t pte, *ptep = NULL;
 -	pmd_t *pmdp = NULL;
 -	spinlock_t *ptl;
-+	pgoff_t end = start + npfn - 1;
- 
- 	i_mmap_lock_read(mapping);
+-
+-	i_mmap_lock_read(mapping);
 -	vma_interval_tree_foreach(vma, &mapping->i_mmap, index, index) {
 -		struct mmu_notifier_range range;
 -		unsigned long address;
 -
-+	vma_interval_tree_foreach(vma, &mapping->i_mmap, start, end) {
-+		pfn_mkclean_range(pfn, npfn, start, vma);
- 		cond_resched();
+-		cond_resched();
 -
 -		if (!(vma->vm_flags & VM_SHARED))
 -			continue;
@@ -145,15 +140,35 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		}
 -
 -		mmu_notifier_invalidate_range_end(&range);
- 	}
- 	i_mmap_unlock_read(mapping);
- }
-@@ -937,7 +868,7 @@ static int dax_writeback_one(struct xa_s
+-	}
+-	i_mmap_unlock_read(mapping);
+-}
+-
+ static int dax_writeback_one(struct xa_state *xas, struct dax_device *dax_dev,
+ 		struct address_space *mapping, void *entry)
+ {
+-	unsigned long pfn, index, count;
++	unsigned long pfn, index, count, end;
+ 	long ret = 0;
++	struct vm_area_struct *vma;
+ 
+ 	/*
+ 	 * A page got tagged dirty in DAX mapping? Something is seriously
+@@ -936,8 +853,16 @@ static int dax_writeback_one(struct xa_s
+ 	pfn = dax_to_pfn(entry);
  	count = 1UL << dax_entry_order(entry);
  	index = xas->xa_index & ~(count - 1);
++	end = index + count - 1;
++
++	/* Walk all mappings of a given index of a file and writeprotect them */
++	i_mmap_lock_read(mapping);
++	vma_interval_tree_foreach(vma, &mapping->i_mmap, index, end) {
++		pfn_mkclean_range(pfn, count, index, vma);
++		cond_resched();
++	}
++	i_mmap_unlock_read(mapping);
  
 -	dax_entry_mkclean(mapping, index, pfn);
-+	dax_entry_mkclean(mapping, pfn, count, index);
  	dax_flush(dax_dev, page_address(pfn_to_page(pfn)), count * PAGE_SIZE);
  	/*
  	 * After we have flushed the cache, we can clear the dirty tag. There

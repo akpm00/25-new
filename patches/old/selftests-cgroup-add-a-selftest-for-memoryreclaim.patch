@@ -4,18 +4,17 @@ Subject: selftests: cgroup: add a selftest for memory.reclaim
 Add a new test for memory.reclaim that verifies that the interface
 correctly reclaims memory as intended, from both anon and file pages.
 
-Link: https://lkml.kernel.org/r/20220421234426.3494842-5-yosryahmed@google.com
+Link: https://lkml.kernel.org/r/20220425190040.2475377-5-yosryahmed@google.com
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: David Rientjes <rientjes@google.com>
 Cc: Chen Wandun <chenwandun@huawei.com>
-Cc: Dan Schatzberg <schatzberg.dan@gmail.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Rientjes <rientjes@google.com>
 Cc: Greg Thelen <gthelen@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Michal Hocko <mhocko@suse.com>
-Cc: "Michal Koutný" <mkoutny@suse.com>
+Cc: "Michal Koutn" <mkoutny@suse.com>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Tejun Heo <tj@kernel.org>
@@ -27,24 +26,24 @@ Cc: Zefan Li <lizefan.x@bytedance.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- tools/testing/selftests/cgroup/test_memcontrol.c |   86 +++++++++++++
- 1 file changed, 86 insertions(+)
+ tools/testing/selftests/cgroup/test_memcontrol.c |  106 +++++++++++++
+ 1 file changed, 106 insertions(+)
 
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c~selftests-cgroup-add-a-selftest-for-memoryreclaim
 +++ a/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -771,6 +771,91 @@ cleanup:
+@@ -760,6 +760,111 @@ cleanup:
  	return ret;
  }
  
 +/*
 + * This test checks that memory.reclaim reclaims the given
-+ * amount of memory (from both anon and file).
++ * amount of memory (from both anon and file, if possible).
 + */
 +static int test_memcg_reclaim(const char *root)
 +{
 +	int ret = KSFT_FAIL, fd, retries;
 +	char *memcg;
-+	long current, to_reclaim;
++	long current, expected_usage, to_reclaim;
 +	char buf[64];
 +
 +	memcg = cg_name(root, "memcg_test");
@@ -58,23 +57,43 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	if (current != 0)
 +		goto cleanup;
 +
-+	cg_run_nowait(memcg, alloc_anon_noexit, (void *) MB(50));
-+	sleep(1);
-+
 +	fd = get_temp_fd();
 +	if (fd < 0)
 +		goto cleanup;
 +
 +	cg_run_nowait(memcg, alloc_pagecache_50M_noexit, (void *)(long)fd);
-+	sleep(1);
-+
-+	current = cg_read_long(memcg, "memory.current");
-+	if (!values_close(current, MB(100), 10))
-+		goto cleanup;
 +
 +	/*
-+	 * Reclaim until current reaches 30M, make sure to reclaim over 50M to
-+	 * hit both anon and file.
++	 * If swap is enabled, try to reclaim from both anon and file, else try
++	 * to reclaim from file only.
++	 */
++	if (is_swap_enabled()) {
++		cg_run_nowait(memcg, alloc_anon_noexit, (void *) MB(50));
++		expected_usage = MB(100);
++	} else
++		expected_usage = MB(50);
++
++	/*
++	 * Wait until current usage reaches the expected usage (or we run out of
++	 * retries).
++	 */
++	retries = 5;
++	while (!values_close(cg_read_long(memcg, "memory.current"),
++			    expected_usage, 10)) {
++		if (retries--) {
++			sleep(1);
++			continue;
++		} else {
++			fprintf(stderr,
++				"failed to allocate %ld for memcg reclaim test\n",
++				expected_usage);
++			goto cleanup;
++		}
++	}
++
++	/*
++	 * Reclaim until current reaches 30M, this makes sure we hit both anon
++	 * and file if swap is enabled.
 +	 */
 +	retries = 5;
 +	while (true) {
@@ -124,7 +143,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
  {
  	long mem_max = (long)arg;
-@@ -1281,6 +1366,7 @@ struct memcg_test {
+@@ -1264,6 +1369,7 @@ struct memcg_test {
  	T(test_memcg_high),
  	T(test_memcg_high_sync),
  	T(test_memcg_max),

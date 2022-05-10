@@ -18,8 +18,9 @@ pages is a lot smaller than the total amount of struct pages being mapped.
 The altmap path is left alone since it does not support memory savings
 based on compound pages devmap.
 
-Link: https://lkml.kernel.org/r/20220303213252.28593-6-joao.m.martins@oracle.com
+Link: https://lkml.kernel.org/r/20220420155310.9712-6-joao.m.martins@oracle.com
 Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: Dan Williams <dan.j.williams@intel.com>
 Cc: Jane Chu <jane.chu@oracle.com>
@@ -27,7 +28,6 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Vishal Verma <vishal.l.verma@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
@@ -37,7 +37,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_alloc-reuse-tail-struct-pages-for-compound-devmaps
 +++ a/mm/page_alloc.c
-@@ -6577,6 +6577,21 @@ static void __ref __init_zone_device_pag
+@@ -6596,6 +6596,21 @@ static void __ref __init_zone_device_pag
  	}
  }
  
@@ -53,13 +53,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +					      unsigned long nr_pages)
 +{
 +	return is_power_of_2(sizeof(struct page)) &&
-+		!altmap ? 2 * (PAGE_SIZE/sizeof(struct page)) : nr_pages;
++		!altmap ? 2 * (PAGE_SIZE / sizeof(struct page)) : nr_pages;
 +}
 +
  static void __ref memmap_init_compound(struct page *head,
  				       unsigned long head_pfn,
  				       unsigned long zone_idx, int nid,
-@@ -6641,7 +6656,7 @@ void __ref memmap_init_zone_device(struc
+@@ -6660,7 +6675,7 @@ void __ref memmap_init_zone_device(struc
  			continue;
  
  		memmap_init_compound(page, pfn, zone_idx, nid, pgmap,

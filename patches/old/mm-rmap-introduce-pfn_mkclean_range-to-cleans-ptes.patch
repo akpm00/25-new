@@ -8,7 +8,7 @@ page.  Introduce a new function pfn_mkclean_range() to cleans the PTEs
 associated with them.  This helper will be used by DAX device in the next
 patch to make pfns clean.
 
-Link: https://lkml.kernel.org/r/20220318074529.5261-4-songmuchun@bytedance.com
+Link: https://lkml.kernel.org/r/20220403053957.10770-4-songmuchun@bytedance.com
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Alistair Popple <apopple@nvidia.com>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/rmap.h~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes
 +++ a/include/linux/rmap.h
-@@ -361,6 +361,9 @@ unsigned long page_address_in_vma(struct
+@@ -261,6 +261,9 @@ unsigned long page_address_in_vma(struct
   */
  int folio_mkclean(struct folio *);
  
@@ -45,14 +45,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
 --- a/mm/internal.h~mm-rmap-introduce-pfn_mkclean_range-to-cleans-ptes
 +++ a/mm/internal.h
-@@ -462,26 +462,22 @@ void mlock_page_drain_remote(int cpu);
+@@ -525,26 +525,22 @@ void mlock_page_drain_remote(int cpu);
  extern pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma);
  
  /*
 - * At what user virtual address is page expected in vma?
 - * Returns -EFAULT if all of the page is outside the range of vma.
 - * If page is a compound head, the entire compound page is considered.
-+ * * Return the start of user virtual address at the specific offset within
++ * Return the start of user virtual address at the specific offset within
 + * a vma.
   */
  static inline unsigned long
@@ -77,7 +77,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		/* Test above avoids possibility of wrap to 0 on 32-bit */
  		address = vma->vm_start;
  	} else {
-@@ -491,6 +487,18 @@ vma_address(struct page *page, struct vm
+@@ -554,6 +550,18 @@ vma_address(struct page *page, struct vm
  }
  
  /*

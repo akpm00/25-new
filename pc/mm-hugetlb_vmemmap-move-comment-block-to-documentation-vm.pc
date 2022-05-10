@@ -1,3 +1,0 @@
-Documentation/vm/index.rst
-Documentation/vm/vmemmap_dedup.rst
-mm/hugetlb_vmemmap.c

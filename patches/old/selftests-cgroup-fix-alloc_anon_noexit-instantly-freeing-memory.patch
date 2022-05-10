@@ -2,25 +2,24 @@ From: Yosry Ahmed <yosryahmed@google.com>
 Subject: selftests: cgroup: fix alloc_anon_noexit() instantly freeing memory
 
 Currently, alloc_anon_noexit() calls alloc_anon() which instantly frees
-the allocated memory.  alloc_anon_noexit() is usually used with
-cg_run_nowait() to run a process in the background that allocates memory. 
-It makes sense for the background process to keep the memory allocated and
-not instantly free it (otherwise there is no point of running it in the
-background).
+the allocated memory. alloc_anon_noexit() is usually used with
+cg_run_nowait() to run a process in the background that allocates
+memory. It makes sense for the background process to keep the memory
+allocated and not instantly free it (otherwise there is no point of
+running it in the background).
 
-Link: https://lkml.kernel.org/r/20220421234426.3494842-4-yosryahmed@google.com
+Link: https://lkml.kernel.org/r/20220425190040.2475377-4-yosryahmed@google.com
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
 Cc: Chen Wandun <chenwandun@huawei.com>
-Cc: Dan Schatzberg <schatzberg.dan@gmail.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: David Rientjes <rientjes@google.com>
 Cc: Greg Thelen <gthelen@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: Michal Hocko <mhocko@suse.com>
-Cc: "Michal Koutný" <mkoutny@suse.com>
-Cc: Shakeel Butt <shakeelb@google.com>
+Cc: "Michal Koutn" <mkoutny@suse.com>
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: Tim Chen <tim.c.chen@linux.intel.com>
@@ -36,7 +35,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c~selftests-cgroup-fix-alloc_anon_noexit-instantly-freeing-memory
 +++ a/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -214,13 +214,17 @@ static int alloc_pagecache_50M_noexit(co
+@@ -211,13 +211,17 @@ static int alloc_pagecache_50M_noexit(co
  static int alloc_anon_noexit(const char *cgroup, void *arg)
  {
  	int ppid = getppid();

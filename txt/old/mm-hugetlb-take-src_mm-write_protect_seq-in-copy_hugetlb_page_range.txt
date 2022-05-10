@@ -5,10 +5,10 @@ Let's do it just like copy_page_range(), taking the seqlock and making
 sure the mmap_lock is held in write mode.
 
 This allows for add a VM_BUG_ON to page_needs_cow_for_dma() and properly
-synchronizes cocnurrent fork() with GUP-fast of hugetlb pages, which will
+synchronizes concurrent fork() with GUP-fast of hugetlb pages, which will
 be relevant for further changes.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-3-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-3-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -23,7 +23,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>

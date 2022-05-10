@@ -15,10 +15,10 @@ This is a preparation for making try_to_migrate() fail on anonymous pages
 with GUP pins, which will make this VM_WARN_ON_ONCE_PAGE trigger more
 frequently.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-11-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-11-david@redhat.com
+Signed-off-by: David Hildenbrand <david@redhat.com>
 Reported-by: Yang Shi <shy828301@gmail.com>
 Reviewed-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
@@ -32,7 +32,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>

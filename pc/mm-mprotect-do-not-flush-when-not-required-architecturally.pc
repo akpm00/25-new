@@ -1,5 +1,0 @@
-arch/x86/include/asm/pgtable_types.h
-arch/x86/include/asm/tlbflush.h
-include/asm-generic/tlb.h
-mm/huge_memory.c
-mm/mprotect.c

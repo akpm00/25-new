@@ -39,7 +39,7 @@ Take care to not verify in case we're unpinning during GUP-fast because we
 detected concurrent fork(): we might stumble over an anonymous page that
 is now shared.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-17-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-18-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -54,7 +54,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
@@ -170,8 +170,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto out;
  	}
 +
-+	VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
-+		  !PageAnonExclusive(page));
++	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++		       !PageAnonExclusive(page), page);
 +
  	/* try_grab_page() does nothing unless FOLL_GET or FOLL_PIN is set. */
  	if (unlikely(!try_grab_page(page, flags))) {
@@ -194,20 +194,20 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!pmd_write(*pmd) && gup_must_unshare(flags, page))
  		return ERR_PTR(-EMLINK);
  
-+	VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
-+		  !PageAnonExclusive(page));
++	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++			!PageAnonExclusive(page), page);
 +
  	if (!try_grab_page(page, flags))
  		return ERR_PTR(-ENOMEM);
  
 --- a/mm/hugetlb.c~mm-gup-sanity-check-with-config_debug_vm-that-anonymous-pages-are-exclusive-when-unpinning
 +++ a/mm/hugetlb.c
-@@ -6100,6 +6100,9 @@ long follow_hugetlb_page(struct mm_struc
+@@ -6118,6 +6118,9 @@ long follow_hugetlb_page(struct mm_struc
  		pfn_offset = (vaddr & ~huge_page_mask(h)) >> PAGE_SHIFT;
  		page = pte_page(huge_ptep_get(pte));
  
-+		VM_BUG_ON((flags & FOLL_PIN) && PageAnon(page) &&
-+			  !PageAnonExclusive(page));
++		VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
++			       !PageAnonExclusive(page), page);
 +
  		/*
  		 * If subpage information not requested, update counters

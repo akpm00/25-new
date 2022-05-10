@@ -37,8 +37,8 @@ entry, it must only pin if PG_anon_exclusive is set for the mapped
 
 This commit doesn't adjust GUP, so this is only implicitly handled for
 FOLL_WRITE, follow-up commits will teach GUP to also respect it for
-FOLL_PIN without FOLL_WRITE, to make all GUP pins of anonymous pages
-fully reliable.
+FOLL_PIN without FOLL_WRITE, to make all GUP pins of anonymous pages fully
+reliable.
 
 Whenever an anonymous page is to be shared (fork(), KSM), or when
 temporarily unmapping an anonymous page (swap, migration), the relevant
@@ -138,38 +138,36 @@ When splitting a compound anonymous folio (THP), the information about
 exclusivity is implicitly handled via the migration entries: no need to
 replicate PG_anon_exclusive manually.
 
-I.7. fork() handling
-
-fork() handling is relatively easy, because PG_anon_exclusive is only
-expressive for some page table entry types.
+I.7.  fork() handling fork() handling is relatively easy, because
+PG_anon_exclusive is only expressive for some page table entry types.
 
 a) Present anonymous pages
 
-   page_try_dup_anon_rmap() will mark the given subpage shared -- which
-   will fail if the page is pinned.  If it failed, we have to copy (or
-   PTE-map a PMD to handle it on the PTE level).
+page_try_dup_anon_rmap() will mark the given subpage shared -- which will
+fail if the page is pinned.  If it failed, we have to copy (or PTE-map a
+PMD to handle it on the PTE level).
 
-   Note that device exclusive entries are just a pointer at a
-   PageAnon() page.  fork() will first convert a device exclusive entry to
-   a present page table and handle it just like present anonymous pages.
+Note that device exclusive entries are just a pointer at a PageAnon()
+page.  fork() will first convert a device exclusive entry to a present
+page table and handle it just like present anonymous pages.
 
 b) Device private entry
 
-   Device private entries point at PageAnon() pages that cannot be
-   mapped directly and, therefore, cannot get pinned.
+Device private entries point at PageAnon() pages that cannot be mapped
+directly and, therefore, cannot get pinned.
 
-   page_try_dup_anon_rmap() will mark the given subpage shared, which
-   cannot fail because they cannot get pinned.
+page_try_dup_anon_rmap() will mark the given subpage shared, which cannot
+fail because they cannot get pinned.
 
 c) HW poison entries
 
-   PG_anon_exclusive will remain untouched and is stale -- the page
-   table entry is just a placeholder after all.
+PG_anon_exclusive will remain untouched and is stale -- the page table
+entry is just a placeholder after all.
 
 d) Migration entries
 
-   Writable and readable-exclusive entries are converted to readable
-   entries: possibly shared.
+Writable and readable-exclusive entries are converted to readable entries:
+possibly shared.
 
 I.8. mprotect() handling
 
@@ -189,10 +187,14 @@ to make the following scenario impossible:
 
 1. try_to_migrate() places a migration entry after checking for GUP pins
    and marks the page possibly shared.
+
 2. GUP-fast pins the page due to lack of synchronization
+
 3. fork() converts the "writable/readable-exclusive" migration entry into a
    readable migration entry
+
 4. Migration fails due to the GUP pin (failing to freeze the refcount)
+
 5. Migration entries are restored. PG_anon_exclusive is lost
 
 -> We have a pinned page that is not marked exclusive anymore.
@@ -210,6 +212,7 @@ make the following scenario impossible:
 
 1. try_to_unmap() places a swap entry after checking for GUP pins and
    clears exclusivity information on the page.
+
 2. GUP-fast pins the page due to lack of synchronization.
 
 -> We have a pinned page that is not marked exclusive anymore.
@@ -218,7 +221,7 @@ If we'd ever store information about exclusivity in the swap entry,
 similar to migration handling, the same considerations as in II would
 apply.  This is future work.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-13-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-13-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -233,7 +236,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>
@@ -559,7 +562,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 */
  	page_tail->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
  	page_tail->flags |= (head->flags &
-@@ -3025,6 +3072,7 @@ void set_pmd_migration_entry(struct page
+@@ -3030,6 +3077,7 @@ void set_pmd_migration_entry(struct page
  	struct vm_area_struct *vma = pvmw->vma;
  	struct mm_struct *mm = vma->vm_mm;
  	unsigned long address = pvmw->address;
@@ -567,7 +570,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pmd_t pmdval;
  	swp_entry_t entry;
  	pmd_t pmdswp;
-@@ -3034,10 +3082,19 @@ void set_pmd_migration_entry(struct page
+@@ -3039,10 +3087,19 @@ void set_pmd_migration_entry(struct page
  
  	flush_cache_range(vma, address, address + HPAGE_PMD_SIZE);
  	pmdval = pmdp_invalidate(vma, address, pvmw->pmd);
@@ -587,7 +590,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	else
  		entry = make_readable_migration_entry(page_to_pfn(page));
  	pmdswp = swp_entry_to_pmd(entry);
-@@ -3071,10 +3128,17 @@ void remove_migration_pmd(struct page_vm
+@@ -3076,10 +3133,17 @@ void remove_migration_pmd(struct page_vm
  	if (pmd_swp_uffd_wp(*pvmw->pmd))
  		pmde = pmd_wrprotect(pmd_mkuffd_wp(pmde));
  
@@ -610,7 +613,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/* No need to invalidate - it was non-present before */
 --- a/mm/hugetlb.c~mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive
 +++ a/mm/hugetlb.c
-@@ -4772,7 +4772,7 @@ again:
+@@ -4790,7 +4790,7 @@ again:
  				    is_hugetlb_entry_hwpoisoned(entry))) {
  			swp_entry_t swp_entry = pte_to_swp_entry(entry);
  
@@ -619,7 +622,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				/*
  				 * COW mappings require pages in both
  				 * parent and child to be set to read.
-@@ -5172,6 +5172,8 @@ retry_avoidcopy:
+@@ -5190,6 +5190,8 @@ retry_avoidcopy:
  		set_huge_ptep_writable(vma, haddr, ptep);
  		return 0;
  	}
@@ -628,7 +631,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * If the process that created a MAP_PRIVATE mapping is about to
-@@ -6169,12 +6171,17 @@ unsigned long hugetlb_change_protection(
+@@ -6187,12 +6189,17 @@ unsigned long hugetlb_change_protection(
  		}
  		if (unlikely(is_hugetlb_entry_migration(pte))) {
  			swp_entry_t entry = pte_to_swp_entry(pte);
@@ -651,7 +654,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  						     newpte, huge_page_size(h));
 --- a/mm/ksm.c~mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive
 +++ a/mm/ksm.c
-@@ -866,6 +866,7 @@ static inline struct stable_node *page_s
+@@ -872,6 +872,7 @@ static inline struct stable_node *page_s
  static inline void set_page_stable_node(struct page *page,
  					struct stable_node *stable_node)
  {
@@ -659,7 +662,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	page->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
  }
  
-@@ -1038,6 +1039,7 @@ static int write_protect_page(struct vm_
+@@ -1044,6 +1045,7 @@ static int write_protect_page(struct vm_
  	int swapped;
  	int err = -EFAULT;
  	struct mmu_notifier_range range;
@@ -667,7 +670,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	pvmw.address = page_address_in_vma(page, vma);
  	if (pvmw.address == -EFAULT)
-@@ -1055,9 +1057,10 @@ static int write_protect_page(struct vm_
+@@ -1061,9 +1063,10 @@ static int write_protect_page(struct vm_
  	if (WARN_ONCE(!pvmw.pte, "Unexpected PMD mapping?"))
  		goto out_unlock;
  
@@ -679,7 +682,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		pte_t entry;
  
  		swapped = PageSwapCache(page);
-@@ -1085,6 +1088,12 @@ static int write_protect_page(struct vm_
+@@ -1091,6 +1094,12 @@ static int write_protect_page(struct vm_
  			set_pte_at(mm, pvmw.address, pvmw.pte, entry);
  			goto out_unlock;
  		}
@@ -692,7 +695,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (pte_dirty(entry))
  			set_page_dirty(page);
  
-@@ -1143,6 +1152,8 @@ static int replace_page(struct vm_area_s
+@@ -1149,6 +1158,8 @@ static int replace_page(struct vm_area_s
  		pte_unmap_unlock(ptep, ptl);
  		goto out_mn;
  	}
@@ -768,7 +771,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		wp_page_reuse(vmf);
  		return VM_FAULT_WRITE;
  	} else if (unlikely((vma->vm_flags & (VM_WRITE|VM_SHARED)) ==
-@@ -3692,11 +3707,12 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3696,11 +3711,12 @@ vm_fault_t do_swap_page(struct vm_fault
  	 * that are certainly not shared because we just allocated them without
  	 * exposing them to the swapcache.
  	 */
@@ -786,7 +789,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		rmap_flags |= RMAP_EXCLUSIVE;
  	}
  	flush_icache_page(vma, page);
-@@ -3716,6 +3732,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3720,6 +3736,7 @@ vm_fault_t do_swap_page(struct vm_fault
  		page_add_anon_rmap(page, vma, vmf->address, rmap_flags);
  	}
  
@@ -832,7 +835,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			else
  				page_add_file_rmap(new, vma, false);
  			set_pte_at(vma->vm_mm, pvmw.address, pvmw.pte, pte);
-@@ -519,6 +523,12 @@ void folio_migrate_flags(struct folio *n
+@@ -514,6 +518,12 @@ void folio_migrate_flags(struct folio *n
  		folio_set_workingset(newfolio);
  	if (folio_test_checked(folio))
  		folio_set_checked(newfolio);
@@ -909,7 +912,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  					newpte = pte_swp_mksoft_dirty(newpte);
 --- a/mm/rmap.c~mm-remember-exclusively-mapped-anonymous-pages-with-pg_anon_exclusive
 +++ a/mm/rmap.c
-@@ -1044,6 +1044,7 @@ EXPORT_SYMBOL_GPL(folio_mkclean);
+@@ -1088,6 +1088,7 @@ int pfn_mkclean_range(unsigned long pfn,
  void page_move_anon_rmap(struct page *page, struct vm_area_struct *vma)
  {
  	struct anon_vma *anon_vma = vma->anon_vma;
@@ -917,7 +920,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	page = compound_head(page);
  
-@@ -1057,6 +1058,7 @@ void page_move_anon_rmap(struct page *pa
+@@ -1101,6 +1102,7 @@ void page_move_anon_rmap(struct page *pa
  	 * folio_test_anon()) will not see one without the other.
  	 */
  	WRITE_ONCE(page->mapping, (struct address_space *) anon_vma);
@@ -925,7 +928,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /**
-@@ -1074,7 +1076,7 @@ static void __page_set_anon_rmap(struct
+@@ -1118,7 +1120,7 @@ static void __page_set_anon_rmap(struct
  	BUG_ON(!anon_vma);
  
  	if (PageAnon(page))
@@ -934,7 +937,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * If the page isn't exclusively mapped into this vma,
-@@ -1093,6 +1095,9 @@ static void __page_set_anon_rmap(struct
+@@ -1137,6 +1139,9 @@ static void __page_set_anon_rmap(struct
  	anon_vma = (void *) anon_vma + PAGE_MAPPING_ANON;
  	WRITE_ONCE(page->mapping, (struct address_space *) anon_vma);
  	page->index = linear_page_index(vma, address);
@@ -944,7 +947,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /**
-@@ -1154,6 +1159,8 @@ void page_add_anon_rmap(struct page *pag
+@@ -1198,6 +1203,8 @@ void page_add_anon_rmap(struct page *pag
  	} else {
  		first = atomic_inc_and_test(&page->_mapcount);
  	}
@@ -953,7 +956,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (first) {
  		int nr = compound ? thp_nr_pages(page) : 1;
-@@ -1417,7 +1424,7 @@ static bool try_to_unmap_one(struct foli
+@@ -1459,7 +1466,7 @@ static bool try_to_unmap_one(struct foli
  	DEFINE_FOLIO_VMA_WALK(pvmw, folio, vma, address, 0);
  	pte_t pteval;
  	struct page *subpage;
@@ -962,7 +965,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct mmu_notifier_range range;
  	enum ttu_flags flags = (enum ttu_flags)(long)arg;
  
-@@ -1473,6 +1480,8 @@ static bool try_to_unmap_one(struct foli
+@@ -1515,6 +1522,8 @@ static bool try_to_unmap_one(struct foli
  		subpage = folio_page(folio,
  					pte_pfn(*pvmw.pte) - folio_pfn(folio));
  		address = pvmw.address;
@@ -971,7 +974,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		if (folio_test_hugetlb(folio) && !folio_test_anon(folio)) {
  			/*
-@@ -1508,9 +1517,12 @@ static bool try_to_unmap_one(struct foli
+@@ -1550,9 +1559,12 @@ static bool try_to_unmap_one(struct foli
  			}
  		}
  
@@ -986,7 +989,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/*
  			 * We clear the PTE but do not flush so potentially
  			 * a remote CPU could still be writing to the folio.
-@@ -1635,6 +1647,24 @@ static bool try_to_unmap_one(struct foli
+@@ -1677,6 +1689,24 @@ static bool try_to_unmap_one(struct foli
  				page_vma_mapped_walk_done(&pvmw);
  				break;
  			}
@@ -1011,7 +1014,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			if (list_empty(&mm->mmlist)) {
  				spin_lock(&mmlist_lock);
  				if (list_empty(&mm->mmlist))
-@@ -1734,7 +1764,7 @@ static bool try_to_migrate_one(struct fo
+@@ -1776,7 +1806,7 @@ static bool try_to_migrate_one(struct fo
  	DEFINE_FOLIO_VMA_WALK(pvmw, folio, vma, address, 0);
  	pte_t pteval;
  	struct page *subpage;
@@ -1020,7 +1023,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct mmu_notifier_range range;
  	enum ttu_flags flags = (enum ttu_flags)(long)arg;
  
-@@ -1795,6 +1825,8 @@ static bool try_to_migrate_one(struct fo
+@@ -1837,6 +1867,8 @@ static bool try_to_migrate_one(struct fo
  		subpage = folio_page(folio,
  				pte_pfn(*pvmw.pte) - folio_pfn(folio));
  		address = pvmw.address;
@@ -1029,7 +1032,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  		if (folio_test_hugetlb(folio) && !folio_test_anon(folio)) {
  			/*
-@@ -1846,6 +1878,9 @@ static bool try_to_migrate_one(struct fo
+@@ -1888,6 +1920,9 @@ static bool try_to_migrate_one(struct fo
  			swp_entry_t entry;
  			pte_t swp_pte;
  
@@ -1039,7 +1042,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			/*
  			 * Store the pfn of the page in a special migration
  			 * pte. do_swap_page() will wait until the migration
-@@ -1854,6 +1889,8 @@ static bool try_to_migrate_one(struct fo
+@@ -1896,6 +1931,8 @@ static bool try_to_migrate_one(struct fo
  			entry = pte_to_swp_entry(pteval);
  			if (is_writable_device_private_entry(entry))
  				entry = make_writable_migration_entry(pfn);
@@ -1048,7 +1051,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			else
  				entry = make_readable_migration_entry(pfn);
  			swp_pte = swp_entry_to_pte(entry);
-@@ -1918,6 +1955,15 @@ static bool try_to_migrate_one(struct fo
+@@ -1960,6 +1997,15 @@ static bool try_to_migrate_one(struct fo
  				page_vma_mapped_walk_done(&pvmw);
  				break;
  			}
@@ -1064,7 +1067,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  			/*
  			 * Store the pfn of the page in a special migration
-@@ -1927,6 +1973,9 @@ static bool try_to_migrate_one(struct fo
+@@ -1969,6 +2015,9 @@ static bool try_to_migrate_one(struct fo
  			if (pte_write(pteval))
  				entry = make_writable_migration_entry(
  							page_to_pfn(subpage));
@@ -1074,7 +1077,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			else
  				entry = make_readable_migration_entry(
  							page_to_pfn(subpage));
-@@ -2363,6 +2412,8 @@ void hugepage_add_anon_rmap(struct page
+@@ -2405,6 +2454,8 @@ void hugepage_add_anon_rmap(struct page
  	BUG_ON(!anon_vma);
  	/* address might be in next vma when migration races vma_adjust */
  	first = atomic_inc_and_test(compound_mapcount_ptr(page));

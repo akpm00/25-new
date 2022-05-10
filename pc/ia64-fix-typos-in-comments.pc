@@ -1,4 +1,0 @@
-arch/ia64/kernel/palinfo.c
-arch/ia64/kernel/traps.c
-arch/ia64/mm/init.c
-arch/ia64/mm/tlb.c

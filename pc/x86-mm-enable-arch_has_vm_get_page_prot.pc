@@ -1,5 +1,0 @@
-arch/x86/include/asm/pgtable.h
-arch/x86/include/uapi/asm/mman.h
-arch/x86/Kconfig
-arch/x86/mm/Makefile
-arch/x86/mm/pgprot.c

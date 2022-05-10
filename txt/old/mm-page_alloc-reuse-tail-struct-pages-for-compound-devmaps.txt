@@ -18,7 +18,7 @@ pages is a lot smaller than the total amount of struct pages being mapped.
 The altmap path is left alone since it does not support memory savings
 based on compound pages devmap.
 
-Link: https://lkml.kernel.org/r/20220303213252.28593-6-joao.m.martins@oracle.com
+Link: https://lkml.kernel.org/r/20220420155310.9712-6-joao.m.martins@oracle.com
 Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Christoph Hellwig <hch@lst.de>

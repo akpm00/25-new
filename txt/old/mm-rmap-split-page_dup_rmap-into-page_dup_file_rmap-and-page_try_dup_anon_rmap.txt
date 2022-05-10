@@ -1,7 +1,7 @@
 From: David Hildenbrand <david@redhat.com>
 Subject: mm/rmap: split page_dup_rmap() into page_dup_file_rmap() and page_try_dup_anon_rmap()
 
-... and move the special check for pinned pages into
+...  and move the special check for pinned pages into
 page_try_dup_anon_rmap() to prepare for tracking exclusive anonymous pages
 via a new pageflag, clearing it only after making sure that there are no
 GUP pins on the anonymous page.
@@ -20,7 +20,7 @@ This is a preparation for tracking exclusivity of anonymous pages in the
 rmap code, and disallowing marking a page shared (-> failing to duplicate)
 if there are GUP pins on a page.
 
-Link: https://lkml.kernel.org/r/20220329160440.193848-5-david@redhat.com
+Link: https://lkml.kernel.org/r/20220428083441.37290-5-david@redhat.com
 Signed-off-by: David Hildenbrand <david@redhat.com>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -35,7 +35,7 @@ Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Khalid Aziz <khalid.aziz@oracle.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Liang Zhang <zhangliang5@huawei.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.ibm.com>

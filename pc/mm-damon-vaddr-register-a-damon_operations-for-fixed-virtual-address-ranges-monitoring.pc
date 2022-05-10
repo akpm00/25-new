@@ -1,3 +1,0 @@
-include/linux/damon.h
-mm/damon/sysfs.c
-mm/damon/vaddr.c
