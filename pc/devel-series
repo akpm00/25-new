@@ -620,6 +620,7 @@ mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
 mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
 mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
 mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
+#mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch: https://lkml.kernel.org/r/970166e0-f70e-dd2a-c764-af23a8425f87@oracle.com
 mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
 #
 #mm/vmscan
@@ -837,6 +838,10 @@ mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 mm-change-huge_ptep_clear_flush-to-return-the-original-pte.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
+#
+#mm/cma
+#mm-fix-is_pinnable_page-against-on-cma-page.patch: acks?
+mm-fix-is_pinnable_page-against-on-cma-page.patch
 #
 # mmend
 #
