@@ -1,0 +1,59 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/memory-failure.c: add hwpoison_filter for soft offline
+
+hwpoison_filter is missing in the soft offline path, this leads an issue:
+after enabling the corrupt filter, the user process still has a chance to
+inject hwpoison fault by madvise(addr, len, MADV_SOFT_OFFLINE) at PFN
+which is expected to reject.
+
+Also do a minor change in comment of memory_failure().
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-4-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memory-failure.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+--- a/mm/memory-failure.c~mm-memory-failurec-add-hwpoison_filter-for-soft-offline
++++ a/mm/memory-failure.c
+@@ -1751,7 +1751,7 @@ static DEFINE_MUTEX(mf_mutex);
+  * enabled and no spinlocks hold.
+  *
+  * Return: 0 for successfully handled the memory error,
+- *         -EOPNOTSUPP for memory_filter() filtered the error event,
++ *         -EOPNOTSUPP for hwpoison_filter() filtered the error event,
+  *         < 0(except -EOPNOTSUPP) on failure.
+  */
+ int memory_failure(unsigned long pfn, int flags)
+@@ -2295,7 +2295,9 @@ static void put_ref_page(struct page *pa
+  * @pfn: pfn to soft-offline
+  * @flags: flags. Same as memory_failure().
+  *
+- * Returns 0 on success, otherwise negated errno.
++ * Returns 0 on success
++ *         -EOPNOTSUPP for hwpoison_filter() filtered the error event
++ *         < 0 otherwise negated errno.
+  *
+  * Soft offline a page, by migration or invalidation,
+  * without killing anything. This is for the case when
+@@ -2346,6 +2348,16 @@ retry:
+ 	ret = get_hwpoison_page(page, flags | MF_SOFT_OFFLINE);
+ 	put_online_mems();
+ 
++	if (hwpoison_filter(page)) {
++		if (ret > 0)
++			put_page(page);
++		else
++			put_ref_page(ref_page);
++
++		mutex_unlock(&mf_mutex);
++		return -EOPNOTSUPP;
++	}
++
+ 	if (ret > 0) {
+ 		ret = soft_offline_in_use_page(page);
+ 	} else if (ret == 0) {
+_

@@ -40,6 +40,54 @@ int main(int argc, char **argv) {
 It worked before b964bf53e540, it is stuck after b964bf53e540, and it
 works again with this fix.
 
+This regression occurred because do_splice_direct() calls pipe_write
+that handles O_NONBLOCK.  Here is a trace log from the reproducer:
+
+ 1)               |  __x64_sys_sendfile64() {
+ 1)               |    do_sendfile() {
+ 1)               |      __fdget()
+ 1)               |      rw_verify_area()
+ 1)               |      __fdget()
+ 1)               |      rw_verify_area()
+ 1)               |      do_splice_direct() {
+ 1)               |        rw_verify_area()
+ 1)               |        splice_direct_to_actor() {
+ 1)               |          do_splice_to() {
+ 1)               |            rw_verify_area()
+ 1)               |            generic_file_splice_read()
+ 1) + 74.153 us   |          }
+ 1)               |          direct_splice_actor() {
+ 1)               |            iter_file_splice_write() {
+ 1)               |              __kmalloc()
+ 1)   0.148 us    |              pipe_lock();
+ 1)   0.153 us    |              splice_from_pipe_next.part.0();
+ 1)   0.162 us    |              page_cache_pipe_buf_confirm();
+... 16 times
+ 1)   0.159 us    |              page_cache_pipe_buf_confirm();
+ 1)               |              vfs_iter_write() {
+ 1)               |                do_iter_write() {
+ 1)               |                  rw_verify_area()
+ 1)               |                  do_iter_readv_writev() {
+ 1)               |                    pipe_write() {
+ 1)               |                      mutex_lock()
+ 1)   0.153 us    |                      mutex_unlock();
+ 1)   1.368 us    |                    }
+ 1)   1.686 us    |                  }
+ 1)   5.798 us    |                }
+ 1)   6.084 us    |              }
+ 1)   0.174 us    |              kfree();
+ 1)   0.152 us    |              pipe_unlock();
+ 1) + 14.461 us   |            }
+ 1) + 14.783 us   |          }
+ 1)   0.164 us    |          page_cache_pipe_buf_release();
+... 16 times
+ 1)   0.161 us    |          page_cache_pipe_buf_release();
+ 1)               |          touch_atime()
+ 1) + 95.854 us   |        }
+ 1) + 99.784 us   |      }
+ 1) ! 107.393 us  |    }
+ 1) ! 107.699 us  |  }
+
 Link: https://lkml.kernel.org/r/20220415005015.525191-1-avagin@gmail.com
 Fixes: b964bf53e540 ("teach sendfile(2) to handle send-to-pipe directly")
 Signed-off-by: Andrei Vagin <avagin@gmail.com>

@@ -509,7 +509,7 @@ drivers-virtio_mem-use-pageblock-size-as-the-minimum-virtio_mem-size.patch
 #mm/migration
 #mm-migration-reduce-the-rcu-lock-duration.patch: https://lkml.kernel.org/r/d6f0824dd1f01fe9aebf122bfeb5940babc93c69.camel@intel.com https://lkml.kernel.org/r/eeda05fb-b0bb-3e1d-37e0-0021dd72e144@redhat.com https://lkml.kernel.org/r/d260e8b178defbe4facda3cd8f0b534ec812268a.camel@intel.com
 mm-migration-reduce-the-rcu-lock-duration.patch
-#mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch: https://lkml.kernel.org/r/525298ad-5e6a-2f8d-366d-4dcb7eebd093@redhat.com
+#mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch: https://lkml.kernel.org/r/525298ad-5e6a-2f8d-366d-4dcb7eebd093@redhat.com check review
 mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch
 #mm-migration-return-errno-when-isolate_huge_page-failed.patch: https://lkml.kernel.org/r/f06e4a39-39e7-44de-dbc8-dc82ead37047@redhat.com
 mm-migration-return-errno-when-isolate_huge_page-failed.patch
@@ -742,6 +742,7 @@ mm-damon-reclaim-use-resource_size-function-on-resource-object.patch
 docs-vm-page_owner-tweak-literal-block-in-standard-format-specifiers.patch
 #
 #mm/percpu
+#percpu-improve-percpu_alloc_percpu-event-trace.patch: Steven q https://lkml.kernel.org/r/20220509170605.2eb7637e@gandalf.local.home
 percpu-improve-percpu_alloc_percpu-event-trace.patch
 #
 #mm/zram
@@ -785,6 +786,17 @@ mm-swap-fix-the-obsolete-comment-for-swp_type_shift.patch
 mm-swap-clean-up-the-comment-of-find_next_to_unuse.patch
 mm-swap-fix-the-comment-of-get_kernel_pages.patch
 mm-swap-fix-comment-about-swap-extent.patch
+#
+#mm/memory-failure
+mm-memory-failurec-move-clear_hwpoisoned_pages.patch
+mm-memory-failurec-simplify-num_poisoned_pages_dec.patch
+mm-memory-failurec-add-hwpoison_filter-for-soft-offline.patch
+mm-hwpoison-disable-hwpoison-filter-during-removing.patch
+mm-memory-failurec-simplify-num_poisoned_pages_inc-dec.patch
+#
+#mm/zsmalloc
+#zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch: acks?
+zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
 #
 # mmend
 #
@@ -954,6 +966,9 @@ fs-ntfs3-validate-boot-sectors_per_clusters.patch
 #vfs
 #fs-sendfile-handles-o_nonblock-of-out_fd.patch: viro merge
 fs-sendfile-handles-o_nonblock-of-out_fd.patch
+#
+#relay
+relay-remove-redundant-assignment-to-pointer-buf.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 

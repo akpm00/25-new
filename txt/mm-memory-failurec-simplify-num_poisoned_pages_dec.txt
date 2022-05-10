@@ -1,0 +1,18 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/memory-failure.c: simplify num_poisoned_pages_dec
+
+Don't decrease the number of poisoned pages in page_alloc.c, let the
+memory-failure.c do inc/dec poisoned pages only.
+
+Also simplify unpoison_memory(), only decrease the number of
+poisoned pages when:
+ - TestClearPageHWPoison() succeed
+ - put_page_back_buddy succeed
+
+After decreasing, print necessary log.
+
+Finally, remove clear_page_hwpoison() and unpoison_taken_off_page().
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-3-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

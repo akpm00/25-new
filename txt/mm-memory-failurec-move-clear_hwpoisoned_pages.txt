@@ -1,0 +1,49 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/memory-failure.c: move clear_hwpoisoned_pages
+
+Patch series "memory-failure: fix hwpoison_filter", v2.
+
+As well known, the memory failure mechanism handles memory corrupted
+event, and try to send SIGBUS to the user process which uses this
+corrupted page.
+
+For the virtualization case, QEMU catches SIGBUS and tries to inject MCE
+into the guest, and the guest handles memory failure again.  Thus the
+guest gets the minimal effect from hardware memory corruption.
+
+The further step I'm working on:
+
+1, try to modify code to decrease poisoned pages in a single place
+   (mm/memofy-failure.c: simplify num_poisoned_pages_dec in this series).
+
+2, try to use page_handle_poison() to handle SetPageHWPoison() and
+   num_poisoned_pages_inc() together.  It would be best to call
+   num_poisoned_pages_inc() in a single place too.
+
+3, introduce memory failure notifier list in memory-failure.c: notify
+   the corrupted PFN to someone who registers this list.  If I can
+   complete [1] and [2] part, [3] will be quite easy(just call notifier
+   list after increasing poisoned page).
+
+4, introduce memory recover VQ for memory balloon device, and registers
+   memory failure notifier list.  During the guest kernel handles memory
+   failure, balloon device gets notified by memory failure notifier list,
+   and tells the host to recover the corrupted PFN(GPA) by the new VQ.
+
+5, host side remaps the corrupted page(HVA), and tells the guest side
+   to unpoison the PFN(GPA).  Then the guest fixes the corrupted page(GPA)
+   dynamically.
+
+
+This patch (of 5):
+
+clear_hwpoisoned_pages() clears HWPoison flag and decreases the number of
+poisoned pages, this actually works as part of memory failure.
+
+Move this function from sparse.c to memory-failure.c, finally there is no
+CONFIG_MEMORY_FAILURE in sparse.c.
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-1-pizhenwei@bytedance.com
+Link: https://lkml.kernel.org/r/20220509105641.491313-2-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>

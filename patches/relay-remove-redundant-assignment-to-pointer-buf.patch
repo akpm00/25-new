@@ -1,0 +1,35 @@
+From: Colin Ian King <colin.i.king@gmail.com>
+Subject: relay: remove redundant assignment to pointer buf
+
+Pointer buf is being assigned a value that is not being read, buf is being
+re-assigned in the next starement.  The assignment is redundant and can be
+removed.
+
+Cleans up clang scan build warning:
+kernel/relay.c:443:8: warning: Although the value stored to 'buf' is
+used in the enclosing expression, the value is never actually read
+from 'buf' [deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220508212152.58753-1-colin.i.king@gmail.com
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ kernel/relay.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/kernel/relay.c~relay-remove-redundant-assignment-to-pointer-buf
++++ a/kernel/relay.c
+@@ -440,7 +440,7 @@ int relay_prepare_cpu(unsigned int cpu)
+ 
+ 	mutex_lock(&relay_channels_mutex);
+ 	list_for_each_entry(chan, &relay_channels, list) {
+-		if ((buf = *per_cpu_ptr(chan->buf, cpu)))
++		if (*per_cpu_ptr(chan->buf, cpu))
+ 			continue;
+ 		buf = relay_open_buf(chan, cpu);
+ 		if (!buf) {
+_

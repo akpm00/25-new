@@ -1,0 +1,36 @@
+From: Miaohe Lin <linmiaohe@huawei.com>
+Subject: mm/swap: break the loop if matching device is found
+
+We can break the loop if matching device is found to save some possible
+cpu cycles because there should be only one matching device and there is
+no need to continue if the matching one is already found.
+
+Link: https://lkml.kernel.org/r/20220509131416.17553-11-linmiaohe@huawei.com
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/swapfile.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+--- a/mm/swapfile.c~mm-swap-break-the-loop-if-matching-device-is-found
++++ a/mm/swapfile.c
+@@ -1691,6 +1691,8 @@ int swap_type_of(dev_t device, sector_t
+ 				spin_unlock(&swap_lock);
+ 				return type;
+ 			}
++
++			break;
+ 		}
+ 	}
+ 	spin_unlock(&swap_lock);
+_

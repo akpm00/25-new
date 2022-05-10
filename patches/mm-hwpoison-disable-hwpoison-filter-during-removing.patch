@@ -1,0 +1,29 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/hwpoison: disable hwpoison filter during removing
+
+hwpoison filter is enabled by hwpoison-inject module, after removing this
+module, hwpoison filter still works.  What is worse, user can not find the
+debugfs entries to know this.
+
+Disable the hwpoison filter during removing hwpoison-inject module.
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-5-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/hwpoison-inject.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/mm/hwpoison-inject.c~mm-hwpoison-disable-hwpoison-filter-during-removing
++++ a/mm/hwpoison-inject.c
+@@ -65,6 +65,7 @@ DEFINE_DEBUGFS_ATTRIBUTE(unpoison_fops,
+ 
+ static void pfn_inject_exit(void)
+ {
++	hwpoison_filter_enable = 0;
+ 	debugfs_remove_recursive(hwpoison_dir);
+ }
+ 
+_

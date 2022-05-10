@@ -1,0 +1,12 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/memory-failure.c: simplify num_poisoned_pages_inc/dec
+
+Originally, do num_poisoned_pages_inc() in memory failure routine, use
+num_poisoned_pages_dec() to rollback the number if filtered/ cancelled.
+
+Suggested by Naoya, do num_poisoned_pages_inc() only in action_result(),
+this make this clear and simple.
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-6-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

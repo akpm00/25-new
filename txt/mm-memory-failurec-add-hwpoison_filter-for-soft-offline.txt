@@ -1,0 +1,13 @@
+From: zhenwei pi <pizhenwei@bytedance.com>
+Subject: mm/memory-failure.c: add hwpoison_filter for soft offline
+
+hwpoison_filter is missing in the soft offline path, this leads an issue:
+after enabling the corrupt filter, the user process still has a chance to
+inject hwpoison fault by madvise(addr, len, MADV_SOFT_OFFLINE) at PFN
+which is expected to reject.
+
+Also do a minor change in comment of memory_failure().
+
+Link: https://lkml.kernel.org/r/20220509105641.491313-4-pizhenwei@bytedance.com
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
