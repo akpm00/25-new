@@ -1,0 +1,9 @@
+From: Haowen Bai <baihaowen@meizu.com>
+Subject: ia64: mca: Drop redundant spinlock initialization
+
+mlogbuf_rlock has declared and initialized by DEFINE_SPINLOCK,
+so we don't need to spin_lock_init again, drop it.
+
+Link: https://lkml.kernel.org/r/1652176897-4754-1-git-send-email-baihaowen@meizu.com
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>

@@ -1,0 +1,26 @@
+From: Haowen Bai <baihaowen@meizu.com>
+Subject: ia64: mca: Drop redundant spinlock initialization
+
+mlogbuf_rlock has declared and initialized by DEFINE_SPINLOCK,
+so we don't need to spin_lock_init again, drop it.
+
+Link: https://lkml.kernel.org/r/1652176897-4754-1-git-send-email-baihaowen@meizu.com
+Signed-off-by: Haowen Bai <baihaowen@meizu.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/ia64/kernel/mca.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- a/arch/ia64/kernel/mca.c~ia64-mca-drop-redundant-spinlock-initialization
++++ a/arch/ia64/kernel/mca.c
+@@ -290,7 +290,6 @@ static void ia64_mlogbuf_finish(int wait
+ {
+ 	BREAK_LOGLEVEL(console_loglevel);
+ 
+-	spin_lock_init(&mlogbuf_rlock);
+ 	ia64_mlogbuf_dump();
+ 	printk(KERN_EMERG "mlogbuf_finish: printing switched to urgent mode, "
+ 		"MCA/INIT might be dodgy or fail.\n");
+_

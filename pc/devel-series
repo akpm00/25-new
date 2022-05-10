@@ -843,6 +843,12 @@ mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
 #mm-fix-is_pinnable_page-against-on-cma-page.patch: acks?
 mm-fix-is_pinnable_page-against-on-cma-page.patch
 #
+#mm/memcg
+mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
+#
+#mm/damon
+mm-damon-add-documentation-for-enum-value.patch
+#
 # mmend
 #
 #ENDBRANCH mm-unstable
@@ -1014,6 +1020,9 @@ relay-remove-redundant-assignment-to-pointer-buf.patch
 #
 #drivers/tty
 tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock.patch
+#
+#ia64
+ia64-mca-drop-redundant-spinlock-initialization.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 

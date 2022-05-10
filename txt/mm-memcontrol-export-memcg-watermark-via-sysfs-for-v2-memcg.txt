@@ -1,0 +1,24 @@
+From: Ganesan Rajagopal <rganesan@arista.com>
+Subject: mm/memcontrol: export memcg->watermark via sysfs for v2 memcg
+
+We run a lot of automated tests when building our software and run into
+OOM scenarios when the tests run unbounded.  v1 memcg exports
+memcg->watermark as "memory.max_usage_in_bytes" in sysfs.  We use this
+metric to heuristically limit the number of tests that can run in parallel
+based on per test historical data.
+
+This metric is currently not exported for v2 memcg and there is no other
+easy way of getting this information.  getrusage() syscall returns
+"ru_maxrss" which can be used as an approximation but that's the max RSS
+of a single child process across all children instead of the aggregated
+max for all child processes.  The only work around is to periodically poll
+"memory.current" but that's not practical for short-lived one-off cgroups.
+
+Hence, expose memcg->watermark as "memory.peak" for v2 memcg.
+
+Link: https://lkml.kernel.org/r/20220507050916.GA13577@us192.sjc.aristanetworks.com
+Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
+Acked-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
