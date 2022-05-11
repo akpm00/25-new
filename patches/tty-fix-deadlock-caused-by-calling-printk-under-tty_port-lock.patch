@@ -1,9 +1,9 @@
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 Subject: tty: fix deadlock caused by calling printk() under tty_port->lock
 
-The pty_write() invokes kmalloc() which may invoke a normal printk() to
-print failure message.  This can cause a deadlock in the scenario reported
-by syz-bot below:
+pty_write() invokes kmalloc() which may invoke a normal printk() to print
+failure message.  This can cause a deadlock in the scenario reported by
+syz-bot below:
 
        CPU0              CPU1                    CPU2
        ----              ----                    ----
@@ -25,7 +25,7 @@ Therefore, this patch chooses to specify __GFP_NOWARN to kmalloc(), so
 that printk() will not be called, and this deadlock problem can be
 avoided.
 
-Syz-bot reported the following lockdep error:
+Syzbot reported the following lockdep error:
 
 ======================================================
 WARNING: possible circular locking dependency detected
@@ -53,20 +53,7 @@ the existing dependency chain (in reverse order) is:
        serial8250_default_handle_irq+0xb2/0x220 drivers/tty/serial/8250/8250_port.c:1870
        serial8250_interrupt+0xfd/0x200 drivers/tty/serial/8250/8250_core.c:126
        __handle_irq_event_percpu+0x109/0xa50 kernel/irq/handle.c:156
-       handle_irq_event_percpu+0x76/0x170 kernel/irq/handle.c:196
-       handle_irq_event+0xa1/0x130 kernel/irq/handle.c:213
-       handle_edge_irq+0x261/0xd00 kernel/irq/chip.c:833
-       generic_handle_irq_desc include/linux/irqdesc.h:156 [inline]
-       do_IRQ+0xf2/0x2e0 arch/x86/kernel/irq.c:250
-       ret_from_intr+0x0/0x19
-       native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-       arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-       default_idle+0x2c/0x1a0 arch/x86/kernel/process.c:572
-       cpuidle_idle_call kernel/sched/idle.c:184 [inline]
-       do_idle+0x44c/0x590 kernel/sched/idle.c:294
-       cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:386
-       start_secondary+0x2d1/0x3e0 arch/x86/kernel/smpboot.c:264
-       secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
+       [...]
 
 -> #1 (&port_lock_key){-.-.}-{2:2}:
        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
@@ -85,10 +72,7 @@ the existing dependency chain (in reverse order) is:
        secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:241
 
 -> #0 (console_owner){....}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:2600 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2705 [inline]
-       validate_chain kernel/locking/lockdep.c:3095 [inline]
-       __lock_acquire+0x27e6/0x4cc0 kernel/locking/lockdep.c:4200
+       [...]
        lock_acquire+0x127/0x340 kernel/locking/lockdep.c:4734
        console_trylock_spinning kernel/printk/printk.c:1773 [inline]		<-- lock(console_owner);
        vprintk_emit+0x307/0x470 kernel/printk/printk.c:2023
@@ -112,23 +96,21 @@ the existing dependency chain (in reverse order) is:
        do_tty_write drivers/tty/tty_io.c:961 [inline]
        tty_write+0x512/0x930 drivers/tty/tty_io.c:1045
        __vfs_write+0x76/0x100 fs/read_write.c:494
-       vfs_write+0x268/0x5c0 fs/read_write.c:558
-       ksys_write+0x12d/0x250 fs/read_write.c:611
-       do_syscall_64+0xd7/0x380 arch/x86/entry/common.c:291
-       entry_SYSCALL_64_after_hwframe+0x49/0xbe
+       [...]
 
 other info that might help us debug this:
 
 Chain exists of:
   console_owner --> &port_lock_key --> &port->lock
 
+Link: https://lkml.kernel.org/r/20220511061951.1114-2-zhengqi.arch@bytedance.com
 Link: https://lkml.kernel.org/r/20220510113809.80626-2-zhengqi.arch@bytedance.com
 Fixes: b6da31b2c07c ("tty: Fix data race in tty_insert_flip_string_fixed_flag")
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Akinobu Mita <akinobu.mita@gmail.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
 Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

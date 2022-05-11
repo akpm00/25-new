@@ -1,0 +1,7 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix-2
+
+fix build in several more architectures
+
+Link: https://lkml.kernel.org/r/0009a4cd-2826-e8be-e671-f050d4f18d5d@linux.alibaba.com
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

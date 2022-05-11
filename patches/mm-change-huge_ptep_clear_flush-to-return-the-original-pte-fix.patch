@@ -1,0 +1,23 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix up for "mm: change huge_ptep_clear_flush() to return the original pte"
+
+Link: https://lkml.kernel.org/r/20220511181531.7f27a5c1@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/sparc/include/asm/hugetlb.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/sparc/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix
++++ a/arch/sparc/include/asm/hugetlb.h
+@@ -24,6 +24,7 @@ pte_t huge_ptep_get_and_clear(struct mm_
+ static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 					  unsigned long addr, pte_t *ptep)
+ {
++	return *ptep;
+ }
+ 
+ #define __HAVE_ARCH_HUGE_PTEP_SET_WRPROTECT
+_

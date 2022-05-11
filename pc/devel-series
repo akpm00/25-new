@@ -818,6 +818,7 @@ zswap-memcg-accounting.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch
+mm-fix-missing-handler-for-__gfp_nowarn-v2.patch
 #
 #mm/highmem
 mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
@@ -836,6 +837,8 @@ mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
 mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 mm-change-huge_ptep_clear_flush-to-return-the-original-pte.patch
+mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix.patch
+mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix-2.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-fix.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
@@ -1021,6 +1024,7 @@ relay-remove-redundant-assignment-to-pointer-buf.patch
 #
 #drivers/tty
 tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock.patch
+tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock-v2.patch
 #
 #ia64
 ia64-mca-drop-redundant-spinlock-initialization.patch

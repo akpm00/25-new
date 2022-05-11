@@ -1,0 +1,6 @@
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: fix up for "mm: change huge_ptep_clear_flush() to return the original pte"
+
+Link: https://lkml.kernel.org/r/20220511181531.7f27a5c1@canb.auug.org.au
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
