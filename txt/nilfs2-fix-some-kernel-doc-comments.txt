@@ -1,0 +1,30 @@
+From: Yang Li <yang.lee@linux.alibaba.com>
+Subject: nilfs2: Fix some kernel-doc comments
+
+The description of @flags in nilfs_dirty_inode() kernel-doc comment is
+missing, and some functions had kernel-doc that used a hash instead of a
+colon to separate the parameter name from the one line description.
+
+Fix them to remove some warnings found by running scripts/kernel-doc,
+which is caused by using 'make W=1'.
+
+fs/nilfs2/inode.c:73: warning: Function parameter or member 'inode' not
+described in 'nilfs_get_block'
+fs/nilfs2/inode.c:73: warning: Function parameter or member 'blkoff' not
+described in 'nilfs_get_block'
+fs/nilfs2/inode.c:73: warning: Function parameter or member 'bh_result'
+not described in 'nilfs_get_block'
+fs/nilfs2/inode.c:73: warning: Function parameter or member 'create' not
+described in 'nilfs_get_block'
+fs/nilfs2/inode.c:145: warning: Function parameter or member 'file' not
+described in 'nilfs_readpage'
+fs/nilfs2/inode.c:145: warning: Function parameter or member 'page' not
+described in 'nilfs_readpage'
+fs/nilfs2/inode.c:968: warning: Function parameter or member 'flags' not
+described in 'nilfs_dirty_inode'
+
+Link: https://lkml.kernel.org/r/20220324024215.63479-1-yang.lee@linux.alibaba.com
+Link: https://lkml.kernel.org/r/1652276316-7791-1-git-send-email-konishi.ryusuke@gmail.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>

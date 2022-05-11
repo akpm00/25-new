@@ -1,0 +1,42 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix
+
+fix kbuild warnings
+
+Link: https://lkml.kernel.org/r/YnvkSVivfnT57Vwh@cmpxchg.org
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/Kconfig |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+--- a/mm/Kconfig~mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix
++++ a/mm/Kconfig
+@@ -692,6 +692,12 @@ config NOMMU_INITIAL_TRIM_EXCESS
+ 
+ 	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
+ 
++config ARCH_WANT_GENERAL_HUGETLB
++	bool
++
++config ARCH_WANTS_THP_SWAP
++	def_bool n
++
+ menuconfig TRANSPARENT_HUGEPAGE
+ 	bool "Transparent Hugepage Support"
+ 	depends on HAVE_ARCH_TRANSPARENT_HUGEPAGE && !PREEMPT_RT
+@@ -733,12 +739,6 @@ choice
+ 	  benefit.
+ endchoice
+ 
+-config ARCH_WANT_GENERAL_HUGETLB
+-	bool
+-
+-config ARCH_WANTS_THP_SWAP
+-	def_bool n
+-
+ config THP_SWAP
+ 	def_bool y
+ 	depends on TRANSPARENT_HUGEPAGE && ARCH_WANTS_THP_SWAP && SWAP
+_

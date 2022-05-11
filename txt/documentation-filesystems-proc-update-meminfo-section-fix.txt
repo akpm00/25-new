@@ -1,0 +1,8 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: documentation-filesystems-proc-update-meminfo-section-fix
+
+fix htmldocs warnings
+
+Link: https://lkml.kernel.org/r/Ynve8dg4zJyhH2gW@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>

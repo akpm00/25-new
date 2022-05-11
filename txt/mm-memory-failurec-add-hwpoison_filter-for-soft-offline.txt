@@ -10,4 +10,4 @@ Also do a minor change in comment of memory_failure().
 
 Link: https://lkml.kernel.org/r/20220509105641.491313-4-pizhenwei@bytedance.com
 Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
