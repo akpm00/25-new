@@ -1,0 +1,6 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-fix
+
+fix nommu build
+
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
