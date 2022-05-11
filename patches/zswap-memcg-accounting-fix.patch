@@ -1,0 +1,50 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: zswap-memcg-accounting-fix
+
+fix build
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/memcontrol.c~zswap-memcg-accounting-fix
++++ a/mm/memcontrol.c
+@@ -7451,7 +7451,7 @@ static struct cftype memsw_files[] = {
+ 	{ },	/* terminate */
+ };
+ 
+-#ifdef CONFIG_ZSWAP
++#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ /**
+  * obj_cgroup_may_zswap - check if this cgroup can zswap
+  * @objcg: the object cgroup
+@@ -7582,7 +7582,7 @@ static struct cftype zswap_files[] = {
+ 	},
+ 	{ }	/* terminate */
+ };
+-#endif /* CONFIG_ZSWAP */
++#endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
+ 
+ /*
+  * If mem_cgroup_swap_init() is implemented as a subsys_initcall()
+@@ -7602,7 +7602,7 @@ static int __init mem_cgroup_swap_init(v
+ 
+ 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
+ 	WARN_ON(cgroup_add_legacy_cftypes(&memory_cgrp_subsys, memsw_files));
+-#ifdef CONFIG_ZSWAP
++#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+ 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, zswap_files));
+ #endif
+ 	return 0;
+_

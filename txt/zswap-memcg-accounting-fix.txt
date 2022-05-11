@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: zswap-memcg-accounting-fix
+
+fix build
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

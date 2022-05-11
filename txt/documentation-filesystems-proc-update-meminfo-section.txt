@@ -39,6 +39,7 @@ Add new entries.  Minor corrections and cleanups.
 Link: https://lkml.kernel.org/r/20220510152847.230957-1-hannes@cmpxchg.org
 Link: https://lkml.kernel.org/r/20220510152847.230957-2-hannes@cmpxchg.org
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Dan Streetman <ddstreet@ieee.org>
 Cc: Michal Hocko <mhocko@suse.com>
 Cc: Minchan Kim <minchan@kernel.org>

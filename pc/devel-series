@@ -434,7 +434,7 @@ mm-stable.patch
 #mm/memcg
 #cgroups-refactor-children-cgroups-in-memcg-tests.patch+N: https://lkml.kernel.org/r/20220510174341.GC24172@blackbody.suse.cz
 cgroups-refactor-children-cgroups-in-memcg-tests.patch
-#cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch: check review https://lkml.kernel.org/r/20220427140928.GD9823@blackbody.suse.cz
+#cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch: check review https://lkml.kernel.org/r/20220427140928.GD9823@blackbody.suse.cz https://lkml.kernel.org/r/Ynv4AdjeVjptnjrH@cmpxchg.org
 cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
 cgroup-account-for-memory_localevents-in-test_memcg_oom_group_leaf_events.patch
 cgroup-removing-racy-check-in-test_memcg_sock.patch
@@ -478,6 +478,7 @@ mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes.patch
 mm-uffd-pte_marker_uffd_wp.patch
 mm-uffd-pte_marker_uffd_wp-fix.patch
 mm-shmem-take-care-of-uffdio_copy_mode_wp.patch
+#mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch: https://lkml.kernel.org/r/d3a0a870-dccf-186c-e079-96b8309721cd@redhat.com
 mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch
 mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed.patch
 mm-shmem-allow-uffd-wr-protect-none-pte-for-file-backed-mem.patch
@@ -807,7 +808,7 @@ mm-hwpoison-disable-hwpoison-filter-during-removing.patch
 mm-memory-failurec-simplify-num_poisoned_pages_inc-dec.patch
 #
 #mm/zsmalloc
-#zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch: acks?
+#zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch: acks? https://lkml.kernel.org/r/Ynv53fkx8cG0ixaE@google.com
 zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
 #
 #mm/zswap
@@ -818,7 +819,9 @@ mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
 mm-kconfig-simplify-zswap-configuration.patch
 mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
+#zswap-memcg-accounting.patch: Michal q https://lkml.kernel.org/r/20220511173218.GB31592@blackbody.suse.cz
 zswap-memcg-accounting.patch
+zswap-memcg-accounting-fix.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch
