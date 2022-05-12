@@ -21,6 +21,7 @@ process and unmerge those merged pages belonging to VMAs which is not
 madvised as MADV_MERGEABLE of this process, but leave MADV_MERGEABLE
 areas merged.
 
+[akpm@linux-foundation.org: rename ksm_vma_check() to vma_scannable()]
 Link: https://lkml.kernel.org/r/20220512070347.1628163-1-xu.xin16@zte.com.cn
 Signed-off-by: xu xin <xu.xin16@zte.com.cn>
 Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
@@ -259,7 +260,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
 +/* Check if vma is qualified for ksmd scanning */
-+static bool ksm_vma_check(struct vm_area_struct *vma)
++static bool vma_scannable(struct vm_area_struct *vma)
 +{
 +	unsigned long vm_flags = vma->vm_flags;
 +
@@ -294,7 +295,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return NULL;
  	vma = vma_lookup(mm, addr);
 -	if (!vma || !(vma->vm_flags & VM_MERGEABLE) || !vma->anon_vma)
-+	if (!vma || !ksm_vma_check(vma) || !vma->anon_vma)
++	if (!vma || !vma_scannable(vma) || !vma->anon_vma)
  		return NULL;
  	return vma;
  }
@@ -303,7 +304,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	for_each_vma(vmi, vma) {
 -		if (!(vma->vm_flags & VM_MERGEABLE))
-+		if (!ksm_vma_check(vma))
++		if (!vma_scannable(vma))
  			continue;
  		if (ksm_scan.address < vma->vm_start)
  			ksm_scan.address = vma->vm_start;
