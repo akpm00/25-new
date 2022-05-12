@@ -863,10 +863,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 -	validate_mm(mm);
 -	validate_mm_mt(mm);
+ 	mas_destroy(&mas);
  	return error;
  }
- #endif /* CONFIG_STACK_GROWSUP || CONFIG_IA64 */
-@@ -2471,15 +2205,13 @@ int expand_upwards(struct vm_area_struct
+@@ -2472,15 +2206,13 @@ int expand_upwards(struct vm_area_struct
  /*
   * vma is the first one with address < vma->vm_start.  Have to extend vma.
   */
@@ -883,7 +883,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	address &= PAGE_MASK;
  	if (address < mmap_min_addr)
  		return -EPERM;
-@@ -2521,15 +2253,13 @@ int expand_downwards(struct vm_area_stru
+@@ -2522,15 +2254,13 @@ int expand_downwards(struct vm_area_stru
  			error = acct_stack_growth(vma, size, grow);
  			if (!error) {
  				/*
@@ -906,7 +906,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				 */
  				spin_lock(&mm->page_table_lock);
  				if (vma->vm_flags & VM_LOCKED)
-@@ -2541,7 +2271,6 @@ int expand_downwards(struct vm_area_stru
+@@ -2542,7 +2272,6 @@ int expand_downwards(struct vm_area_stru
  				/* Overwrite old entry in mtree. */
  				vma_mas_store(vma, &mas);
  				anon_vma_interval_tree_post_update_vma(vma);
@@ -914,15 +914,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				spin_unlock(&mm->page_table_lock);
  
  				perf_event_mmap(vma);
-@@ -2550,7 +2279,6 @@ int expand_downwards(struct vm_area_stru
+@@ -2551,7 +2280,6 @@ int expand_downwards(struct vm_area_stru
  	}
  	anon_vma_unlock_write(vma->anon_vma);
  	khugepaged_enter_vma_merge(vma, vma->vm_flags);
 -	validate_mm(mm);
+ 	mas_destroy(&mas);
  	return error;
  }
- 
-@@ -2682,10 +2410,8 @@ detach_vmas_to_be_unmapped(struct mm_str
+@@ -2684,10 +2412,8 @@ detach_vmas_to_be_unmapped(struct mm_str
  
  	insertion_point = (prev ? &prev->vm_next : &mm->mmap);
  	vma->vm_prev = NULL;
@@ -934,7 +934,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (vma->vm_flags & VM_LOCKED)
  			mm->locked_vm -= vma_pages(vma);
  		mm->map_count--;
-@@ -2693,10 +2419,9 @@ detach_vmas_to_be_unmapped(struct mm_str
+@@ -2695,10 +2421,9 @@ detach_vmas_to_be_unmapped(struct mm_str
  		vma = vma->vm_next;
  	} while (vma && vma->vm_start < end);
  	*insertion_point = vma;
@@ -947,7 +947,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mm->highest_vm_end = prev ? vm_end_gap(prev) : 0;
  	tail_vma->vm_next = NULL;
  
-@@ -2815,11 +2540,7 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2817,11 +2542,7 @@ int __do_munmap(struct mm_struct *mm, un
  	if (len == 0)
  		return -EINVAL;
  
@@ -960,7 +960,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	arch_unmap(mm, start, end);
  
  	/* Find the first overlapping VMA where start < vma->vm_end */
-@@ -2830,6 +2551,11 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2832,6 +2553,11 @@ int __do_munmap(struct mm_struct *mm, un
  	if (mas_preallocate(&mas, vma, GFP_KERNEL))
  		return -ENOMEM;
  	prev = vma->vm_prev;
@@ -972,7 +972,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * If we need to split any vma, do it now to save pain later.
-@@ -2890,6 +2616,8 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2892,6 +2618,8 @@ int __do_munmap(struct mm_struct *mm, un
  	/* Fix up all other VM information */
  	remove_vma_list(mm, vma);
  
@@ -981,7 +981,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return downgrade ? 1 : 0;
  
  map_count_exceeded:
-@@ -3028,11 +2756,11 @@ out:
+@@ -3030,11 +2758,11 @@ out:
   *  anonymous maps.  eventually we may be able to do some
   *  brk-specific accounting here.
   */
@@ -995,7 +995,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pgoff_t pgoff = addr >> PAGE_SHIFT;
  	int error;
  	unsigned long mapped_addr;
-@@ -3051,8 +2779,8 @@ static int do_brk_flags(unsigned long ad
+@@ -3053,8 +2781,8 @@ static int do_brk_flags(unsigned long ad
  	if (error)
  		return error;
  
@@ -1006,7 +1006,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return -ENOMEM;
  
  	/* Check against address space limits *after* clearing old maps... */
-@@ -3086,7 +2814,7 @@ static int do_brk_flags(unsigned long ad
+@@ -3088,7 +2816,7 @@ static int do_brk_flags(unsigned long ad
  	vma->vm_pgoff = pgoff;
  	vma->vm_flags = flags;
  	vma->vm_page_prot = vm_get_page_prot(flags);
@@ -1015,7 +1015,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto no_vma_link;
  
  out:
-@@ -3203,26 +2931,10 @@ void exit_mmap(struct mm_struct *mm)
+@@ -3205,26 +2933,10 @@ void exit_mmap(struct mm_struct *mm)
  int insert_vm_struct(struct mm_struct *mm, struct vm_area_struct *vma)
  {
  	struct vm_area_struct *prev;
@@ -1043,7 +1043,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if ((vma->vm_flags & VM_ACCOUNT) &&
  	     security_vm_enough_memory_mm(mm, vma_pages(vma)))
  		return -ENOMEM;
-@@ -3244,7 +2956,7 @@ int insert_vm_struct(struct mm_struct *m
+@@ -3246,7 +2958,7 @@ int insert_vm_struct(struct mm_struct *m
  		vma->vm_pgoff = vma->vm_start >> PAGE_SHIFT;
  	}
  
@@ -1052,7 +1052,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return -ENOMEM;
  
  	return 0;
-@@ -3262,9 +2974,7 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3264,9 +2976,7 @@ struct vm_area_struct *copy_vma(struct v
  	unsigned long vma_start = vma->vm_start;
  	struct mm_struct *mm = vma->vm_mm;
  	struct vm_area_struct *new_vma, *prev;
@@ -1062,7 +1062,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	validate_mm_mt(mm);
  	/*
-@@ -3276,10 +2986,9 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3278,10 +2988,9 @@ struct vm_area_struct *copy_vma(struct v
  		faulted_in_anon_vma = false;
  	}
  
@@ -1075,7 +1075,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	new_vma = vma_merge(mm, prev, addr, addr + len, vma->vm_flags,
  			    vma->anon_vma, vma->vm_file, pgoff, vma_policy(vma),
  			    vma->vm_userfaultfd_ctx, anon_vma_name(vma));
-@@ -3320,12 +3029,16 @@ struct vm_area_struct *copy_vma(struct v
+@@ -3322,12 +3031,16 @@ struct vm_area_struct *copy_vma(struct v
  			get_file(new_vma->vm_file);
  		if (new_vma->vm_ops && new_vma->vm_ops->open)
  			new_vma->vm_ops->open(new_vma);

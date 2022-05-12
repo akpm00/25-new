@@ -1,0 +1,44 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: pvmw: check possible huge PMD map by transhuge_vma_suitable()
+
+IIUC PVMW checks if the vma is possibly huge PMD mapped by
+transparent_hugepage_active() and "pvmw->nr_pages >= HPAGE_PMD_NR".
+
+Actually pvmw->nr_pages is returned by compound_nr() or folio_nr_pages(),
+so the page should be THP as long as "pvmw->nr_pages >= HPAGE_PMD_NR". 
+And it is guaranteed THP is allocated for valid VMA in the first place. 
+But it may be not PMD mapped if the VMA is file VMA and it is not properly
+aligned.  The transhuge_vma_suitable() is used to do such check, so
+replace transparent_hugepage_active() to it, which is too heavy and
+overkilling.
+
+Link: https://lkml.kernel.org/r/20220512174551.81279-2-shy828301@gmail.com
+Fixes: 2aff7a4755be ("mm: Convert page_vma_mapped_walk to work on PFNs")
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_vma_mapped.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/mm/page_vma_mapped.c~mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable
++++ a/mm/page_vma_mapped.c
+@@ -237,13 +237,14 @@ restart:
+ 			spin_unlock(pvmw->ptl);
+ 			pvmw->ptl = NULL;
+ 		} else if (!pmd_present(pmde)) {
++			unsigned long haddr = pvmw->address & HPAGE_PMD_MASK;
+ 			/*
+ 			 * If PVMW_SYNC, take and drop THP pmd lock so that we
+ 			 * cannot return prematurely, while zap_huge_pmd() has
+ 			 * cleared *pmd but not decremented compound_mapcount().
+ 			 */
+ 			if ((pvmw->flags & PVMW_SYNC) &&
+-			    transparent_hugepage_active(vma) &&
++			    transhuge_vma_suitable(vma, haddr) &&
+ 			    (pvmw->nr_pages >= HPAGE_PMD_NR)) {
+ 				spinlock_t *ptl = pmd_lock(mm, pvmw->pmd);
+ 
+_

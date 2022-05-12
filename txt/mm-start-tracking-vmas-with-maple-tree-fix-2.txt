@@ -1,0 +1,12 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mmap: fix leak on expand_downwards() and expand_upwards()
+
+A memory leak is possible in the race and error path in both
+expand_downwards() and expand_upwards() due to the maple tree
+preallocations.  Fix these by always destroying the maple state.
+
+Link: https://lkml.kernel.org/r/20220512175915.1814885-1-Liam.Howlett@oracle.com
+Fixes: a760774e7b7b (mm: start tracking VMAs with maple tree)
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

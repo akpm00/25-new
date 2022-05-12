@@ -1,0 +1,44 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix
+
+WARNING: unmet direct dependencies detected for ARCH_ENABLE_MEMORY_HOTREMOVE
+  Depends on [n]: MEMORY_HOTPLUG [=n]
+  Selected by [y]:
+  - PPC [=y]
+
+This is a symbol for the architecture to declare a feature.  It mustn't be
+conditional on user selection.  Move it out of 'if MEMORY_HOTPLUG'.
+
+Link: https://lkml.kernel.org/r/Ynz8NusTdEGcCnJN@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/Kconfig |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/Kconfig~mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix
++++ a/mm/Kconfig
+@@ -436,6 +436,9 @@ config HAVE_BOOTMEM_INFO_NODE
+ config ARCH_ENABLE_MEMORY_HOTPLUG
+ 	bool
+ 
++config ARCH_ENABLE_MEMORY_HOTREMOVE
++	bool
++
+ # eventually, we can have this option just 'select SPARSEMEM'
+ menuconfig MEMORY_HOTPLUG
+ 	bool "Memory hotplug"
+@@ -462,9 +465,6 @@ config MEMORY_HOTPLUG_DEFAULT_ONLINE
+ 	  Say N here if you want the default policy to keep all hot-plugged
+ 	  memory blocks in 'offline' state.
+ 
+-config ARCH_ENABLE_MEMORY_HOTREMOVE
+-	bool
+-
+ config MEMORY_HOTREMOVE
+ 	bool "Allow for memory hot remove"
+ 	select HAVE_BOOTMEM_INFO_NODE if (X86_64 || PPC64)
+_

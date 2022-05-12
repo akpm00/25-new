@@ -439,7 +439,7 @@ mm-stable.patch
 #mm/msync
 #mm/fadvise
 #mm/memcg
-#cgroups-refactor-children-cgroups-in-memcg-tests.patch+N: https://lkml.kernel.org/r/20220510174341.GC24172@blackbody.suse.cz
+#cgroups-refactor-children-cgroups-in-memcg-tests.patch+N: https://lkml.kernel.org/r/20220510174341.GC24172@blackbody.suse.cz https://lkml.kernel.org/r/20220512170410.GA16096@blackbody.suse.cz
 cgroups-refactor-children-cgroups-in-memcg-tests.patch
 #cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch: check review https://lkml.kernel.org/r/20220427140928.GD9823@blackbody.suse.cz https://lkml.kernel.org/r/Ynv4AdjeVjptnjrH@cmpxchg.org
 cgroup-account-for-memory_recursiveprot-in-test_memcg_low.patch
@@ -485,7 +485,6 @@ mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes.patch
 mm-uffd-pte_marker_uffd_wp.patch
 mm-uffd-pte_marker_uffd_wp-fix.patch
 mm-shmem-take-care-of-uffdio_copy_mode_wp.patch
-#mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch: https://lkml.kernel.org/r/d3a0a870-dccf-186c-e079-96b8309721cd@redhat.com
 mm-shmem-handle-uffd-wp-special-pte-in-page-fault-handler.patch
 mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed.patch
 mm-shmem-allow-uffd-wr-protect-none-pte-for-file-backed-mem.patch
@@ -674,8 +673,10 @@ radix-tree-test-suite-add-support-for-slab-bulk-apis.patch
 radix-tree-test-suite-add-lockdep_is_held-to-header.patch
 lib-test_maple_tree-add-testing-for-maple-tree.patch
 lib-test_maple_tree-add-testing-for-maple-tree-fix.patch
+#mm-start-tracking-vmas-with-maple-tree.patch: https://lkml.kernel.org/r/20220512170100.GA74@qian
 mm-start-tracking-vmas-with-maple-tree.patch
 mm-start-tracking-vmas-with-maple-tree-fix.patch
+mm-start-tracking-vmas-with-maple-tree-fix-2.patch
 mm-add-vma-iterator.patch
 mmap-use-the-vma-iterator-in-count_vma_pages_range.patch
 mm-mmap-use-the-maple-tree-in-find_vma-instead-of-the-rbtree.patch
@@ -803,6 +804,7 @@ mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes.patch
 mm-swap-add-helper-swap_offset_available.patch
 mm-swap-fix-the-obsolete-comment-for-swp_type_shift.patch
 mm-swap-clean-up-the-comment-of-find_next_to_unuse.patch
+#mm-swap-fix-the-comment-of-get_kernel_pages.patch: https://lkml.kernel.org/r/3f9e663a-2045-81d1-509e-abbe0e1fa14e@redhat.com
 mm-swap-fix-the-comment-of-get_kernel_pages.patch
 mm-swap-fix-comment-about-swap-extent.patch
 #
@@ -820,6 +822,7 @@ documentation-filesystems-proc-update-meminfo-section-fix-2.patch
 mm-kconfig-move-swap-and-slab-config-options-to-the-mm-section.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
+mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix.patch
 mm-kconfig-simplify-zswap-configuration.patch
 mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
 zswap-memcg-accounting.patch
@@ -869,6 +872,14 @@ mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 #
 #mm/rmap
 mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch
+#
+mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk.patch
+#mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch: acks?
+mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch
+#
+#mm/mempolicy
+#mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch: acks?
+mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch
 #
 # mmend
 #
@@ -1046,7 +1057,6 @@ tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock.patch
 ia64-mca-drop-redundant-spinlock-initialization.patch
 #
 #nilfs2
-nilfs2-fix-some-kernel-doc-comments.patch
 #
 #
 #ENDBRANCH mm-nonmm-unstable

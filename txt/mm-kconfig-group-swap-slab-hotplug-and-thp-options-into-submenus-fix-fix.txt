@@ -1,0 +1,15 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix
+
+WARNING: unmet direct dependencies detected for ARCH_ENABLE_MEMORY_HOTREMOVE
+  Depends on [n]: MEMORY_HOTPLUG [=n]
+  Selected by [y]:
+  - PPC [=y]
+
+This is a symbol for the architecture to declare a feature.  It mustn't be
+conditional on user selection.  Move it out of 'if MEMORY_HOTPLUG'.
+
+Link: https://lkml.kernel.org/r/Ynz8NusTdEGcCnJN@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+

@@ -1,0 +1,32 @@
+From: Yang Shi <shy828301@gmail.com>
+Subject: mm: rmap: use the correct parameter name for DEFINE_PAGE_VMA_WALK
+
+The parameter used by DEFINE_PAGE_VMA_WALK is _page not page, fix the
+parameter name.  It didn't cause any build error, it is probably because
+the only caller is write_protect_page() from ksm.c, which pass in page.
+
+Link: https://lkml.kernel.org/r/20220512174551.81279-1-shy828301@gmail.com
+Fixes: 2aff7a4755be ("mm: Convert page_vma_mapped_walk to work on PFNs")
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/rmap.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/include/linux/rmap.h~mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk
++++ a/include/linux/rmap.h
+@@ -325,8 +325,8 @@ struct page_vma_mapped_walk {
+ #define DEFINE_PAGE_VMA_WALK(name, _page, _vma, _address, _flags)	\
+ 	struct page_vma_mapped_walk name = {				\
+ 		.pfn = page_to_pfn(_page),				\
+-		.nr_pages = compound_nr(page),				\
+-		.pgoff = page_to_pgoff(page),				\
++		.nr_pages = compound_nr(_page),				\
++		.pgoff = page_to_pgoff(_page),				\
+ 		.vma = _vma,						\
+ 		.address = _address,					\
+ 		.flags = _flags,					\
+_
