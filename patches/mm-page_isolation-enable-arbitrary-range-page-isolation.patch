@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/page_alloc.c~mm-page_isolation-enable-arbitrary-range-page-isolation
 +++ a/mm/page_alloc.c
-@@ -8924,16 +8924,6 @@ void *__init alloc_large_system_hash(con
+@@ -8956,16 +8956,6 @@ void *__init alloc_large_system_hash(con
  }
  
  #ifdef CONFIG_CONTIG_ALLOC
@@ -44,7 +44,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #if defined(CONFIG_DYNAMIC_DEBUG) || \
  	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
  /* Usage: See admin-guide/dynamic-debug-howto.rst */
-@@ -9075,8 +9065,7 @@ int alloc_contig_range(unsigned long sta
+@@ -9107,8 +9097,7 @@ int alloc_contig_range(unsigned long sta
  	 * put back to page allocator so that buddy can use them.
  	 */
  
@@ -54,7 +54,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (ret)
  		goto done;
  
-@@ -9157,8 +9146,7 @@ int alloc_contig_range(unsigned long sta
+@@ -9189,8 +9178,7 @@ int alloc_contig_range(unsigned long sta
  		free_contig_range(end, outer_end - end);
  
  done:
@@ -66,7 +66,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  EXPORT_SYMBOL(alloc_contig_range);
 --- a/mm/page_isolation.c~mm-page_isolation-enable-arbitrary-range-page-isolation
 +++ a/mm/page_isolation.c
-@@ -435,7 +435,6 @@ failed:
+@@ -444,7 +444,6 @@ failed:
   * be MIGRATE_ISOLATE.
   * @start_pfn:		The lower PFN of the range to be isolated.
   * @end_pfn:		The upper PFN of the range to be isolated.
@@ -74,7 +74,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * @migratetype:	Migrate type to set in error recovery.
   * @flags:		The following flags are allowed (they can be combined in
   *			a bit mask)
-@@ -482,33 +481,33 @@ int start_isolate_page_range(unsigned lo
+@@ -491,33 +490,33 @@ int start_isolate_page_range(unsigned lo
  {
  	unsigned long pfn;
  	struct page *page;
@@ -120,7 +120,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				migratetype);
  			return -EBUSY;
  		}
-@@ -524,12 +523,12 @@ void undo_isolate_page_range(unsigned lo
+@@ -533,12 +532,12 @@ void undo_isolate_page_range(unsigned lo
  {
  	unsigned long pfn;
  	struct page *page;

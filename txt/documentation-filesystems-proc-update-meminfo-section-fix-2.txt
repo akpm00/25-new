@@ -1,0 +1,8 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: Documentation: filesystems: proc: update meminfo section
+
+change `Unevictable' wording, per David
+
+Link: https://lkml.kernel.org/r/YnwFraZlVWQoCjz3@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: David Hildenbrand <david@redhat.com>

@@ -29,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-allow-uffd-wr-protect-none-ptes
 +++ a/mm/hugetlb.c
-@@ -6238,7 +6238,7 @@ unsigned long hugetlb_change_protection(
+@@ -6251,7 +6251,7 @@ unsigned long hugetlb_change_protection(
  	pte_t *ptep;
  	pte_t pte;
  	struct hstate *h = hstate_vma(vma);
@@ -38,7 +38,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	bool shared_pmd = false;
  	struct mmu_notifier_range range;
  	bool uffd_wp = cp_flags & MM_CP_UFFD_WP;
-@@ -6258,13 +6258,19 @@ unsigned long hugetlb_change_protection(
+@@ -6271,13 +6271,19 @@ unsigned long hugetlb_change_protection(
  
  	mmu_notifier_invalidate_range_start(&range);
  	i_mmap_lock_write(vma->vm_file->f_mapping);
@@ -60,7 +60,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			pages++;
  			spin_unlock(ptl);
  			shared_pmd = true;
-@@ -6294,12 +6300,20 @@ unsigned long hugetlb_change_protection(
+@@ -6307,12 +6313,20 @@ unsigned long hugetlb_change_protection(
  				else if (uffd_wp_resolve)
  					newpte = pte_swp_clear_uffd_wp(newpte);
  				set_huge_swap_pte_at(mm, address, ptep,
@@ -82,7 +82,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (!huge_pte_none(pte)) {
  			pte_t old_pte;
  			unsigned int shift = huge_page_shift(hstate_vma(vma));
-@@ -6313,6 +6327,12 @@ unsigned long hugetlb_change_protection(
+@@ -6326,6 +6340,12 @@ unsigned long hugetlb_change_protection(
  				pte = huge_pte_clear_uffd_wp(pte);
  			huge_ptep_modify_prot_commit(vma, address, ptep, old_pte, pte);
  			pages++;

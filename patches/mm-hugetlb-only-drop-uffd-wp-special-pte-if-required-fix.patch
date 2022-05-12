@@ -53,7 +53,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
 --- a/mm/hugetlb.c~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix
 +++ a/mm/hugetlb.c
-@@ -4960,7 +4960,7 @@ int move_hugetlb_page_tables(struct vm_a
+@@ -4973,7 +4973,7 @@ int move_hugetlb_page_tables(struct vm_a
  
  static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
  				   unsigned long start, unsigned long end,
@@ -62,7 +62,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct mm_struct *mm = vma->vm_mm;
  	unsigned long address;
-@@ -5094,7 +5094,7 @@ static void __unmap_hugepage_range(struc
+@@ -5107,7 +5107,7 @@ static void __unmap_hugepage_range(struc
  void __unmap_hugepage_range_final(struct mmu_gather *tlb,
  			  struct vm_area_struct *vma, unsigned long start,
  			  unsigned long end, struct page *ref_page,
@@ -71,7 +71,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
  
-@@ -5113,7 +5113,7 @@ void __unmap_hugepage_range_final(struct
+@@ -5126,7 +5126,7 @@ void __unmap_hugepage_range_final(struct
  
  void unmap_hugepage_range(struct vm_area_struct *vma, unsigned long start,
  			  unsigned long end, struct page *ref_page,

@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/fs/proc/task_mmu.c~mm-pagemap-recognize-uffd-wp-bit-for-shmem-hugetlbfs
 +++ a/fs/proc/task_mmu.c
-@@ -1419,6 +1419,8 @@ static pagemap_entry_t pte_to_pagemap_en
+@@ -1421,6 +1421,8 @@ static pagemap_entry_t pte_to_pagemap_en
  		migration = is_migration_entry(entry);
  		if (is_pfn_swap_entry(entry))
  			page = pfn_swap_entry_to_page(entry);
@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	if (page && !PageAnon(page))
-@@ -1554,10 +1556,15 @@ static int pagemap_hugetlb_range(pte_t *
+@@ -1556,10 +1558,15 @@ static int pagemap_hugetlb_range(pte_t *
  		if (page_mapcount(page) == 1)
  			flags |= PM_MMAP_EXCLUSIVE;
  

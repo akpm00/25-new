@@ -72,7 +72,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				int migratetype, int *num_movable);
 --- a/mm/page_alloc.c~mm-page_isolation-move-has_unmovable_pages-to-mm-page_isolationc
 +++ a/mm/page_alloc.c
-@@ -8886,125 +8886,6 @@ void *__init alloc_large_system_hash(con
+@@ -8918,125 +8918,6 @@ void *__init alloc_large_system_hash(con
  	return table;
  }
  

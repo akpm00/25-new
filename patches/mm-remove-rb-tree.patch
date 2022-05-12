@@ -1095,7 +1095,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out_free_vma:
 --- a/mm/nommu.c~mm-remove-rb-tree
 +++ a/mm/nommu.c
-@@ -553,9 +553,9 @@ static void put_nommu_region(struct vm_r
+@@ -566,9 +566,9 @@ void vma_mas_remove(struct vm_area_struc
   */
  static void add_vma_to_mm(struct mm_struct *mm, struct vm_area_struct *vma)
  {
@@ -1107,7 +1107,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	BUG_ON(!vma->vm_region);
  
-@@ -573,42 +573,10 @@ static void add_vma_to_mm(struct mm_stru
+@@ -586,42 +586,10 @@ static void add_vma_to_mm(struct mm_stru
  		i_mmap_unlock_write(mapping);
  	}
  
@@ -1153,7 +1153,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__vma_link_list(mm, vma, prev);
  }
  
-@@ -621,6 +589,7 @@ static void delete_vma_from_mm(struct vm
+@@ -634,6 +602,7 @@ static void delete_vma_from_mm(struct vm
  	struct address_space *mapping;
  	struct mm_struct *mm = vma->vm_mm;
  	struct task_struct *curr = current;
@@ -1161,7 +1161,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	mm->map_count--;
  	for (i = 0; i < VMACACHE_SIZE; i++) {
-@@ -643,8 +612,7 @@ static void delete_vma_from_mm(struct vm
+@@ -656,8 +625,7 @@ static void delete_vma_from_mm(struct vm
  	}
  
  	/* remove from the MM's tree and list */
@@ -1171,7 +1171,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	__vma_unlink_list(mm, vma);
  }
  
-@@ -668,24 +636,19 @@ static void delete_vma(struct mm_struct
+@@ -681,24 +649,19 @@ static void delete_vma(struct mm_struct
  struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
  {
  	struct vm_area_struct *vma;
@@ -1202,7 +1202,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  EXPORT_SYMBOL(find_vma);
  
-@@ -717,26 +680,23 @@ static struct vm_area_struct *find_vma_e
+@@ -730,26 +693,23 @@ static struct vm_area_struct *find_vma_e
  {
  	struct vm_area_struct *vma;
  	unsigned long end = addr + len;
@@ -1239,7 +1239,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -1533,6 +1493,7 @@ void exit_mmap(struct mm_struct *mm)
+@@ -1546,6 +1506,7 @@ void exit_mmap(struct mm_struct *mm)
  		delete_vma(mm, vma);
  		cond_resched();
  	}

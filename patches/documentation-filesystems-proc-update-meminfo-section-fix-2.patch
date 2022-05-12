@@ -1,0 +1,28 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: Documentation: filesystems: proc: update meminfo section
+
+change `Unevictable' wording, per David
+
+Link: https://lkml.kernel.org/r/YnwFraZlVWQoCjz3@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: David Hildenbrand <david@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ Documentation/filesystems/proc.rst |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/Documentation/filesystems/proc.rst~documentation-filesystems-proc-update-meminfo-section-fix-2
++++ a/Documentation/filesystems/proc.rst
+@@ -1035,8 +1035,8 @@ Inactive
+               Memory which has been less recently used.  It is more
+               eligible to be reclaimed for other purposes
+ Unevictable
+-              Memory that cannot be reclaimed, such as mlocked pages,
+-              ramfs backing pages, secret memfd pages etc.
++              Memory allocated for userspace which cannot be reclaimed, such
++              as mlocked pages, ramfs backing pages, secret memfd pages etc.
+ Mlocked
+               Memory locked with mlock().
+ HighTotal, HighFree
+_

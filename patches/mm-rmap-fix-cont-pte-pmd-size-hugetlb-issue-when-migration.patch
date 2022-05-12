@@ -28,6 +28,7 @@ Link: https://lkml.kernel.org/r/ea5abf529f0997b5430961012bfda6166c1efc8c.1652147
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>

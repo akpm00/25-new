@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-shmem-persist-uffd-wp-bit-across-zapping-for-file-backed
 +++ a/include/linux/mm.h
-@@ -3431,4 +3431,14 @@ madvise_set_anon_name(struct mm_struct *
+@@ -3428,4 +3428,14 @@ madvise_set_anon_name(struct mm_struct *
  }
  #endif
  
@@ -225,7 +225,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mmu_notifier_invalidate_range_end(&range);
  }
  
-@@ -3434,6 +3476,7 @@ void unmap_mapping_folio(struct folio *f
+@@ -3438,6 +3480,7 @@ void unmap_mapping_folio(struct folio *f
  
  	details.even_cows = false;
  	details.single_folio = folio;
@@ -243,7 +243,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  #include <asm/tlbflush.h>
  
-@@ -1538,6 +1539,13 @@ static bool try_to_unmap_one(struct foli
+@@ -1585,6 +1586,13 @@ static bool try_to_unmap_one(struct foli
  			pteval = ptep_clear_flush(vma, address, pvmw.pte);
  		}
  

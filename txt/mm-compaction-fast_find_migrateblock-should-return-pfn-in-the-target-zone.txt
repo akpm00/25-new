@@ -1,0 +1,18 @@
+From: Rei Yamamoto <yamamoto.rei@jp.fujitsu.com>
+Subject: mm, compaction: fast_find_migrateblock() should return pfn in the target zone
+
+At present, pages not in the target zone are added to cc->migratepages
+list in isolate_migratepages_block().  As a result, pages may migrate
+between nodes unintentionally.
+
+Avoid returning a pfn outside the target zone in the case that it is
+not aligned with a pageblock boundary.  Otherwise
+isolate_migratepages_block() will handle pages not in the target zone.
+
+Link: https://lkml.kernel.org/r/20220511044300.4069-1-yamamoto.rei@jp.fujitsu.com
+Signed-off-by: Rei Yamamoto <yamamoto.rei@jp.fujitsu.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Don Dutile <ddutile@redhat.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Wonhyuk Yang <vvghjk1234@gmail.com>
+Cc: Rei Yamamoto <yamamoto.rei@jp.fujitsu.com>

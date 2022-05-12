@@ -9,7 +9,7 @@ this make this clear and simple.
 
 Link: https://lkml.kernel.org/r/20220509105641.491313-6-pizhenwei@bytedance.com
 Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

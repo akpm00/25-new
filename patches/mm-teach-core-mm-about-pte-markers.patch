@@ -128,7 +128,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		} else if (is_hwpoison_entry(entry)) {
  			if (!should_zap_cows(details))
  				continue;
-@@ -3551,6 +3555,23 @@ static inline bool should_try_to_free_sw
+@@ -3555,6 +3559,23 @@ static inline bool should_try_to_free_sw
  		page_count(page) == 2;
  }
  
@@ -152,7 +152,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * We enter with non-exclusive mmap_lock (to exclude vma changes,
   * but allow concurrent faults), and pte mapped but not yet locked.
-@@ -3588,6 +3609,8 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3592,6 +3613,8 @@ vm_fault_t do_swap_page(struct vm_fault
  			ret = vmf->page->pgmap->ops->migrate_to_ram(vmf);
  		} else if (is_hwpoison_entry(entry)) {
  			ret = VM_FAULT_HWPOISON;

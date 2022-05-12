@@ -7,10 +7,12 @@ convert extra pageblocks at the beginning and at the end of the range.
 Change alloc_contig_range() to work at pageblock granularity.
 
 Special handling is needed for free pages and in-use pages across the
-boundaries of the range specified by alloc_contig_range().  Because these
-partially isolated pages causes free page accounting issues.  The free
-pages will be split and freed into separate migratetype lists; the in-use
-pages will be migrated then the freed pages will be handled in the
+boundaries of the range specified by alloc_contig_range().  Because these=
+
+Partially isolated pages causes free page accounting issues.  The free
+pages will be split and freed into separate migratetype lists; the in-use=
+
+Pages will be migrated then the freed pages will be handled in the
 aforementioned way.
 
 Link: https://lkml.kernel.org/r/20220425143118.2850746-4-zi.yan@sent.com
@@ -78,7 +80,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			int migratetype, bool only_stealable, bool *can_steal);
 --- a/mm/memory_hotplug.c~mm-make-alloc_contig_range-work-at-pageblock-granularity
 +++ a/mm/memory_hotplug.c
-@@ -1845,7 +1845,8 @@ int __ref offline_pages(unsigned long st
+@@ -1837,7 +1837,8 @@ int __ref offline_pages(unsigned long st
  	/* set above range as isolated */
  	ret = start_isolate_page_range(start_pfn, end_pfn,
  				       MIGRATE_MOVABLE,
@@ -134,7 +136,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * A bad page could be due to a number of fields. Instead of multiple branches,
   * try and check multiple fields with one check. The caller must do a detailed
-@@ -8919,7 +8956,7 @@ static inline void alloc_contig_dump_pag
+@@ -8951,7 +8988,7 @@ static inline void alloc_contig_dump_pag
  #endif
  
  /* [start, end) must belong to a single zone. */
@@ -143,7 +145,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  					unsigned long start, unsigned long end)
  {
  	/* This function is based on compact_zone() from compaction.c. */
-@@ -9002,7 +9039,7 @@ int alloc_contig_range(unsigned long sta
+@@ -9034,7 +9071,7 @@ int alloc_contig_range(unsigned long sta
  		       unsigned migratetype, gfp_t gfp_mask)
  {
  	unsigned long outer_start, outer_end;
@@ -152,7 +154,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int ret = 0;
  
  	struct compact_control cc = {
-@@ -9021,14 +9058,11 @@ int alloc_contig_range(unsigned long sta
+@@ -9053,14 +9090,11 @@ int alloc_contig_range(unsigned long sta
  	 * What we do here is we mark all pageblocks in range as
  	 * MIGRATE_ISOLATE.  Because pageblock and max order pages may
  	 * have different sizes, and due to the way page allocator
@@ -169,7 +171,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 * range back to page allocator as MIGRATE_ISOLATE.
  	 *
  	 * When this is done, we take the pages in range from page
-@@ -9042,9 +9076,9 @@ int alloc_contig_range(unsigned long sta
+@@ -9074,9 +9108,9 @@ int alloc_contig_range(unsigned long sta
  	 */
  
  	ret = start_isolate_page_range(pfn_max_align_down(start),
@@ -181,7 +183,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	drain_all_pages(cc.zone);
  
-@@ -9064,7 +9098,7 @@ int alloc_contig_range(unsigned long sta
+@@ -9096,7 +9130,7 @@ int alloc_contig_range(unsigned long sta
  	ret = 0;
  
  	/*

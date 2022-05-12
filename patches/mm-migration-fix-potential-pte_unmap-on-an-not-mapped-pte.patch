@@ -10,6 +10,7 @@ Link: https://lkml.kernel.org/r/20220425132723.34824-5-linmiaohe@huawei.com
 Fixes: 30dad30922cc ("mm: migration: add migrate_entry_wait_huge()")
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Suggested-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Cc: Christoph Hellwig <hch@lst.de>
 Cc: Christoph Lameter <cl@linux.com>
 Cc: David Howells <dhowells@redhat.com>
@@ -56,7 +57,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return 0;
 --- a/mm/hugetlb.c~mm-migration-fix-potential-pte_unmap-on-an-not-mapped-pte
 +++ a/mm/hugetlb.c
-@@ -5681,7 +5681,7 @@ vm_fault_t hugetlb_fault(struct mm_struc
+@@ -5694,7 +5694,7 @@ vm_fault_t hugetlb_fault(struct mm_struc
  		 */
  		entry = huge_ptep_get(ptep);
  		if (unlikely(is_hugetlb_entry_migration(entry))) {
@@ -65,7 +66,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			return 0;
  		} else if (unlikely(is_hugetlb_entry_hwpoisoned(entry)))
  			return VM_FAULT_HWPOISON_LARGE |
-@@ -6899,7 +6899,7 @@ retry:
+@@ -6912,7 +6912,7 @@ retry:
  	} else {
  		if (is_hugetlb_entry_migration(pte)) {
  			spin_unlock(ptl);

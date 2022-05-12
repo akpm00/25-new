@@ -1,4 +1,3 @@
 arch/ia64/include/asm/hugetlb.h
 arch/parisc/include/asm/hugetlb.h
 arch/sh/include/asm/hugetlb.h
-arch/sparc/include/asm/hugetlb.h

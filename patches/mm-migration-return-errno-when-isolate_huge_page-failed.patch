@@ -85,7 +85,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		ret = 0;
  	else if (!page_count(head))
  		ret = alloc_and_dissolve_huge_page(h, head, list);
-@@ -6932,15 +6931,15 @@ follow_huge_pgd(struct mm_struct *mm, un
+@@ -6945,15 +6944,15 @@ follow_huge_pgd(struct mm_struct *mm, un
  	return pte_page(*(pte_t *)pgd) + ((address & ~PGDIR_MASK) >> PAGE_SHIFT);
  }
  
@@ -106,7 +106,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	ClearHPageMigratable(page);
 --- a/mm/memory-failure.c~mm-migration-return-errno-when-isolate_huge_page-failed
 +++ a/mm/memory-failure.c
-@@ -2203,7 +2203,7 @@ static bool isolate_page(struct page *pa
+@@ -2190,7 +2190,7 @@ static bool isolate_page(struct page *pa
  	bool lru = PageLRU(page);
  
  	if (PageHuge(page)) {

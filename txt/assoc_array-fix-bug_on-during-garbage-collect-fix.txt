@@ -1,0 +1,9 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: assoc_array-fix-bug_on-during-garbage-collect-fix
+
+fix typo in printk
+
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Len Baker <len.baker@gmx.com>
+Cc: Stephen Brennan <stephen.s.brennan@oracle.com>

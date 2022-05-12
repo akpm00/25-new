@@ -48,7 +48,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/shmem.c~mm-shmem-take-care-of-uffdio_copy_mode_wp
 +++ a/mm/shmem.c
-@@ -2313,7 +2313,7 @@ int shmem_mfill_atomic_pte(struct mm_str
+@@ -2319,7 +2319,7 @@ int shmem_mfill_atomic_pte(struct mm_str
  			   struct vm_area_struct *dst_vma,
  			   unsigned long dst_addr,
  			   unsigned long src_addr,
@@ -57,7 +57,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			   struct page **pagep)
  {
  	struct inode *inode = file_inode(dst_vma->vm_file);
-@@ -2386,7 +2386,7 @@ int shmem_mfill_atomic_pte(struct mm_str
+@@ -2392,7 +2392,7 @@ int shmem_mfill_atomic_pte(struct mm_str
  		goto out_release;
  
  	ret = mfill_atomic_install_pte(dst_mm, dst_pmd, dst_vma, dst_addr,

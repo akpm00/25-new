@@ -1,5 +1,1 @@
-include/linux/page-isolation.h
-mm/internal.h
-mm/memory_hotplug.c
-mm/page_alloc.c
 mm/page_isolation.c

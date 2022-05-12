@@ -16,7 +16,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
 +++ a/include/linux/mm.h
-@@ -3431,8 +3431,6 @@ madvise_set_anon_name(struct mm_struct *
+@@ -3428,8 +3428,6 @@ madvise_set_anon_name(struct mm_struct *
  }
  #endif
  
@@ -27,7 +27,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * file-backed memory.  This should only be specified when we will completely
 --- a/include/linux/mm_types.h~mm-hugetlb-only-drop-uffd-wp-special-pte-if-required-fix-fix
 +++ a/include/linux/mm_types.h
-@@ -856,4 +856,6 @@ enum fault_flag {
+@@ -863,4 +863,6 @@ enum fault_flag {
  	FAULT_FLAG_ORIG_PTE_VALID =	1 << 11,
  };
  

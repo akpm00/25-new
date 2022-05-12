@@ -41,7 +41,7 @@ Davidlor said
 : addition academia[1] has shown outstanding scalability of address spaces
 : with the foundation of replacing the locked rbtree with RCU aware trees.
 
-A similar work has been dixcovered in the academic press
+A similar work has been discovered in the academic press
 
 	https://pdos.csail.mit.edu/papers/rcuvm:asplos12.pdf
 
@@ -8161,7 +8161,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +#endif /* CONFIG_DEBUG_MAPLE_TREE */
 --- a/MAINTAINERS~maple-tree-add-new-data-structure
 +++ a/MAINTAINERS
-@@ -11663,6 +11663,18 @@ L:	linux-man@vger.kernel.org
+@@ -11664,6 +11664,18 @@ L:	linux-man@vger.kernel.org
  S:	Maintained
  W:	http://www.kernel.org/doc/man-pages
  

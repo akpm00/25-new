@@ -1263,7 +1263,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				vm_unlock_anon_vma(avc->anon_vma);
 --- a/mm/nommu.c~mm-remove-the-vma-linked-list
 +++ a/mm/nommu.c
-@@ -553,7 +553,6 @@ static void put_nommu_region(struct vm_r
+@@ -566,7 +566,6 @@ void vma_mas_remove(struct vm_area_struc
  static void add_vma_to_mm(struct mm_struct *mm, struct vm_area_struct *vma)
  {
  	struct address_space *mapping;
@@ -1271,7 +1271,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	MA_STATE(mas, &mm->mm_mt, vma->vm_start, vma->vm_end);
  
  	BUG_ON(!vma->vm_region);
-@@ -572,11 +571,8 @@ static void add_vma_to_mm(struct mm_stru
+@@ -585,11 +584,8 @@ static void add_vma_to_mm(struct mm_stru
  		i_mmap_unlock_write(mapping);
  	}
  
@@ -1283,7 +1283,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -601,7 +597,6 @@ static void delete_vma_from_mm(struct vm
+@@ -614,7 +610,6 @@ static void delete_vma_from_mm(struct vm
  
  	/* remove from the MM's tree and list */
  	vma_mas_remove(vma, &mas);

@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory.c~mm-check-against-orig_pte-for-finish_fault-fix-checkpatch-fixes
 +++ a/mm/memory.c
-@@ -4181,9 +4181,8 @@ void do_set_pte(struct vm_fault *vmf, st
+@@ -4185,9 +4185,8 @@ void do_set_pte(struct vm_fault *vmf, st
  
  static bool vmf_pte_changed(struct vm_fault *vmf)
  {

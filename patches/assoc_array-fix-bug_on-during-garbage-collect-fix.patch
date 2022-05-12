@@ -1,0 +1,27 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: assoc_array-fix-bug_on-during-garbage-collect-fix
+
+fix typo in printk
+
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Len Baker <len.baker@gmx.com>
+Cc: Stephen Brennan <stephen.s.brennan@oracle.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/assoc_array.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/assoc_array.c~assoc_array-fix-bug_on-during-garbage-collect-fix
++++ a/lib/assoc_array.c
+@@ -1610,7 +1610,7 @@ retry_compress:
+ 	}
+ 
+ 	if (retained && new_n->nr_leaves_on_branch < ASSOC_ARRAY_FAN_OUT) {
+-		pr_devel("internal nodes remain despite neough space, retrying\n");
++		pr_devel("internal nodes remain despite enough space, retrying\n");
+ 		goto retry_compress;
+ 	}
+ 	pr_devel("after: %lu\n", new_n->nr_leaves_on_branch);
+_

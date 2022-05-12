@@ -367,7 +367,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <linux/mman.h>
  #include <linux/swap.h>
  #include <linux/file.h>
-@@ -585,23 +584,12 @@ static void add_vma_to_mm(struct mm_stru
+@@ -598,23 +597,12 @@ static void add_vma_to_mm(struct mm_stru
   */
  static void delete_vma_from_mm(struct vm_area_struct *vma)
  {
@@ -393,7 +393,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		mapping = vma->vm_file->f_mapping;
  
  		i_mmap_lock_write(mapping);
-@@ -613,7 +601,7 @@ static void delete_vma_from_mm(struct vm
+@@ -626,7 +614,7 @@ static void delete_vma_from_mm(struct vm
  
  	/* remove from the MM's tree and list */
  	vma_mas_remove(vma, &mas);
@@ -402,7 +402,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  /*
-@@ -646,20 +634,9 @@ EXPORT_SYMBOL(find_vma_intersection);
+@@ -659,20 +647,9 @@ EXPORT_SYMBOL(find_vma_intersection);
   */
  struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
  {
@@ -424,7 +424,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  EXPORT_SYMBOL(find_vma);
  
-@@ -693,11 +670,6 @@ static struct vm_area_struct *find_vma_e
+@@ -706,11 +683,6 @@ static struct vm_area_struct *find_vma_e
  	unsigned long end = addr + len;
  	MA_STATE(mas, &mm->mm_mt, addr, addr);
  
@@ -436,7 +436,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	vma = mas_walk(&mas);
  	if (!vma)
  		return NULL;
-@@ -706,7 +678,6 @@ static struct vm_area_struct *find_vma_e
+@@ -719,7 +691,6 @@ static struct vm_area_struct *find_vma_e
  	if (vma->vm_end != end)
  		return NULL;
  

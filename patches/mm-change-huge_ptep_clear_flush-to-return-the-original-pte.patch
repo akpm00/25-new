@@ -1,7 +1,7 @@
 From: Baolin Wang <baolin.wang@linux.alibaba.com>
 Subject: mm: change huge_ptep_clear_flush() to return the original pte
 
-Patch series "Fix CONT-PTE/PMD size hugetlb issue when unmapping or migrating", v3.
+Patch series "Fix CONT-PTE/PMD size hugetlb issue when unmapping or migrating", v4.
 
 presently, migrating a hugetlb page or unmapping a poisoned hugetlb page,
 we'll use ptep_clear_flush() and set_pte_at() to nuke the page table entry
@@ -32,6 +32,8 @@ huge_ptep_clear_flush() instead in the following patches.
 So this is a preparation patch, which changes the huge_ptep_clear_flush()
 to return the original pte to help to nuke a hugetlb page table.
 
+Link: https://lkml.kernel.org/r/cover.1652270205.git.baolin.wang@linux.alibaba.com
+Link: https://lkml.kernel.org/r/20f77ddab90baa249bd24504c413189b82acde69.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/cover.1652147571.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/dcf065868cce35bceaf138613ad27f17bb7c0c19.1652147571.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>

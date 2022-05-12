@@ -29,10 +29,12 @@ We've already used set_huge_swap_pte_at() to set a poisoned swap entry for
 a poisoned hugetlb page.  Meanwhile adding a VM_BUG_ON() to make sure the
 passed hugetlb page is poisoned in try_to_unmap().
 
+Link: https://lkml.kernel.org/r/0a2e547238cad5bc153a85c3e9658cb9d55f9cac.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/730ea4b6d292f32fb10b7a4e87dad49b0eb30474.1652147571.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>

@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/hugetlb.c~mm-hugetlb-hook-page-faults-for-uffd-write-protection
 +++ a/mm/hugetlb.c
-@@ -5724,6 +5724,26 @@ vm_fault_t hugetlb_fault(struct mm_struc
+@@ -5737,6 +5737,26 @@ vm_fault_t hugetlb_fault(struct mm_struc
  	if (unlikely(!pte_same(entry, huge_ptep_get(ptep))))
  		goto out_ptl;
  

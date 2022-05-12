@@ -33,6 +33,13 @@ mm-hotfixes-stable.patch
 #mm/cma
 revert-mm-cmac-remove-redundant-cma_mutex-lock.patch
 #
+#mm/zsmalloc
+zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
+#
+#lib
+assoc_array-fix-bug_on-during-garbage-collect.patch
+assoc_array-fix-bug_on-during-garbage-collect-fix.patch
+#
 #ENDBRANCH mm-hotfixes-unstable
 #BRANCH mm-stable
 mm-stable.patch
@@ -621,7 +628,6 @@ mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
 mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
 mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
 mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
-#mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch: https://lkml.kernel.org/r/970166e0-f70e-dd2a-c764-af23a8425f87@oracle.com
 mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
 #
 #mm/vmscan
@@ -807,20 +813,17 @@ mm-memory-failurec-add-hwpoison_filter-for-soft-offline.patch
 mm-hwpoison-disable-hwpoison-filter-during-removing.patch
 mm-memory-failurec-simplify-num_poisoned_pages_inc-dec.patch
 #
-#mm/zsmalloc
-#zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch: acks? https://lkml.kernel.org/r/Ynv53fkx8cG0ixaE@google.com
-zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
-#
 #mm/zswap
 documentation-filesystems-proc-update-meminfo-section.patch
 documentation-filesystems-proc-update-meminfo-section-fix.patch
+documentation-filesystems-proc-update-meminfo-section-fix-2.patch
 mm-kconfig-move-swap-and-slab-config-options-to-the-mm-section.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
 mm-kconfig-simplify-zswap-configuration.patch
 mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
-#zswap-memcg-accounting.patch: Michal q https://lkml.kernel.org/r/20220511173218.GB31592@blackbody.suse.cz
 zswap-memcg-accounting.patch
+zswap-memcg-accounting-fix.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch
@@ -847,6 +850,7 @@ mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix.patch
 mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix-2.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-fix.patch
+mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-v4.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
 #
 #mm/cma
@@ -858,6 +862,13 @@ mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
 #
 #mm/damon
 mm-damon-add-documentation-for-enum-value.patch
+#
+#mm/compaction
+#mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch: user impact?
+mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
+#
+#mm/rmap
+mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch
 #
 # mmend
 #
@@ -1037,6 +1048,7 @@ ia64-mca-drop-redundant-spinlock-initialization.patch
 #nilfs2
 nilfs2-fix-some-kernel-doc-comments.patch
 #
+#
 #ENDBRANCH mm-nonmm-unstable
 
 
@@ -1059,4 +1071,3 @@ mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #taskstats
 delayacct-track-delays-from-write-protect-copy.patch
 #
-#[to-be-updated]zswap-memcg-accounting-fix.patch

@@ -28,7 +28,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-use-maple-tree-operations-for-find_vma_intersection
 +++ a/include/linux/mm.h
-@@ -2782,26 +2782,12 @@ extern struct vm_area_struct * find_vma(
+@@ -2785,26 +2785,12 @@ extern struct vm_area_struct * find_vma(
  extern struct vm_area_struct * find_vma_prev(struct mm_struct * mm, unsigned long addr,
  					     struct vm_area_struct **pprev);
  
@@ -99,7 +99,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * @addr: The address
 --- a/mm/nommu.c~mm-use-maple-tree-operations-for-find_vma_intersection
 +++ a/mm/nommu.c
-@@ -629,6 +629,17 @@ static void delete_vma(struct mm_struct
+@@ -642,6 +642,17 @@ static void delete_vma(struct mm_struct
  	vm_area_free(vma);
  }
  

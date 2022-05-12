@@ -1,0 +1,10 @@
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+Subject: mm: rmap: Fix CONT-PTE/PMD size hugetlb issue when migration
+
+fix build errors for !CONFIG_MMU
+
+Link: https://lkml.kernel.org/r/a4baca670aca637e7198d9ae4543b8873cb224dc.1652270205.git.baolin.wang@linux.alibaba.com
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: David Hildenbrand <david@redhat.com>

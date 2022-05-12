@@ -56,9 +56,9 @@ Link: https://lore.kernel.org/all/20220315144521.3810298-2-aisheng.dong@nxp.com/
 Fixes: a4efc174b382 ("mm/cma.c: remove redundant cma_mutex lock")
 Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
 Acked-by: Minchan Kim <minchan@kernel.org>
+Acked-by: David Hildenbrand <david@redhat.com>
 Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc: David Hildenbrand <david@redhat.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: <stable@vger.kernel.org>	[5.11+]
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>

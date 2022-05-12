@@ -32,7 +32,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c~cgroup-removing-racy-check-in-test_memcg_sock
 +++ a/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -993,9 +993,6 @@ static int tcp_client(const char *cgroup
+@@ -1102,9 +1102,6 @@ static int tcp_client(const char *cgroup
  		if (current < 0 || sock < 0)
  			goto close_sk;
  

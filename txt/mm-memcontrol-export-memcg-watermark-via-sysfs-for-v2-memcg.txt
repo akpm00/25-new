@@ -20,5 +20,7 @@ Link: https://lkml.kernel.org/r/20220507050916.GA13577@us192.sjc.aristanetworks.
 Signed-off-by: Ganesan Rajagopal <rganesan@arista.com>
 Acked-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@suse.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
