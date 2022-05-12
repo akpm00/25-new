@@ -1,0 +1,12 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-ksm-introduce-ksm_force-for-each-process-fix
+
+rename ksm_vma_check() to vma_scannable()
+
+Cc: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: wangyong <wang.yong12@zte.com.cn>
+Cc: xu xin <xu.xin16@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Yunkai Zhang <zhang.yunkai@zte.com.cn>

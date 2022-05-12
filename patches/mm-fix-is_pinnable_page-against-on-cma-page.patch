@@ -10,9 +10,9 @@ allocation keep failed until the pin is released.
 
 cma_alloc
 alloc_contig_range
-					pin_user_pages_fast(FOLL_LONGTERM)
+                                        pin_user_pages_fast(FOLL_LONGTERM)
 change pageblock as MIGRATE_ISOLATE
-					internal_get_user_pages_fast
+                                        internal_get_user_pages_fast
                                         lockless_pages_from_mm
                                         gup_pte_range
                                         try_grab_folio
@@ -20,9 +20,9 @@ change pageblock as MIGRATE_ISOLATE
                                           return true;
                                         So, pinned the page successfully.
 page migration failure with pinned page
-					..
+                                        ..
                                         .. After 30 sec
-					unpin_user_page(page)
+                                        unpin_user_page(page)
 
 CMA allocation succeeded after 30 sec.
 
@@ -35,9 +35,9 @@ and MIGRATE_CMA).
 Adding the MIGRATE_ISOLATE check in is_pinnable_page could cause rejecting
 of pinning pages on MIGRATE_ISOLATE pageblocks even though it's neither
 CMA nor movable zone if the page is temporarily unmovable.  However, such
-a migration failure by unexpected temporary refcount holding is a general
-issue, not only coming from MIGRATE_ISOLATE and the MIGRATE_ISOLATE is
-also a transient state like other temporarily elevated refcount problem.
+a migration failure by unexpected temporal refcount holding is general
+issue, not only come from MIGRATE_ISOLATE and the MIGRATE_ISOLATE is also
+transient state like other temporal elevated refcount problem.
 
 Link: https://lkml.kernel.org/r/20220510211743.95831-1-minchan@kernel.org
 Signed-off-by: Minchan Kim <minchan@kernel.org>

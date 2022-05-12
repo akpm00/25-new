@@ -1,0 +1,31 @@
+From: cgel.zte@gmail.com
+Subject: mm/ksm: introduce ksm_force for each process
+
+From: xu xin <xu.xin16@zte.com.cn>
+
+To use KSM, we have to explicitly call madvise() in application code,
+which means installed apps on OS needs to be uninstall and source code
+needs to be modified. It is inconvenient.
+
+In order to change this situation, We add a new proc file ksm_force
+under /proc/<pid>/ to support turning on/off KSM scanning of a
+process's mm dynamically.
+
+If ksm_force is set to 1, force all anonymous and 'qualified' VMAs
+of this mm to be involved in KSM scanning without explicitly calling
+madvise to mark VMA as MADV_MERGEABLE. But It is effective only when
+the klob of /sys/kernel/mm/ksm/run is set as 1.
+
+If ksm_force is set to 0, cancel the feature of ksm_force of this
+process and unmerge those merged pages belonging to VMAs which is not
+madvised as MADV_MERGEABLE of this process, but leave MADV_MERGEABLE
+areas merged.
+
+Link: https://lkml.kernel.org/r/20220512070347.1628163-1-xu.xin16@zte.com.cn
+Signed-off-by: xu xin <xu.xin16@zte.com.cn>
+Reviewed-by: Yang Yang <yang.yang29@zte.com.cn>
+Reviewed-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Reviewed-by: wangyong <wang.yong12@zte.com.cn>
+Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Suggested-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>

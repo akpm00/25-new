@@ -19,7 +19,7 @@ Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Anshuman Khandual <khandual@linux.vnet.ibm.com>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: David Nellans <dnellans@nvidia.com>
-Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Mel Gorman <mgorman@techsingularity.net>
 Cc: Minchan Kim <minchan@kernel.org>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>

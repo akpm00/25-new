@@ -1,0 +1,47 @@
+From: Mel Gorman <mgorman@techsingularity.net>
+Subject: mm/page_alloc: remove unnecessary page == NULL check in rmqueue
+
+The VM_BUG_ON check for a valid page can be avoided with a simple change
+in the flow.  The ZONE_BOOSTED_WATERMARK is unlikely in general and even
+more unlikely if the page allocation failed so mark the branch unlikely.
+
+Link: https://lkml.kernel.org/r/20220512085043.5234-5-mgorman@techsingularity.net
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Tested-by: Minchan Kim <minchan@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_alloc.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+--- a/mm/page_alloc.c~mm-page_alloc-remove-unnecessary-page-==-null-check-in-rmqueue
++++ a/mm/page_alloc.c
+@@ -3755,17 +3755,18 @@ struct page *rmqueue(struct zone *prefer
+ 
+ 	page = rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
+ 							migratetype);
+-	if (unlikely(!page))
+-		return NULL;
+ 
+ out:
+ 	/* Separate test+clear to avoid unnecessary atomics */
+-	if (test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags)) {
++	if (unlikely(test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags))) {
+ 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
+ 		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
+ 	}
+ 
+-	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
++	if (unlikely(!page))
++		return NULL;
++
++	VM_BUG_ON_PAGE(bad_range(zone, page), page);
+ 	return page;
+ }
+ 
+_

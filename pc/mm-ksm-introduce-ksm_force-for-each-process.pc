@@ -1,0 +1,5 @@
+Documentation/admin-guide/mm/ksm.rst
+Documentation/filesystems/proc.rst
+fs/proc/base.c
+include/linux/mm_types.h
+mm/ksm.c

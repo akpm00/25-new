@@ -1,0 +1,46 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes
+
+WARNING: braces {} are not necessary for any arm of this statement
+#158: FILE: mm/page_alloc.c:3211:
++		if (zone) {
+[...]
++		} else {
+[...]
+
+total: 0 errors, 1 warnings, 115 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+./patches/mm-page_alloc-remotely-drain-per-cpu-lists.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Please run checkpatch prior to sending patches
+
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_alloc.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+--- a/mm/page_alloc.c~mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes
++++ a/mm/page_alloc.c
+@@ -3208,11 +3208,10 @@ static void __drain_all_pages(struct zon
+ 	}
+ 
+ 	for_each_cpu(cpu, &cpus_with_pcps) {
+-		if (zone) {
++		if (zone)
+ 			drain_pages_zone(cpu, zone);
+-		} else {
++		else
+ 			drain_pages(cpu);
+-		}
+ 	}
+ 
+ 	mutex_unlock(&pcpu_drain_mutex);
+_

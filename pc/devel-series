@@ -567,13 +567,6 @@ mm-cma-use-pageblock_order-as-the-single-alignment.patch
 drivers-virtio_mem-use-pageblock-size-as-the-minimum-virtio_mem-size.patch
 #
 #mm/migration
-#mm-migration-reduce-the-rcu-lock-duration.patch: https://lkml.kernel.org/r/d6f0824dd1f01fe9aebf122bfeb5940babc93c69.camel@intel.com https://lkml.kernel.org/r/eeda05fb-b0bb-3e1d-37e0-0021dd72e144@redhat.com https://lkml.kernel.org/r/d260e8b178defbe4facda3cd8f0b534ec812268a.camel@intel.com
-mm-migration-reduce-the-rcu-lock-duration.patch
-#mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch: https://lkml.kernel.org/r/525298ad-5e6a-2f8d-366d-4dcb7eebd093@redhat.com check review
-mm-migration-remove-unneeded-lock-page-and-pagemovable-check.patch
-#mm-migration-return-errno-when-isolate_huge_page-failed.patch: https://lkml.kernel.org/r/f06e4a39-39e7-44de-dbc8-dc82ead37047@redhat.com
-mm-migration-return-errno-when-isolate_huge_page-failed.patch
-mm-migration-fix-potential-pte_unmap-on-an-not-mapped-pte.patch
 #
 #mm/vmscan
 #mm-vmscan-take-min_slab_pages-into-account-when-try-to-call-shrink_node.patch: acks?
@@ -625,7 +618,9 @@ mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
 #mm/hugetlb
 #mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch+N: TBU
 mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
+#mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch: https://lkml.kernel.org/r/ebffd794-697b-9bf1-f41b-4b2d52c100fc@redhat.com
 mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
+#mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch: https://lkml.kernel.org/r/21aae898-d54d-cc4b-a11f-1bb7fddcfffa@redhat.com
 mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
 mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
 #
@@ -859,6 +854,7 @@ mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
 #mm/cma
 #mm-fix-is_pinnable_page-against-on-cma-page.patch: acks? https://lkml.kernel.org/r/857d21da-5de2-fa3e-b1ce-41cc1cfb0191@nvidia.com TBU https://lkml.kernel.org/r/Ynr10y6pkH6WwbQo@google.com
 mm-fix-is_pinnable_page-against-on-cma-page.patch
+mm-fix-is_pinnable_page-against-on-cma-page-v5.patch
 #
 #mm/memcg
 mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
@@ -870,6 +866,7 @@ mm-damon-add-documentation-for-enum-value.patch
 mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 #
 #mm/rmap
+#mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch: more testing https://lkml.kernel.org/r/Yn1mJEjP3LH8rl3t@google.com
 mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch
 #
 mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk.patch
@@ -879,6 +876,20 @@ mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch
 #mm/mempolicy
 #mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch: acks?
 mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch
+#
+#mm/pagealloc
+mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch
+mm-page_alloc-use-only-one-pcp-list-for-thp-sized-allocations.patch
+mm-page_alloc-split-out-buddy-removal-code-from-rmqueue-into-separate-helper.patch
+mm-page_alloc-remove-unnecessary-page-==-null-check-in-rmqueue.patch
+mm-page_alloc-protect-pcp-lists-with-a-spinlock.patch
+mm-page_alloc-remotely-drain-per-cpu-lists.patch
+mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes.patch
+#
+#mm/ksm
+#mm-ksm-introduce-ksm_force-for-each-process.patch: needs SOB
+mm-ksm-introduce-ksm_force-for-each-process.patch
+mm-ksm-introduce-ksm_force-for-each-process-fix.patch
 #
 # mmend
 #

@@ -1,0 +1,16 @@
+From: Mel Gorman <mgorman@techsingularity.net>
+Subject: mm/page_alloc: split out buddy removal code from rmqueue into separate helper
+
+This is a preparation page to allow the buddy removal code to be reused in
+a later patch.
+
+No functional change.
+
+Link: https://lkml.kernel.org/r/20220512085043.5234-4-mgorman@techsingularity.net
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Tested-by: Minchan Kim <minchan@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

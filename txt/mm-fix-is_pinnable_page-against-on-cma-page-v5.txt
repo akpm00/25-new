@@ -1,0 +1,11 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: mm-fix-is_pinnable_page-against-on-cma-page-v5
+
+  * clarification why we need READ_ONCE - Paul
+  * Add a comment about READ_ONCE - John
+
+Link: https://lkml.kernel.org/r/20220512204143.3961150-1-minchan@kernel.org
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>

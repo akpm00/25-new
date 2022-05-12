@@ -23,5 +23,5 @@ Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
 Acked-by: Kees Cook <keescook@chromium.org>
 Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Iurii Zaikin <yzaikin@google.com>
-Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>

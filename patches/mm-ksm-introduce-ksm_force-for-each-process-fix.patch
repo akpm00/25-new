@@ -1,0 +1,48 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-ksm-introduce-ksm_force-for-each-process-fix
+
+rename ksm_vma_check() to vma_scannable()
+
+Cc: Ammar Faizi <ammarfaizi2@gnuweeb.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: wangyong <wang.yong12@zte.com.cn>
+Cc: xu xin <xu.xin16@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/ksm.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/mm/ksm.c~mm-ksm-introduce-ksm_force-for-each-process-fix
++++ a/mm/ksm.c
+@@ -335,7 +335,7 @@ static void __init ksm_slab_free(void)
+ }
+ 
+ /* Check if vma is qualified for ksmd scanning */
+-static bool ksm_vma_check(struct vm_area_struct *vma)
++static bool vma_scannable(struct vm_area_struct *vma)
+ {
+ 	unsigned long vm_flags = vma->vm_flags;
+ 
+@@ -551,7 +551,7 @@ static struct vm_area_struct *find_merge
+ 	if (ksm_test_exit(mm))
+ 		return NULL;
+ 	vma = vma_lookup(mm, addr);
+-	if (!vma || !ksm_vma_check(vma) || !vma->anon_vma)
++	if (!vma || !vma_scannable(vma) || !vma->anon_vma)
+ 		return NULL;
+ 	return vma;
+ }
+@@ -2328,7 +2328,7 @@ next_mm:
+ 		goto no_vmas;
+ 
+ 	for_each_vma(vmi, vma) {
+-		if (!ksm_vma_check(vma))
++		if (!vma_scannable(vma))
+ 			continue;
+ 		if (ksm_scan.address < vma->vm_start)
+ 			ksm_scan.address = vma->vm_start;
+_

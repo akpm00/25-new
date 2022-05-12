@@ -1,0 +1,15 @@
+From: Mel Gorman <mgorman@techsingularity.net>
+Subject: mm/page_alloc: remove unnecessary page == NULL check in rmqueue
+
+The VM_BUG_ON check for a valid page can be avoided with a simple change
+in the flow.  The ZONE_BOOSTED_WATERMARK is unlikely in general and even
+more unlikely if the page allocation failed so mark the branch unlikely.
+
+Link: https://lkml.kernel.org/r/20220512085043.5234-5-mgorman@techsingularity.net
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Tested-by: Minchan Kim <minchan@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
