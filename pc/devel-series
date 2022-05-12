@@ -867,7 +867,6 @@ mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
 mm-damon-add-documentation-for-enum-value.patch
 #
 #mm/compaction
-#mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch: user impact?
 mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 #
 #mm/rmap
@@ -1056,7 +1055,8 @@ tty-fix-deadlock-caused-by-calling-printk-under-tty_port-lock.patch
 #ia64
 ia64-mca-drop-redundant-spinlock-initialization.patch
 #
-#nilfs2
+#procfs
+proc-sysctl-make-protected_-world-readable.patch
 #
 #
 #ENDBRANCH mm-nonmm-unstable

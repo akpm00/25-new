@@ -21,8 +21,8 @@ Link: http://lkml.kernel.org/r/20200709235115.56954-1-jpitti@cisco.com
 Fixes: 800179c9b8a1 ("fs: add link restrictions")
 Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
 Acked-by: Kees Cook <keescook@chromium.org>
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Iurii Zaikin <yzaikin@google.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
 Cc: Ingo Molnar <mingo@elte.hu>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
