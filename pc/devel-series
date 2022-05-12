@@ -845,6 +845,11 @@ mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-fix.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-v4.patch
 mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
 #
+mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
+mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
+mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
+mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
+#
 #mm/cma
 #mm-fix-is_pinnable_page-against-on-cma-page.patch: acks? https://lkml.kernel.org/r/857d21da-5de2-fa3e-b1ce-41cc1cfb0191@nvidia.com TBU https://lkml.kernel.org/r/Ynr10y6pkH6WwbQo@google.com
 mm-fix-is_pinnable_page-against-on-cma-page.patch
@@ -880,6 +885,8 @@ mm-page_alloc-remove-unnecessary-page-==-null-check-in-rmqueue.patch
 mm-page_alloc-protect-pcp-lists-with-a-spinlock.patch
 mm-page_alloc-remotely-drain-per-cpu-lists.patch
 mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes.patch
+#
+mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked.patch
 #
 # mmend
 #
