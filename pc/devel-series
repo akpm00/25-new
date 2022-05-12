@@ -870,8 +870,6 @@ mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch
 #
 mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk.patch
-#mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch: acks?
-mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch
 #
 #mm/mempolicy
 #mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch: acks?
