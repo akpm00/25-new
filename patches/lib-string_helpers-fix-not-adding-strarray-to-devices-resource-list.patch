@@ -7,10 +7,13 @@ automatically release strarray when the device disappears.
 Without this fix we have a memory leak in the few drivers which use
 devm_kasprintf_strarray().
 
+Link: https://lkml.kernel.org/r/20220506044409.30066-1-puyou.lu@gmail.com
 Link: https://lkml.kernel.org/r/20220506073623.2679-1-puyou.lu@gmail.com
 Fixes: acdb89b6c87a ("lib/string_helpers: Introduce managed variant of kasprintf_strarray()")
 Signed-off-by: Puyou Lu <puyou.lu@gmail.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: Tejun Heo <tj@kernel.org>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---

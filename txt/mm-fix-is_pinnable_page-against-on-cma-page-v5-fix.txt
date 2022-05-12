@@ -1,0 +1,7 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: mm-fix-is_pinnable_page-against-on-cma-page-v5-fix
+
+fat finger
+
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>

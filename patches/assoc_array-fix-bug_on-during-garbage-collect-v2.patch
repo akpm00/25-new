@@ -1,0 +1,29 @@
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
+Subject: assoc_array: Fix BUG_ON during garbage collect
+
+correct comparison to "<="
+
+Link: https://lkml.kernel.org/r/20220512215045.489140-1-stephen.s.brennan@oracle.com
+Fixes: 3cb989501c26 ("Add a generic associative array implementation.")
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Len Baker <len.baker@gmx.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ lib/assoc_array.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/lib/assoc_array.c~assoc_array-fix-bug_on-during-garbage-collect-v2
++++ a/lib/assoc_array.c
+@@ -1609,7 +1609,7 @@ retry_compress:
+ 		}
+ 	}
+ 
+-	if (retained && new_n->nr_leaves_on_branch < ASSOC_ARRAY_FAN_OUT) {
++	if (retained && new_n->nr_leaves_on_branch <= ASSOC_ARRAY_FAN_OUT) {
+ 		pr_devel("internal nodes remain despite enough space, retrying\n");
+ 		goto retry_compress;
+ 	}
+_

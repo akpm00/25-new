@@ -1,0 +1,24 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: mm-fix-is_pinnable_page-against-on-cma-page-v5-fix
+
+fat finger
+
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/include/linux/mm.h~mm-fix-is_pinnable_page-against-on-cma-page-v5-fix
++++ a/include/linux/mm.h
+@@ -1632,6 +1632,7 @@ static inline bool is_pinnable_page(stru
+ 	 * this routine races with set_pageblock_migratetype(), and we want to
+ 	 * avoid reading zero, when actually one or the other flags was set.
+ 	 */
++	int __mt = get_pageblock_migratetype(page);
+ 	int mt = __READ_ONCE(__mt);
+ 
+ 	if (mt & (MIGRATE_CMA | MIGRATE_ISOLATE))
+_

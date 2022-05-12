@@ -39,6 +39,7 @@ zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
 #lib
 assoc_array-fix-bug_on-during-garbage-collect.patch
 assoc_array-fix-bug_on-during-garbage-collect-fix.patch
+assoc_array-fix-bug_on-during-garbage-collect-v2.patch
 #
 #ENDBRANCH mm-hotfixes-unstable
 #BRANCH mm-stable
@@ -616,13 +617,6 @@ mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
 #
 #mm/damon
 #mm/hugetlb
-#mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch+N: TBU
-mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
-#mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch: https://lkml.kernel.org/r/ebffd794-697b-9bf1-f41b-4b2d52c100fc@redhat.com
-mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
-#mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch: https://lkml.kernel.org/r/21aae898-d54d-cc4b-a11f-1bb7fddcfffa@redhat.com
-mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
-mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
 #
 #mm/vmscan
 mm-vmscan-filter-empty-page_list-at-the-beginning.patch
@@ -855,6 +849,7 @@ mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
 #mm-fix-is_pinnable_page-against-on-cma-page.patch: acks? https://lkml.kernel.org/r/857d21da-5de2-fa3e-b1ce-41cc1cfb0191@nvidia.com TBU https://lkml.kernel.org/r/Ynr10y6pkH6WwbQo@google.com
 mm-fix-is_pinnable_page-against-on-cma-page.patch
 mm-fix-is_pinnable_page-against-on-cma-page-v5.patch
+mm-fix-is_pinnable_page-against-on-cma-page-v5-fix.patch
 #
 #mm/memcg
 mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
@@ -885,11 +880,6 @@ mm-page_alloc-remove-unnecessary-page-==-null-check-in-rmqueue.patch
 mm-page_alloc-protect-pcp-lists-with-a-spinlock.patch
 mm-page_alloc-remotely-drain-per-cpu-lists.patch
 mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes.patch
-#
-#mm/ksm
-#mm-ksm-introduce-ksm_force-for-each-process.patch: needs SOB
-mm-ksm-introduce-ksm_force-for-each-process.patch
-mm-ksm-introduce-ksm_force-for-each-process-fix.patch
 #
 # mmend
 #

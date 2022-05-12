@@ -1,0 +1,11 @@
+From: Stephen Brennan <stephen.s.brennan@oracle.com>
+Subject: assoc_array: Fix BUG_ON during garbage collect
+
+correct comparison to "<="
+
+Link: https://lkml.kernel.org/r/20220512215045.489140-1-stephen.s.brennan@oracle.com
+Fixes: 3cb989501c26 ("Add a generic associative array implementation.")
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Len Baker <len.baker@gmx.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
