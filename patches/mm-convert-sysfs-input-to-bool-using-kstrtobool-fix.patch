@@ -1,0 +1,54 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-convert-sysfs-input-to-bool-using-kstrtobool-fix
+
+propagate kstrtobool() return value, per Andy
+
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Jagdish Gediya <jvgediya@linux.ibm.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/migrate.c    |    7 +++++--
+ mm/swap_state.c |    7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
+
+--- a/mm/migrate.c~mm-convert-sysfs-input-to-bool-using-kstrtobool-fix
++++ a/mm/migrate.c
+@@ -2523,8 +2523,11 @@ static ssize_t numa_demotion_enabled_sto
+ 					   struct kobj_attribute *attr,
+ 					   const char *buf, size_t count)
+ {
+-	if (kstrtobool(buf, &numa_demotion_enabled))
+-		return -EINVAL;
++	ssize_t ret;
++
++	ret = kstrtobool(buf, &numa_demotion_enabled);
++	if (ret)
++		return ret;
+ 
+ 	return count;
+ }
+--- a/mm/swap_state.c~mm-convert-sysfs-input-to-bool-using-kstrtobool-fix
++++ a/mm/swap_state.c
+@@ -874,8 +874,11 @@ static ssize_t vma_ra_enabled_store(stru
+ 				      struct kobj_attribute *attr,
+ 				      const char *buf, size_t count)
+ {
+-	if (kstrtobool(buf, &enable_vma_readahead))
+-		return -EINVAL;
++	ssize_t ret;
++
++	ret = kstrtobool(buf, &enable_vma_readahead);
++	if (ret)
++		return ret;
+ 
+ 	return count;
+ }
+_
