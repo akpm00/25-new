@@ -42,7 +42,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mmap.c~mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged
 +++ a/mm/mmap.c
-@@ -2745,6 +2745,12 @@ cannot_expand:
+@@ -2747,6 +2747,12 @@ cannot_expand:
  		i_mmap_unlock_write(vma->vm_file->f_mapping);
  	}
  

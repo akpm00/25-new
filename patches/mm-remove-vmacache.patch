@@ -339,7 +339,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  EXPORT_SYMBOL(find_vma);
  
-@@ -2663,9 +2639,6 @@ detach_vmas_to_be_unmapped(struct mm_str
+@@ -2665,9 +2641,6 @@ detach_vmas_to_be_unmapped(struct mm_str
  		mm->highest_vm_end = prev ? vm_end_gap(prev) : 0;
  	tail_vma->vm_next = NULL;
  
@@ -349,7 +349,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	/*
  	 * Do not downgrade mmap_lock if we are next to VM_GROWSDOWN or
  	 * VM_GROWSUP VMA. Such VMAs can change their size under
-@@ -3045,7 +3018,6 @@ static int do_brk_munmap(struct ma_state
+@@ -3047,7 +3020,6 @@ static int do_brk_munmap(struct ma_state
  
  	vma_mas_remove(&unmap, mas);
  

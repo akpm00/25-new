@@ -376,7 +376,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return error;
  }
  
-@@ -2636,10 +2791,6 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2638,10 +2793,6 @@ int __do_munmap(struct mm_struct *mm, un
  	prev = vma->vm_prev;
  	/* we have start < vma->vm_end  */
  

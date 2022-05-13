@@ -6,8 +6,8 @@ within the file now.
 
 Link: https://lkml.kernel.org/r/20220509131416.17553-9-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>
 Cc: David Howells <dhowells@redhat.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
@@ -25,7 +25,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~mm-swap-make-page_swapcount-and-__lru_add_drain_all
 +++ a/include/linux/swap.h
-@@ -490,7 +490,6 @@ int swap_type_of(dev_t device, sector_t
+@@ -485,7 +485,6 @@ int swap_type_of(dev_t device, sector_t
  int find_first_swap(dev_t *device);
  extern unsigned int count_swap_pages(int, int);
  extern sector_t swapdev_block(int, pgoff_t);
@@ -33,7 +33,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern int __swap_count(swp_entry_t entry);
  extern int __swp_swapcount(swp_entry_t entry);
  extern int swp_swapcount(swp_entry_t entry);
-@@ -562,12 +561,6 @@ static inline void put_swap_page(struct
+@@ -557,12 +556,6 @@ static inline void put_swap_page(struct
  {
  }
  

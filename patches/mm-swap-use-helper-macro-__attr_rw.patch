@@ -6,8 +6,8 @@ clear.  Minor readability improvement.
 
 Link: https://lkml.kernel.org/r/20220509131416.17553-3-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>
 Cc: David Howells <dhowells@redhat.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
@@ -23,7 +23,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/swap_state.c~mm-swap-use-helper-macro-__attr_rw
 +++ a/mm/swap_state.c
-@@ -881,9 +881,7 @@ static ssize_t vma_ra_enabled_store(stru
+@@ -884,9 +884,7 @@ static ssize_t vma_ra_enabled_store(stru
  
  	return count;
  }

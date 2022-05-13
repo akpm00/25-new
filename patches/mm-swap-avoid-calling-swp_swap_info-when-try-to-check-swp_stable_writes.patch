@@ -23,7 +23,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/memory.c~mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes
 +++ a/mm/memory.c
-@@ -3907,7 +3907,7 @@ vm_fault_t do_swap_page(struct vm_fault
+@@ -3904,7 +3904,7 @@ vm_fault_t do_swap_page(struct vm_fault
  			 */
  			exclusive = true;
  		} else if (exclusive && PageWriteback(page) &&

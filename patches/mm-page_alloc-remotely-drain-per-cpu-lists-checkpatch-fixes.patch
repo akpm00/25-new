@@ -21,6 +21,7 @@ NOTE: If any of the errors are false positives, please report
 Please run checkpatch prior to sending patches
 
 Cc: Mel Gorman <mgorman@techsingularity.net>
+
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

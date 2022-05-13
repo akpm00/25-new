@@ -69,7 +69,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	show_val_kb(m, "Writeback:      ",
 --- a/include/linux/swap.h~mm-zswap-add-basic-meminfo-and-vmstat-coverage
 +++ a/include/linux/swap.h
-@@ -625,6 +625,11 @@ static inline int mem_cgroup_swappiness(
+@@ -620,6 +620,11 @@ static inline int mem_cgroup_swappiness(
  }
  #endif
  

@@ -21,7 +21,7 @@ with page migration.
 Link: https://lkml.kernel.org/r/20220509024703.243847-1-sultan@kerneltoast.com
 Fixes: 77ff465799c602 ("zsmalloc: zs_page_migrate: skip unnecessary loops but not return -EBUSY if zspage is not inuse")
 Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-Cc: Minchan Kim <minchan@kernel.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
 Cc: Nitin Gupta <ngupta@vflare.org>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
 Cc: <stable@vger.kernel.org>

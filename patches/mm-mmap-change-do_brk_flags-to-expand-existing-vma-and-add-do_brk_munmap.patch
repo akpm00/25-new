@@ -144,7 +144,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mm->brk = brk;
  
  success:
-@@ -2766,38 +2806,113 @@ out:
+@@ -2768,38 +2808,113 @@ out:
  }
  
  /*
@@ -284,7 +284,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (!may_expand_vm(mm, flags, len >> PAGE_SHIFT))
  		return -ENOMEM;
  
-@@ -2807,30 +2922,56 @@ static int do_brk_flags(unsigned long ad
+@@ -2809,30 +2924,56 @@ static int do_brk_flags(unsigned long ad
  	if (security_vm_enough_memory_mm(mm, len >> PAGE_SHIFT))
  		return -ENOMEM;
  
@@ -355,7 +355,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  out:
  	perf_event_mmap(vma);
  	mm->total_vm += len >> PAGE_SHIFT;
-@@ -2841,18 +2982,22 @@ out:
+@@ -2843,18 +2984,22 @@ out:
  	validate_mm_mt(mm);
  	return 0;
  
@@ -379,7 +379,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	len = PAGE_ALIGN(request);
  	if (len < request)
-@@ -2863,13 +3008,38 @@ int vm_brk_flags(unsigned long addr, uns
+@@ -2865,13 +3010,38 @@ int vm_brk_flags(unsigned long addr, uns
  	if (mmap_write_lock_killable(mm))
  		return -EINTR;
  

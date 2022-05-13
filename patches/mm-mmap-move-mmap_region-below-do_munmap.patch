@@ -265,7 +265,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* unmapped_area() Find an area between the low_limit and the high_limit with
   * the correct alignment and offset, all from @info. Note: current->mm is used
   * for the search.
-@@ -2840,6 +2602,244 @@ int do_munmap(struct mm_struct *mm, unsi
+@@ -2842,6 +2604,244 @@ int do_munmap(struct mm_struct *mm, unsi
  	return __do_munmap(mm, start, len, uf, false);
  }
  
