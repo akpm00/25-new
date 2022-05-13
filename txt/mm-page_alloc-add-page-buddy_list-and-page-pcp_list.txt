@@ -70,6 +70,7 @@ Link: https://lkml.kernel.org/r/20220512085043.5234-2-mgorman@techsingularity.ne
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Tested-by: Minchan Kim <minchan@kernel.org>
 Acked-by: Minchan Kim <minchan@kernel.org>
+Cc: Muchun Song <songmuchun@bytedance.com>
 Cc: Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Cc: Marcelo Tosatti <mtosatti@redhat.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
