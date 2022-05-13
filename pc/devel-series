@@ -27,14 +27,24 @@ mm-hotfixes-stable.patch
 ###MAINTAINERS
 ##maintainers-add-a-mailing-list-for-damon-development.patch
 ###
+#
+#
+#
+#
+#
+#
+#
+#
+###mm/cma
+##revert-mm-cmac-remove-redundant-cma_mutex-lock.patch
+###
+###mm/zsmalloc
+##zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
+#
+#
+#
 #ENDBRANCH mm-hotfixes-stable
 #BRANCH mm-hotfixes-unstable
-#
-#mm/cma
-revert-mm-cmac-remove-redundant-cma_mutex-lock.patch
-#
-#mm/zsmalloc
-zsmalloc-fix-races-between-asynchronous-zspage-free-and-page-migration.patch
 #
 #lib
 assoc_array-fix-bug_on-during-garbage-collect.patch
@@ -574,6 +584,34 @@ mm-stable.patch
 #
 #
 #
+###mm/highmem
+##mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
+##documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
+##documentation-vm-move-using-kmap-atomic-to-highmemh.patch
+##documentation-vm-rework-temporary-virtual-mappings-section.patch
+###
+###mm/hugetlb
+##mm-change-huge_ptep_clear_flush-to-return-the-original-pte.patch
+##mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration.patch
+##mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
+###
+##mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
+##mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
+##mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
+##mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
+###
+###mm/memcg
+##mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
+###
+###mm/damon
+##mm-damon-add-documentation-for-enum-value.patch
+###
+###mm/compaction
+##mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
+#
+#
+#
+#
 #
 #
 #
@@ -587,9 +625,6 @@ mm-stable.patch
 #
 #ENDBRANCH mm-stable
 #BRANCH mm-unstable
-#mm/migration
-#
-#
 #mm/z3fold
 mm-z3fold-fix-sheduling-while-atomic.patch
 mm-z3fold-fix-possible-null-pointer-dereferencing.patch
@@ -600,9 +635,6 @@ mm-z3fold-put-z3fold-page-back-into-unbuddied-list-when-reclaim-or-migration-fai
 mm-z3fold-always-clear-page_claimed-under-z3fold-page-lock.patch
 mm-z3fold-fix-z3fold_reclaim_page-races-with-z3fold_free.patch
 mm-z3fold-fix-z3fold_page_migrate-races-with-z3fold_map.patch
-#
-#mm/damon
-#mm/hugetlb
 #
 #mm/mapletree
 mips-rename-mt_init-to-mips_mt_init.patch
@@ -684,7 +716,16 @@ mm-remove-the-vma-linked-list.patch
 mm-remove-the-vma-linked-list-fix.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
-#mapletree-build-fix.patch: temp?
+#
+#mm/hugetlb
+sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
+mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
+mm-khugepaged-skip-dax-vma.patch
+mm-thp-only-regular-file-could-be-thp-eligible.patch
+mm-khugepaged-make-khugepaged_enter-void-function.patch
+mm-khugepaged-make-hugepage_vma_check-non-static.patch
+mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
+mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
 #
 #mm/pagealloc
 #mm-discard-__gfp_atomic.patch: check review, mhocko https://lkml.kernel.org/r/Ym6rFVuPE8tAb8LQ@dhcp22.suse.cz - awaiting mhocko review
@@ -701,7 +742,6 @@ mm-swap-remove-unneeded-p-=-null-check-in-__swap_duplicate.patch
 mm-swap-make-page_swapcount-and-__lru_add_drain_all.patch
 #mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes.patch: https://lkml.kernel.org/r/165214248406.14782.6536817483979050668@noble.neil.brown.name TBU
 mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes.patch
-#mm-swap-break-the-loop-if-matching-device-is-found.patch
 #mm-swap-add-helper-swap_offset_available.patch: https://lkml.kernel.org/r/165214355418.14782.13896859043718755300@noble.neil.brown.name
 mm-swap-add-helper-swap_offset_available.patch
 mm-swap-fix-the-obsolete-comment-for-swp_type_shift.patch
@@ -723,54 +763,6 @@ mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
 zswap-memcg-accounting.patch
 zswap-memcg-accounting-fix.patch
 zswap-memcg-accounting-fix-2.patch
-#
-#mm/debug
-mm-fix-missing-handler-for-__gfp_nowarn.patch
-mm-fix-missing-handler-for-__gfp_nowarn-v2.patch
-#
-#mm/highmem
-mm-highmem-fix-kernel-doc-warnings-in-highmemh.patch
-documentation-vm-include-kdocs-from-highmemh-into-highmemrst.patch
-documentation-vm-move-using-kmap-atomic-to-highmemh.patch
-documentation-vm-rework-temporary-virtual-mappings-section.patch
-#
-#mm/hugetlb
-sched-coredumph-clarify-the-use-of-mmf_vm_hugepage.patch
-mm-khugepaged-remove-redundant-check-for-vm_no_khugepaged.patch
-mm-khugepaged-skip-dax-vma.patch
-mm-thp-only-regular-file-could-be-thp-eligible.patch
-mm-khugepaged-make-khugepaged_enter-void-function.patch
-mm-khugepaged-make-hugepage_vma_check-non-static.patch
-mm-khugepaged-introduce-khugepaged_enter_vma-helper.patch
-mm-mmap-register-suitable-readonly-file-vmas-for-khugepaged.patch
-#
-mm-change-huge_ptep_clear_flush-to-return-the-original-pte.patch
-mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix.patch
-mm-change-huge_ptep_clear_flush-to-return-the-original-pte-fix-2.patch
-mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration.patch
-mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-fix.patch
-mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-migration-v4.patch
-mm-rmap-fix-cont-pte-pmd-size-hugetlb-issue-when-unmapping.patch
-#
-mm-hugetlb_vmemmap-disable-hugetlb_optimize_vmemmap-when-struct-page-crosses-page-boundaries.patch
-mm-memory_hotplug-override-memmap_on_memory-when-hugetlb_free_vmemmap=on.patch
-mm-hugetlb_vmemmap-use-kstrtobool-for-hugetlb_vmemmap-param-parsing.patch
-mm-hugetlb_vmemmap-add-hugetlb_optimize_vmemmap-sysctl.patch
-#
-#mm/cma
-#mm-fix-is_pinnable_page-against-on-cma-page.patch: acks? https://lkml.kernel.org/r/857d21da-5de2-fa3e-b1ce-41cc1cfb0191@nvidia.com TBU https://lkml.kernel.org/r/Ynr10y6pkH6WwbQo@google.com
-mm-fix-is_pinnable_page-against-on-cma-page.patch
-mm-fix-is_pinnable_page-against-on-cma-page-v5.patch
-mm-fix-is_pinnable_page-against-on-cma-page-v5-fix.patch
-#
-#mm/memcg
-mm-memcontrol-export-memcg-watermark-via-sysfs-for-v2-memcg.patch
-#
-#mm/damon
-mm-damon-add-documentation-for-enum-value.patch
-#
-#mm/compaction
-mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 #
 #mm/rmap
 #mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch: more testing https://lkml.kernel.org/r/Yn1mJEjP3LH8rl3t@google.com
@@ -806,6 +798,12 @@ selftests-memcg-remove-protection-from-top-level-memcg.patch
 #mm/shmem
 tmpfs-fix-undefined-behaviour-in-shmem_reconfigure.patch
 tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix.patch
+#
+#mm/debug
+mm-fix-missing-handler-for-__gfp_nowarn.patch
+mm-fix-missing-handler-for-__gfp_nowarn-v2.patch
+#
+#
 #
 # mmend
 #
@@ -964,6 +962,14 @@ mm-nonmm-stable.patch
 ###
 ###
 #
+###procfs
+##proc-sysctl-make-protected_-world-readable.patch
+##
+#
+#
+#
+#
+#
 #ENDBRANCH mm-nonmm-stable
 #BRANCH mm-nonmm-unstable
 #ocfs2
@@ -982,10 +988,9 @@ init-add-hostname-kernel-parameter-v2.patch
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
 #
-#
-#procfs
-proc-sysctl-make-protected_-world-readable.patch
-#
+#delayacct
+#delayacct-track-delays-from-write-protect-copy.patch: dependency on mm-stable
+delayacct-track-delays-from-write-protect-copy.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 
@@ -1003,9 +1008,5 @@ linux-next.patch
 linux-next-rejects.patch
 linux-next-git-rejects.patch
 #
-#
 mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
-#
-#taskstats
-delayacct-track-delays-from-write-protect-copy.patch
 #

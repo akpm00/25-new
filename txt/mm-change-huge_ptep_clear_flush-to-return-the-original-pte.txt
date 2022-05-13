@@ -21,9 +21,7 @@ case [3] pointed out by Gerald also needs another patch to address.
 [3] https://lore.kernel.org/linux-mm/20220503120343.6264e126@thinkpad/
 
 
-
-
-
+This patch (of 3):
 
 It is incorrect to use ptep_clear_flush() to nuke a hugetlb page table
 when unmapping or migrating a hugetlb page, and will change to use
@@ -32,11 +30,16 @@ huge_ptep_clear_flush() instead in the following patches.
 So this is a preparation patch, which changes the huge_ptep_clear_flush()
 to return the original pte to help to nuke a hugetlb page table.
 
+[baolin.wang@linux.alibaba.com: fix build in several more architectures]
+  Link: https://lkml.kernel.org/r/0009a4cd-2826-e8be-e671-f050d4f18d5d@linux.alibaba.com
+[sfr@canb.auug.org.au: fixup]
+  Link: https://lkml.kernel.org/r/20220511181531.7f27a5c1@canb.auug.org.au
 Link: https://lkml.kernel.org/r/cover.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/20f77ddab90baa249bd24504c413189b82acde69.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/cover.1652147571.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/dcf065868cce35bceaf138613ad27f17bb7c0c19.1652147571.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>

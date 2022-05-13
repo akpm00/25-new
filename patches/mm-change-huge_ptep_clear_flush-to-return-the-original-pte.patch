@@ -21,9 +21,7 @@ case [3] pointed out by Gerald also needs another patch to address.
 [3] https://lore.kernel.org/linux-mm/20220503120343.6264e126@thinkpad/
 
 
-
-
-
+This patch (of 3):
 
 It is incorrect to use ptep_clear_flush() to nuke a hugetlb page table
 when unmapping or migrating a hugetlb page, and will change to use
@@ -32,11 +30,16 @@ huge_ptep_clear_flush() instead in the following patches.
 So this is a preparation patch, which changes the huge_ptep_clear_flush()
 to return the original pte to help to nuke a hugetlb page table.
 
+[baolin.wang@linux.alibaba.com: fix build in several more architectures]
+  Link: https://lkml.kernel.org/r/0009a4cd-2826-e8be-e671-f050d4f18d5d@linux.alibaba.com
+[sfr@canb.auug.org.au: fixup]
+  Link: https://lkml.kernel.org/r/20220511181531.7f27a5c1@canb.auug.org.au
 Link: https://lkml.kernel.org/r/cover.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/20f77ddab90baa249bd24504c413189b82acde69.1652270205.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/cover.1652147571.git.baolin.wang@linux.alibaba.com
 Link: https://lkml.kernel.org/r/dcf065868cce35bceaf138613ad27f17bb7c0c19.1652147571.git.baolin.wang@linux.alibaba.com
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -62,15 +65,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
  arch/arm64/include/asm/hugetlb.h   |    4 ++--
  arch/arm64/mm/hugetlbpage.c        |   12 +++++-------
- arch/ia64/include/asm/hugetlb.h    |    4 ++--
+ arch/ia64/include/asm/hugetlb.h    |    5 +++--
  arch/mips/include/asm/hugetlb.h    |    9 ++++++---
- arch/parisc/include/asm/hugetlb.h  |    4 ++--
+ arch/parisc/include/asm/hugetlb.h  |    5 +++--
  arch/powerpc/include/asm/hugetlb.h |    9 ++++++---
  arch/s390/include/asm/hugetlb.h    |    6 +++---
- arch/sh/include/asm/hugetlb.h      |    4 ++--
- arch/sparc/include/asm/hugetlb.h   |    4 ++--
+ arch/sh/include/asm/hugetlb.h      |    5 +++--
+ arch/sparc/include/asm/hugetlb.h   |    5 +++--
  include/asm-generic/hugetlb.h      |    4 ++--
- 10 files changed, 32 insertions(+), 28 deletions(-)
+ 10 files changed, 36 insertions(+), 28 deletions(-)
 
 --- a/arch/arm64/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/arm64/include/asm/hugetlb.h
@@ -114,7 +117,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static int __init hugetlbpage_init(void)
 --- a/arch/ia64/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/ia64/include/asm/hugetlb.h
-@@ -23,8 +23,8 @@ static inline int is_hugepage_only_range
+@@ -23,9 +23,10 @@ static inline int is_hugepage_only_range
  #define is_hugepage_only_range is_hugepage_only_range
  
  #define __HAVE_ARCH_HUGE_PTEP_CLEAR_FLUSH
@@ -123,8 +126,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
 +					  unsigned long addr, pte_t *ptep)
  {
++	return *ptep;
  }
  
+ #include <asm-generic/hugetlb.h>
 --- a/arch/mips/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/mips/include/asm/hugetlb.h
 @@ -43,16 +43,19 @@ static inline pte_t huge_ptep_get_and_cl
@@ -152,7 +157,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #define __HAVE_ARCH_HUGE_PTE_NONE
 --- a/arch/parisc/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/parisc/include/asm/hugetlb.h
-@@ -28,8 +28,8 @@ static inline int prepare_hugepage_range
+@@ -28,9 +28,10 @@ static inline int prepare_hugepage_range
  }
  
  #define __HAVE_ARCH_HUGE_PTEP_CLEAR_FLUSH
@@ -161,8 +166,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
 +					  unsigned long addr, pte_t *ptep)
  {
++	return *ptep;
  }
  
+ #define __HAVE_ARCH_HUGE_PTEP_SET_WRPROTECT
 --- a/arch/powerpc/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/powerpc/include/asm/hugetlb.h
 @@ -43,11 +43,14 @@ static inline pte_t huge_ptep_get_and_cl
@@ -201,7 +208,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
 --- a/arch/sh/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/sh/include/asm/hugetlb.h
-@@ -21,8 +21,8 @@ static inline int prepare_hugepage_range
+@@ -21,9 +21,10 @@ static inline int prepare_hugepage_range
  }
  
  #define __HAVE_ARCH_HUGE_PTEP_CLEAR_FLUSH
@@ -210,11 +217,13 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
 +					  unsigned long addr, pte_t *ptep)
  {
++	return *ptep;
  }
  
+ static inline void arch_clear_hugepage_flags(struct page *page)
 --- a/arch/sparc/include/asm/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/arch/sparc/include/asm/hugetlb.h
-@@ -21,8 +21,8 @@ pte_t huge_ptep_get_and_clear(struct mm_
+@@ -21,9 +21,10 @@ pte_t huge_ptep_get_and_clear(struct mm_
  			      pte_t *ptep);
  
  #define __HAVE_ARCH_HUGE_PTEP_CLEAR_FLUSH
@@ -223,8 +232,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +static inline pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
 +					  unsigned long addr, pte_t *ptep)
  {
++	return *ptep;
  }
  
+ #define __HAVE_ARCH_HUGE_PTEP_SET_WRPROTECT
 --- a/include/asm-generic/hugetlb.h~mm-change-huge_ptep_clear_flush-to-return-the-original-pte
 +++ a/include/asm-generic/hugetlb.h
 @@ -84,10 +84,10 @@ static inline pte_t huge_ptep_get_and_cl
