@@ -1,18 +1,19 @@
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: mm/shmem: convert shmem_swapin_page() to shmem_swapin_folio()
 
-shmem_swapin_page() only brings in order-0 pages, which are folios by
-definition.
+shmem_swapin_page() only brings in order-0 pages, which are folios
+by definition.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-22-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-24-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  arch/arm64/include/asm/pgtable.h |    6 -
  include/linux/pgtable.h          |    2 
- mm/shmem.c                       |  108 +++++++++++++----------------
- 3 files changed, 54 insertions(+), 62 deletions(-)
+ mm/shmem.c                       |  110 +++++++++++++----------------
+ 3 files changed, 55 insertions(+), 63 deletions(-)
 
 --- a/arch/arm64/include/asm/pgtable.h~mm-shmem-convert-shmem_swapin_page-to-shmem_swapin_folio
 +++ a/arch/arm64/include/asm/pgtable.h
@@ -176,7 +177,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	} while (true);
  
  	return ret;
-@@ -1681,22 +1673,22 @@ static int shmem_replace_page(struct pag
+@@ -1687,22 +1679,22 @@ static int shmem_replace_page(struct pag
   * Returns 0 and the page in pagep if success. On failure, returns the
   * error code and NULL in *pagep.
   */
@@ -191,8 +192,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	struct shmem_inode_info *info = SHMEM_I(inode);
  	struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
 -	struct page *page = NULL;
+-	struct folio *folio;
 +	struct page *page;
- 	struct folio *folio;
++	struct folio *folio = NULL;
  	swp_entry_t swap;
  	int error;
  
@@ -205,7 +207,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/* Look it up and read it in.. */
  	page = lookup_swap_cache(swap, NULL, 0);
-@@ -1714,27 +1706,28 @@ static int shmem_swapin_page(struct inod
+@@ -1720,27 +1712,28 @@ static int shmem_swapin_page(struct inod
  			goto failed;
  		}
  	}
@@ -241,7 +243,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (shmem_should_replace_folio(folio, gfp)) {
  		error = shmem_replace_page(&page, gfp, info, index);
  		if (error)
-@@ -1753,21 +1746,21 @@ static int shmem_swapin_page(struct inod
+@@ -1759,21 +1752,21 @@ static int shmem_swapin_page(struct inod
  	spin_unlock_irq(&info->lock);
  
  	if (sgp == SGP_WRITE)
@@ -270,7 +272,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	return error;
-@@ -1821,13 +1814,12 @@ repeat:
+@@ -1827,13 +1820,12 @@ repeat:
  	}
  
  	if (xa_is_value(folio)) {

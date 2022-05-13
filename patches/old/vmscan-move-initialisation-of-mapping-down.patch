@@ -6,8 +6,9 @@ up the folio's mapping until we've got further through the function,
 reducing register pressure and saving a call to folio_mapping for folios
 we're adding to the swap cache.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-12-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-13-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

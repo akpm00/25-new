@@ -1,2 +1,0 @@
-mm/memory-failure.c
-mm/page_alloc.c

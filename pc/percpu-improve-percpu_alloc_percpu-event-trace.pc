@@ -1,3 +1,0 @@
-include/trace/events/percpu.h
-mm/percpu.c
-mm/percpu-internal.h

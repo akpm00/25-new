@@ -5,18 +5,19 @@ Rename shmem_alloc_and_acct_page() to shmem_alloc_and_acct_folio() and
 have it return a folio, then use a folio throuughout shmem_getpage_gfp(). 
 It continues to return a struct page.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-21-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-23-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/shmem.c |   92 +++++++++++++++++++++++----------------------------
- 1 file changed, 43 insertions(+), 49 deletions(-)
+ mm/shmem.c |   95 +++++++++++++++++++++++----------------------------
+ 1 file changed, 43 insertions(+), 52 deletions(-)
 
 --- a/mm/shmem.c~mm-shmem-convert-shmem_getpage_gfp-to-use-a-folio
 +++ a/mm/shmem.c
-@@ -1557,8 +1557,7 @@ static struct folio *shmem_alloc_folio(g
- 	return folio;
+@@ -1563,8 +1563,7 @@ static struct page *shmem_alloc_page(gfp
+ 	return &shmem_alloc_folio(gfp, info, index)->page;
  }
  
 -static struct page *shmem_alloc_and_acct_page(gfp_t gfp,
@@ -25,7 +26,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		pgoff_t index, bool huge)
  {
  	struct shmem_inode_info *info = SHMEM_I(inode);
-@@ -1580,7 +1579,7 @@ static struct page *shmem_alloc_and_acct
+@@ -1586,7 +1585,7 @@ static struct page *shmem_alloc_and_acct
  	if (folio) {
  		__folio_set_locked(folio);
  		__folio_set_swapbacked(folio);
@@ -34,7 +35,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	err = -ENOMEM;
-@@ -1794,7 +1793,6 @@ static int shmem_getpage_gfp(struct inod
+@@ -1800,7 +1799,6 @@ static int shmem_getpage_gfp(struct inod
  	struct shmem_sb_info *sbinfo;
  	struct mm_struct *charge_mm;
  	struct folio *folio;
@@ -42,7 +43,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	pgoff_t hindex = index;
  	gfp_t huge_gfp;
  	int error;
-@@ -1812,19 +1810,18 @@ repeat:
+@@ -1818,19 +1816,18 @@ repeat:
  	sbinfo = SHMEM_SB(inode->i_sb);
  	charge_mm = vma ? vma->vm_mm : NULL;
  
@@ -69,7 +70,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		error = shmem_swapin_page(inode, index, &page,
  					  sgp, gfp, vma, fault_type);
  		if (error == -EEXIST)
-@@ -1834,17 +1831,17 @@ repeat:
+@@ -1840,17 +1837,17 @@ repeat:
  		return error;
  	}
  
@@ -93,7 +94,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	/*
-@@ -1871,17 +1868,16 @@ repeat:
+@@ -1877,17 +1874,16 @@ repeat:
  
  	huge_gfp = vma_thp_gfp_mask(vma);
  	huge_gfp = limit_gfp_mask(huge_gfp, gfp);
@@ -117,15 +118,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (error != -ENOSPC)
  			goto unlock;
  		/*
-@@ -1900,30 +1896,29 @@ alloc_nohuge:
+@@ -1906,30 +1902,26 @@ alloc_nohuge:
  		goto unlock;
  	}
  
 -	if (PageTransHuge(page))
-+	if (folio_test_large(folio))
- 		hindex = round_down(index, HPAGE_PMD_NR);
- 	else
- 		hindex = index;
+-		hindex = round_down(index, HPAGE_PMD_NR);
+-	else
+-		hindex = index;
++	hindex = round_down(index, folio_nr_pages(folio));
  
  	if (sgp == SGP_WRITE)
 -		__SetPageReferenced(page);
@@ -150,11 +151,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	alloced = true;
  
 -	if (PageTransHuge(page) &&
-+	if (folio_test_large(folio) &&
++	if (folio_test_pmd_mappable(folio) &&
  	    DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE) <
  			hindex + HPAGE_PMD_NR - 1) {
  		/*
-@@ -1954,22 +1949,21 @@ clear:
+@@ -1960,22 +1952,21 @@ clear:
  	 * but SGP_FALLOC on a page fallocated earlier must initialize
  	 * it now, lest undo on failure cancel our earlier guarantee.
  	 */
@@ -185,7 +186,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  			spin_lock_irq(&info->lock);
  			shmem_recalc_inode(inode);
  			spin_unlock_irq(&info->lock);
-@@ -1978,24 +1972,24 @@ clear:
+@@ -1984,24 +1975,24 @@ clear:
  		goto unlock;
  	}
  out:

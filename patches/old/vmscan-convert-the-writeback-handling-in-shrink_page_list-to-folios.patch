@@ -3,8 +3,9 @@ Subject: vmscan: convert the writeback handling in shrink_page_list() to folios
 
 Slightly more efficient due to fewer calls to compound_head().
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-6-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-7-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -30,8 +31,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		 *    page due to IO error or disconnected storage so instead
 -		 *    note that the LRU is being scanned too quickly and the
 -		 *    caller can stall after page list has been processed.
--		 *
--		 * 2) Global or new memcg reclaim encounters a page that is
 +		 * 1) If reclaim is encountering an excessive number of folios
 +		 *    under writeback and this folio is both under
 +		 *    writeback and has the reclaim flag set then it
@@ -43,7 +42,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		 *    so instead note that the LRU is being scanned too
 +		 *    quickly and the caller can stall after the folio
 +		 *    list has been processed.
-+		 #
+ 		 *
+-		 * 2) Global or new memcg reclaim encounters a page that is
 +		 * 2) Global or new memcg reclaim encounters a folio that is
  		 *    not marked for immediate reclaim, or the caller does not
  		 *    have __GFP_FS (or __GFP_IO if it's simply going to swap,
@@ -76,7 +76,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		 * inactive list and refilling from the active list. The
  		 * observation here is that waiting for disk writes is more
  		 * expensive than potentially causing reloads down the line.
-@@ -1639,7 +1641,7 @@ retry:
+@@ -1639,38 +1641,42 @@ retry:
  		 * memory pressure on the cache working set any longer than it
  		 * takes to write them to disk.
  		 */
@@ -84,8 +84,11 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		if (folio_test_writeback(folio)) {
  			/* Case 1 above */
  			if (current_is_kswapd() &&
- 			    PageReclaim(page) &&
-@@ -1649,28 +1651,32 @@ retry:
+-			    PageReclaim(page) &&
++			    folio_test_reclaim(folio) &&
+ 			    test_bit(PGDAT_WRITEBACK, &pgdat->flags)) {
+ 				stat->nr_immediate += nr_pages;
+ 				goto activate_locked;
  
  			/* Case 2 above */
  			} else if (writeback_throttling_sane(sc) ||

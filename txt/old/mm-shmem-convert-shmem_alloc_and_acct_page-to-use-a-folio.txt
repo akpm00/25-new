@@ -5,5 +5,6 @@ Convert shmem_alloc_hugepage() to return the folio that it uses and use a
 folio throughout shmem_alloc_and_acct_page().  Continue to return a page
 from shmem_alloc_and_acct_page() for now.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-20-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-22-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

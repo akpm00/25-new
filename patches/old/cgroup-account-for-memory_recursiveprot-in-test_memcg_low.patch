@@ -21,11 +21,11 @@ also adds a new proc_mount_contains() helper that checks for a string in
 /proc/mounts, and is used to toggle behavior based on whether the default
 memory_recursiveprot was present.
 
-Link: https://lkml.kernel.org/r/20220422155728.3055914-3-void@manifault.com
+Link: https://lkml.kernel.org/r/20220423155619.3669555-3-void@manifault.com
 Signed-off-by: David Vernet <void@manifault.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Tejun Heo <tj@kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
@@ -38,7 +38,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/tools/testing/selftests/cgroup/cgroup_util.c~cgroup-account-for-memory_recursiveprot-in-test_memcg_low
 +++ a/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -535,6 +535,18 @@ int set_oom_adj_score(int pid, int score
+@@ -528,6 +528,18 @@ int set_oom_adj_score(int pid, int score
  	return 0;
  }
  
@@ -78,7 +78,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * This test creates two nested cgroups with and without enabling
   * the memory controller.
-@@ -521,15 +523,18 @@ static int test_memcg_low(const char *ro
+@@ -525,15 +527,18 @@ static int test_memcg_low(const char *ro
  	}
  
  	for (i = 0; i < ARRAY_SIZE(children); i++) {
@@ -99,7 +99,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  
  	ret = KSFT_PASS;
-@@ -1272,7 +1277,7 @@ struct memcg_test {
+@@ -1382,7 +1387,7 @@ struct memcg_test {
  int main(int argc, char **argv)
  {
  	char root[PATH_MAX];
@@ -108,7 +108,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	if (cg_find_unified_root(root, sizeof(root)))
  		ksft_exit_skip("cgroup v2 isn't mounted\n");
-@@ -1288,6 +1293,11 @@ int main(int argc, char **argv)
+@@ -1398,6 +1403,11 @@ int main(int argc, char **argv)
  		if (cg_write(root, "cgroup.subtree_control", "+memory"))
  			ksft_exit_skip("Failed to set memory controller\n");
  

@@ -4,8 +4,9 @@ Subject: mm: remove alloc_pages_vma()
 All callers have now been converted to use vma_alloc_folio(), so convert
 the body of alloc_pages_vma() to allocate folios instead.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-4-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-5-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -15,7 +16,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/gfp.h~mm-remove-alloc_pages_vma
 +++ a/include/linux/gfp.h
-@@ -609,13 +609,8 @@ static inline struct page *alloc_pages_n
+@@ -613,13 +613,8 @@ static inline struct page *alloc_pages_n
  #ifdef CONFIG_NUMA
  struct page *alloc_pages(gfp_t gfp, unsigned int order);
  struct folio *folio_alloc(gfp_t gfp, unsigned order);
@@ -29,7 +30,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #else
  static inline struct page *alloc_pages(gfp_t gfp_mask, unsigned int order)
  {
-@@ -625,16 +620,17 @@ static inline struct folio *folio_alloc(
+@@ -629,16 +624,17 @@ static inline struct folio *folio_alloc(
  {
  	return __folio_alloc_node(gfp, order, numa_node_id());
  }

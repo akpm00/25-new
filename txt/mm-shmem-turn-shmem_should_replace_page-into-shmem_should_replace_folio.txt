@@ -1,8 +1,0 @@
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: mm/shmem: turn shmem_should_replace_page into shmem_should_replace_folio
-
-This is a straightforward conversion.
-
-Link: https://lkml.kernel.org/r/20220504182857.4013401-20-willy@infradead.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>

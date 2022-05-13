@@ -5,8 +5,9 @@ Remove a hidden call to compound_head(), and account nr_pages instead of a
 single page.  This matches the code in lru_lazyfree_fn() that accounts
 nr_pages to PGLAZYFREE.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-11-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-12-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

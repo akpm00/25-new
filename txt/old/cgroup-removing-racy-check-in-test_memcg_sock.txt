@@ -1,5 +1,5 @@
 From: David Vernet <void@manifault.com>
-Subject: cgroup: removing racy check in test_memcg_sock()
+Subject: cgroup: remove racy check in test_memcg_sock()
 
 test_memcg_sock() in the cgroup memcg tests, verifies expected memory
 accounting for sockets.  The test forks a process which functions as a TCP
@@ -17,7 +17,7 @@ between the two calls.  Instead, this patch just removes that assertion
 altogether, and instead relies on the values_close() check that follows to
 validate the expected accounting.
 
-Link: https://lkml.kernel.org/r/20220422155728.3055914-5-void@manifault.com
+Link: https://lkml.kernel.org/r/20220423155619.3669555-5-void@manifault.com
 Signed-off-by: David Vernet <void@manifault.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>

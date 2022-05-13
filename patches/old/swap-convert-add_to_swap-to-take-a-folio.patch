@@ -4,8 +4,9 @@ Subject: swap: convert add_to_swap() to take a folio
 The only caller already has a folio available, so this saves a conversion.
 Also convert the return type to boolean.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-8-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-9-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 

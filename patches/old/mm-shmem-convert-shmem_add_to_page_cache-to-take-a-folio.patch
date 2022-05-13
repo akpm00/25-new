@@ -1,11 +1,12 @@
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: mm/shmem: convert shmem_add_to_page_cache to take a folio
 
-Shrinks shmem_add_to_page_cache() by 16 bytes.  All the callers grow, but
-this is temporary as they will all be converted to folios soon.
+Shrinks shmem_add_to_page_cache() by 16 bytes.  All the callers grow,
+but this is temporary as they will all be converted to folios soon.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-17-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-19-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -54,7 +55,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		error = mem_cgroup_charge(folio, charge_mm, gfp);
  		if (error) {
 -			if (PageTransHuge(page)) {
-+			if (folio_test_large(folio)) {
++			if (folio_test_pmd_mappable(folio)) {
  				count_vm_event(THP_FILE_FALLBACK);
  				count_vm_event(THP_FILE_FALLBACK_CHARGE);
  			}
@@ -75,7 +76,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		if (xas_error(&xas))
  			goto unlock;
 -		if (PageTransHuge(page)) {
-+		if (folio_test_large(folio)) {
++		if (folio_test_pmd_mappable(folio)) {
  			count_vm_event(THP_FILE_ALLOC);
 -			__mod_lruvec_page_state(page, NR_SHMEM_THPS, nr);
 +			__lruvec_stat_mod_folio(folio, NR_SHMEM_THPS, nr);

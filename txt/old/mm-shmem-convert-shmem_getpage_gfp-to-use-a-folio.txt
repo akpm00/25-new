@@ -5,5 +5,6 @@ Rename shmem_alloc_and_acct_page() to shmem_alloc_and_acct_folio() and
 have it return a folio, then use a folio throuughout shmem_getpage_gfp(). 
 It continues to return a struct page.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-21-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-23-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

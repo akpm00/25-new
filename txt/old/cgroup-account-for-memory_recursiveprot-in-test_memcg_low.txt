@@ -21,7 +21,7 @@ also adds a new proc_mount_contains() helper that checks for a string in
 /proc/mounts, and is used to toggle behavior based on whether the default
 memory_recursiveprot was present.
 
-Link: https://lkml.kernel.org/r/20220422155728.3055914-3-void@manifault.com
+Link: https://lkml.kernel.org/r/20220423155619.3669555-3-void@manifault.com
 Signed-off-by: David Vernet <void@manifault.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>

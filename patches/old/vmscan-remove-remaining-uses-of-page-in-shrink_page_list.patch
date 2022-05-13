@@ -3,13 +3,14 @@ Subject: vmscan: remove remaining uses of page in shrink_page_list
 
 These are all straightforward conversions to the folio API.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-14-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-16-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/vmscan.c |  124 ++++++++++++++++++++++++--------------------------
- 1 file changed, 61 insertions(+), 63 deletions(-)
+ mm/vmscan.c |  122 ++++++++++++++++++++++++--------------------------
+ 1 file changed, 60 insertions(+), 62 deletions(-)
 
 --- a/mm/vmscan.c~vmscan-remove-remaining-uses-of-page-in-shrink_page_list
 +++ a/mm/vmscan.c
@@ -108,15 +109,6 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		 *    indicates that folios are being queued for I/O but
  		 *    are being recycled through the LRU before the I/O
  		 *    can complete. Waiting on the folio itself risks an
-@@ -1643,7 +1641,7 @@ retry:
- 		if (folio_test_writeback(folio)) {
- 			/* Case 1 above */
- 			if (current_is_kswapd() &&
--			    PageReclaim(page) &&
-+			    folio_test_reclaim(folio) &&
- 			    test_bit(PGDAT_WRITEBACK, &pgdat->flags)) {
- 				stat->nr_immediate += nr_pages;
- 				goto activate_locked;
 @@ -1651,19 +1649,19 @@ retry:
  			/* Case 2 above */
  			} else if (writeback_throttling_sane(sc) ||

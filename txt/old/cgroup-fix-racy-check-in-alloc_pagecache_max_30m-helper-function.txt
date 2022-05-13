@@ -16,7 +16,7 @@ will not have the OOM killer invoked as it's performing a pagecache
 allocation.  This patchset therefore updates the above check to instead
 use the verify_close() helper function.
 
-Link: https://lkml.kernel.org/r/20220422155728.3055914-6-void@manifault.com
+Link: https://lkml.kernel.org/r/20220423155619.3669555-6-void@manifault.com
 Signed-off-by: David Vernet <void@manifault.com>
 Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>

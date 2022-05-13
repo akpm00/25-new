@@ -1,4 +1,0 @@
-include/linux/hugetlb.h
-mm/hugetlb.c
-mm/mprotect.c
-mm/userfaultfd.c

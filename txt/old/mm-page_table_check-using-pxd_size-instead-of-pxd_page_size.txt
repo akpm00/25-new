@@ -1,7 +1,7 @@
 From: Tong Tiangen <tongtiangen@huawei.com>
-Subject: mm: page_table_check: use PxD_SIZE instead of PxD_PAGE_SIZE
+Subject: mm: page_table_check: using PxD_SIZE instead of PxD_PAGE_SIZE
 
-Patch series "mm: page_table_check: add support on arm64 and riscv", v5.
+Patch series "mm: page_table_check: add support on arm64 and riscv", v7.
 
 Page table check performs extra verifications at the time when new pages
 become accessible from the userspace by getting their page table entries
@@ -13,18 +13,20 @@ architecture, then we support this feature on ARM64 and RISCV.
 [1]https://lore.kernel.org/lkml/20211123214814.3756047-1-pasha.tatashin@soleen.com/
 
 
-This patch (of 5):
+This patch (of 6):
 
-Macro PUD_SIZE/PMD_SIZE is more general in various architectures.  Using
-PUD_SIZE/PMD_SIZE instead of PUD_PAGE_SIZE/PMD_PAGE_SIZE can better
-support page table check in architectures other than x86 and it is no
-functional impact on x86.
+Compared with PxD_PAGE_SIZE, which is defined and used only on X86,
+PxD_SIZE is more common in each architecture.  Therefore, it is more
+reasonable to use PxD_SIZE instead of PxD_PAGE_SIZE in page_table_check.c.
+At the same time, it is easier to support page table check in other
+architectures.  The substitution has no functional impact on the x86.
 
-Link: https://lkml.kernel.org/r/20220421082042.1167967-1-tongtiangen@huawei.com
-Link: https://lkml.kernel.org/r/20220421082042.1167967-2-tongtiangen@huawei.com
+Link: https://lkml.kernel.org/r/20220507110114.4128854-1-tongtiangen@huawei.com
+Link: https://lkml.kernel.org/r/20220507110114.4128854-2-tongtiangen@huawei.com
 Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
@@ -33,6 +35,4 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Paul Walmsley <paul.walmsley@sifive.com>
 Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: Albert Ou <aou@eecs.berkeley.edu>
 Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Guohanjun <guohanjun@huawei.com>

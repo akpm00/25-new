@@ -5,8 +5,9 @@ Convert shmem_alloc_hugepage() to return the folio that it uses and use a
 folio throughout shmem_alloc_and_acct_page().  Continue to return a page
 from shmem_alloc_and_acct_page() for now.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-20-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-22-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -33,7 +34,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  static struct folio *shmem_alloc_folio(gfp_t gfp,
-@@ -1562,7 +1562,7 @@ static struct page *shmem_alloc_and_acct
+@@ -1568,7 +1568,7 @@ static struct page *shmem_alloc_and_acct
  		pgoff_t index, bool huge)
  {
  	struct shmem_inode_info *info = SHMEM_I(inode);
@@ -42,14 +43,14 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	int nr;
  	int err = -ENOSPC;
  
-@@ -1574,13 +1574,13 @@ static struct page *shmem_alloc_and_acct
+@@ -1580,13 +1580,13 @@ static struct page *shmem_alloc_and_acct
  		goto failed;
  
  	if (huge)
 -		page = shmem_alloc_hugepage(gfp, info, index);
 +		folio = shmem_alloc_hugefolio(gfp, info, index);
  	else
--		page = &shmem_alloc_folio(gfp, info, index)->page;
+-		page = shmem_alloc_page(gfp, info, index);
 -	if (page) {
 -		__SetPageLocked(page);
 -		__SetPageSwapBacked(page);

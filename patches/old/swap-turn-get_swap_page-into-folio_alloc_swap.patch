@@ -1,11 +1,12 @@
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: swap: turn get_swap_page() into folio_alloc_swap()
 
-This removes an assumption that a large folio is HPAGE_PMD_NR pages in
-size.
+This removes an assumption that a large folio is HPAGE_PMD_NR pages
+in size.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-7-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-8-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -19,7 +20,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~swap-turn-get_swap_page-into-folio_alloc_swap
 +++ a/include/linux/swap.h
-@@ -475,7 +475,7 @@ static inline long get_nr_swap_pages(voi
+@@ -470,7 +470,7 @@ static inline long get_nr_swap_pages(voi
  }
  
  extern void si_swapinfo(struct sysinfo *);
@@ -28,7 +29,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  extern void put_swap_page(struct page *page, swp_entry_t entry);
  extern swp_entry_t get_swap_page_of_type(int);
  extern int get_swap_pages(int n, swp_entry_t swp_entries[], int entry_size);
-@@ -588,7 +588,7 @@ static inline int try_to_free_swap(struc
+@@ -583,7 +583,7 @@ static inline int try_to_free_swap(struc
  	return 0;
  }
  
@@ -37,7 +38,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	swp_entry_t entry;
  	entry.val = 0;
-@@ -648,12 +648,13 @@ static inline void cgroup_throttle_swapr
+@@ -643,12 +643,13 @@ static inline void cgroup_throttle_swapr
  
  #ifdef CONFIG_MEMCG_SWAP
  void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry);
@@ -54,7 +55,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  }
  
  extern void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
-@@ -671,7 +672,7 @@ static inline void mem_cgroup_swapout(st
+@@ -666,7 +667,7 @@ static inline void mem_cgroup_swapout(st
  {
  }
  
@@ -142,7 +143,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * This uses its own lock instead of swap_lock because when a
   * swap_info_struct changes between not-full/full, it needs to
   * add/remove itself to/from this list, but the swap_info_struct->lock
-@@ -2124,11 +2124,12 @@ retry:
+@@ -2109,11 +2109,12 @@ retry:
  	 * Under global memory pressure, swap entries can be reinserted back
  	 * into process space after the mmlist loop above passes over them.
  	 *
@@ -160,7 +161,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	 */
  	if (READ_ONCE(si->inuse_pages)) {
  		if (!signal_pending(current))
-@@ -2342,7 +2343,7 @@ static void _enable_swap_info(struct swa
+@@ -2327,7 +2328,7 @@ static void _enable_swap_info(struct swa
  	 * which on removal of any swap_info_struct with an auto-assigned
  	 * (i.e. negative) priority increments the auto-assigned priority
  	 * of any lower-priority swap_info_structs.

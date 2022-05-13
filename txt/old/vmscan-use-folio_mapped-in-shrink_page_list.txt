@@ -3,5 +3,6 @@ Subject: vmscan: use folio_mapped() in shrink_page_list()
 
 Remove some legacy function calls.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-5-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-6-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>

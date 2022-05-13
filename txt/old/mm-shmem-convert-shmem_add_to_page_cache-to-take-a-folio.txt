@@ -1,8 +1,9 @@
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 Subject: mm/shmem: convert shmem_add_to_page_cache to take a folio
 
-Shrinks shmem_add_to_page_cache() by 16 bytes.  All the callers grow, but
-this is temporary as they will all be converted to folios soon.
+Shrinks shmem_add_to_page_cache() by 16 bytes.  All the callers grow,
+but this is temporary as they will all be converted to folios soon.
 
-Link: https://lkml.kernel.org/r/20220429192329.3034378-17-willy@infradead.org
+Link: https://lkml.kernel.org/r/20220504182857.4013401-19-willy@infradead.org
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
