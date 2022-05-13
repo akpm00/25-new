@@ -10,3 +10,4 @@ static int __init set_reset_devices(char *str)
 
 Link: https://lkml.kernel.org/r/20210519162341.1275452-1-ahalaney@redhat.com
 Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
