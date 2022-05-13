@@ -4,6 +4,8 @@ Subject: mm/vmscan: use helper folio_is_file_lru()
 Use helper folio_is_file_lru() to check whether folio is file lru.  Minor
 readability improvement.
 
+[linmiaohe@huawei.com: use folio_is_file_lru()]
+  Link: https://lkml.kernel.org/r/20220428105802.21389-1-linmiaohe@huawei.com
 Link: https://lkml.kernel.org/r/20220425111232.23182-7-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Christoph Hellwig <hch@lst.de>
@@ -13,12 +15,20 @@ Cc: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/vmscan.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/vmscan.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 --- a/mm/vmscan.c~mm-vmscan-use-helper-folio_is_file_lru
 +++ a/mm/vmscan.c
-@@ -1421,7 +1421,7 @@ static enum page_references folio_check_
+@@ -1414,14 +1414,14 @@ static enum page_references folio_check_
+ 		/*
+ 		 * Activate file-backed executable folios after first usage.
+ 		 */
+-		if ((vm_flags & VM_EXEC) && !folio_test_swapbacked(folio))
++		if ((vm_flags & VM_EXEC) && folio_is_file_lru(folio))
+ 			return PAGEREF_ACTIVATE;
+ 
+ 		return PAGEREF_KEEP;
  	}
  
  	/* Reclaim if clean, defer dirty folios to writeback */

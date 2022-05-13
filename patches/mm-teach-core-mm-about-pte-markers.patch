@@ -11,6 +11,8 @@ Many of the places are more about commenting it up - so that we know
 there's the possibility of pte marker showing up, and why we don't need
 special code for the cases.
 
+[peterx@redhat.com: userfaultfd.c needs swapops.h]
+  Link: https://lkml.kernel.org/r/YmRlVj3cdizYJsr0@xz-m1.local
 Link: https://lkml.kernel.org/r/20220405014833.14015-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>
@@ -27,18 +29,26 @@ Cc: Nadav Amit <nadav.amit@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/userfaultfd.c |   10 ++++++----
+ fs/userfaultfd.c |   11 +++++++----
  mm/filemap.c     |    5 +++++
  mm/hmm.c         |    2 +-
  mm/memcontrol.c  |    8 ++++++--
  mm/memory.c      |   23 +++++++++++++++++++++++
  mm/mincore.c     |    3 ++-
  mm/mprotect.c    |    3 +++
- 7 files changed, 46 insertions(+), 8 deletions(-)
+ 7 files changed, 47 insertions(+), 8 deletions(-)
 
 --- a/fs/userfaultfd.c~mm-teach-core-mm-about-pte-markers
 +++ a/fs/userfaultfd.c
-@@ -249,9 +249,10 @@ static inline bool userfaultfd_huge_must
+@@ -29,6 +29,7 @@
+ #include <linux/ioctl.h>
+ #include <linux/security.h>
+ #include <linux/hugetlb.h>
++#include <linux/swapops.h>
+ 
+ int sysctl_unprivileged_userfaultfd __read_mostly;
+ 
+@@ -249,9 +250,10 @@ static inline bool userfaultfd_huge_must
  
  	/*
  	 * Lockless access: we're in a wait_event so it's ok if it
@@ -51,7 +61,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		ret = true;
  	if (!huge_pte_write(pte) && (reason & VM_UFFD_WP))
  		ret = true;
-@@ -330,9 +331,10 @@ static inline bool userfaultfd_must_wait
+@@ -330,9 +332,10 @@ static inline bool userfaultfd_must_wait
  	pte = pte_offset_map(pmd, address);
  	/*
  	 * Lockless access: we're in a wait_event so it's ok if it

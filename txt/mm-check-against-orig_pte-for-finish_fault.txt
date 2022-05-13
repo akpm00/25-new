@@ -29,9 +29,13 @@ fault retry happened it'll be properly updated along with orig_pte.
 
 [1] https://lore.kernel.org/lkml/710c48c9-406d-e4c5-a394-10501b951316@samsung.com/
 
+[akpm@linux-foundation.org: coding-style cleanups]
+[peterx@redhat.com: fix crash reported by Marek]
+  Link: https://lkml.kernel.org/r/Ylb9rXJyPm8/ao8f@xz-m1.local
 Link: https://lkml.kernel.org/r/20220405014836.14077-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Reviewed-by: Alistair Popple <apopple@nvidia.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Axel Rasmussen <axelrasmussen@google.com>
 Cc: David Hildenbrand <david@redhat.com>
@@ -42,4 +46,3 @@ Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Cc: Nadav Amit <nadav.amit@gmail.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>

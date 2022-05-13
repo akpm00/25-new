@@ -16,7 +16,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/swap.h~mm-swap-add-folio_throttle_swaprate
 +++ a/include/linux/swap.h
-@@ -645,6 +645,10 @@ static inline void cgroup_throttle_swapr
+@@ -640,6 +640,10 @@ static inline void cgroup_throttle_swapr
  {
  }
  #endif

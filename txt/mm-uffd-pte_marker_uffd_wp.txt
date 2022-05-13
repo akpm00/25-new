@@ -19,6 +19,8 @@ wr-protected in two forms: either it is a normal swap pte and it has
 _PAGE_SWP_UFFD_WP set, or it's a pte marker that has PTE_MARKER_UFFD_WP
 set.
 
+[peterx@redhat.com: fixup]
+  Link: https://lkml.kernel.org/r/YkzKiM8tI4+qOfXF@xz-m1.local
 Link: https://lore.kernel.org/lkml/20201126222359.8120-1-peterx@redhat.com/
 Link: https://lore.kernel.org/lkml/20201130230603.46187-1-peterx@redhat.com/
 Link: https://lkml.kernel.org/r/20220405014838.14131-1-peterx@redhat.com

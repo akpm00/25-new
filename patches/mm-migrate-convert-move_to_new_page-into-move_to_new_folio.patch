@@ -15,7 +15,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/migrate.c~mm-migrate-convert-move_to_new_page-into-move_to_new_folio
 +++ a/mm/migrate.c
-@@ -858,21 +858,21 @@ static int fallback_migrate_page(struct
+@@ -843,21 +843,21 @@ static int fallback_migrate_page(struct
   *   < 0 - error code
   *  MIGRATEPAGE_SUCCESS - success
   */
@@ -43,7 +43,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		else if (mapping->a_ops->migratepage)
  			/*
  			 * Most pages have a mapping and most filesystems
-@@ -881,54 +881,54 @@ static int move_to_new_page(struct page
+@@ -866,54 +866,54 @@ static int move_to_new_page(struct page
  			 * migratepage callback. This is the most common path
  			 * for page migration.
  			 */
@@ -118,7 +118,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	}
  out:
  	return rc;
-@@ -1016,7 +1016,7 @@ static int __unmap_and_move(struct page
+@@ -1001,7 +1001,7 @@ static int __unmap_and_move(struct page
  		goto out_unlock;
  
  	if (unlikely(!is_lru)) {
@@ -127,7 +127,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto out_unlock_both;
  	}
  
-@@ -1047,7 +1047,7 @@ static int __unmap_and_move(struct page
+@@ -1032,7 +1032,7 @@ static int __unmap_and_move(struct page
  	}
  
  	if (!page_mapped(page))
@@ -136,7 +136,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  	/*
  	 * When successful, push newpage to LRU immediately: so that if it
-@@ -1272,7 +1272,7 @@ static int unmap_and_move_huge_page(new_
+@@ -1261,7 +1261,7 @@ static int unmap_and_move_huge_page(new_
  	}
  
  	if (!page_mapped(hpage))

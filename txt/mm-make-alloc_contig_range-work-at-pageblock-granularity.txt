@@ -15,6 +15,8 @@ pages will be split and freed into separate migratetype lists; the in-use=
 Pages will be migrated then the freed pages will be handled in the
 aforementioned way.
 
+[ziy@nvidia.com: fix deadlock/crash]
+  Link: https://lkml.kernel.org/r/23A7297E-6C84-4138-A9FE-3598234004E6@nvidia.com
 Link: https://lkml.kernel.org/r/20220425143118.2850746-4-zi.yan@sent.com
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 Reported-by: kernel test robot <lkp@intel.com>

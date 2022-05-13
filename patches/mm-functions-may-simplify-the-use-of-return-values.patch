@@ -36,7 +36,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/include/linux/pgtable.h~mm-functions-may-simplify-the-use-of-return-values
 +++ a/include/linux/pgtable.h
-@@ -1443,16 +1443,13 @@ static inline int pmd_protnone(pmd_t pmd
+@@ -1448,16 +1448,13 @@ static inline int pmd_protnone(pmd_t pmd
  
  #ifndef __PAGETABLE_P4D_FOLDED
  int p4d_set_huge(p4d_t *p4d, phys_addr_t addr, pgprot_t prot);
@@ -55,7 +55,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #endif /* !__PAGETABLE_P4D_FOLDED */
  
  int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot);
-@@ -1475,10 +1472,7 @@ static inline int pmd_set_huge(pmd_t *pm
+@@ -1480,10 +1477,7 @@ static inline int pmd_set_huge(pmd_t *pm
  {
  	return 0;
  }

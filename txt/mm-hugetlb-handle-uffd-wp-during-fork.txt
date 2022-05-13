@@ -7,6 +7,8 @@ should treat uffd-wp protected ptes.
 
 We should recognize pte markers during fork and do the pte copy if needed.
 
+[lkp@intel.com: vma_needs_copy can be static]
+  Link: https://lkml.kernel.org/r/Ylb0CGeFJlc4EzLk@7ec4ff11d4ae
 Link: https://lkml.kernel.org/r/20220405014918.14932-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>

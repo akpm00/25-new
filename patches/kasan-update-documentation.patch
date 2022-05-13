@@ -8,6 +8,8 @@ Do assorted clean-ups and improvements to KASAN documentation, including:
   architectures and memory types each mode requires/supports.
 - Capitalize the first letter in the names of each KASAN mode.
 
+[andreyknvl@google.com: rewording, per Marco]
+  Link: https://lkml.kernel.org/r/896b2d914d6b50d677fd7b38f76967cc705c01ba.1652203271.git.andreyknvl@google.com
 Link: https://lkml.kernel.org/r/5bd58ebebf066593ce0e1d265d60278b5f5a1874.1652123204.git.andreyknvl@google.com
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 Reviewed-by: Marco Elver <elver@google.com>
@@ -17,8 +19,8 @@ Cc: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- Documentation/dev-tools/kasan.rst |  153 ++++++++++++++++------------
- 1 file changed, 92 insertions(+), 61 deletions(-)
+ Documentation/dev-tools/kasan.rst |  160 ++++++++++++++++------------
+ 1 file changed, 95 insertions(+), 65 deletions(-)
 
 --- a/Documentation/dev-tools/kasan.rst~kasan-update-documentation
 +++ a/Documentation/dev-tools/kasan.rst
@@ -260,7 +262,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  checking gets disabled.
  
  Shadow memory
-@@ -414,15 +445,15 @@ generic ``noinstr`` one.
+@@ -414,19 +445,18 @@ generic ``noinstr`` one.
  Note that disabling compiler instrumentation (either on a per-file or a
  per-function basis) makes KASAN ignore the accesses that happen directly in
  that code for software KASAN modes. It does not help when the accesses happen
@@ -275,8 +277,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  disables the reports for indirect accesses that happen through function calls.
  
 -For tag-based KASAN modes (include the hardware one), to disable access
-+For tag-based KASAN modes (include the Hardware one), to disable access
- checking, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``. Note that
- temporarily disabling access checking via ``page_kasan_tag_reset()`` requires
- saving and restoring the per-page KASAN tag via
+-checking, use ``kasan_reset_tag()`` or ``page_kasan_tag_reset()``. Note that
+-temporarily disabling access checking via ``page_kasan_tag_reset()`` requires
+-saving and restoring the per-page KASAN tag via
+-``page_kasan_tag``/``page_kasan_tag_set``.
++For tag-based KASAN modes, to disable access checking, use
++``kasan_reset_tag()`` or ``page_kasan_tag_reset()``. Note that temporarily
++disabling access checking via ``page_kasan_tag_reset()`` requires saving and
++restoring the per-page KASAN tag via ``page_kasan_tag``/``page_kasan_tag_set``.
+ 
+ Tests
+ ~~~~~
 _

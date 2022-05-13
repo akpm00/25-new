@@ -11,6 +11,8 @@ Many of the places are more about commenting it up - so that we know
 there's the possibility of pte marker showing up, and why we don't need
 special code for the cases.
 
+[peterx@redhat.com: userfaultfd.c needs swapops.h]
+  Link: https://lkml.kernel.org/r/YmRlVj3cdizYJsr0@xz-m1.local
 Link: https://lkml.kernel.org/r/20220405014833.14015-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>

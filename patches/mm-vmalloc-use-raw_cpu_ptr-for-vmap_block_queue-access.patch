@@ -1,9 +1,8 @@
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: mm/vmalloc: use raw_cpu_ptr() for vmap_block_queue access.
+Subject: mm/vmalloc: use raw_cpu_ptr() for vmap_block_queue access
 
-The per-CPU resource vmap_block_queue is accessed via the get_cpu_var(). 
-That macro disables preemption and then loads the pointer from the current
-CPU.
+The per-CPU resource vmap_block_queue is accessed via get_cpu_var().  That
+macro disables preemption and then loads the pointer from the current CPU.
 
 This doesn't work on PREEMPT_RT because a spinlock_t is later accessed
 within the preempt-disable section.

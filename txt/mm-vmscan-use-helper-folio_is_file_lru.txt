@@ -4,6 +4,8 @@ Subject: mm/vmscan: use helper folio_is_file_lru()
 Use helper folio_is_file_lru() to check whether folio is file lru.  Minor
 readability improvement.
 
+[linmiaohe@huawei.com: use folio_is_file_lru()]
+  Link: https://lkml.kernel.org/r/20220428105802.21389-1-linmiaohe@huawei.com
 Link: https://lkml.kernel.org/r/20220425111232.23182-7-linmiaohe@huawei.com
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 Cc: Christoph Hellwig <hch@lst.de>

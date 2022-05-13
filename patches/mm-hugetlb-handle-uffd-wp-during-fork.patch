@@ -7,6 +7,8 @@ should treat uffd-wp protected ptes.
 
 We should recognize pte markers during fork and do the pte copy if needed.
 
+[lkp@intel.com: vma_needs_copy can be static]
+  Link: https://lkml.kernel.org/r/Ylb0CGeFJlc4EzLk@7ec4ff11d4ae
 Link: https://lkml.kernel.org/r/20220405014918.14932-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Cc: Alistair Popple <apopple@nvidia.com>
@@ -25,8 +27,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
  include/linux/hugetlb.h |    7 ++++--
  mm/hugetlb.c            |   42 +++++++++++++++++++++++++-------------
- mm/memory.c             |    2 -
- 3 files changed, 34 insertions(+), 17 deletions(-)
+ mm/memory.c             |    4 +--
+ 3 files changed, 35 insertions(+), 18 deletions(-)
 
 --- a/include/linux/hugetlb.h~mm-hugetlb-handle-uffd-wp-during-fork
 +++ a/include/linux/hugetlb.h
@@ -173,6 +175,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  				continue;
 --- a/mm/memory.c~mm-hugetlb-handle-uffd-wp-during-fork
 +++ a/mm/memory.c
+@@ -1234,7 +1234,7 @@ copy_p4d_range(struct vm_area_struct *ds
+  * false when we can speed up fork() by allowing lazy page faults later until
+  * when the child accesses the memory range.
+  */
+-bool
++static bool
+ vma_needs_copy(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma)
+ {
+ 	/*
 @@ -1278,7 +1278,7 @@ copy_page_range(struct vm_area_struct *d
  		return 0;
  

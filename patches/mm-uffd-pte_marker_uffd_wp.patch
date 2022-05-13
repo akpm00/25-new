@@ -19,6 +19,8 @@ wr-protected in two forms: either it is a normal swap pte and it has
 _PAGE_SWP_UFFD_WP set, or it's a pte marker that has PTE_MARKER_UFFD_WP
 set.
 
+[peterx@redhat.com: fixup]
+  Link: https://lkml.kernel.org/r/YkzKiM8tI4+qOfXF@xz-m1.local
 Link: https://lore.kernel.org/lkml/20201126222359.8120-1-peterx@redhat.com/
 Link: https://lore.kernel.org/lkml/20201130230603.46187-1-peterx@redhat.com/
 Link: https://lkml.kernel.org/r/20220405014838.14131-1-peterx@redhat.com
@@ -38,9 +40,9 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
  include/linux/swapops.h       |    3 +-
- include/linux/userfaultfd_k.h |   43 ++++++++++++++++++++++++++++++++
+ include/linux/userfaultfd_k.h |   47 ++++++++++++++++++++++++++++++++
  mm/Kconfig                    |    9 ++++++
- 3 files changed, 54 insertions(+), 1 deletion(-)
+ 3 files changed, 58 insertions(+), 1 deletion(-)
 
 --- a/include/linux/swapops.h~mm-uffd-pte_marker_uffd_wp
 +++ a/include/linux/swapops.h
@@ -65,14 +67,18 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  #include <asm-generic/pgtable_uffd.h>
  
  /* The set of all possible UFFD-related VM flags. */
-@@ -236,4 +238,45 @@ static inline void userfaultfd_unmap_com
+@@ -236,4 +238,49 @@ static inline void userfaultfd_unmap_com
  
  #endif /* CONFIG_USERFAULTFD */
  
 +static inline bool pte_marker_entry_uffd_wp(swp_entry_t entry)
 +{
++#ifdef CONFIG_PTE_MARKER_UFFD_WP
 +	return is_pte_marker_entry(entry) &&
 +	    (pte_marker_get(entry) & PTE_MARKER_UFFD_WP);
++#else
++	return false;
++#endif
 +}
 +
 +static inline bool pte_marker_uffd_wp(pte_t pte)

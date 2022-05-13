@@ -10,6 +10,7 @@ support to accept "false"/"true".
 
 Add support to accept "false"/"true" as valid string in kstrtobool().
 
+[akpm@linux-foundation.org: undo s/iff/if/, per Matthew]
 Link: https://lkml.kernel.org/r/20220426180203.70782-1-jvgediya@linux.ibm.com
 Signed-off-by: Jagdish Gediya <jvgediya@linux.ibm.com>
 Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
@@ -33,7 +34,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
   * @res: result
   *
 - * This routine returns 0 iff the first character is one of 'Yy1Nn0', or
-+ * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
++ * This routine returns 0 iff the first character is one of 'YyTt1NnFf0', or
   * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
   * pointed to by res is updated upon finding a match.
   */

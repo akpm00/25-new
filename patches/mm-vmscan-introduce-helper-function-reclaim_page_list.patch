@@ -64,7 +64,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	noreclaim_flag = memalloc_noreclaim_save();
  
  	while (!list_empty(page_list)) {
-@@ -2567,28 +2583,12 @@ unsigned long reclaim_pages(struct list_
+@@ -2565,28 +2581,12 @@ unsigned long reclaim_pages(struct list_
  			continue;
  		}
  

@@ -24,6 +24,9 @@ faults after that call and before remove_inode_hugepages() is executed,
 the page cache can be mapped writable again in the small racy window, that
 can cause unexpected data overwritten.
 
+[peterx@redhat.com: fix sparse warning]
+  Link: https://lkml.kernel.org/r/Ylcdw8I1L5iAoWhb@xz-m1.local
+[akpm@linux-foundation.org: move zap_flags_t from mm.h to mm_types.h to fix build issues]
 Link: https://lkml.kernel.org/r/20220405014915.14873-1-peterx@redhat.com
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
