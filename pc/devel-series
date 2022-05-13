@@ -421,10 +421,6 @@ mm-stable.patch
 ###
 ###
 #
-#mm-swapfile-unuse_pte-can-map-random-data-if-swap-read-fails.patch
-#
-#
-#
 ###mm/pagealloc
 ##mm-page_alloc-cache-the-result-of-node_dirty_ok.patch
 ###
@@ -633,6 +629,7 @@ kernel-fork-use-maple-tree-for-dup_mmap-during-forking.patch
 damon-convert-__damon_va_three_regions-to-use-the-vma-iterator.patch
 damon-convert-__damon_va_three_regions-to-use-the-vma-iterator-fix.patch
 proc-remove-vma-rbtree-use-from-nommu.patch
+#mm-remove-rb-tree.patch: https://lkml.kernel.org/r/00000000000003785905dedfd18b@google.com
 mm-remove-rb-tree.patch
 mmap-change-zeroing-of-maple-tree-in-__vma_adjust.patch
 xen-use-vma_lookup-in-privcmd_ioctl_mmap.patch
@@ -684,6 +681,7 @@ i915-use-the-vma-iterator.patch
 nommu-remove-uses-of-vma-linked-list.patch
 riscv-use-vma-iterator-for-vdso.patch
 mm-remove-the-vma-linked-list.patch
+mm-remove-the-vma-linked-list-fix.patch
 mm-mmap-drop-range_has_overlap-function.patch
 mm-mmapc-pass-in-mapping-to-__vma_link_file.patch
 #mapletree-build-fix.patch: temp?
@@ -708,7 +706,7 @@ mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes.patch
 mm-swap-add-helper-swap_offset_available.patch
 mm-swap-fix-the-obsolete-comment-for-swp_type_shift.patch
 mm-swap-clean-up-the-comment-of-find_next_to_unuse.patch
-#mm-swap-fix-the-comment-of-get_kernel_pages.patch: https://lkml.kernel.org/r/3f9e663a-2045-81d1-509e-abbe0e1fa14e@redhat.com
+#mm-swap-fix-the-comment-of-get_kernel_pages.patch: https://lkml.kernel.org/r/3f9e663a-2045-81d1-509e-abbe0e1fa14e@redhat.com TBU
 mm-swap-fix-the-comment-of-get_kernel_pages.patch
 mm-swap-fix-comment-about-swap-extent.patch
 #
@@ -779,12 +777,15 @@ mm-compaction-fast_find_migrateblock-should-return-pfn-in-the-target-zone.patch
 mm-dont-be-stuck-to-rmap-lock-on-reclaim-path.patch
 #
 mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk.patch
+#mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch: acks?
+mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch
 #
 #mm/mempolicy
 #mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch: acks?
 mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch
 #
 #mm/pagealloc
+#mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch+N: Nicolas testing https://lkml.kernel.org/r/9b04479e3810dbbc3cb2ebd68a3ab3fd034e125e.camel@redhat.com
 mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch
 mm-page_alloc-use-only-one-pcp-list-for-thp-sized-allocations.patch
 mm-page_alloc-split-out-buddy-removal-code-from-rmqueue-into-separate-helper.patch
@@ -799,7 +800,12 @@ mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked.patch
 selftests-memcg-fix-compilation.patch
 selftests-memcg-expect-no-low-events-in-unprotected-sibling.patch
 selftests-memcg-adjust-expected-reclaim-values-of-protected-cgroups.patch
+#selftests-memcg-remove-protection-from-top-level-memcg.patch: https://lkml.kernel.org/r/Yn6qrHHS935ppX98@carbon
 selftests-memcg-remove-protection-from-top-level-memcg.patch
+#
+#mm/shmem
+tmpfs-fix-undefined-behaviour-in-shmem_reconfigure.patch
+tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix.patch
 #
 # mmend
 #

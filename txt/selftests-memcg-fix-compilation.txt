@@ -17,9 +17,9 @@ Link: https://lkml.kernel.org/r/20220513171811.730-1-mkoutny@suse.com
 Link: https://lkml.kernel.org/r/20220513171811.730-2-mkoutny@suse.com
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 Reviewed-by: David Vernet <void@manifault.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: Richard Palethorpe <rpalethorpe@suse.de>

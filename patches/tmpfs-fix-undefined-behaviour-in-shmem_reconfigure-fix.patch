@@ -1,0 +1,25 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix
+Date: Fri May 13 02:17:20 PM PDT 2022
+
+Cc: Luo Meng <luomeng12@huawei.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/shmem.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/mm/shmem.c~tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix
++++ a/mm/shmem.c
+@@ -3477,7 +3477,7 @@ static int shmem_reconfigure(struct fs_c
+ 	raw_spin_lock(&sbinfo->stat_lock);
+ 	inodes = sbinfo->max_inodes - sbinfo->free_inodes;
+ 	if (ctx->blocks > S64_MAX) {
+-		err = "The number of blocks too large";
++		err = "Number of blocks too large";
+ 		goto out;
+ 	}
+ 	if ((ctx->seen & SHMEM_SEEN_BLOCKS) && ctx->blocks) {
+_

@@ -3,6 +3,14 @@ Subject: mm/page_alloc: add page->buddy_list and page->pcp_list
 
 Patch series "Drain remote per-cpu directly", v3.
 
+Some setups, notably NOHZ_FULL CPUs, may be running realtime or
+latency-sensitive applications that cannot tolerate interference due to
+per-cpu drain work queued by __drain_all_pages().  Introduce a new
+mechanism to remotely drain the per-cpu lists.  It is made possible by
+remotely locking 'struct per_cpu_pages' new per-cpu spinlocks.  This has
+two advantages, the time to drain is more predictable and other unrelated
+tasks are not interrupted.
+
 This series has the same intent as Nicolas' series "mm/page_alloc: Remote
 per-cpu lists drain support" -- avoid interference of a high priority task
 due to a workqueue item draining per-cpu page lists.  While many workloads
@@ -13,8 +21,7 @@ non-deterministic.
 Currently an IRQ-safe local_lock protects the page allocator per-cpu
 lists.  The local_lock on its own prevents migration and the IRQ disabling
 protects from corruption due to an interrupt arriving while a page
-allocation is in progress.  The locking is inherently unsafe for remote
-access unless the CPU is hot-removed.
+allocation is in progress.
 
 This series adjusts the locking.  A spinlock is added to struct
 per_cpu_pages to protect the list contents while local_lock_irq continues

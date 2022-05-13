@@ -1,0 +1,13 @@
+From: Liam Howlett <liam.howlett@oracle.com>
+Subject: mm/mmap: fix potential leak on do_mas_align_munmap()
+Date: Fri, 13 May 2022 14:15:53 +0000
+
+There is a leak when the system is low on resources and fails to allocate
+enough memory to complete the munmap task.  Fix this by adding the
+necessary free operations in the unwinding.
+
+Link: https://lkml.kernel.org/r/20220513141548.2019143-1-Liam.Howlett@oracle.com
+Fixes: a760774e7b7b (mm: start tracking VMAs with maple tree)
+Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Reported-by: Qian Cai <quic_qiancai@quicinc.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
