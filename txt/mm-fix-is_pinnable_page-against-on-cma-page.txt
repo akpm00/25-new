@@ -39,9 +39,13 @@ a migration failure by unexpected temporal refcount holding is general
 issue, not only come from MIGRATE_ISOLATE and the MIGRATE_ISOLATE is also
 transient state like other temporal elevated refcount problem.
 
+[minchan@kernel.org: restore __mt definition]
+[minchan@kernel.org: changes per Paul and John]
+  Link: https://lkml.kernel.org/r/20220512204143.3961150-1-minchan@kernel.org
 Link: https://lkml.kernel.org/r/20220510211743.95831-1-minchan@kernel.org
 Signed-off-by: Minchan Kim <minchan@kernel.org>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: John Dias <joaodias@google.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
