@@ -1,0 +1,14 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-convert-sysfs-input-to-bool-using-kstrtobool-fix
+
+propagate kstrtobool() return value, per Andy
+
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+Cc: Jagdish Gediya <jvgediya@linux.ibm.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
