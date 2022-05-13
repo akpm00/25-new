@@ -39,21 +39,25 @@ a migration failure by unexpected temporal refcount holding is general
 issue, not only come from MIGRATE_ISOLATE and the MIGRATE_ISOLATE is also
 transient state like other temporal elevated refcount problem.
 
+[minchan@kernel.org: restore __mt definition]
+[minchan@kernel.org: changes per Paul and John]
+  Link: https://lkml.kernel.org/r/20220512204143.3961150-1-minchan@kernel.org
 Link: https://lkml.kernel.org/r/20220510211743.95831-1-minchan@kernel.org
 Signed-off-by: Minchan Kim <minchan@kernel.org>
 Cc: David Hildenbrand <david@redhat.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: John Dias <joaodias@google.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- include/linux/mm.h |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ include/linux/mm.h |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 --- a/include/linux/mm.h~mm-fix-is_pinnable_page-against-on-cma-page
 +++ a/include/linux/mm.h
-@@ -1625,8 +1625,19 @@ static inline bool page_needs_cow_for_dm
+@@ -1594,8 +1594,21 @@ static inline bool page_needs_cow_for_dm
  #ifdef CONFIG_MIGRATION
  static inline bool is_pinnable_page(struct page *page)
  {
@@ -61,13 +65,15 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		is_zero_pfn(page_to_pfn(page));
 +#ifdef CONFIG_CMA
 +	/*
-+	 * use volatile to use local variable mt instead of
-+	 * refetching mt value.
++	 * Defend against future compiler LTO features, or code refactoring
++	 * that inlines the above function, by forcing a single read. Because,
++	 * this routine races with set_pageblock_migratetype(), and we want to
++	 * avoid reading zero, when actually one or the other flags was set.
 +	 */
 +	int __mt = get_pageblock_migratetype(page);
 +	int mt = __READ_ONCE(__mt);
 +
-+	if (mt == MIGRATE_CMA || mt == MIGRATE_ISOLATE)
++	if (mt & (MIGRATE_CMA | MIGRATE_ISOLATE))
 +		return false;
 +#endif
 +
