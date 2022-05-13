@@ -1,0 +1,53 @@
+From: Johannes Weiner <hannes@cmpxchg.org>
+Subject: zswap-memcg-accounting-fix-2
+Date: Fri, 13 May 2022 14:25:59 -0400
+
+opt out of v1
+
+Link: https://lkml.kernel.org/r/Yn6it9mBYFA+/lTb@cmpxchg.org
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/memcontrol.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+--- a/mm/memcontrol.c~zswap-memcg-accounting-fix-2
++++ a/mm/memcontrol.c
+@@ -7469,6 +7469,9 @@ bool obj_cgroup_may_zswap(struct obj_cgr
+ 	struct mem_cgroup *memcg, *original_memcg;
+ 	bool ret = true;
+ 
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return true;
++
+ 	original_memcg = get_mem_cgroup_from_objcg(objcg);
+ 	for (memcg = original_memcg; memcg != root_mem_cgroup;
+ 	     memcg = parent_mem_cgroup(memcg)) {
+@@ -7505,6 +7508,9 @@ void obj_cgroup_charge_zswap(struct obj_
+ {
+ 	struct mem_cgroup *memcg;
+ 
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return;
++
+ 	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
+ 
+ 	/* PF_MEMALLOC context, charging must succeed */
+@@ -7529,6 +7535,9 @@ void obj_cgroup_uncharge_zswap(struct ob
+ {
+ 	struct mem_cgroup *memcg;
+ 
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return;
++
+ 	obj_cgroup_uncharge(objcg, size);
+ 
+ 	rcu_read_lock();
+_

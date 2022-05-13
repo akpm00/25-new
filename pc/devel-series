@@ -724,6 +724,7 @@ mm-kconfig-simplify-zswap-configuration.patch
 mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
 zswap-memcg-accounting.patch
 zswap-memcg-accounting-fix.patch
+zswap-memcg-accounting-fix-2.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch
@@ -793,6 +794,12 @@ mm-page_alloc-remotely-drain-per-cpu-lists.patch
 mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes.patch
 #
 mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked.patch
+#
+#mm/memcg
+selftests-memcg-fix-compilation.patch
+selftests-memcg-expect-no-low-events-in-unprotected-sibling.patch
+selftests-memcg-adjust-expected-reclaim-values-of-protected-cgroups.patch
+selftests-memcg-remove-protection-from-top-level-memcg.patch
 #
 # mmend
 #
