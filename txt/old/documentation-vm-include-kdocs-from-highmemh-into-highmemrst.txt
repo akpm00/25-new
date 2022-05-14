@@ -7,11 +7,18 @@ include/linux/highmem-internal.h should be included in highmem.rst.
 Use kdocs directives to include the above-mentioned comments into
 highmem.rst.
 
-Link: https://lkml.kernel.org/r/20220421180200.16901-3-fmdefrancesco@gmail.com
+Link: https://lkml.kernel.org/r/20220428212455.892-3-fmdefrancesco@gmail.com
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ira Weiny <ira.weiny@intel.com>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Will Deacon <will@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
