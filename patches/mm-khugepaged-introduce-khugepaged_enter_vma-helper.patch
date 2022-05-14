@@ -109,7 +109,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	mas_destroy(&mas);
  	return error;
  }
-@@ -2637,7 +2637,7 @@ unsigned long mmap_region(struct file *f
+@@ -2639,7 +2639,7 @@ unsigned long mmap_region(struct file *f
  	/* Actually expand, if possible */
  	if (vma &&
  	    !vma_expand(&mas, vma, merge_start, merge_end, vm_pgoff, next)) {
@@ -118,7 +118,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		goto expanded;
  	}
  
-@@ -3053,7 +3053,7 @@ static int do_brk_flags(struct ma_state
+@@ -3055,7 +3055,7 @@ static int do_brk_flags(struct ma_state
  			anon_vma_interval_tree_post_update_vma(vma);
  			anon_vma_unlock_write(vma->anon_vma);
  		}

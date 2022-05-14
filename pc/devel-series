@@ -990,7 +990,7 @@ init-mainc-silence-some-wunused-parameter-warnings.patch
 #
 #delayacct
 #delayacct-track-delays-from-write-protect-copy.patch: dependency on mm-stable
-delayacct-track-delays-from-write-protect-copy.patch
+#delayacct-track-delays-from-write-protect-copy.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 

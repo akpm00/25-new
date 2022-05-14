@@ -41,7 +41,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/Documentation/admin-guide/cgroup-v2.rst~zswap-memcg-accounting
 +++ a/Documentation/admin-guide/cgroup-v2.rst
-@@ -1347,6 +1347,12 @@ PAGE_SIZE multiple when read back.
+@@ -1354,6 +1354,12 @@ PAGE_SIZE multiple when read back.
  		Amount of cached filesystem data that is swap-backed,
  		such as tmpfs, shm segments, shared anonymous mmap()s
  
@@ -54,7 +54,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	  file_mapped
  		Amount of cached filesystem data mapped with mmap()
  
-@@ -1537,6 +1543,21 @@ PAGE_SIZE multiple when read back.
+@@ -1544,6 +1550,21 @@ PAGE_SIZE multiple when read back.
  	higher than the limit for an extended period of time.  This
  	reduces the impact on the workload and memory management.
  
@@ -286,7 +286,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
  	if (parent) {
  		memcg->swappiness = mem_cgroup_swappiness(parent);
-@@ -7406,6 +7451,139 @@ static struct cftype memsw_files[] = {
+@@ -7419,6 +7464,139 @@ static struct cftype memsw_files[] = {
  	{ },	/* terminate */
  };
  
@@ -426,7 +426,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /*
   * If mem_cgroup_swap_init() is implemented as a subsys_initcall()
   * instead of a core_initcall(), this could mean cgroup_memory_noswap still
-@@ -7424,7 +7602,9 @@ static int __init mem_cgroup_swap_init(v
+@@ -7437,7 +7615,9 @@ static int __init mem_cgroup_swap_init(v
  
  	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
  	WARN_ON(cgroup_add_legacy_cftypes(&memory_cgrp_subsys, memsw_files));
