@@ -1,0 +1,12 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-fix-is_pinnable_page-against-on-cma-page-fix
+Date: Fri May 13 05:15:26 PM PDT 2022
+
+MIGRATE_CMA and MIGRATE_ISOLATE are not bitwise, per Minchan
+
+Cc: David Hildenbrand <david@redhat.com>
+Cc: John Dias <joaodias@google.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>

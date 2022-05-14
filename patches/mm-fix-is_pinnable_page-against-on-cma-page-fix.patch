@@ -1,0 +1,30 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-fix-is_pinnable_page-against-on-cma-page-fix
+Date: Fri May 13 05:15:26 PM PDT 2022
+
+MIGRATE_CMA and MIGRATE_ISOLATE are not bitwise, per Minchan
+
+Cc: David Hildenbrand <david@redhat.com>
+Cc: John Dias <joaodias@google.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/mm.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/include/linux/mm.h~mm-fix-is_pinnable_page-against-on-cma-page-fix
++++ a/include/linux/mm.h
+@@ -1635,7 +1635,7 @@ static inline bool is_pinnable_page(stru
+ 	int __mt = get_pageblock_migratetype(page);
+ 	int mt = __READ_ONCE(__mt);
+ 
+-	if (mt & (MIGRATE_CMA | MIGRATE_ISOLATE))
++	if (mt == MIGRATE_CMA || mt == MIGRATE_ISOLATE)
+ 		return false;
+ #endif
+ 
+_

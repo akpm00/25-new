@@ -803,6 +803,9 @@ tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix.patch
 mm-fix-missing-handler-for-__gfp_nowarn.patch
 mm-fix-missing-handler-for-__gfp_nowarn-v2.patch
 #
+#mm/cma
+mm-fix-is_pinnable_page-against-on-cma-page.patch
+mm-fix-is_pinnable_page-against-on-cma-page-fix.patch
 #
 #
 # mmend

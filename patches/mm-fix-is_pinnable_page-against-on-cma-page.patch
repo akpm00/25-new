@@ -57,7 +57,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/include/linux/mm.h~mm-fix-is_pinnable_page-against-on-cma-page
 +++ a/include/linux/mm.h
-@@ -1594,8 +1594,21 @@ static inline bool page_needs_cow_for_dm
+@@ -1625,8 +1625,21 @@ static inline bool page_needs_cow_for_dm
  #ifdef CONFIG_MIGRATION
  static inline bool is_pinnable_page(struct page *page)
  {
