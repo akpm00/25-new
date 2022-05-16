@@ -1004,7 +1004,6 @@ init-mainc-silence-some-wunused-parameter-warnings.patch
 #
 #ipc
 #ipc-sem-fix-backward-compatibility-with-x86-32-kernels.patch: acks?
-ipc-sem-fix-backward-compatibility-with-x86-32-kernels.patch
 #
 #delayacct
 #delayacct-track-delays-from-write-protect-copy.patch: dependency on mm-stable
