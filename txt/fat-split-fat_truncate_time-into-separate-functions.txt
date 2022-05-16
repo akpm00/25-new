@@ -1,0 +1,13 @@
+From: Chung-Chiang Cheng <cccheng@synology.com>
+Subject: fat: split fat_truncate_time() into separate functions
+Date: Tue, 3 May 2022 23:25:33 +0800
+
+Separate fat_truncate_time() to each timestamps for later creation time
+work.
+
+This patch does not introduce any functional changes, it's merely
+refactoring change.
+
+Link: https://lkml.kernel.org/r/20220503152536.2503003-1-cccheng@synology.com
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>

@@ -1,0 +1,14 @@
+From: Chung-Chiang Cheng <cccheng@synology.com>
+Subject: fat: remove time truncations in vfat_create/vfat_mkdir
+Date: Tue, 3 May 2022 23:25:36 +0800
+
+All the timestamps in vfat_create() and vfat_mkdir() come from
+fat_time_fat2unix() which ensures time granularity.  We don't need to
+truncate them to fit FAT's format.
+
+Moreover, fat_truncate_crtime() and fat_timespec64_trunc_10ms() are also
+removed because there is no caller anymore.
+
+Link: https://lkml.kernel.org/r/20220503152536.2503003-4-cccheng@synology.com
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>

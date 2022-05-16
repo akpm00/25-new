@@ -1,0 +1,50 @@
+From: Maxim Zhukov <crazycdeveloper@gmail.com>
+Subject: ipc, sem: fix backward compatibility with x86-32 kernels
+Date: Sun, 15 May 2022 23:01:03 +0300
+
+Since commit 275f22148e87 ("ipc: rename old-style shmctl/semctl/msgctl
+syscalls") we have changed behavior:
+
+ksys_semctl lost parse ipc version (ipc_parse_version), because the new
+syscall works with IPC_64 only, but the parse function has some side
+effect - it removes IPC_64 bit from `cmd`.
+
+Some libc forced sends IPC_64 bit in semctl syscall[1][2][3], this leads
+to a bug - X86-32 kernel does not have compat headers and does not
+correctly parse received command (cmd) from semctl syscall: cmd have
+actual command and IPC_64 bit, thus throw EINVAL error in ksys_semctl
+
+This commit forcibly removes IPC_64 bit from the cmd to restore backward
+compatibility.
+
+[1]: https://elixir.bootlin.com/uclibc-ng/v1.0.40/source/libc/misc/sysvipc/sem.c#L58
+[2]: https://elixir.bootlin.com/musl/v1.2.3/source/src/ipc/semctl.c#L48 -> https://elixir.bootlin.com/musl/v1.2.3/source/src/ipc/ipc.h#L22
+[3]: https://elixir.bootlin.com/glibc/glibc-2.35/source/sysdeps/unix/sysv/linux/semctl.c#L124
+
+Link: https://lkml.kernel.org/r/20220515200103.1408370-2-mussitantesmortem@gmail.com
+Signed-off-by: Maxim Zhukov <mussitantesmortem@gmail.com>
+Cc: Minghao Chi <chi.minghao@zte.com.cn>
+Cc: Varad Gautam <varad.gautam@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Vasily Averin <vasily.averin@linux.dev>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ ipc/sem.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/ipc/sem.c~ipc-sem-fix-backward-compatibility-with-x86-32-kernels
++++ a/ipc/sem.c
+@@ -1704,7 +1704,7 @@ static long ksys_semctl(int semid, int s
+ 
+ SYSCALL_DEFINE4(semctl, int, semid, int, semnum, int, cmd, unsigned long, arg)
+ {
+-	return ksys_semctl(semid, semnum, cmd, arg, IPC_64);
++	return ksys_semctl(semid, semnum, cmd & (~IPC_64), arg, IPC_64);
+ }
+ 
+ #ifdef CONFIG_ARCH_WANT_IPC_PARSE_VERSION
+_

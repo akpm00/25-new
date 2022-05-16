@@ -1,0 +1,19 @@
+From: Fanjun Kong <bh1scw@gmail.com>
+Subject: mm/page_owner.c: add missing __initdata attribute
+Date: Mon, 16 May 2022 11:00:42 +0800
+
+This patch fixes two issues:
+1. Add __initdata attribute according to include/linux/init.h:
+	For initialized data:
+	You should insert __initdata between the variable name and equal
+	sign followed by value
+
+2. Fix below error reported by checkpatch.pl:
+	ERROR: do not initialise statics to false
+
+Special thanks to Muchun Song :)
+
+Link: https://lkml.kernel.org/r/20220516030039.1487005-1-bh1scw@gmail.com
+Signed-off-by: Fanjun Kong <bh1scw@gmail.com>
+Suggested-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>

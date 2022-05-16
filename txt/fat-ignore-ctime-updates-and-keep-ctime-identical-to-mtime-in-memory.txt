@@ -1,0 +1,19 @@
+From: Chung-Chiang Cheng <cccheng@synology.com>
+Subject: fat: ignore ctime updates, and keep ctime identical to mtime in memory
+Date: Tue, 3 May 2022 23:25:34 +0800
+
+FAT supports creation time but not change time, and there was no
+corresponding timestamp for creation time in previous VFS.  The original
+implementation took the compromise of saving the in-memory change time
+into the on-disk creation time field, but this would lead to compatibility
+issues with non-linux systems.
+
+To address this issue, this patch changes the behavior of ctime.  It will
+no longer be loaded and stored from the creation time on disk.  Instead of
+that, it'll be consistent with the in-memory mtime and share the same
+on-disk field.  All updates to mtime will also be applied to ctime in
+memory, while all updates to ctime will be ignored.
+
+Link: https://lkml.kernel.org/r/20220503152536.2503003-2-cccheng@synology.com
+Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>

@@ -712,6 +712,7 @@ mm-swapfile-use-vma-iterator-instead-of-vma-linked-list.patch
 i915-use-the-vma-iterator.patch
 nommu-remove-uses-of-vma-linked-list.patch
 riscv-use-vma-iterator-for-vdso.patch
+#mm-remove-the-vma-linked-list.patch: https://lkml.kernel.org/r/0000000000007fa7ff05df01b7c4@google.com
 mm-remove-the-vma-linked-list.patch
 mm-remove-the-vma-linked-list-fix.patch
 mm-mmap-drop-range_has_overlap-function.patch
@@ -737,6 +738,7 @@ mm-swap-use-helper-macro-__attr_rw.patch
 mm-swap-fold-__swap_info_get-into-its-sole-caller.patch
 mm-swap-remove-unneeded-return-value-of-free_swap_slot.patch
 mm-swap-print-bad-swap-offset-entry-in-get_swap_device.patch
+#mm-swap-remove-buggy-cache-nr-check-in-refill_swap_slots_cache.patch: TBU https://lkml.kernel.org/r/8b03aa8a-5023-6915-64c6-f6f298f19f36@huawei.com
 mm-swap-remove-buggy-cache-nr-check-in-refill_swap_slots_cache.patch
 mm-swap-remove-unneeded-p-=-null-check-in-__swap_duplicate.patch
 mm-swap-make-page_swapcount-and-__lru_add_drain_all.patch
@@ -760,6 +762,7 @@ mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix.patch
 mm-kconfig-group-swap-slab-hotplug-and-thp-options-into-submenus-fix-fix.patch
 mm-kconfig-simplify-zswap-configuration.patch
 mm-zswap-add-basic-meminfo-and-vmstat-coverage.patch
+#zswap-memcg-accounting.patch: check review
 zswap-memcg-accounting.patch
 zswap-memcg-accounting-fix.patch
 zswap-memcg-accounting-fix-2.patch
@@ -803,10 +806,18 @@ tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix.patch
 mm-fix-missing-handler-for-__gfp_nowarn.patch
 mm-fix-missing-handler-for-__gfp_nowarn-v2.patch
 #
+mm-page_ownerc-add-missing-__initdata-attribute.patch
+#
 #mm/cma
 mm-fix-is_pinnable_page-against-on-cma-page.patch
 mm-fix-is_pinnable_page-against-on-cma-page-fix.patch
 #
+nodemaskh-fix-compilation-error-with-gcc12.patch
+#
+#mm/tracing
+tracing-incorrect-isolate_mote_t-cast-in-mm_vmscan_lru_isolate.patch
+#
+#mm/util
 #
 # mmend
 #
@@ -991,9 +1002,19 @@ init-add-hostname-kernel-parameter-v2.patch
 #init-mainc-silence-some-wunused-parameter-warnings.patch: https://lkml.kernel.org/r/f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk
 init-mainc-silence-some-wunused-parameter-warnings.patch
 #
+#ipc
+#ipc-sem-fix-backward-compatibility-with-x86-32-kernels.patch: acks?
+ipc-sem-fix-backward-compatibility-with-x86-32-kernels.patch
+#
 #delayacct
 #delayacct-track-delays-from-write-protect-copy.patch: dependency on mm-stable
 #delayacct-track-delays-from-write-protect-copy.patch
+#
+#fatfs
+fat-split-fat_truncate_time-into-separate-functions.patch
+fat-ignore-ctime-updates-and-keep-ctime-identical-to-mtime-in-memory.patch
+fat-report-creation-time-in-statx.patch
+fat-remove-time-truncations-in-vfat_create-vfat_mkdir.patch
 #
 #ENDBRANCH mm-nonmm-unstable
 
@@ -1013,4 +1034,3 @@ linux-next-git-rejects.patch
 #
 mm-oom_killc-fix-vm_oom_kill_table-ifdeffery.patch
 #
-a.patch

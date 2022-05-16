@@ -1,0 +1,2 @@
+fs/fat/inode.c
+fs/fat/misc.c
