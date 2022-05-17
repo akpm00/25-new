@@ -1,0 +1,15 @@
+From: Colin Ian King <colin.i.king@gmail.com>
+Subject: fs/ntfs: remove redundant variable idx
+Date: Tue, 17 May 2022 10:36:46 +0100
+
+The variable idx is assigned a value and is never read.  The variable is
+not used and is redundant, remove it.
+
+Cleans up clang scan build warning:
+warning: Although the value stored to 'idx' is used in the enclosing
+expression, the value is never actually read from 'idx'
+[deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220517093646.93628-2-colin.i.king@gmail.com
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>

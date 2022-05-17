@@ -1,0 +1,36 @@
+From: Vasily Averin <vvs@openvz.org>
+Subject: include/trace/events/percpu.h: cleanup for "percpu: improve percpu_alloc_percpu event trace"
+Date: Tue, 17 May 2022 09:55:51 +0300
+
+Fix sparse warning about incorrect gfp_t cast.
+
+Link: https://lkml.kernel.org/r/001979f3-e978-0998-cbed-61a4a2ac87b8@openvz.org
+Fixes: f67bed134a05 ("percpu: improve percpu_alloc_percpu event trace")
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/trace/events/percpu.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/include/trace/events/percpu.h~cleanup-for-percpu-improve-percpu_alloc_percpu-event-trace
++++ a/include/trace/events/percpu.h
+@@ -28,7 +28,7 @@ TRACE_EVENT(percpu_alloc_percpu,
+ 		__field(	int,			off		)
+ 		__field(	void __percpu *,	ptr		)
+ 		__field(	size_t,			bytes_alloc	)
+-		__field(	gfp_t,			gfp_flags	)
++		__field(	unsigned long,		gfp_flags	)
+ 	),
+ 	TP_fast_assign(
+ 		__entry->call_site	= call_site;
+@@ -40,7 +40,7 @@ TRACE_EVENT(percpu_alloc_percpu,
+ 		__entry->off		= off;
+ 		__entry->ptr		= ptr;
+ 		__entry->bytes_alloc	= bytes_alloc;
+-		__entry->gfp_flags	= gfp_flags;
++		__entry->gfp_flags	= (__force unsigned long)gfp_flags;
+ 	),
+ 
+ 	TP_printk("call_site=%pS reserved=%d is_atomic=%d size=%zu align=%zu base_addr=%p off=%d ptr=%p bytes_alloc=%zu gfp_flags=%s",
+_

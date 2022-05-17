@@ -1,0 +1,9 @@
+From: Vasily Averin <vvs@openvz.org>
+Subject: include/trace/events/percpu.h: cleanup for "percpu: improve percpu_alloc_percpu event trace"
+Date: Tue, 17 May 2022 09:55:51 +0300
+
+Fix sparse warning about incorrect gfp_t cast.
+
+Link: https://lkml.kernel.org/r/001979f3-e978-0998-cbed-61a4a2ac87b8@openvz.org
+Fixes: f67bed134a05 ("percpu: improve percpu_alloc_percpu event trace")
+Signed-off-by: Vasily Averin <vvs@openvz.org>

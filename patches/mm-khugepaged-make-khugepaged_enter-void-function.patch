@@ -103,7 +103,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  					   unsigned long addr)
 --- a/kernel/fork.c~mm-khugepaged-make-khugepaged_enter-void-function
 +++ a/kernel/fork.c
-@@ -608,9 +608,7 @@ static __latent_entropy int dup_mmap(str
+@@ -612,9 +612,7 @@ static __latent_entropy int dup_mmap(str
  	retval = ksm_fork(mm, oldmm);
  	if (retval)
  		goto out;
@@ -112,8 +112,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		goto out;
 +	khugepaged_fork(mm, oldmm);
  
- 	retval = mas_expected_entries(&mas, oldmm->map_count);
- 	if (retval)
+ 	prev = NULL;
+ 	for (mpnt = oldmm->mmap; mpnt; mpnt = mpnt->vm_next) {
 --- a/mm/huge_memory.c~mm-khugepaged-make-khugepaged_enter-void-function
 +++ a/mm/huge_memory.c
 @@ -726,8 +726,8 @@ vm_fault_t do_huge_pmd_anonymous_page(st

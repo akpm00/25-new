@@ -23,7 +23,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/swapfile.c~mm-swap-remove-unneeded-p-=-null-check-in-__swap_duplicate
 +++ a/mm/swapfile.c
-@@ -3335,8 +3335,7 @@ static int __swap_duplicate(swp_entry_t
+@@ -3333,8 +3333,7 @@ static int __swap_duplicate(swp_entry_t
  
  unlock_out:
  	unlock_cluster_or_swap_info(p, ci);

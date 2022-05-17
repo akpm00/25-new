@@ -1,0 +1,16 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-swap-avoid-calling-swp_swap_info-when-try-to-check-swp_stable_writes-fix
+Date: Tue May 17 04:31:16 PM PDT 2022
+
+use data_race() on si->flags, per Neil
+
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>

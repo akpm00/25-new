@@ -18,17 +18,17 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
 --- a/mm/mmap.c~mm-start-tracking-vmas-with-maple-tree-fix-2
 +++ a/mm/mmap.c
-@@ -2664,6 +2664,7 @@ int expand_upwards(struct vm_area_struct
- 	khugepaged_enter_vma_merge(vma, vma->vm_flags);
+@@ -2670,6 +2670,7 @@ int expand_upwards(struct vm_area_struct
+ 	khugepaged_enter_vma(vma, vma->vm_flags);
  	validate_mm(mm);
  	validate_mm_mt(mm);
 +	mas_destroy(&mas);
  	return error;
  }
  #endif /* CONFIG_STACK_GROWSUP || CONFIG_IA64 */
-@@ -2751,6 +2752,7 @@ int expand_downwards(struct vm_area_stru
+@@ -2757,6 +2758,7 @@ int expand_downwards(struct vm_area_stru
  	anon_vma_unlock_write(vma->anon_vma);
- 	khugepaged_enter_vma_merge(vma, vma->vm_flags);
+ 	khugepaged_enter_vma(vma, vma->vm_flags);
  	validate_mm(mm);
 +	mas_destroy(&mas);
  	return error;

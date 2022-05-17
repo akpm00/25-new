@@ -265,7 +265,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	/* Actually expand, if possible */
 +	if (vma &&
 +	    !vma_expand(&mas, vma, merge_start, merge_end, vm_pgoff, next)) {
-+		khugepaged_enter_vma_merge(vma, vm_flags);
++		khugepaged_enter_vma(vma, vm_flags);
 +		goto expanded;
 +	}
 +
@@ -330,7 +330,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		error = -ENOMEM;
  		if (file)
  			goto unmap_and_free_vma;
-@@ -1791,12 +1928,28 @@ unsigned long mmap_region(struct file *f
+@@ -1791,6 +1928,22 @@ unsigned long mmap_region(struct file *f
  			goto free_vma;
  	}
  
@@ -350,8 +350,10 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		i_mmap_unlock_write(vma->vm_file->f_mapping);
 +	}
 +
- 	/* Once vma denies write, undo our temporary denial count */
- unmap_writable:
+ 	/*
+ 	 * vma_merge() calls khugepaged_enter_vma() either, the below
+ 	 * call covers the non-merge case.
+@@ -1802,7 +1955,7 @@ unmap_writable:
  	if (file && vm_flags & VM_SHARED)
  		mapping_unmap_writable(file->f_mapping);
  	file = vma->vm_file;
@@ -360,7 +362,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	perf_event_mmap(vma);
  
  	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
-@@ -1823,6 +1976,7 @@ out:
+@@ -1829,6 +1982,7 @@ out:
  
  	vma_set_page_prot(vma);
  
@@ -368,7 +370,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return addr;
  
  unmap_and_free_vma:
-@@ -1839,6 +1993,7 @@ free_vma:
+@@ -1845,6 +1999,7 @@ free_vma:
  unacct_error:
  	if (charged)
  		vm_unacct_memory(charged);
@@ -376,7 +378,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return error;
  }
  
-@@ -2638,10 +2793,6 @@ int __do_munmap(struct mm_struct *mm, un
+@@ -2644,10 +2799,6 @@ int __do_munmap(struct mm_struct *mm, un
  	prev = vma->vm_prev;
  	/* we have start < vma->vm_end  */
  

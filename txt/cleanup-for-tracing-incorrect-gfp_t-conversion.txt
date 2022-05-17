@@ -1,0 +1,13 @@
+From: Vasily Averin <vvs@openvz.org>
+Subject: include/trace/events/mmflags.h: cleanup for "tracing: incorrect gfp_t conversion"
+Date: Tue, 17 May 2022 09:58:14 +0300
+
+Redefines __def_gfpflag_names array according to akpm@, willy@ and Joe
+Perches recommendations.
+
+Link: https://lkml.kernel.org/r/6f811e19-41c6-f3e8-fca6-23a19a62e313@openvz.org
+Fixes: fe573327ffb1 ("tracing: incorrect gfp_t conversion")
+Signed-off-by: Vasily Averin <vvs@openvz.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Joe Perches <joe@perches.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>

@@ -1,0 +1,38 @@
+From: Colin Ian King <colin.i.king@gmail.com>
+Subject: fs/ntfs: remove redundant variable idx
+Date: Tue, 17 May 2022 10:36:46 +0100
+
+The variable idx is assigned a value and is never read.  The variable is
+not used and is redundant, remove it.
+
+Cleans up clang scan build warning:
+warning: Although the value stored to 'idx' is used in the enclosing
+expression, the value is never actually read from 'idx'
+[deadcode.DeadStores]
+
+Link: https://lkml.kernel.org/r/20220517093646.93628-2-colin.i.king@gmail.com
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reviewed-by: Anton Altaparmakov <anton@tuxera.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ fs/ntfs/file.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/fs/ntfs/file.c~fs-ntfs-remove-redundant-variable-idx
++++ a/fs/ntfs/file.c
+@@ -1772,11 +1772,11 @@ static ssize_t ntfs_perform_write(struct
+ 	last_vcn = -1;
+ 	do {
+ 		VCN vcn;
+-		pgoff_t idx, start_idx;
++		pgoff_t start_idx;
+ 		unsigned ofs, do_pages, u;
+ 		size_t copied;
+ 
+-		start_idx = idx = pos >> PAGE_SHIFT;
++		start_idx = pos >> PAGE_SHIFT;
+ 		ofs = pos & ~PAGE_MASK;
+ 		bytes = PAGE_SIZE - ofs;
+ 		do_pages = 1;
+_

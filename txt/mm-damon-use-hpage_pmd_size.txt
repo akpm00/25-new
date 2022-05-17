@@ -1,0 +1,9 @@
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: mm: damon: use HPAGE_PMD_SIZE
+Date: Tue, 17 May 2022 22:51:20 +0800
+
+Use HPAGE_PMD_SIZE instead of open coding.
+
+Link: https://lkml.kernel.org/r/20220517145120.118523-1-wangkefeng.wang@huawei.com
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Reviewed-by: SeongJae Park <sj@kernel.org>
