@@ -1,0 +1,16 @@
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: mm-swap-fix-the-comment-of-get_kernel_pages-fix
+Date: Tue May 17 04:36:31 PM PDT 2022
+
+s/nr_pages/nr_segs/ also, per David, reflow comment
+
+Cc: Alistair Popple <apopple@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: NeilBrown <neilb@suse.de>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
