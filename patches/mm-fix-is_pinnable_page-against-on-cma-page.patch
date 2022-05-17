@@ -39,6 +39,7 @@ a migration failure by unexpected temporal refcount holding is general
 issue, not only come from MIGRATE_ISOLATE and the MIGRATE_ISOLATE is also
 transient state like other temporal elevated refcount problem.
 
+[akpm@linux-foundation.org: MIGRATE_CMA and MIGRATE_ISOLATE are not bitwise, per Minchan]
 [minchan@kernel.org: restore __mt definition]
 [minchan@kernel.org: changes per Paul and John]
   Link: https://lkml.kernel.org/r/20220512204143.3961150-1-minchan@kernel.org
@@ -73,7 +74,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +	int __mt = get_pageblock_migratetype(page);
 +	int mt = __READ_ONCE(__mt);
 +
-+	if (mt & (MIGRATE_CMA | MIGRATE_ISOLATE))
++	if (mt == MIGRATE_CMA || mt == MIGRATE_ISOLATE)
 +		return false;
 +#endif
 +
