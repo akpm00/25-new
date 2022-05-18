@@ -17,12 +17,12 @@ Cc: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- mm/page_alloc.c |   87 ++++++++++++++++++++++++++--------------------
- 1 file changed, 50 insertions(+), 37 deletions(-)
+ mm/page_alloc.c |   81 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 47 insertions(+), 34 deletions(-)
 
 --- a/mm/page_alloc.c~mm-page_alloc-split-out-buddy-removal-code-from-rmqueue-into-separate-helper
 +++ a/mm/page_alloc.c
-@@ -3612,6 +3612,46 @@ static inline void zone_statistics(struc
+@@ -3612,6 +3612,43 @@ static inline void zone_statistics(struc
  #endif
  }
  
@@ -43,11 +43,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 +		 * reserved for high-order atomic allocation, so order-0
 +		 * request should skip it.
 +		 */
-+		if (order > 0 && alloc_flags & ALLOC_HARDER) {
++		if (order > 0 && alloc_flags & ALLOC_HARDER)
 +			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
-+			if (page)
-+				trace_mm_page_alloc_zone_locked(page, order, migratetype);
-+		}
 +		if (!page) {
 +			page = __rmqueue(zone, order, migratetype, alloc_flags);
 +			if (!page) {
@@ -69,7 +66,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  /* Remove page from the per-cpu list, caller must protect the list */
  static inline
  struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
-@@ -3692,9 +3732,14 @@ struct page *rmqueue(struct zone *prefer
+@@ -3692,9 +3729,14 @@ struct page *rmqueue(struct zone *prefer
  			gfp_t gfp_flags, unsigned int alloc_flags,
  			int migratetype)
  {
@@ -85,7 +82,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	if (likely(pcp_allowed_order(order))) {
  		/*
  		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
-@@ -3708,38 +3753,10 @@ struct page *rmqueue(struct zone *prefer
+@@ -3708,35 +3750,10 @@ struct page *rmqueue(struct zone *prefer
  		}
  	}
  
@@ -104,11 +101,8 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		 * reserved for high-order atomic allocation, so order-0
 -		 * request should skip it.
 -		 */
--		if (order > 0 && alloc_flags & ALLOC_HARDER) {
+-		if (order > 0 && alloc_flags & ALLOC_HARDER)
 -			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
--			if (page)
--				trace_mm_page_alloc_zone_locked(page, order, migratetype);
--		}
 -		if (!page) {
 -			page = __rmqueue(zone, order, migratetype, alloc_flags);
 -			if (!page)
@@ -128,7 +122,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
  out:
  	/* Separate test+clear to avoid unnecessary atomics */
-@@ -3750,10 +3767,6 @@ out:
+@@ -3747,10 +3764,6 @@ out:
  
  	VM_BUG_ON_PAGE(page && bad_range(zone, page), page);
  	return page;

@@ -705,6 +705,9 @@ tmpfs-fix-undefined-behaviour-in-shmem_reconfigure-fix.patch
 #
 mm-page_ownerc-add-missing-__initdata-attribute.patch
 #
+#mm/pagealloc
+mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked.patch
+#
 #
 #
 #
@@ -798,7 +801,6 @@ mm-rmap-use-the-correct-parameter-name-for-define_page_vma_walk.patch
 #mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch: acks?
 mm-pvmw-check-possible-huge-pmd-map-by-transhuge_vma_suitable.patch
 #
-#mm/pagealloc
 #mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch+N: Nicolas testing https://lkml.kernel.org/r/9b04479e3810dbbc3cb2ebd68a3ab3fd034e125e.camel@redhat.com
 #mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch: buggy https://lkml.kernel.org/r/20220517233507.GA423@qian
 mm-page_alloc-add-page-buddy_list-and-page-pcp_list.patch
@@ -810,8 +812,6 @@ mm-page_alloc-protect-pcp-lists-with-a-spinlock.patch
 mm-page_alloc-remotely-drain-per-cpu-lists.patch
 mm-page_alloc-remotely-drain-per-cpu-lists-checkpatch-fixes.patch
 #
-#mm/pagealloc
-mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked.patch
 #
 #mm/debug
 mm-fix-missing-handler-for-__gfp_nowarn.patch

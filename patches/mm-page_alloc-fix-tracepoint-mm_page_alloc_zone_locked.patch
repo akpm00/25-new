@@ -83,7 +83,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  TRACE_EVENT(mm_page_pcpu_drain,
 --- a/mm/page_alloc.c~mm-page_alloc-fix-tracepoint-mm_page_alloc_zone_locked
 +++ a/mm/page_alloc.c
-@@ -2474,6 +2474,9 @@ struct page *__rmqueue_smallest(struct z
+@@ -2466,6 +2466,9 @@ struct page *__rmqueue_smallest(struct z
  		del_page_from_free_list(page, zone, current_order);
  		expand(zone, page, order, current_order, migratetype);
  		set_pcppage_migratetype(page, migratetype);
@@ -93,7 +93,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		return page;
  	}
  
-@@ -2997,7 +3000,7 @@ __rmqueue(struct zone *zone, unsigned in
+@@ -2989,7 +2992,7 @@ __rmqueue(struct zone *zone, unsigned in
  		    zone_page_state(zone, NR_FREE_PAGES) / 2) {
  			page = __rmqueue_cma_fallback(zone, order);
  			if (page)
@@ -102,7 +102,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  		}
  	}
  retry:
-@@ -3010,9 +3013,6 @@ retry:
+@@ -3002,9 +3005,6 @@ retry:
  								alloc_flags))
  			goto retry;
  	}
@@ -112,7 +112,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  	return page;
  }
  
-@@ -3673,11 +3673,8 @@ struct page *rmqueue_buddy(struct zone *
+@@ -3723,11 +3723,8 @@ struct page *rmqueue(struct zone *prefer
  		 * reserved for high-order atomic allocation, so order-0
  		 * request should skip it.
  		 */
@@ -124,5 +124,5 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 -		}
  		if (!page) {
  			page = __rmqueue(zone, order, migratetype, alloc_flags);
- 			if (!page) {
+ 			if (!page)
 _
