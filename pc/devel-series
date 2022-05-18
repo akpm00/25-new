@@ -692,6 +692,7 @@ mm-dont-be-stuck-to-rmap-lock-on-reclaim-path-fix.patch
 mm-mempolicy-fix-uninit-value-in-mpol_rebind_policy.patch
 #
 #mm/memcg
+#selftests-memcg-fix-compilation.pat+N: 19/5 import
 selftests-memcg-fix-compilation.patch
 selftests-memcg-expect-no-low-events-in-unprotected-sibling.patch
 selftests-memcg-adjust-expected-reclaim-values-of-protected-cgroups.patch
