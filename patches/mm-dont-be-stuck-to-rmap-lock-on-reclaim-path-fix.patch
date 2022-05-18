@@ -1,0 +1,37 @@
+From: Minchan Kim <minchan@kernel.org>
+Subject: mm-dont-be-stuck-to-rmap-lock-on-reclaim-path-fix
+Date: Wed, 4 May 2022 23:11:04 -0700
+
+add comment, per Matthew
+
+Link: https://lkml.kernel.org/r/YnNqeB5tUf6LZ57b@google.com
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: John Dias <joaodias@google.com>
+Cc: Tim Murray <timmurray@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Martin Liu <liumartin@google.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ mm/page_idle.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/mm/page_idle.c~mm-dont-be-stuck-to-rmap-lock-on-reclaim-path-fix
++++ a/mm/page_idle.c
+@@ -87,6 +87,10 @@ static void page_idle_clear_pte_refs(str
+ {
+ 	struct folio *folio = page_folio(page);
+ 
++	/*
++	 * Since rwc.try_lock is unused, rwc is effectively immutable, so we
++	 * can make it static to save some cycles and stack.
++	 */
+ 	static struct rmap_walk_control rwc = {
+ 		.rmap_one = page_idle_clear_pte_refs_one,
+ 		.anon_lock = folio_lock_anon_vma_read,
+_

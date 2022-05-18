@@ -48,6 +48,7 @@ Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
 Cc: Martin Liu <liumartin@google.com>
 Cc: Minchan Kim <minchan@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
@@ -164,7 +165,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  
 --- a/mm/ksm.c~mm-dont-be-stuck-to-rmap-lock-on-reclaim-path
 +++ a/mm/ksm.c
-@@ -2614,7 +2614,7 @@ struct page *ksm_might_need_to_copy(stru
+@@ -2610,7 +2610,7 @@ struct page *ksm_might_need_to_copy(stru
  	return new_page;
  }
  
@@ -173,7 +174,7 @@ Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
  {
  	struct stable_node *stable_node;
  	struct rmap_item *rmap_item;
-@@ -2638,7 +2638,13 @@ again:
+@@ -2634,7 +2634,13 @@ again:
  		struct vm_area_struct *vma;
  
  		cond_resched();
